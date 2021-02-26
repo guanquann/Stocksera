@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+{% load static %}
+{% load filter %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stocks Analysis</title>
+    <link rel="stylesheet" href="{% static 'style/home.css' %}">
+    <script src="{% static 'javascript/home.js' %}"></script>
+</head>
+
+<body onload="update_price_color()">
+<div>
+    <form action="" method="POST" autocomplete="off"> {% csrf_token %}
+    <div style="display:inline-block;width:25%;height:100vh;vertical-align:top;background-color:#10b6cc">
+        <div style="position:fixed">
+
+            <label for="sectors_dropdown">Sector:</label>
+            <br>
+            <select name="sectors_dropdown" id="sectors_dropdown" style="width:20vw">
+                {% for sector in list_of_sectors %}
+                <option name={{sector}}>{{sector}}</option>
+                {% endfor %}
+            </select>
+            <button name="view_sectors">View</button>
+            <br>
+            <label for="industry_dropdown">Industry:</label>
+            <br>
+            <select name="industry_dropdown" id="industry_dropdown" style="width:20vw">
+                {% for industry in list_of_industries %}
+                <option name={{industry}}>{{industry}}</option>
+                {% endfor %}
+            </select>
+            <button name="view_industry">View</button>
+        </div>
+    </div>
+
+    <div style="display:inline-block;width:70%">
+        <div class="ticker-wrap">
+            <div class="ticker">
+                {% for name in popular_name_list|length|get_range %}
+                <div class="ticker_item">
+                    <b>{{popular_name_list|index:name}} &#183 {{price_list|index:name|index:0}} <span> {{price_list|index:name|index:1}} ({{price_list|index:name|index:2}}%) </span></b>
+                </div>|
+                {% endfor %}
+            </div>
+        </div>
+        <iframe src="ticker_price" style="width:73vw;height:90vh;border:0px"></iframe>
+    </div>
+    </form>
+</div>
+
+</body>
+</html>

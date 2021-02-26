@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+{% load static %}
+{% load filter %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ticker Price</title>
+    <link rel="stylesheet" href="{% static 'style/ticker_price.css' %}">
+    <script src="{% static 'javascript/ticker_price.js' %}"></script>
+</head>
+
+<body style="margin-left:3%;height:60vh;margin-top:70px" onload="display_data()">
+    <form action="" method="POST" autocomplete="off"> {% csrf_token %}
+        <div style="">
+             <input list="tickers" name="ticker" value={{ticker_selected}}>
+             <datalist id="tickers">
+                 {% for symbol in symbols_list %}
+                     <option value={{symbol}}>
+                 {% endfor %}
+              </datalist>
+
+            <button type="submit">Submit</button>
+            <br>
+
+            <div style="display:none" id="img_div">
+                <a href={{website}} target="_blank"><img src={{img}} style="border-radius: 50%;width:100%;border:1px solid black"></a>
+            </div>
+            <div style="display:none" id="ticker_intro">
+                <a href={{website}} target="_blank" class="ticker_selected"><span style="font-size:x-large;font-weight:bolder">{{official_name}} ({{ticker_selected}})</span></a>
+                <br>Sector: <b>{{sector}}</b><br>Industry: <b>{{industry}}</b>
+            </div>
+            <div style="display:none" class="ticker_summary">{{summary}}</div>
+
+            <div style="display:none" id="days_btn">
+                <button name="one_day_btn">1D</button>
+                <button name="five_day_btn">5D</button>
+                <button name="one_month_btn">1M</button>
+                <button name="one_year_btn">1Y</button>
+                <button name="five_year_btn">5Y</button>
+            </div>
+        </div>
+
+        <div class="chart-container" style="position: relative; height:70vh;width:93vw;max-height:450px;display:none">
+            <canvas id="price_chart"></canvas>
+        </div>
+        <table style="width:93%;margin:3%;display:none" id="ticker_table">
+            <tr>
+                <td>Open: {{mkt_open}}</td>
+                <td>Prev Close: {{mkt_close}}</td>
+            </tr>
+            <tr>
+                <td>High: {{mkt_high}}</td>
+                <td>52-wk High: {{mkt_year_high}}</td>
+            </tr>
+            <tr>
+                <td>Low {{mkt_low}}</td>
+                <td>52-wk Low: {{mkt_year_low}}</td>
+            </tr>
+            <tr>
+                <td>Vol: {{mkt_vol}}</td>
+                <td></td>
+            </tr>
+        </table>
+    </form>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script>
+var price_chart = document.getElementById('price_chart');
+var myChart = new Chart(price_chart, {
+    type: 'line',
+    data: {
+        labels: {{ ticker_date_max|safe }},
+        datasets: [{
+            label: 'Price',
+            lineTension: 0,  <!--straight lines instead of curves-->
+            data: {{ ticker_price_max|safe }},
+            backgroundColor: '#10b6cc',
+            borderWidth: 0.1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: false
+                }
+            }],
+
+                  xAxes: [{
+        ticks: {
+          maxTicksLimit: 5,
+          maxRotation: 0,
+          minRotation: 0
+        }
+      }]
+        },
+
+        <!-- To remove the point of each label -->
+        elements: {
+            point: {
+                radius: 0
+            }
+        },
+
+        <!-- To show value when hover on any part of the graph -->
+        tooltips: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+                label: (item) => `${item.yLabel} USD`,
+            },
+        },
+        hover: {
+            mode: 'index',
+            intersect: false
+        },
+
+    }
+});
+
+</script>
+</html>

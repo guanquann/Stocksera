@@ -1,0 +1,7 @@
+.git
+.idea
+*.pyc
+__pycache__
+venv/
+*.csv
+testing.py

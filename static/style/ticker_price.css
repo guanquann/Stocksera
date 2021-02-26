@@ -1,0 +1,34 @@
+.ticker_selected {
+    text-decoration: none;
+    color: black;
+}
+
+.ticker_selected:hover {
+    color: #500fc3;
+}
+
+.ticker_summary {
+    width:95%;
+    height:200px;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 1.5%;
+    line-height: 1.5;
+    font-size: medium;
+    overflow-y: auto;
+    -ms-overflow-style: none;  /* hide scrollbar for IE and Edge */
+    scrollbar-width: none;  /* hide scrollbar for Firefox */
+}
+
+.ticker_summary::-webkit-scrollbar {
+    display: none;  /* hide scrollbar for Chrome */
+}
+
+
+/*.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  padding-top: 50px;
+  background-color: white;
+}*/

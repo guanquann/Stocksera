@@ -1,0 +1,39 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+select, option {
+    border: 1px solid black;
+    border-radius: 3px;
+    padding: 0.4%;
+    margin-bottom: 1%;
+}
+
+button {
+    border: 1px solid black;
+    border-radius: 3px;
+    background-color: #8194ce;
+    padding: 0.4%;
+}
+
+#reddit_table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#reddit_table td, #reddit_table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#reddit_table tr:nth-child(even){background-color: #f2f2f2;}
+
+#reddit_table tr:hover {background-color: #ddd;}
+
+#reddit_table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #8194ce;
+  color: white;
+}

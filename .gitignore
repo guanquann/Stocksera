@@ -4,4 +4,5 @@
 __pycache__
 venv/
 *.csv
+*.txt
 testing.py

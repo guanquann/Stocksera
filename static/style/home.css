@@ -61,3 +61,18 @@ body {
 	font-size: 1.2rem;
 	color: black;
 }
+
+.nav_bar {
+    padding: 8%;
+    text-align: center;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.nav_bar:hover {
+    padding: 8%;
+    text-align: center;
+    color: #e9c8d3;
+    font-weight: bold;
+    cursor: pointer;
+}

@@ -10,17 +10,19 @@
     <script src="{% static 'javascript/ticker_price.js' %}"></script>
 </head>
 
-<body style="margin-left:3%;height:60vh;margin-top:70px" onload="display_data()">
+<body style="margin-left:3%;height:62vh;margin-top:70px;font-family:arial" onload="display_data()">
     <form action="" method="POST" autocomplete="off"> {% csrf_token %}
-        <div style="">
-             <input list="tickers" name="ticker" value={{ticker_selected}}>
-             <datalist id="tickers">
-                 {% for symbol in symbols_list %}
-                     <option value={{symbol}}>
-                 {% endfor %}
-              </datalist>
+        <div>
+            <div>
+                 <input class="ticker_dropdown" list="tickers" name="ticker" value={{ticker_selected}}>
+                 <datalist id="tickers">
+                     {% for symbol in symbols_list %}
+                         <option value={{symbol}}>
+                     {% endfor %}
+                  </datalist>
 
-            <button type="submit">Submit</button>
+                <button class="submit_btn" type="submit">Submit</button>
+            </div>
             <br>
 
             <div style="display:none" id="img_div">
@@ -33,11 +35,11 @@
             <div style="display:none" class="ticker_summary">{{summary}}</div>
 
             <div style="display:none" id="days_btn">
-                <button name="one_day_btn">1D</button>
-                <button name="five_day_btn">5D</button>
-                <button name="one_month_btn">1M</button>
-                <button name="one_year_btn">1Y</button>
-                <button name="five_year_btn">5Y</button>
+                <button class="change_day_btn" name="one_day_btn">1D</button>
+                <button class="change_day_btn"  name="five_day_btn">5D</button>
+                <button class="change_day_btn"  name="one_month_btn">1M</button>
+                <button class="change_day_btn"  name="one_year_btn">1Y</button>
+                <button class="change_day_btn" name="five_year_btn">5Y</button>
             </div>
         </div>
 
@@ -121,6 +123,5 @@ var myChart = new Chart(price_chart, {
 
     }
 });
-
 </script>
 </html>

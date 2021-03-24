@@ -1,3 +1,16 @@
+.ticker_dropdown {
+    border: 1px solid black;
+    border-radius: 3px;
+    padding: 0.4%;
+}
+
+.submit_btn {
+    border: 1px solid black;
+    border-radius: 3px;
+    background-color: #8194ce;
+    padding: 0.4%;
+}
+
 .ticker_selected {
     text-decoration: none;
     color: black;
@@ -32,3 +45,18 @@
   padding-top: 50px;
   background-color: white;
 }*/
+
+.change_day_btn {
+    border-left: 0px;
+    border-right: 0px;
+    border-top: 0px;
+    border-bottom: 3px solid gray;
+    padding-left: 0.55rem;
+    padding-right: 0.55rem;
+    background-color: white;
+}
+
+.change_day_btn:hover {
+    cursor: pointer;
+    border-bottom: 3px solid #34a853;
+}

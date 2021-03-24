@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Reddit Ticker Sentiment</title>
+    <link rel="stylesheet" href="{% static 'style/reddit_sentiment.css' %}">
+</head>
+
+<body style="margin-left:3%;height:60vh;margin-top:70px">
+    <form action="" method="POST" autocomplete="off"> {% csrf_token %}
+         <select name="subreddit">
+             <option value="all">All</option>
+             <option value="wallstreetbets">Wall Street Bets</option>
+             <option value="Wallstreetbetsnew">Wall Street Bets New</option>
+             <option value="Wallstreetbetselite">Wall Street Bets Elite</option>
+             <option value="stocks">Stocks</option>
+             <option value="stockmarket">Stocks Market</option>
+             <option value="investing">Investing</option>
+             <option value="pennystocks">Penny Stocks</option>
+         </select>
+        <button type="submit">Submit</button>
+    </form>
+    <div style="width:95vw;height:79vh;overflow-x:scroll;overflow-y:pixel">
+        <table id="reddit_table" style="">
+            <thead style="white-space: nowrap;">
+                <tr style="">
+                    <th>Ticker</th>
+                    <th>Score</th>
+                    <th>Previous Score</th>
+                    <th>% Score Change</th>
+                    <th>Previous Close</th>
+                    <th>Volume</th>
+                    <th>1D Price Change</th>
+                    <th>50D Price Change</th>
+                    <th>Floating Shares</th>
+                    <th>Beta</th>
+                    <th>Shorts/Float</th>
+                    <th>Price Target</th>
+                    <th>Recommend</th>
+                    <th>Industry</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticker in trending_tickers %}
+                <tr>
+                    <td><a href="https://finance.yahoo.com/quote/{{ticker.0}}" target="_blank">{{ticker.0}}</a></td>
+                    <td>{{ticker.2}}</td>
+                    <td>{{ticker.3}}</td>
+                    <td>{{ticker.4}}%</td>
+                    <td>${{ticker.8}}</td>
+                    <td>{{ticker.11}}</td>
+                    <td>{{ticker.9}}</td>
+                    <td>{{ticker.10}}</td>
+                    <td>{{ticker.12}}</td>
+                    <td>{{ticker.13}}</td>
+                    <td>{{ticker.14}}</td>
+                    <td>${{ticker.20}}</td>
+                    <td>{{ticker.21}}</td>
+                    <td>{{ticker.15}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    Last Updated: {{trending_tickers.0.22}} GMT
+
+</body>
+</html>

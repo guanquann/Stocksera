@@ -15,14 +15,14 @@ Graphs shown are made using chart.js
 
 
 When users want to know more information about the ticker, or look at its graph.
-![Ticker Information](src/images/ticker_information.png)
+![Ticker Information](src/images/ticker_information.png?)
 
 
 When users want to see the most trending stocks on Reddit.
-![Reddit Trending Table](src/images/reddit_trending.png)
+![Reddit Trending Table](src/images/reddit_trending.png?)
 
 Guide/Opinions when it comes to buying stocks
-![Guide/Opinions](src/images/opinions.png)
+![Guide/Opinions](src/images/opinions.png?)
 
 Contact
-![Contact](src/images/contact.png)
+![Contact](src/images/contact.png?)

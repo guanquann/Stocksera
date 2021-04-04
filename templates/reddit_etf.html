@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+{% load static %}
+{% load filter %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stocks Analysis</title>
+    <link rel="stylesheet" href="{% static 'style/reddit_etf.css' %}">
+    <script src="{% static 'javascript/reddit_etf.js' %}"></script>
+</head>
+<body style="margin-left:3%;margin-right:1.5%;height:62vh;margin-top:60px;font-family:arial">
+    <div id="instructions">
+        Reddit ETF is based on the trending stocks on WSB. If the ticker is inside the Top 10 mentioned ticker list before the market opens, USD10000 worth of stock will be bought. All stocks will be sold at the end of the day.
+    </div> 
+    <div style="display: flex;">
+        <div class="performance_individual">
+            <p style="margin-bottom: 0;font-size: small;">Today's Performance:</p>
+            <span style="font-size: xx-large">$120000.54</span>
+            <div class="performance_change">
+                <span>+$10000.45</span>
+                <span>+5.50%</span>
+            </div>
+        </div>
+        <div class="performance_individual">
+            <p style="margin-bottom: 0;font-size: small;">Last 1 Week's Performance:</p>
+            <span style="font-size: xxx-large">$120000</span>
+            <div class="performance_change">
+                <span>+$10000.45</span>
+                <span>+5.50%</span>
+            </div>
+        </div>
+        <div class="performance_individual">
+            <p style="margin-bottom: 0;font-size: small;">Last 1 Week's Performance:</p>
+            <span style="font-size: xxx-large">$120000</span>
+            <div class="performance_change">
+                <span>+$10000.45</span>
+                <span>+5.50%</span>
+            </div>
+        </div>
+    </div>
+    <p class="table_title">Current Trade</p>
+    <table id="current_trade">
+        <thead>
+            <tr>
+                <th onclick="sortTable(0)" class="th-sort-desc">Ticker</th>
+                <th onclick="sortTable(1)" class="th-sort-desc">Open Date</th>
+                <th onclick="sortTable(2)" class="th-sort-desc">Open Price</th>
+                <th onclick="sortTable(3)" class="th-sort-desc">Current Price</th>
+                <th onclick="sortTable(4)" class="th-sort-desc">Current Value</th>
+                <th onclick="sortTable(5)" class="th-sort-desc">Performance</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr>
+                <td><a href="https://finance.yahoo.com/quote/{{ticker.0}}" target="_blank">$GME</a></td>
+                <td>{{ticker.2}}</td>
+                <td>{{ticker.3}}</td>
+                <td>{{ticker.4}}</td>
+                <td>{{ticker.8}}</td>
+                <td>{{ticker.11}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="table_title">Previous Trades</p>
+    <table id="previous_trades">
+        <thead>
+            <tr>
+                <th onclick="sortTable(0)" class="th-sort-desc">Ticker</th>
+                <th onclick="sortTable(1)" class="th-sort-desc">Open Date</th>
+                <th onclick="sortTable(2)" class="th-sort-desc">Open Price</th>
+                <th onclick="sortTable(3)" class="th-sort-desc">Close Date</th>
+                <th onclick="sortTable(4)" class="th-sort-desc">Close Price</th>
+                <th onclick="sortTable(5)" class="th-sort-desc">Performance</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr>
+                <td><a href="https://finance.yahoo.com/quote/{{ticker.0}}" target="_blank">$GME</a></td>
+                <td>{{ticker.2}}</td>
+                <td>{{ticker.3}}</td>
+                <td>{{ticker.4}}</td>
+                <td>{{ticker.8}}</td>
+                <td>{{ticker.11}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+</body>
+</html>

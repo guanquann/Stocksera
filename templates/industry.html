@@ -13,29 +13,10 @@
 <body onload="update_price_color()" style="font-family:arial">
 <div>
     <form action="" method="POST" autocomplete="off"> {% csrf_token %}
-    <div style="display:inline-block;width:18%;min-width:225px;height:100vh;vertical-align:top;background-color:#8194ce">
-        <div style="position:fixed">
-
-            <label for="sectors_dropdown">Sector:</label>
-            <br>
-            <select name="sectors_dropdown" id="sectors_dropdown" style="width:13vw">
-                {% for sector in list_of_sectors %}
-                <option name={{sector}}>{{sector}}</option>
-                {% endfor %}
-            </select>
-            <button name="view_sectors">View</button>
-            <br>
-            <label for="industry_dropdown">Industry:</label>
-            <br>
-            <select name="industry_dropdown" id="industry_dropdown" style="width:13vw">
-                {% for industry in list_of_industries %}
-                <option name={{industry}}>{{industry}}</option>
-                {% endfor %}
-            </select>
-            <button name="view_industry">View</button>
-        </div>
-    </div>
-
+testing
+        testing
+        <br><br><br><br><br>
+        testing
     </form>
 </div>
 

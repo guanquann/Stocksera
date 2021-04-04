@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+{% load static %}
+{% load filter %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stocks Analysis</title>
+    <link rel="stylesheet" href="{% static 'style/format.css' %}">
+    <script src="{% static 'javascript/format.js' %}"></script>
+</head>
+
+<body onload="update_price_color()" style="font-family:arial">
+<div>
+    <form action="" method="POST" autocomplete="off"> {% csrf_token %}
+    <div id="nav_bar_div">
+        <div>
+            <ul>
+                <li class="nav_bar_title"><i>Stocks Analysis</i></li>
+                <li class="nav_bar" onclick="show_ticker_iframe()"><img src="{% static 'images/ticker_analysis.svg' %}">Ticker Analysis</li>
+                <li class="nav_bar" onclick="show_reddit_iframe()"><img src="{% static 'images/reddit.svg' %}">Reddit Trending</li>
+                <li class="nav_bar" onclick="show_reddit_etf_iframe()"><img src="{% static 'images/etf.svg' %}">Reddit ETF</li>
+                <li class="nav_bar" onclick="show_google_iframe()"><img src="{% static 'images/google.svg' %}">Google Trending</li>
+                <li class="nav_bar" onclick="show_industry_iframe()"><img src="{% static 'images/industry.svg' %}">Industries</li>
+                <li class="nav_bar" onclick="show_opinion_iframe()"><img src="{% static 'images/opinion.svg' %}">Opinion</li>
+                <li class="nav_bar" onclick="show_contact_iframe()"><img src="{% static 'images/contact.svg' %}">Contact</li>
+            </ul>
+        </div>
+        <div style="text-align: center;">
+            <button id="nav_bar_btn" class="nav_bar_btn" type="button" onclick="hide_nav_bar()"><</button>
+        </div>
+    </div>
+
+    <div style="display:inline-block;width:75%">
+        <div class="ticker-wrap">
+            <div class="ticker">
+                {% for name in popular_name_list|length|get_range %}
+                <div class="ticker_item">
+                    <b>{{popular_name_list|index:name}} &#183 {{price_list|index:name|index:0}} <span> {{price_list|index:name|index:1}} ({{price_list|index:name|index:2}}%) </span></b>
+                </div>|
+                {% endfor %}
+            </div>
+        </div>
+        <iframe src="ticker_price" style="width:84vw;height:99vh;border:0px"></iframe>
+    </div>
+    </form>
+</div>
+</body>
+</html>

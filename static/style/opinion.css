@@ -1,0 +1,11 @@
+#date {
+    font-size: small;
+    color: #858585;
+    float: right;
+    margin-right: 3%;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}

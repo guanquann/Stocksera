@@ -9,6 +9,7 @@ import yfinance as yf
 import pandas as pd
 from django.shortcuts import render
 import nltk
+from bs4 import BeautifulSoup
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 # If using database from Heroku
@@ -36,8 +37,8 @@ def home(request):
     list_of_sectors = sorted(tickers_list['Sector'].astype(str).unique().tolist())[:-1]
     list_of_industries = sorted(tickers_list['Industry'].astype(str).unique().tolist())[:-1]
 
-    popular_ticker_list = ["SPY", "GOOG", "AAPL", "AMZN", "TSLA", "MSFT", "PLTR", "NVDA", "BB", "ARKK", "ARKF"]
-    popular_name_list = ["S&P500 ETF", "Alphabet", "Apple", "Amazon", "Tesla", "Microsoft", "Palantir",
+    popular_ticker_list = ["SPY", "QQQ", "TQQQ", "DIA", "GOOG", "AAPL", "AMZN", "TSLA", "MSFT", "PLTR", "NVDA", "BB", "ARKK", "ARKF"]
+    popular_name_list = ["S&P500 ETF", "NASDAQ-100", "TQQQ", "Dow ETF", "Alphabet", "Apple", "Amazon", "Tesla", "Microsoft", "Palantir",
                          "NVIDIA", "BlackBerry", "ARK Invest", "ARK Fintech"]
 
     price_list = list()
@@ -57,122 +58,116 @@ def home(request):
         price_list.append([round(closing_price, 2), price_change, percentage_change])
 
     if request.method == "GET":
-        return render(request, 'home.html', {"list_of_sectors": list_of_sectors,
-                                             "list_of_industries": list_of_industries,
-                                             "popular_ticker_list": popular_ticker_list,
-                                             "popular_name_list": popular_name_list,
-                                             "price_list": price_list
-                                             })
+        return render(request, 'format.html', {"list_of_sectors": list_of_sectors,
+                                               "list_of_industries": list_of_industries,
+                                               "popular_ticker_list": popular_ticker_list,
+                                               "popular_name_list": popular_name_list,
+                                               "price_list": price_list
+                                               })
 
 
 def stock_price(request):
-    tickers_list = pd.read_csv(r"nasdaq_screener_1613136998474.csv")
-    symbols_list = tickers_list["Symbol"]
-
     if request.method == "GET":
-        return render(request, 'ticker_price.html', {"symbols_list": symbols_list})
+        return render(request, 'ticker_price.html')
 
     if request.method == "POST":
-        ticker_selected = request.POST.get("ticker").upper()
-        ticker = yf.Ticker(ticker_selected)
-
-        # if "one_day_btn" in request.POST:
-        price_df = ticker.history(period="1d", interval="1m")
-        ticker_date_max = list(map(lambda x: x.split(" ")[1].split("-")[0].rsplit(":", 1)[0],
-                                   price_df.index.astype(str).to_list()))
-        if "five_day_btn" in request.POST:
-            price_df = ticker.history(period="5d", interval="30m")
-            ticker_date_max = list(map(lambda x: x.split(" ")[0], price_df.index.astype(str).to_list()))
-        elif "one_month_btn" in request.POST:
-            price_df = ticker.history(period="1mo", interval="1d")
-            ticker_date_max = list(map(lambda x: x.rsplit(" ", 1)[0], price_df.index.astype(str).to_list()))
-        elif "one_year_btn" in request.POST:
-            price_df = ticker.history(period="1y")
-            ticker_date_max = list(map(lambda x: x.rsplit(" ", 1)[0], price_df.index.astype(str).to_list()))
-        elif "five_year_btn" in request.POST:
-            price_df = ticker.history(period="5y")
-            ticker_date_max = list(map(lambda x: x.rsplit(" ", 1)[0], price_df.index.astype(str).to_list()))
-
-        # one_day_price_df = ticker.history(period="1d", interval="1m")
-        # one_day_price_df['Date'] = one_day_price_df.index
-        # one_day_price = list(map(lambda x: round(x, 2), one_day_price_df['Close'].to_list()))
-        # one_day_date = list(map(lambda x: x.split(" ")[1].split("-")[0].rsplit(":", 1)[0],
-        #                            one_day_price_df.index.astype(str).to_list()))
-        # print(one_day_date)
-        # five_day_price_df = ticker.history(period="5d", interval="30m")
-        # five_day_price_df['Date'] = five_day_price_df.index
-        # five_day_price = list(map(lambda x: round(x, 2), five_day_price_df['Close'].to_list()))
-        # five_day_date = list(map(lambda x: x.split(" ")[0], five_day_price_df.index.astype(str).to_list()))
-        #
-        # one_month_price_df = ticker.history(period="1mo", interval="1d")
-        # one_month_price_df['Date'] = one_month_price_df.index
-        # one_month_price = list(map(lambda x: round(x, 2), one_month_price_df['Close'].to_list()))
-        # one_month_date = list(map(lambda x: x.rsplit(" ", 1)[0], one_month_price_df.index.astype(str).to_list()))
-        #
-        # one_year_price_df = ticker.history(period="1y")
-        # one_year_price_df['Date'] = one_year_price_df.index
-        # one_year_price = list(map(lambda x: round(x, 2), one_year_price_df['Close'].to_list()))
-        # one_year_date = list(map(lambda x: x.rsplit(" ", 1)[0], one_year_price_df.index.astype(str).to_list()))
-        #
-        # five_year_price_df = ticker.history(period="5y")
-        # five_year_price_df['Date'] = five_year_price_df.index
-        # five_year_price = list(map(lambda x: round(x, 2), five_year_price_df['Close'].to_list()))
-        # five_year_date = list(map(lambda x: x.rsplit(" ", 1)[0], five_year_price_df.index.astype(str).to_list()))
-        #
-        # price_df_list = [one_day_price, five_day_price, one_month_price, one_year_price, five_year_price]
-        # date_list = [one_day_date, five_day_date, one_month_date, one_year_date, five_year_date]
-        # print("------------------------------------")
-        # print(date_list)
-        information = ticker.info
-        img = information["logo_url"]
-        official_name = information["longName"]
-        try:
-            sector = information["sector"]
-            industry = information["industry"]
-        except KeyError:
-            sector = "-"
-            industry = "-"
-
-        mkt_open = information["regularMarketOpen"]
-        mkt_close = information["previousClose"]
-        mkt_low = information["regularMarketDayLow"]
-        mkt_high = information["dayHigh"]
-        mkt_vol = information["regularMarketVolume"]
-        if mkt_vol < 1000000:
-            mkt_vol = str(round(mkt_vol/1000, 2)) + "K"
-        elif 1000000 <= mkt_vol < 1000000000:
-            mkt_vol = str(round(mkt_vol / 1000000, 2)) + "M"
+        if request.POST.get("ticker_btn"):
+            ticker_selected = request.POST.get("ticker_btn")
         else:
-            mkt_vol = str(round(mkt_vol / 1000000000, 2)) + "B"
+            ticker_selected = request.POST.get("ticker").upper()
 
-        mkt_year_high = information["fiftyTwoWeekHigh"]
-        mkt_year_low = information["fiftyTwoWeekLow"]
+        try:
+            ticker = yf.Ticker(ticker_selected)
+            price_df = ticker.history(period="1d", interval="1m")
+            ticker_date_max = list(map(lambda x: x.split(" ")[1].split("-")[0].rsplit(":", 1)[0],
+                                    price_df.index.astype(str).to_list()))
+            latest_price = round(price_df["Close"][-1].astype(float), 2)
+            if "five_day_btn" in request.POST:
+                price_df = ticker.history(period="5d", interval="30m")
+                ticker_date_max = list(map(lambda x: x.split(" ")[0], price_df.index.astype(str).to_list()))
+            elif "one_month_btn" in request.POST:
+                price_df = ticker.history(period="1mo", interval="1d")
+                ticker_date_max = list(map(lambda x: x.rsplit(" ", 1)[0], price_df.index.astype(str).to_list()))
+            elif "one_year_btn" in request.POST:
+                price_df = ticker.history(period="1y")
+                ticker_date_max = list(map(lambda x: x.rsplit(" ", 1)[0], price_df.index.astype(str).to_list()))
+            elif "five_year_btn" in request.POST:
+                price_df = ticker.history(period="5y")
+                ticker_date_max = list(map(lambda x: x.rsplit(" ", 1)[0], price_df.index.astype(str).to_list()))
 
-        website = information["website"]
-        summary = information["longBusinessSummary"]
-        return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected, "symbols_list": symbols_list,
-                                                     "ticker_date_max": ticker_date_max,
-                                                     "ticker_price_max": list(map(lambda x: round(x, 2),
-                                                                                  price_df["Close"].to_list())),
-                                                     "img": img, "official_name": official_name, "sector": sector,
-                                                     "industry": industry, "mkt_open": mkt_open, "mkt_close": mkt_close,
-                                                     "mkt_low": mkt_low, "mkt_high": mkt_high, "mkt_vol": mkt_vol,
-                                                     "mkt_year_high": mkt_year_high, "mkt_year_low": mkt_year_low,
-                                                     "website": website, "summary": summary,
-                                                     })
+            information = ticker.info
 
+            img = information["logo_url"]
+            official_name = information["longName"]
+            try:
+                sector = information["sector"]
+                industry = information["industry"]
+                website = information["website"]
+                summary = information["longBusinessSummary"]
+            except KeyError:
+                sector = "-"
+                industry = "-"
+                website = "https://finance.yahoo.com/quote/{}".format(ticker_selected)
+                summary = "No summary available from Yahoo Finance."
+
+            mkt_open = information["regularMarketOpen"]
+            mkt_close = information["previousClose"]
+            mkt_low = information["regularMarketDayLow"]
+            mkt_high = information["dayHigh"]
+            mkt_vol = information["regularMarketVolume"]
+
+            price_change = round(latest_price - mkt_close, 2)
+            price_percentage_change = round(((latest_price - mkt_close) / mkt_close) * 100, 2)
+
+            if price_change > 0:
+                price_change = "+" + str(price_change)
+                price_percentage_change = "+" + str(price_percentage_change) + "%"
+            else:
+                price_percentage_change = str(price_percentage_change) + "%"
+
+            if mkt_vol < 1000000:
+                mkt_vol = str(round(mkt_vol/1000, 2)) + "K"
+            elif 1000000 <= mkt_vol < 1000000000:
+                mkt_vol = str(round(mkt_vol / 1000000, 2)) + "M"
+            else:
+                mkt_vol = str(round(mkt_vol / 1000000000, 2)) + "B"
+
+            mkt_year_high = information["fiftyTwoWeekHigh"]
+            mkt_year_low = information["fiftyTwoWeekLow"]
+
+            return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
+                                                        "ticker_date_max": ticker_date_max,
+                                                        "ticker_price_max": list(map(lambda x: round(x, 2),
+                                                                                    price_df["Close"].to_list())),
+                                                        "img": img, "official_name": official_name, "sector": sector,
+                                                        "industry": industry, "mkt_open": mkt_open, "mkt_close": mkt_close,
+                                                        "mkt_low": mkt_low, "mkt_high": mkt_high, "mkt_vol": mkt_vol,
+                                                        "mkt_year_high": mkt_year_high, "mkt_year_low": mkt_year_low,
+                                                        "website": website, "summary": summary,
+                                                        "latest_price": latest_price, "price_change": price_change, 
+                                                        "price_percentage_change": price_percentage_change
+                                                        })
+        except IndexError:
+            return render(request, 'ticker_price.html', {"ticker_selected": "-", "incorrect_ticker": ticker_selected})
 
 def reddit_analysis(request):
     if request.method == "GET":
         return render(request, 'reddit_sentiment.html')
     else:
-        subreddit = request.POST.get("subreddit")
-        if subreddit == "all":
-            db.execute("SELECT * FROM reddit_trending ORDER BY score DESC")
+        subreddit = request.POST.get("subreddit").lower().replace(" ", "")
+        if subreddit != "":
+            if subreddit == "all":
+                db.execute("SELECT * FROM reddit_trending ORDER BY score DESC")
+            else:
+                db.execute("SELECT * FROM {} ORDER BY recent DESC LIMIT 50".format(subreddit))
+            trending_tickers = db.fetchall()
+            database_mapping = {"wallstreetbets": "Wall Street Bets"}
+
+            subreddit = database_mapping[subreddit]
+            return render(request, 'reddit_sentiment.html', {"trending_tickers": trending_tickers,
+                                                             "subreddit_selected": subreddit})
         else:
-            db.execute("SELECT * FROM {} ORDER BY recent DESC".format(subreddit))
-        trending_tickers = db.fetchall()
-        return render(request, 'reddit_sentiment.html', {"trending_tickers": trending_tickers})
+            return render(request, 'reddit_sentiment.html')
 
 
 def google_analysis(request):
@@ -222,3 +217,16 @@ def google_analysis(request):
 
 def industries_analysis(request):
     return render(request, 'industry.html')
+
+
+def reddit_etf(request):
+    db.execute("SELECT * FROM wallstreetbets LIMIT 100")
+    return render(request, 'reddit_etf.html')
+
+
+def opinion(request):
+    return render(request, 'opinion.html')
+
+
+def contact(request):
+    return render(request, 'contact.html')

@@ -51,8 +51,8 @@ body {
 	animation-timing-function: linear;
 	-webkit-animation-name: ticker;
 	animation-name: ticker;
-	-webkit-animation-duration: 50s;
-	animation-duration: 50s;
+	-webkit-animation-duration: 100s;
+	animation-duration: 100s;
 }
 
 .ticker-wrap .ticker_item {
@@ -62,17 +62,71 @@ body {
 	color: black;
 }
 
+img {
+	width: 15px;
+	margin-right: 3%;
+	vertical-align: middle;
+}
+
+#nav_bar_div {
+	display: inline-block;
+	width: 200px;
+	/* min-width: 200px; */
+	height: 100vh;
+	vertical-align: top;
+	background-color: #e9eaea;
+}
+
+ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+.nav_bar_title {
+    text-align: center;
+    font-size: larger;
+    font-weight: bold;
+    text-decoration: underline;
+    margin-bottom: 5%;
+}
+
+.nav_bar_logo {
+    width:50%;
+}
+
 .nav_bar {
     padding: 8%;
-    text-align: center;
-    color: #ffffff;
+    text-align: left;
+    color: black;
     font-weight: bold;
 }
 
 .nav_bar:hover {
     padding: 8%;
-    text-align: center;
-    color: #e9c8d3;
+    color: #9e9e9e;
     font-weight: bold;
     cursor: pointer;
+    background-color: #d1d2d2;
+}
+
+.nav_bar_btn {
+	border-radius: 50%;
+    border: 1px solid #9e9e9e;
+    color: #9e9e9e;
+    font-size: large;
+    font-weight: bold;
+    padding-left: 13px;
+    padding-right: 13px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    font-weight: bold;
+}
+
+.nav_bar_btn:hover {
+	cursor: pointer;
+	background-color: #d1d2d2;
+}
+
+.nav_bar_btn:focus {
+	outline: none;
 }

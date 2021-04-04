@@ -1,0 +1,71 @@
+#instructions {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1%;
+    padding: 2%;
+    background-color: #E9EAEA;
+    border-radius: 10px;
+    width: 70%;
+}
+
+.performance_individual {
+    background-color: #E9EAEA;
+    border-radius: 10px;
+    padding-left: 0.7%;
+    padding-right: 0.7%;
+    padding-top: 0.4%;
+    padding-bottom: 0.4%;
+    margin: 1.5%;
+    width: 280px;
+}
+
+.performance_change {
+    width: min-content;
+    float: right;
+    border-radius: 5px;
+    padding: 1%;
+    font-size: small;
+    background-color: rgb(219, 27, 27);
+}
+
+.table_title {
+    text-align: center;
+    font-size: large;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    white-space: nowrap;
+  }
+  
+table th {
+    cursor: pointer;
+}
+
+table .th-sort-asc::after {
+    content: "\25b4";
+}
+
+table .th-sort-desc::after {
+    content: "\25be";
+}
+
+table td, table th {
+border: 1px solid #ddd;
+padding: 8px;
+}
+
+table tr:nth-child(even) {background-color: #f2f2f2;}
+
+table tr:hover {background-color: #ddd;}
+
+table th {
+padding-top: 12px;
+padding-bottom: 12px;
+text-align: left;
+background-color: #26a69a;
+color: white;
+}

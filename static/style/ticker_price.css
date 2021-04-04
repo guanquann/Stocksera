@@ -1,3 +1,18 @@
+.instructions {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1%;
+    text-align: center;
+    padding: 2%;
+    background-color: #E9EAEA;
+    border-radius: 10px;
+    width: 40%;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
 .ticker_dropdown {
     border: 1px solid black;
     border-radius: 3px;
@@ -5,10 +20,21 @@
 }
 
 .submit_btn {
-    border: 1px solid black;
+    border: 1px solid;
     border-radius: 3px;
-    background-color: #8194ce;
+    background-color: #26a69a;
     padding: 0.4%;
+}
+
+.submit_btn:hover {
+    cursor: pointer;
+    outline: 0;
+    border: 1px solid;
+    background-color: #23e0ce;
+}
+
+.submit_btn:focus {
+    outline: 0;
 }
 
 .ticker_selected {
@@ -17,7 +43,13 @@
 }
 
 .ticker_selected:hover {
-    color: #500fc3;
+    color: #26a69a;
+}
+
+img {
+    border-radius: 50%;
+    width:100%;
+    border:1px solid black;
 }
 
 .ticker_summary {
@@ -37,14 +69,11 @@
     display: none;  /* hide scrollbar for Chrome */
 }
 
-
-/*.sticky {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  padding-top: 50px;
-  background-color: white;
-}*/
+#latest_price {
+    font-size: 3vw;
+    display: flex;
+    margin-top: 1%;
+}
 
 .change_day_btn {
     border-left: 0px;
@@ -59,4 +88,8 @@
 .change_day_btn:hover {
     cursor: pointer;
     border-bottom: 3px solid #34a853;
+}
+
+.change_day_btn:focus {
+    outline: none;
 }

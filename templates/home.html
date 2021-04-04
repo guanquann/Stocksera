@@ -9,35 +9,7 @@
     <link rel="stylesheet" href="{% static 'style/home.css' %}">
     <script src="{% static 'javascript/home.js' %}"></script>
 </head>
-
-<body onload="update_price_color()" style="font-family:arial">
-<div>
-    <form action="" method="POST" autocomplete="off"> {% csrf_token %}
-    <div style="display:inline-block;width:18%;min-width:225px;height:100vh;vertical-align:top;background-color:#8194ce">
-        <div>
-            <ul style="list-style-type:none;padding:0">
-                <li class="nav_bar" onclick="show_ticker_iframe()">Ticker Sentiment</li>
-                <li class="nav_bar" onclick="show_reddit_iframe()">Reddit Trending</li>
-                <li class="nav_bar" onclick="show_google_iframe()">Google Trending</li>
-                <li class="nav_bar" onclick="show_industry_iframe()">Industries</li>
-            </ul>
-        </div>
-    </div>
-
-    <div style="display:inline-block;width:75%">
-        <div class="ticker-wrap">
-            <div class="ticker">
-                {% for name in popular_name_list|length|get_range %}
-                <div class="ticker_item">
-                    <b>{{popular_name_list|index:name}} &#183 {{price_list|index:name|index:0}} <span> {{price_list|index:name|index:1}} ({{price_list|index:name|index:2}}%) </span></b>
-                </div>|
-                {% endfor %}
-            </div>
-        </div>
-        <iframe src="ticker_price" style="width:81vw;height:100vh;border:0px"></iframe>
-    </div>
-    </form>
-</div>
-
+<body>
+home page
 </body>
 </html>

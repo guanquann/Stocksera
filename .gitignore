@@ -6,3 +6,4 @@ venv/
 *.csv
 *.txt
 testing.py
+.vscode

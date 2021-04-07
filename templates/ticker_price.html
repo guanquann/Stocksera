@@ -66,24 +66,19 @@
         <div class="chart-container" style="position: relative; height:70vh;width:93vw;max-height:450px;display:none">
             <canvas id="price_chart"></canvas>
         </div>
-        <table style="width:93%;margin:3%;display:none" id="ticker_table">
-            <tr>
-                <td>Open: ${{mkt_open}}</td>
-                <td>Prev Close: ${{mkt_close}}</td>
-            </tr>
-            <tr>
-                <td>High: ${{mkt_high}}</td>
-                <td>52-wk High: ${{mkt_year_high}}</td>
-            </tr>
-            <tr>
-                <td>Low ${{mkt_low}}</td>
-                <td>52-wk Low: ${{mkt_year_low}}</td>
-            </tr>
-            <tr>
-                <td>Vol: {{mkt_vol}}</td>
-                <td></td>
-            </tr>
-        </table>
+    
+        <div style="display:none" id="ticker_table">          
+            <div class="col" style="border-right: 1px solid #9e9e9e;">
+                <div class="details">Open: ${{mkt_open}}</div>
+                <div class="details">High: ${{mkt_high}}</div>
+                <div class="details_last_row">Low ${{mkt_low}}</div>
+            </div>
+            <div class="col">
+                <div class="details">Prev Close: ${{mkt_close}}</div>
+                <div class="details">52-wk High: ${{mkt_year_high}}</div>
+                <div class="details_last_row">52-wk Low: ${{mkt_year_low}}</div>
+            </div>
+        </div>
     </form>
 </body>
 
@@ -105,9 +100,13 @@ var myChart = new Chart(price_chart, {
             tension: 0.1,
         }]
     },
+
     options: {
         responsive: true,
         maintainAspectRatio: false,
+        legend: {
+            display: false
+         },
         scales: {
             yAxes: [{
                 ticks: {
@@ -115,13 +114,13 @@ var myChart = new Chart(price_chart, {
                 }
             }],
 
-                  xAxes: [{
-        ticks: {
-          maxTicksLimit: 5,
-          maxRotation: 0,
-          minRotation: 0
-        }
-      }]
+            xAxes: [{
+                ticks: {
+                  maxTicksLimit: 5,
+                  maxRotation: 0,
+                  minRotation: 0
+                },
+            }]
         },
 
         <!-- To remove the point of each label -->
@@ -143,8 +142,24 @@ var myChart = new Chart(price_chart, {
             mode: 'index',
             intersect: false
         },
+    },
 
-    }
+<!--    plugins :{-->
+<!--        beforeDraw: function(c) {-->
+<!--            var data = c.data.datasets[0].data;-->
+<!--            for (let i in data) {-->
+<!--                let bar = c.data.datasets[0]._meta['0'].data[i]._model;-->
+<!--                if (data[i] > 180) {-->
+<!--                    bar.backgroundColor = 'blue'-->
+<!--                    bar.borderColor = 'blue';-->
+<!--                }-->
+<!--                else {-->
+<!--                    bar.backgroundColor = 'red';-->
+<!--                    bar.borderColor = 'red';-->
+<!--                }-->
+<!--            }-->
+<!--        }-->
+<!--    }-->
 });
 </script>
 </html>

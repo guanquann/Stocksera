@@ -33,7 +33,6 @@ body {
 	width: 100%;
 	overflow: hidden;
 	height: 2.5rem;
-	padding-left: 100%;
 	box-sizing: content-box;
 	border-bottom: 1px solid black;
 }
@@ -43,7 +42,6 @@ body {
 	height: 2.5rem;
 	line-height: 2.5rem;
 	white-space: nowrap;
-	padding-right: 100%;
 	box-sizing: content-box;
 	-webkit-animation-iteration-count: infinite;
 	animation-iteration-count: infinite;

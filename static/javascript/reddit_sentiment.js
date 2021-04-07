@@ -17,27 +17,27 @@ function check_table() {
             score_change.style.color = "green";
         }
 
-        var one_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[6];
+        var one_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[7];
         if (one_day_price.innerText.includes("-")) {
-            one_day_price.innerText = one_day_price.innerText.replace("-", "-$");
+            one_day_price.innerText = one_day_price.innerText + "%";
             one_day_price.style.color = "red";
         }
         else {
-            one_day_price.innerText = "$" + one_day_price.innerText;
+            one_day_price.innerText = one_day_price.innerText + "%";
             one_day_price.style.color = "green";
         }
 
-        var fifty_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[7];
+        var fifty_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[8];
         if (fifty_day_price.innerText.includes("-")) {
-            fifty_day_price.innerText = fifty_day_price.innerText.replace("-", "-$");
+            fifty_day_price.innerText = fifty_day_price.innerText + "%";
             fifty_day_price.style.color = "red";
         }
         else {
-            fifty_day_price.innerText = "$" + fifty_day_price.innerText;
+            fifty_day_price.innerText = fifty_day_price.innerText + "%";
             fifty_day_price.style.color = "green";
         }
 
-        var price_target = table.getElementsByTagName('tbody')[0].rows[i].cells[11];
+        var price_target = table.getElementsByTagName('tbody')[0].rows[i].cells[12];
         if (price_target.innerText != "N/A") {
             price_target.innerText = "$" + price_target.innerText;
         }
@@ -83,7 +83,7 @@ function reset_table() {
     }
 
     for (i = 0; i < tr.length; i++) {
-        for (col_name=0; col_name < 13; col_name ++) {
+        for (col_name=1; col_name <= 14; col_name ++) {
             tr[i].children[col_name].style.removeProperty("display");
         }
     }

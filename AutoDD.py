@@ -95,7 +95,7 @@ def get_submission_praw(n, sub_dict):
     timestamp_mid = int(mid_interval.timestamp())
     timestamp_start = int((mid_interval - timedelta(hours=n)).timestamp())
     timestamp_end = int(datetime.today().timestamp())
-
+    print("praw")
     reddit = praw.Reddit(client_id=CLIENT_ID, client_secret=CLIENT_SECRET, user_agent=USER_AGENT)
 
     recent = {}
@@ -126,7 +126,7 @@ def get_submission_psaw(n, sub_dict):
     timestamp_mid = int(mid_interval.timestamp())
     timestamp_start = int((mid_interval - timedelta(hours=n)).timestamp())
     timestamp_end = int(datetime.today().timestamp())
-
+    print("psaw")
     recent = {}
     prev = {}
     for key in sub_dict:
@@ -445,13 +445,12 @@ def get_quick_stats(ticker_list, threads=True, minprice=0, maxprice=99999999):
     quick_stats = {'regularMarketPreviousClose': 'prvCls', 'fiftyDayAverage': '50DayAvg',
                    'regularMarketVolume': 'volume', 'averageDailyVolume3Month': '3MonthVolAvg',
                    'regularMarketPrice': 'price', 'regularMarketChangePercent': '1DayChange%',
-                   'floatShares': 'floating_shares', 'beta': 'beta'}
+                   'floatShares': 'floating_shares', 'beta': 'beta', 'marketCap': 'mkt_cap'}
 
     unprocessed_df = download_quick_stats(ticker_list, quick_stats, threads)
 
     processed_stats_table = []
-    # TODO: if looping over rows becomes slow: vectorize. (Tested with 270 symbols and it's practically instantaneous)
-    # See https://engineering.upside.com/a-beginners-guide-to-optimizing-pandas-code-for-speed-c09ef2c6a4d6
+
     for index, row in unprocessed_df.iterrows():
         symbol = index
         prev_close = row['prvCls']
@@ -461,6 +460,7 @@ def get_quick_stats(ticker_list, threads=True, minprice=0, maxprice=99999999):
         volume = row['volume']
         stock_float = row['floating_shares']
         beta = row['beta']
+        mkt_cap = row['mkt_cap']
 
         valid = False
         if price != "N/A" and price != 0:
@@ -499,6 +499,17 @@ def get_quick_stats(ticker_list, threads=True, minprice=0, maxprice=99999999):
         else:
             continue
 
+        if mkt_cap != "N/A":
+            if 1000000 <= mkt_cap < 1000000000:
+                mkt_cap = str(round(mkt_cap / 1000000, 2)) + "M"
+            elif 1000000000 <= mkt_cap < 1000000000000:
+                mkt_cap = str(round(mkt_cap / 1000000000, 2)) + "B"
+            elif mkt_cap >= 1000000000000:
+                mkt_cap = str(round(mkt_cap / 1000000000000, 2)) + "B"
+            valid = True
+        else:
+            continue
+
         if stock_float != "N/A":
             stock_float = stock_float
             valid = True
@@ -509,11 +520,12 @@ def get_quick_stats(ticker_list, threads=True, minprice=0, maxprice=99999999):
 
         # if the ticker has any valid column, and price is in the range, append
         if valid and minprice <= price <= maxprice:
-            stat_list = [symbol, price, day_change, change_50day, volume, stock_float, beta]
+            stat_list = [symbol, price, day_change, change_50day, volume, mkt_cap, stock_float, beta]
             processed_stats_table.append(stat_list)
 
     # construct dataframe
-    columns = ['symbol', 'price', 'one_day_change_percent', 'fifty_day_change_percent', 'volume', 'floating_shares', 'beta']
+    columns = ['symbol', 'price', 'one_day_change_percent', 'fifty_day_change_percent', 'volume',
+               'mkt_cap', 'floating_shares', 'beta']
     stats_df = pd.DataFrame(processed_stats_table, columns=columns)
 
     stats_df['floating_shares'] = stats_df['floating_shares'].str.replace(',', '')

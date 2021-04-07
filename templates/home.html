@@ -4,12 +4,120 @@
 
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Stocks Analysis</title>
     <link rel="stylesheet" href="{% static 'style/home.css' %}">
-    <script src="{% static 'javascript/home.js' %}"></script>
+    
 </head>
 <body>
-home page
+    <div class="nav_bar">
+        <ul>
+            <li><a href="#analyse_ticker">Ticker</a></li>
+            <li><a href="#reddit_trending">Trending</a></li>
+            <li>About</li>
+            <li><a href="#subscribe">Subscribe</a></li>
+        </ul>
+    </div>
+
+    <div style="scroll-behavior: smooth;">
+        <div class="section_1">
+        <div class="section_1_description">
+                We track the trending tickers and their sentiment on
+                <br>
+                &#10004; Reddit 
+                <br>
+                &#10004; Twitter
+                <br>
+                &#10004; News Articles
+            </div>
+            <div class="input_ticker">
+                <input type="text" placeholder="Ticker:">
+            </div>
+        </div>
+
+        <div class="analyse_ticker" id="analyse_ticker">
+            <div class="section_description">
+                <h1>Analyse Ticker Easily</h1>
+                <p>Get latest price, statistics and information of ticker before making an investment.</p>
+                <div class="href_btn"><a href="http://127.0.0.1:8000" target="_blank">VIEW MORE</a></div>
+            </div>
+            <div class="img_div">
+                <img src="{% static 'images/ticker_stats.png' %}">
+            </div>
+        </div>
+
+        <div class="reddit_trending" id="reddit_trending">
+            <div class="img_div">
+                <img src="{% static 'images/reddit_trending.png' %}">
+            </div>
+            <div class="section_description">
+                <h1>Trending Ticker on Reddit</h1>
+                <p>Get the most trending ticker on Reddit.</p>
+                <div class="href_btn"><a href="http://127.0.0.1:8000/reddit_analysis" target="_blank">VIEW MORE</a></div>
+            </div>
+        </div>
+
+        <div class="reddit_etf">
+            <div class="section_description">
+                <h1>Actively Managed ETF</h1>
+                <p>Reddit ETF is based on the trending stocks on WSB. If a new ticker enters the Top 10 mentioned ticker list before the market opens, it will be bought at 9.30AM. Any ticker that falls out of the Top 10 list will be sold.</p>
+                <div class="href_btn"><a href="http://127.0.0.1:8000/reddit_analysis" target="_blank">VIEW MORE</a></div>
+            </div>
+            <div class="img_div">
+                <img src="{% static 'images/reddit_trending.png' %}">
+            </div>
+        </div>
+
+        <div class="subscribe" id="subscribe">
+            <p>It only takes a few second to subscribe in order to receive weekly newsletter and have priority access to beta versions.</p>
+            <input type="email" placeholder="Email Address:">
+            <br>
+            <button>SUBSCRIBE</button>
+        </div>
+
+        <div class="footer">
+            <ul>
+                <li id="disclaimer">Disclaimer</li>
+                <li id="contact">Contact</li>
+                <li id="privacy">Privacy</li>
+            </ul>
+        </div>
+ 
+        <div id="disclaimer_model" class="modal">
+            <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h4 style="margin: 10px;">Disclaimer</h4>
+            </div>
+            <div class="modal-body">
+                <p>Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body</p>
+            </div>
+            </div>
+        </div>
+        
+        <div id="contact_model" class="modal">
+            <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h4 style="margin: 10px;">Contact</h4>
+            </div>
+            <div class="modal-body">
+                <p>Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body</p>
+            </div>
+            </div>
+        </div>
+
+        <div id="privacy_model" class="modal">
+            <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h4 style="margin: 10px;">Privacy</h4>
+            </div>
+            <div class="modal-body">
+                <p>Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body</p>
+            </div>
+            </div>
+        </div>
 </body>
+<script src="{% static 'javascript/home.js' %}"></script>
 </html>

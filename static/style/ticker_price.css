@@ -93,3 +93,27 @@ img {
 .change_day_btn:focus {
     outline: none;
 }
+
+#ticker_table {
+    background-color: #e9eaea;
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+    border-radius: 10px;
+    display: flex;
+}
+
+.col {
+    width:50%;
+}
+
+.details {
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #9e9e9e;
+}
+
+.details_last_row {
+    justify-content: space-between;
+    padding: 10px;
+}

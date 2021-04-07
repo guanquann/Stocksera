@@ -12,7 +12,7 @@ function update_price_color() {
 }
 
 function show_ticker_iframe() {
-    document.getElementsByTagName("iframe")[0]["src"] = "ticker_price"
+    document.getElementsByTagName("iframe")[0]["src"] = "ticker"
 }
 
 function show_reddit_iframe() {

@@ -1,11 +1,3 @@
-""" AutoDD: Automatically does the so called Due Diligence for you. """
-
-# AutoDD - Automatically does the "due diligence" for you.
-# Copyright (C) 2020  Fufu Fang, Steven Zhu
-
-__author__ = "Fufu Fang kaito1410 Napo2k gobbedy"
-__copyright__ = "The GNU General Public License v3.0"
-
 import argparse
 from AutoDD import *
 from collections import Counter
@@ -39,7 +31,7 @@ def main():
                         help='Using this parameter searches from one subreddit only, '
                              'default subreddit is r/wallstreetbets.')
 
-    parser.add_argument('--psaw', default=False, action='store_true',
+    parser.add_argument('--psaw', default=True, action='store_true',
                          help='Using this parameter selects psaw (push-shift) as the reddit scraper over praw '
                               '(reddit-api)')
 

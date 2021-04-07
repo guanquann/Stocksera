@@ -4,7 +4,7 @@
 
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stocks Analysis</title>
     <link rel="stylesheet" href="{% static 'style/format.css' %}">
     <script src="{% static 'javascript/format.js' %}"></script>
@@ -41,7 +41,10 @@
                 {% endfor %}
             </div>
         </div>
-        <iframe src="ticker_price" style="width:84vw;height:99vh;border:0px"></iframe>
+        <!-- <iframe src="ticker" style="width:84vw;height:99vh;border:0px"></iframe> -->
+        {% block main_content %}
+
+        {% endblock %}
     </div>
     </form>
 </div>

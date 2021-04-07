@@ -36,14 +36,15 @@
         <div id="3-filter" class="filter_contents" onclick="filter_table(this)">% Score Change &#x2716;</div>
         <div id="4-filter" class="filter_contents" onclick="filter_table(this)">Previous Close &#x2716;</div>
         <div id="5-filter" class="filter_contents" onclick="filter_table(this)">Volume &#x2716;</div>
-        <div id="6-filter" class="filter_contents" onclick="filter_table(this)">1D Price Change &#x2716;</div>
-        <div id="7-filter" class="filter_contents" onclick="filter_table(this)">50D Price Change &#x2716;</div>
-        <div id="8-filter" class="filter_contents" onclick="filter_table(this)">Floating Shares &#x2716;</div>
-        <div id="9-filter" class="filter_contents" onclick="filter_table(this)">Beta &#x2716;</div>
-        <div id="10-filter" class="filter_contents" onclick="filter_table(this)">Shares/Float &#x2716;</div>
-        <div id="11-filter" class="filter_contents" onclick="filter_table(this)">Price Target &#x2716;</div>
-        <div id="12-filter" class="filter_contents" onclick="filter_table(this)">Recommend &#x2716;</div>
-        <div id="13-filter" class="filter_contents" onclick="filter_table(this)">Industry &#x2716;</div>
+        <div id="6-filter" class="filter_contents" onclick="filter_table(this)">Market Cap &#x2716;</div>
+        <div id="7-filter" class="filter_contents" onclick="filter_table(this)">1D % Price Change &#x2716;</div>
+        <div id="8-filter" class="filter_contents" onclick="filter_table(this)">50D % Price Change &#x2716;</div>
+        <div id="9-filter" class="filter_contents" onclick="filter_table(this)">Floating Shares &#x2716;</div>
+        <div id="10-filter" class="filter_contents" onclick="filter_table(this)">Beta &#x2716;</div>
+        <div id="11-filter" class="filter_contents" onclick="filter_table(this)">Shares/Float &#x2716;</div>
+        <div id="12-filter" class="filter_contents" onclick="filter_table(this)">Price Target &#x2716;</div>
+        <div id="13-filter" class="filter_contents" onclick="filter_table(this)">Recommend &#x2716;</div>
+        <div id="14-filter" class="filter_contents" onclick="filter_table(this)">Industry &#x2716;</div>
         <div class="filter_contents" style="padding:5px" onclick="reset_table()">Reset</div>
         <input type="text" placeholder="Enter Ticker:" autocomplete="off" class="filter_ticker" id="search_ticker" onkeyup="searchTicker()">
     </div> 
@@ -59,14 +60,15 @@
                         <th onclick="sortTable(3)" class="th-sort-desc" id='3'>% Score Change</th>
                         <th onclick="sortTable(4)" class="th-sort-desc" id='4'>Previous Close</th>
                         <th onclick="sortTable(5)" class="th-sort-desc" id='5'>Volume</th>
-                        <th onclick="sortTable(6)" class="th-sort-desc" id='6'>1D Price Change</th>
-                        <th onclick="sortTable(7)" class="th-sort-desc" id='7'>50D Price Change</th>
-                        <th onclick="sortTable(8)" class="th-sort-desc" id='8'>Floating Shares</th>
-                        <th onclick="sortTable(9)" class="th-sort-desc" id='9'>Beta</th>
-                        <th onclick="sortTable(10)" class="th-sort-desc" id='10'>Shorts/Float</th>
-                        <th onclick="sortTable(11)" class="th-sort-desc" id='11'>Price Target</th>
-                        <th onclick="sortTable(12)" class="th-sort-desc" id='12'>Recommend</th>
-                        <th onclick="sortTable(13)" class="th-sort-desc" id='13'>Industry</th>
+                        <th onclick="sortTable(6)" class="th-sort-desc" id='6'>Mkt Cap</th>
+                        <th onclick="sortTable(7)" class="th-sort-desc" id='7'>1D % Price Change</th>
+                        <th onclick="sortTable(8)" class="th-sort-desc" id='8'>50D % Price Change</th>
+                        <th onclick="sortTable(9)" class="th-sort-desc" id='9'>Floating Shares</th>
+                        <th onclick="sortTable(10)" class="th-sort-desc" id='10'>Beta</th>
+                        <th onclick="sortTable(11)" class="th-sort-desc" id='11'>Shorts/Float</th>
+                        <th onclick="sortTable(12)" class="th-sort-desc" id='12'>Price Target</th>
+                        <th onclick="sortTable(13)" class="th-sort-desc" id='13'>Recommend</th>
+                        <th onclick="sortTable(14)" class="th-sort-desc" id='14'>Industry</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -77,15 +79,16 @@
                         <td>{{ticker.3}}</td>
                         <td>{{ticker.4}}%</td>
                         <td>${{ticker.8}}</td>
-                        <td>{{ticker.11}}</td> 
+                        <td>{{ticker.11}}</td>
+                        <td>{{ticker.12}}</td>
                         <td>{{ticker.9}}</td>
                         <td>{{ticker.10}}</td>
-                        <td>{{ticker.12}}</td>
                         <td>{{ticker.13}}</td>
                         <td>{{ticker.14}}</td>
-                        <td>{{ticker.20}}</td>
-                        <td>{{ticker.21}}</td>
                         <td>{{ticker.15}}</td>
+                        <td>{{ticker.21}}</td>
+                        <td>{{ticker.22}}</td>
+                        <td>{{ticker.16}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

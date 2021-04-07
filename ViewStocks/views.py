@@ -32,7 +32,10 @@ stopwords = nltk.corpus.stopwords.words("english")
 url = 'https://newsapi.org/v2/everything?'
 
 
-def home(request):
+def main(request):
+    return render(request, "home.html")
+
+def format(request):
     tickers_list = pd.read_csv(r"nasdaq_screener_1613136998474.csv")
     list_of_sectors = sorted(tickers_list['Sector'].astype(str).unique().tolist())[:-1]
     list_of_industries = sorted(tickers_list['Industry'].astype(str).unique().tolist())[:-1]
@@ -96,7 +99,7 @@ def stock_price(request):
                 ticker_date_max = list(map(lambda x: x.rsplit(" ", 1)[0], price_df.index.astype(str).to_list()))
 
             information = ticker.info
-
+            print(information)
             img = information["logo_url"]
             official_name = information["longName"]
             try:

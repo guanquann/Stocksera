@@ -1,0 +1,33 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Top Movers{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/top_movers.css' %}">
+<script src="{% static 'javascript/top_movers.js' %}"></script>
+{% endblock %}
+
+{% block main_nav %}
+    <div class="top_nav">
+    <div>
+        <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" onkeyup="show_spinner();this.form.submit();" autocomplete="off">
+    </div>
+</div>
+{% endblock %}
+
+{% block main_content %}
+    <div id="gainers">
+        <div class="header">Top Gainers</div>
+        <div class="table_div">
+            {{ top_gainers|safe }}
+        </div>
+    </div>
+    <div id="losers">
+        <div class="header">Top Losers</div>
+        <div class="table_div">
+            {{ top_losers|safe }}
+        </div>
+    </div>
+{% endblock %}

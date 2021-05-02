@@ -1,14 +1,16 @@
-<!DOCTYPE html>
+{% extends "format.html" %}
 {% load static %}
 {% load filter %}
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Contact</title>
-    <link rel="stylesheet" href="{% static 'style/contact.css' %}">
-</head>
-<body style="margin-left:3%;height:62vh;margin-top:60px;font-family:arial">
+{% block title %}StocksEra | Contact{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/contact.css' %}">
+{% endblock %}
+
+{% block onload_properties%}update_table(){% endblock %}
+
+{% block main_content %} 
     <div id="instructions">
         Do contact us if you have any feedbacks or suggestions. We will get to you as soon as possible!
     </div> 
@@ -25,5 +27,4 @@
     <div style="margin-left:47%;margin-top:11%">
         <a href="https://github.com/spartan737/Stocks-Analysis-on-Reddit-News" target="_blank"><img src="{% static 'images/github.svg' %}" style="width:6%;"></a>
     </div>
-</body>
-</html>
+{% endblock %}

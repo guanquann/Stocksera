@@ -20,7 +20,7 @@ select, option, input {
     margin-bottom: 1%;
 }
 
-button {
+.submit_btn {
     border: 1px solid;
     border-radius: 3px;
     background-color: #26a69a;
@@ -40,7 +40,7 @@ button:focus {
 
 #filter_section {
     display:inline-block;
-    height:115px;
+    padding: 7px;
     background-color:#e9eaea;
 }
 
@@ -79,7 +79,6 @@ button:focus {
 
 #reddit_table {
   border-collapse: collapse;
-  width: 100%;
   white-space: nowrap;
 }
 

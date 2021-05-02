@@ -1,15 +1,15 @@
-<!DOCTYPE html>
+{% extends "format.html" %}
 {% load static %}
 {% load filter %}
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Stocks Analysis</title>
-    <link rel="stylesheet" href="{% static 'style/reddit_etf.css' %}">
-    <script src="{% static 'javascript/reddit_etf.js' %}"></script>
-</head>
-<body style="margin-left:3%;margin-right:1.5%;height:62vh;margin-top:60px;font-family:arial">
+{% block title %}StocksEra | Reddit ETF{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/reddit_etf.css' %}">
+<script src="{% static 'javascript/reddit_etf.js' %}"></script>
+{% endblock %}
+
+{% block main_content %} 
     <div id="instructions">
         Reddit ETF is based on the trending stocks on WSB. If a new ticker enters the Top 10 mentioned ticker list before the market opens, it will be bought at 9.30AM. Any ticker that falls out of the Top 10 list will be sold.
     </div> 
@@ -88,7 +88,4 @@
             </tr>
         </tbody>
     </table>
-
-
-</body>
-</html>
+{% endblock %}

@@ -1,6 +1,75 @@
+@media only screen and (max-width: 900px) {
+	#nav_bar_div {
+		display: none;
+		width: 15%;
+		height: 100vh;
+		vertical-align: top;
+		background-color: #e9eaea;
+		position: fixed;
+		font-size: 15px;
+	}
+
+	#nav_bar_div_sm {
+		display: flex;
+		position: absolute;
+		margin-top: 50vh;
+		left: -30px;
+		background-color: gold;
+		border-radius: 5px;
+		padding-top: 5px;
+		padding-bottom: 10px;
+		padding-left: 13px;
+		padding-right: 13px;
+		transform: rotate(90deg);
+		z-index: 999;
+	}
+
+	#nav_bar_div_sm:hover {
+		cursor: pointer;
+	}
+
+	#main_content {
+		width: 100vw; 
+		height: 99vh;
+		border: 0px;
+		overflow-y: auto;
+		margin-left: 1%;
+	}
+}	
+
+@media only screen and (min-width: 900px) {
+	#nav_bar_div {
+		display: inline-block;
+		width: 200px;
+		position: fixed;
+		height: 100vh;
+		vertical-align: top;
+		background-color: #e9eaea;
+		font-size: 15px;
+	}
+
+	#nav_bar_div_sm {
+		display: none;
+	}
+
+	#main_div {
+		display: inline-block;
+		width: calc(100% - 200px);
+		margin-left: 200px;
+	}
+
+	#main_content {
+		height: 90vh;
+		border: 0px;
+		overflow-y: auto;
+		margin-top: 50px;
+		margin-left: 1%;
+	}
+}	
+
 body {
     margin:0;
-    /*background-color:#e9eaea*/
+	font-size: 13px;
 }
 
 @-webkit-keyframes ticker {
@@ -32,15 +101,31 @@ body {
 	position: fixed;
 	width: 100%;
 	overflow: hidden;
-	height: 2.5rem;
+	height: 46px;
 	box-sizing: content-box;
-	border-bottom: 1px solid black;
+	z-index: 999;
+}
+
+.top_nav {
+    background-color:#e9eaea;
+	position: fixed;
+	width: 100%;
+	overflow: hidden;
+	height: 46px;
+	box-sizing: content-box;
+	z-index: 999;
+}
+
+.top_nav div {
+	margin-top: 7px;
+	margin-left: 20px;
+	width: fit-content;
 }
 
 .ticker-wrap .ticker {
     display: inline-block;
-	height: 2.5rem;
-	line-height: 2.5rem;
+	height: 46px;
+	line-height: 46px;
 	white-space: nowrap;
 	box-sizing: content-box;
 	-webkit-animation-iteration-count: infinite;
@@ -60,19 +145,28 @@ body {
 	color: black;
 }
 
-img {
+.ticker_input {
+    border: 1px solid grey;
+    border-radius: 6px;
+    padding: 7px;
+    text-transform: uppercase;
+    max-width: 18vw;
+}
+
+input:focus, select:focus, button:focus {
+	outline: none;
+}
+
+.main_logo {
+	width: 100%;
+	border-radius: 0;
+	border: 0;
+}
+
+.nav_bar img {
 	width: 15px;
 	margin-right: 3%;
 	vertical-align: middle;
-}
-
-#nav_bar_div {
-	display: inline-block;
-	width: 200px;
-	/* min-width: 200px; */
-	height: 100vh;
-	vertical-align: top;
-	background-color: #e9eaea;
 }
 
 ul {
@@ -93,38 +187,76 @@ ul {
 }
 
 .nav_bar {
-    padding: 8%;
+    padding: 6%;
     text-align: left;
     color: black;
     font-weight: bold;
 }
 
 .nav_bar:hover {
-    padding: 8%;
-    color: #9e9e9e;
-    font-weight: bold;
     cursor: pointer;
-    background-color: #d1d2d2;
 }
 
-.nav_bar_btn {
-	border-radius: 50%;
-    border: 1px solid #9e9e9e;
-    color: #9e9e9e;
-    font-size: large;
-    font-weight: bold;
-    padding-left: 13px;
-    padding-right: 13px;
-    padding-top: 8px;
-    padding-bottom: 8px;
+.sub_nav_bar {
+	padding: 5%;
+    padding-left: 18%;
+    background-color: #9b9999;
+    color: white;
+    text-decoration: none;
     font-weight: bold;
 }
 
-.nav_bar_btn:hover {
+.sub_nav_bar:hover {
 	cursor: pointer;
-	background-color: #d1d2d2;
+    background-color: #d1d2d2;
+	color: black;
+	transition: 0.8s;
 }
 
-.nav_bar_btn:focus {
-	outline: none;
+a {
+	text-decoration: none;
+}
+
+.spinner_container {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    background-color: white;
+    opacity: 0.5;
+}
+
+.spinner {
+    margin-left: 35vw;
+    margin-top: 40vh;
+    width:90px;
+    border:0px;
+}
+
+.sticky_btn {
+	width: fit-content;
+    position: sticky;
+    border-radius: 50%;
+    border: 2px solid grey;
+    padding: 11px;
+    background-color: #EAE9E9;
+    top: 90%;
+    left: 93%;
+}
+
+.triangle-up {
+	width: 0;
+	height: 0;
+	border-left: 12px solid transparent;
+	border-right: 12px solid transparent;
+	border-bottom: 18px solid #555;
+}
+
+::-webkit-scrollbar {
+    width: 5px;  /* for vertical scrollbar */
+    height: 5px; /* for horizontal scrollbar */
+    background: transparent;  /* Optional: just make scrollbar invisible */
+}
+/* Optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+    background: grey;
 }

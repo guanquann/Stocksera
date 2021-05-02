@@ -6,6 +6,7 @@
     background-color: #E9EAEA;
     border-radius: 10px;
     width: 70%;
+    margin-top:60px;
 }
 
 .performance_individual {
@@ -39,7 +40,7 @@ table {
     border-collapse: collapse;
     width: 100%;
     white-space: nowrap;
-  }
+}
   
 table th {
     cursor: pointer;

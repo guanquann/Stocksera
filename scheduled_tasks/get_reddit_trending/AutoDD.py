@@ -18,9 +18,9 @@ from tabulate import tabulate
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import psycopg2
 
-from fast_yahoo import *
-from stopwords import stopwords_list
-from custom_words import new_words
+from scheduled_tasks.get_reddit_trending.fast_yahoo import *
+from custom_extensions.stopwords import stopwords_list
+from custom_extensions.custom_words import new_words
 
 if os.environ.get('DATABASE_URL'):
     postgres_url = os.environ.get('DATABASE_URL')

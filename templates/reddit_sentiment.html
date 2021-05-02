@@ -1,33 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "format.html" %}
 {% load static %}
+{% load filter %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>Reddit Ticker Sentiment</title>
-    <link rel="stylesheet" href="{% static 'style/reddit_sentiment.css' %}">
-    <script src="{% static 'javascript/reddit_sentiment.js' %}"></script>
-</head>
+{% block title %}StocksEra | Reddit Sentiment{% endblock %}
 
-<body style="margin-left:3%;height:60vh;margin-top:60px;font-family:arial" onload="check_table()">
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/reddit_sentiment.css' %}">
+<script src="{% static 'javascript/reddit_sentiment.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}check_table(){% endblock %}
+
+{% block main_nav %}
+    <div class="ticker-wrap">
+        <div class="ticker">
+            {% for name in popular_name_list|length|get_range %}
+            <div class="ticker_item">
+                <b>{{popular_name_list|index:name}} &#183 {{price_list|index:name|index:0}} <span> {{price_list|index:name|index:1}} ({{price_list|index:name|index:2}}%) </span></b>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block main_content %} 
     <div id="instructions">
         Select the sub-reddit you are interested to view!
     </div>
-    <form action="" method="POST" autocomplete="off"> {% csrf_token %}
-         <select name="subreddit">
-             <option>{{subreddit_selected}}</option>
-             <option value="All">All</option>
-             <option value="wallstreetbets">Wall Street Bets</option>
-             <option value="Wallstreetbetsnew">Wall Street Bets New</option>
-             <option value="Wallstreetbetselite">Wall Street Bets Elite</option>
-             <option value="stocks">Stocks</option>
-             <option value="stockmarket">Stocks Market</option>
-             <option value="investing">Investing</option>
-             <option value="pennystocks">Penny Stocks</option>
-         </select>
-        <button type="submit">Submit</button>
+    <form action="" method="GET" autocomplete="off">
+        <select name="subreddit" onchange="this.form.submit()">
+            <option>{{subreddit_selected}}</option>
+            <option value="All">All</option>
+            <option value="wallstreetbets">Wall Street Bets</option>
+            <option value="Wallstreetbetsnew">Wall Street Bets New</option>
+            <option value="Wallstreetbetselite">Wall Street Bets Elite</option>
+            <option value="stocks">Stocks</option>
+            <option value="stockmarket">Stocks Market</option>
+            <option value="investing">Investing</option>
+            <option value="pennystocks">Penny Stocks</option>
+        </select>
     </form>
-
+    
+    <div style="overflow-x:scroll; overflow-y: auto;">
     <div id="filter_section" style="display:none">
         To remove a column from the table, select the buttons below. To add back that column, select the same button again.
         <br>
@@ -46,11 +60,11 @@
         <div id="13-filter" class="filter_contents" onclick="filter_table(this)">Recommend &#x2716;</div>
         <div id="14-filter" class="filter_contents" onclick="filter_table(this)">Industry &#x2716;</div>
         <div class="filter_contents" style="padding:5px" onclick="reset_table()">Reset</div>
-        <input type="text" placeholder="Enter Ticker:" autocomplete="off" class="filter_ticker" id="search_ticker" onkeyup="searchTicker()">
+        <input type="text" placeholder="Ticker:" autocomplete="off" class="filter_ticker" id="search_ticker" onkeyup="searchTicker()">
     </div> 
 
     <div id="reddit_table_section" style="display:none">
-        <div style="width:95vw;overflow-x:scroll;">   <!--height:78vh;overflow-y:pixel-->
+        <div style="overflow-x:scroll;">
             <table id="reddit_table">
                 <thead>
                     <tr>
@@ -93,8 +107,8 @@
                     {% endfor %}
                 </tbody>
             </table>
+            Last Updated: {{trending_tickers.0.23}} GMT
         </div>
-        Last Updated: {{trending_tickers.0.22}} GMT
     </div>
-</body>
-</html>
+    </div>
+{% endblock %}

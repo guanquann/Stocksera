@@ -1,0 +1,90 @@
+.menu {
+    position: sticky;
+    top: 0%;
+    background-color: white;
+    padding-bottom: 4px;
+}
+
+#to_top {
+    float: right;
+    margin-right: 20px;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 15px;
+    border: 2px solid grey;
+    border-radius: 3px;
+    padding: 3px;
+    text-decoration: none;
+}
+
+#to_top a {
+    color: grey;
+}
+
+#to_top a:hover{
+    color: #26a69a;
+}
+
+button {
+    border: 1px solid grey;
+    border-radius: 3px;
+    padding: 0.4%;
+}
+
+button:hover {
+    cursor: pointer;
+    outline: 0;
+    background-color: #26a69a;
+}
+
+.selected_btn {
+    background-color: #26a69a;
+}
+
+select {
+    padding: 0.35%;
+    border: 1px solid grey;
+    border-radius: 3px;
+}
+
+#search_ticker {
+    border: 1px solid grey;
+    border-radius: 3px;
+    padding: 0.4%;
+    text-transform: uppercase;
+    max-width: 18vw;
+}
+
+#search_ticker:focus {
+    outline: none;
+}
+
+.earnings_div {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+h2 {
+    margin-bottom: 5px;
+}
+
+.company_img {
+    width: 110px;
+}
+
+.earnings_container {
+    width: 120px;
+    border: 2px solid grey;
+    margin: 1px;
+    text-align: center;
+    padding: 3px;
+    word-wrap: break-word;
+}
+
+.earnings_container div {
+    text-align: left;
+}
+
+.earnings_container span {
+    font-weight: bold;
+}

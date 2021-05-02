@@ -1,0 +1,208 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Options{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/options.css' %}">
+{% endblock %}
+
+{% block onload_properties%}display_input();update_table();draw_open_interest();draw_max_pain(){% endblock %}
+
+{% block main_nav %}
+<div id="spinner_div"></div>
+
+<div class="top_nav">
+    <form action="" method="GET" autocomplete="off">
+    <div>
+        <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" onkeyup="show_spinner();this.form.submit();" autocomplete="off"> 
+    </div>
+</div>
+{% endblock %}
+
+{% block main_content %} 
+    <div id="instructions">
+        Reddit ETF is based on the trending stocks on WSB. If a new ticker enters the Top 10 mentioned ticker list before the market opens, it will be bought at 9.30AM. Any ticker that falls out of the Top 10 list will be sold.
+    </div> 
+    
+    <div class="main_div">
+        <div class="ticker_stats">
+            <div id="img_div">
+                {% if img != "" %}
+                <img src={{img}} onerror=this.src="{% static 'images/not_available.svg' %}">
+                {% else %}
+                <img src="{% static 'images/not_available.svg' %}">
+                {% endif %}
+            </div>
+            <div id="ticker_intro">
+                <span style="font-size:24px;font-weight:bolder">{{official_name}} ({{ticker_selected}})</span>
+                <br>Sector: <b>{{sector}}</b><br>Industry: <b>{{industry}}</b>
+            </div>
+        </div>
+
+        <div class="navigation_menu">
+            <div id="date_dropdown" style="display: none;">
+                <div>Expiry Date:</div> 
+                <select name="date" onchange="show_spinner();this.form.submit()">
+                    {% if date_selected %}
+                        <option value="{{date_selected}}">{{date_selected}}</option>
+                    {% endif %}
+                    {% for date in options_dates %}
+                        {% if date != date_selected %}
+                            <option value="{{date}}">{{date}}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        <div id="graph_section" style="display: none;">
+            <h2>Max Pain</h2>
+            <div class="chart-container">
+                <canvas id="max_pain_chart"></canvas>
+            </div>
+            <div class="max_pain_div">Max Pain: ${{max_pain}}</div>
+            
+            <h2>Open Interest</h2>
+            <div class="chart-container">
+                <canvas id="oi_chart"></canvas>
+            </div>
+        </div>
+
+        <div id="options_choice" style="display: none;">
+            <h2>Options Table</h2>
+            <div class="navigation_menu">
+                <div class="show_selection">Show: </div>
+                <div class="choices choice_selected" onclick="show_choice('list')">List</div>
+                <div class="delimiter">|</div>
+                <div class="choices" onclick="show_choice('straddle')">Straddle</div>
+            </div>
+        </div>
+
+        <div id="list_format" style="display: none;">
+            <div class="itm_description calls">
+                <div class="itm_date_description">Calls for {{date_selected}}</div>
+                <div class="itm_description_right">
+                    <div class="itm_symbol calls_symbol_background"></div>
+                    <div class="itm">ITM</div>
+                </div>
+            </div>
+            <div id="calls_div">
+                {{calls|safe}}
+            </div>
+
+            <div class="itm_description puts">
+                <div class="itm_date_description">Puts for {{date_selected}}</div>
+                <div class="itm_description_right">
+                    <div class="itm_symbol puts_symbol_background"></div>
+                    <div class="itm">ITM</div>
+                </div>
+            </div>
+            <div id="puts_div">
+                {{puts|safe}}
+            </div>
+        </div>
+
+        <div id="straddle_format" style="display: none;"> 
+            <div id="straddle_div">
+                <div id="straddle_header">
+                    <div id="straddle_header_calls">Calls</div>
+                    <div id="straddle_header_puts">Puts</div>
+                </div> 
+                {{merge|safe}}
+            </div>
+        </div> 
+    </div>    
+</form>
+{% endblock %}
+
+{% block bottom_script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script src="{% static 'javascript/options.js' %}"></script>
+<script type="text/javascript">
+var call_loss_list = {{ call_loss_list|safe }};
+var put_loss_list = {{ put_loss_list|safe }};
+
+var tr = document.getElementsByTagName("table")[2].querySelectorAll("tr");
+var strike_list = [];
+
+for (row=1; row<tr.length; row++) {
+    var td = tr[row].querySelectorAll("td");
+    strike_list.push(td[5].innerHTML);
+}
+
+function draw_max_pain() {      
+    var max_pain_chart = document.getElementById('max_pain_chart');
+    var display_chart = new Chart(max_pain_chart, {
+        type: 'bar',
+        data: {
+            labels: strike_list,
+            datasets: [{
+                label: 'Calls',
+                data: call_loss_list,
+                borderColor: "green",
+                backgroundColor: 'green',
+            },
+            {
+                label: 'Puts',
+                data: put_loss_list,
+                borderColor: "red",
+                backgroundColor: 'red', 
+            }]
+        },
+
+        
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: false,
+                        callback: function(value, index, values) {
+                            return "$" + value + "M";
+                        }
+                    }, 
+                    gridLines: {
+                        drawOnChartArea: false
+                    }   
+                }],
+
+                xAxes: [{
+                    ticks: {
+                        maxTicksLimit: 20,
+                        maxRotation: 45,
+                        minRotation: 0,
+                        callback: function(value, index, values) {
+                            return "$" + value;
+                        }
+                    },
+                    gridLines: {
+                        drawOnChartArea: false
+                    }   
+                }]
+            },
+            // To show value when hover on any part of the graph
+            tooltips: {
+                enabled: true,
+                mode: 'index',
+                intersect: false,
+                callbacks: {
+                    // title: function(tooltipItems, data) { 
+                    //     return data.labels[tooltipItem[0].index] + ' USD';
+                    // },
+                    label: function(tooltipItems, data) { 
+                        return tooltipItems.yLabel + ' M';
+                    }
+                }
+            },
+            hover: {
+                mode: 'index',
+                intersect: false
+            },
+        },
+    });
+}
+</script>
+{% endblock %}

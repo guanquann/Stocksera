@@ -1,0 +1,734 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+ 
+{% block title %}StocksEra | Financial{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/financial.css' %}">
+<script src="{% static 'javascript/financial.js' %}"></script>
+{% endblock %}
+
+{% block main_nav %}
+<div id="spinner_div"></div>
+<div class="top_nav">
+    <form action="" method="GET" autocomplete="off">
+        <div>
+            <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" onkeyup="show_spinner();this.form.submit()" autocomplete="off">
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block main_content %} 
+    <div id="instructions">
+        Reddit ETF is based on the trending stocks on WSB. If a new ticker enters the Top 10 mentioned ticker list before the market opens, it will be bought at 9.30AM. Any ticker that falls out of the Top 10 list will be sold.
+    </div> 
+
+    <div>
+        <h2>Current Assets<button type="button" onclick="show_graph(this)" class="selected_btn">Graph</button><button type="button" onclick="show_table(this)">Table</button></h2>
+        <div class="chart-container">
+            <canvas id="current_assets"></canvas>
+        </div>
+        <div id="current_assets_table" class="table_div" style="display: none;"></div>
+    </div>
+
+    <div>
+        <h2>Non Current Assets<button type="button" onclick="show_graph(this)" class="selected_btn">Graph</button><button type="button" onclick="show_table(this)">Table</button></h2>
+        <div class="chart-container">
+            <canvas id="non_current_assets"></canvas>
+        </div>
+        <div id="non_current_assets_table" class="table_div" style="display: none;"></div>
+    </div>
+
+    <div>
+        <h2>Liabilities<button type="button" onclick="show_graph(this)" class="selected_btn">Graph</button><button type="button" onclick="show_table(this)">Table</button></h2>
+        <div class="chart-container">
+            <canvas id="liabilities"></canvas>
+        </div>
+        <div id="liabilities_table" class="table_div" style="display: none;"></div>
+    </div>
+
+    <div>
+        <h2>Stockholders' Equity<button type="button" onclick="show_graph(this)" class="selected_btn">Graph</button><button type="button" onclick="show_table(this)">Table</button></h2>
+        <div class="chart-container">
+            <canvas id="stockholders_equity"></canvas>
+        </div>
+        <div id="stockholders_equity_table" class="table_div" style="display: none;"></div>
+    </div>
+
+    <h2>Earnings</h2>
+    <div class="earnings-container">
+        <canvas id="earning_chart"></canvas>
+        <div id="eps_surprise"></div>
+    </div>
+
+{% endblock %}
+
+{% block bottom_script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.min.js"></script>
+<script type="text/javascript">
+var date_list = {{date_list|safe}};
+var balance_list = {{balance_list|safe}};
+var balance_col_list = {{balance_col_list|safe}};
+
+var totalLiab=[], cash=[], shortTermInvestments=[], totalcash=[], netReceivables=[], inventory=[], otherCurrentAssets=[], totalCurrentAssets=[], propertyPlantEquipment=[], longTermInvestments=[], otherAssets=[], totalNonCurrentAssets=[], otherCurrentLiab=[], totalCurrentLiab=[], shortTermDebt=[], longTermDebt=[], commonStock=[], retainedEarnings=[], treasury=[], totalStockholderEquity=[], accountsPayable=[];
+
+function simplify_num(row) {
+    var new_list=[];
+    for (k=0; k<row.length; k++) {
+        new_list.push(row[k]/1000)
+    }
+    return new_list
+}
+
+for (i=balance_col_list.length-1; i>=0; i--) {
+    if (balance_col_list[i] == "Total Assets") {
+        current_assets = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Cash") {
+        cash = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Short Term Investments") {
+        shortTermInvestments = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Net Receivables") {
+        netReceivables = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Inventory") {
+        inventory = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Other Current Assets") {
+        otherCurrentAssets = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Total Current Assets") {
+        totalCurrentAssets = simplify_num(balance_list[i])
+    }
+
+
+
+    else if (balance_col_list[i] == "Property Plant Equipment") {
+        propertyPlantEquipment = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Long Term Investments") {
+        longTermInvestments = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Other Assets") {
+        otherAssets = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Property Plant Equipment") {
+        propertyPlantEquipment = simplify_num(balance_list[i])
+    }
+
+
+
+    else if (balance_col_list[i] == "Accounts Payable") {
+        accountsPayable = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Short Long Term Debt") {
+        shortTermDebt = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Long Term Debt") {
+        longTermDebt = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Other Current Liab") {
+        otherCurrentLiab = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Total Current Liabilities") {
+        totalCurrentLiab = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Total Liab") {
+        totalLiab = simplify_num(balance_list[i])
+    }
+
+
+
+    else if (balance_col_list[i] == "Common Stock") {
+        commonStock = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Retained Earnings") {
+        retainedEarnings = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Treasury Stock") {
+        treasury = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Total Stockholder Equity") {
+        totalStockholderEquity = simplify_num(balance_list[i])
+    }
+}
+
+for (i=0; i<cash.length; i++) {
+    totalcash.push(cash[i] + shortTermInvestments[i])
+    totalNonCurrentAssets.push(longTermInvestments[i] + otherAssets[i])
+}    
+
+var options_dict = {
+        responsive:true,
+        maintainAspectRatio: false,
+        layout: {
+            padding: 5
+        },
+        scales: {
+            xAxes: [{
+                categoryPercentage: 0.7,
+                barPercentage: 1.0,
+                ticks: {
+                    beginAtZero: false
+                }, 
+                gridLines: {
+                    drawOnChartArea: false
+                }   
+            }],
+            yAxes: [{
+                ticks: {
+                    beginAtZero: false,
+                    minTicksLimit: 8,
+                    maxTicksLimit: 12,
+                }, 
+            }],
+        },
+
+        tooltips: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+                title: tooltipItem => date_list[tooltipItem[0].index],
+                label: function(tooltipItem, data) {
+                    var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                    var label = data.datasets[tooltipItem.datasetIndex].label;
+                    return label + ': ' + value + 'K USD';
+                }
+            },
+        },
+   }
+
+var current_assets = document.getElementById('current_assets');
+var current_assets = new Chart(current_assets, {
+    type: 'bar',
+    data: {
+        labels: date_list,
+        datasets: [
+        {
+            label: 'Cash & Cash Equivalent',
+            data: cash,
+            backgroundColor: 'rgba(255, 159, 64, 0.5)',
+            borderColor: 'rgb(255, 159, 64)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },
+        {
+            label: 'Other Short-Term Investments',
+            data: shortTermInvestments,
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            borderColor: 'rgb(255, 99, 132)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },    
+        {
+            label: 'Net Receivables',
+            data: netReceivables,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgb(75, 192, 192)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        }, 
+        {
+            label: "Inventory",
+            data: inventory,
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgb(54, 162, 235)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },        
+        {
+            label: "Other Current Assets",
+            data: otherCurrentAssets,
+            backgroundColor: 'rgba(161, 253, 55, 0.5)',
+            borderColor: 'rgb(161, 253, 55)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },   
+        {
+            label: "Total Cash",
+            data: totalcash,
+            backgroundColor: 'rgba(136, 82, 55, 0.5)',
+            borderColor: 'rgb(136, 82, 55)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        }, 
+        {
+            label: "Total Current Assets",
+            data: totalCurrentAssets,
+            backgroundColor: 'rgba(0, 39, 255, 0.5)',
+            borderColor: 'rgb(0, 39, 255)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        }
+        ],
+    },
+
+    options: options_dict,
+});
+
+var current_assets_table = document.getElementById("current_assets_table");
+var current_assets_table_html =  `
+    <table>
+        <tr>
+            <th></th>
+            <th>${date_list[0]}</th>
+            <th>${date_list[1]}</th>
+            <th>${date_list[2]}</th>
+            <th>${date_list[3]}</th>
+        </tr>
+        <tr>
+            <th>Cash & Cash Equivalent</th>
+            <td>${cash[0]}</td>
+            <td>${cash[1]}</td>
+            <td>${cash[2]}</td>
+            <td>${cash[3]}</td>
+        </tr>
+        <tr>
+            <th>Other Short-Term Investments</th>
+            <td>${shortTermInvestments[0]}</td>
+            <td>${shortTermInvestments[1]}</td>
+            <td>${shortTermInvestments[2]}</td>
+            <td>${shortTermInvestments[3]}</td>
+        </tr>
+        <tr>
+            <th>Net Receivables</th>
+            <td>${netReceivables[0]}</td>
+            <td>${netReceivables[1]}</td>
+            <td>${netReceivables[2]}</td>
+            <td>${netReceivables[3]}</td>
+        </tr>
+        <tr>
+            <th>Inventory</th>
+            <td>${inventory[0]}</td>
+            <td>${inventory[1]}</td>
+            <td>${inventory[2]}</td>
+            <td>${inventory[3]}</td>
+        </tr>
+        <tr>
+            <th>Other Current Assets</th>
+            <td>${otherCurrentAssets[0]}</td>
+            <td>${otherCurrentAssets[1]}</td>
+            <td>${otherCurrentAssets[2]}</td>
+            <td>${otherCurrentAssets[3]}</td>
+        </tr>
+        <tr>
+            <th>Total Cash</th>
+            <td>${totalcash[0]}</td>
+            <td>${totalcash[1]}</td>
+            <td>${totalcash[2]}</td>
+            <td>${totalcash[3]}</td>
+        </tr>
+        <tr>
+            <th>Total Current Assets</th>
+            <td>${totalCurrentAssets[0]}</td>
+            <td>${totalCurrentAssets[1]}</td>
+            <td>${totalCurrentAssets[2]}</td>
+            <td>${totalCurrentAssets[3]}</td>
+        </tr>
+    </table>`
+current_assets_table.innerHTML = current_assets_table_html
+
+
+var non_current_assets = document.getElementById('non_current_assets');
+var non_current_assets = new Chart(non_current_assets, {
+    type: 'bar',
+    data: {
+        labels: date_list,
+        datasets: [
+        {
+            label: 'Net Property, Plant and Equipment',
+            data: propertyPlantEquipment,
+            backgroundColor: 'rgba(255, 159, 64, 0.5)',
+            borderColor: 'rgb(255, 159, 64)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },
+        {
+            label: 'Equity and Other Investments',
+            data: longTermInvestments,
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            borderColor: 'rgb(255, 99, 132)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },    
+        {
+            label: 'Other Long-Term Assets',
+            data: otherAssets,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgb(75, 192, 192)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        }, 
+        {
+            label: "Total Non-Current Assets",
+            data: totalNonCurrentAssets,
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgb(54, 162, 235)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },  
+        ],
+    },
+
+    options: options_dict
+});
+
+var non_current_assets_table = document.getElementById("non_current_assets_table");
+var non_current_assets_table_html =  `
+    <table>
+        <tr>
+            <th></th>
+            <th>${date_list[0]}</th>
+            <th>${date_list[1]}</th>
+            <th>${date_list[2]}</th>
+            <th>${date_list[3]}</th>
+        </tr>
+        <tr>
+            <th>Net Property, Plant & Equipment</th>
+            <td>${propertyPlantEquipment[0]}</td>
+            <td>${propertyPlantEquipment[1]}</td>
+            <td>${propertyPlantEquipment[2]}</td>
+            <td>${propertyPlantEquipment[3]}</td>
+        </tr>
+        <tr>
+            <th>Equity & Other Investments</th>
+            <td>${longTermInvestments[0]}</td>
+            <td>${longTermInvestments[1]}</td>
+            <td>${longTermInvestments[2]}</td>
+            <td>${longTermInvestments[3]}</td>
+        </tr>
+        <tr>
+            <th>Other Long-Term Assets</th>
+            <td>${otherAssets[0]}</td>
+            <td>${otherAssets[1]}</td>
+            <td>${otherAssets[2]}</td>
+            <td>${otherAssets[3]}</td>
+        </tr>
+        <tr>
+            <th>Total Non-Current Assets</th>
+            <td>${totalNonCurrentAssets[0]}</td>
+            <td>${totalNonCurrentAssets[1]}</td>
+            <td>${totalNonCurrentAssets[2]}</td>
+            <td>${totalNonCurrentAssets[3]}</td>
+        </tr>
+    </table>`
+non_current_assets_table.innerHTML = non_current_assets_table_html
+
+var liabilities = document.getElementById('liabilities');
+var liabilities = new Chart(liabilities, {
+    type: 'bar',
+    data: {
+        labels: date_list,
+        datasets: [
+        {
+            label: 'Accounts Payable',
+            data: accountsPayable,
+            backgroundColor: 'rgba(255, 159, 64, 0.5)',
+            borderColor: 'rgb(255, 159, 64)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },
+        {
+            label: 'Debt',
+            data: shortTermDebt,
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            borderColor: 'rgb(255, 99, 132)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },
+        {
+            label: 'Long Term Debt',
+            data: longTermDebt,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgb(75, 192, 192)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },
+        {
+            label: 'Other Current Liab',
+            data: otherCurrentLiab,
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgb(54, 162, 135)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },    
+        {
+            label: 'Total Current Liab',
+            data: totalCurrentLiab,
+            backgroundColor: 'rgba(161, 253, 55, 0.5)',
+            borderColor: 'rgb(161, 253, 55)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },   
+        {
+            label: 'Total Liab',
+            data: totalLiab,
+            backgroundColor: 'rgba(136, 82, 55, 0.5)',
+            borderColor: 'rgb(136, 82, 55)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        }
+        ],
+    },
+
+    options: options_dict
+});
+
+var liabilities_table = document.getElementById("liabilities_table");
+var liabilities_table_html =  `
+    <table>
+        <tr>
+            <th></th>
+            <th>${date_list[0]}</th>
+            <th>${date_list[1]}</th>
+            <th>${date_list[2]}</th>
+            <th>${date_list[3]}</th>
+        </tr>
+        <tr>
+            <th>Accounts Payable</th>
+            <td>${accountsPayable[0]}</td>
+            <td>${accountsPayable[1]}</td>
+            <td>${accountsPayable[2]}</td>
+            <td>${accountsPayable[3]}</td>
+        </tr>
+        <tr>
+            <th>Debt</th>
+            <td>${shortTermDebt[0]}</td>
+            <td>${shortTermDebt[1]}</td>
+            <td>${shortTermDebt[2]}</td>
+            <td>${shortTermDebt[3]}</td>
+        </tr>
+        <tr>
+            <th>Long Term Debt</th>
+            <td>${longTermDebt[0]}</td>
+            <td>${longTermDebt[1]}</td>
+            <td>${longTermDebt[2]}</td>
+            <td>${longTermDebt[3]}</td>
+        </tr>
+        <tr>
+            <th>Other Current Liab</th>
+            <td>${otherCurrentLiab[0]}</td>
+            <td>${otherCurrentLiab[1]}</td>
+            <td>${otherCurrentLiab[2]}</td>
+            <td>${otherCurrentLiab[3]}</td>
+        </tr>
+        <tr>
+            <th>Total Current Liab</th>
+            <td>${totalCurrentLiab[0]}</td>
+            <td>${totalCurrentLiab[1]}</td>
+            <td>${totalCurrentLiab[2]}</td>
+            <td>${totalCurrentLiab[3]}</td>
+        </tr>
+        <tr>
+            <th>Total Liab</th>
+            <td>${totalLiab[0]}</td>
+            <td>${totalLiab[1]}</td>
+            <td>${totalLiab[2]}</td>
+            <td>${totalLiab[3]}</td>
+        </tr>
+    </table>`
+liabilities_table.innerHTML = liabilities_table_html
+
+
+var stockholders_equity = document.getElementById('stockholders_equity');
+var stockholders_equity = new Chart(stockholders_equity, {
+    type: 'bar',
+    data: {
+        labels: date_list,
+        datasets: [
+        {
+            label: 'Common Stock',
+            data: commonStock,
+            backgroundColor: 'rgba(255, 159, 64, 0.5)',
+            borderColor: 'rgb(255, 159, 64)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },
+        {
+            label: 'Retained Earnings',
+            data: retainedEarnings,
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            borderColor: 'rgb(255, 99, 132)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },    
+        {
+            label: 'Treasury',
+            data: treasury,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgb(75, 192, 192)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        }, 
+        {
+            label: "Total StockHolders' Equity",
+            data: totalStockholderEquity,
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgb(54, 162, 235)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },        
+        ],
+    },
+
+    options: options_dict,
+});
+
+
+var liabilities_tastockholders_equity_tableble = document.getElementById("stockholders_equity_table");
+var stockholders_equity_table_html =  `
+    <table>
+        <tr>
+            <th></th>
+            <th>${date_list[0]}</th>
+            <th>${date_list[1]}</th>
+            <th>${date_list[2]}</th>
+            <th>${date_list[3]}</th>
+        </tr>
+        <tr>
+            <th>Common Stock</th>
+            <td>${commonStock[0]}</td>
+            <td>${commonStock[1]}</td>
+            <td>${commonStock[2]}</td>
+            <td>${commonStock[3]}</td>
+        </tr>
+        <tr>
+            <th>Retained Earnings</th>
+            <td>${retainedEarnings[0]}</td>
+            <td>${retainedEarnings[1]}</td>
+            <td>${retainedEarnings[2]}</td>
+            <td>${retainedEarnings[3]}</td>
+        </tr>
+        <tr>
+            <th>Treasury</th>
+            <td>${treasury[0]}</td>
+            <td>${treasury[1]}</td>
+            <td>${treasury[2]}</td>
+            <td>${treasury[3]}</td>
+        </tr>
+        <tr>
+            <th>Total StockHolders' Equity</th>
+            <td>${totalStockholderEquity[0]}</td>
+            <td>${totalStockholderEquity[1]}</td>
+            <td>${totalStockholderEquity[2]}</td>
+            <td>${totalStockholderEquity[3]}</td>
+        </tr>
+    </table>`
+stockholders_equity_table.innerHTML = stockholders_equity_table_html
+
+
+var earnings_list = {{earnings_list|safe}}
+
+var earning_est=[]
+var earning_act=[]
+var axes = []
+
+for (i=0; i<earnings_list.length; i++) {
+    var dict_est = {}
+    dict_est['x'] = earnings_list[i][0]
+    dict_est['y'] = earnings_list[i][1]
+    earning_est.push(dict_est)
+
+    var dict_act = {}
+    dict_act['x'] = earnings_list[i][0]
+    dict_act['y'] = earnings_list[i][2]
+    earning_act.push(dict_act)
+}
+
+var earning_chart = document.getElementById('earning_chart');
+var myChart = new Chart(earning_chart, {
+    type: 'scatter',
+    data: {
+        datasets: [
+        {
+            label: 'Est EPS',
+            data: earning_est,
+            backgroundColor: 'rgb(158, 158, 158, 0.5)',
+            borderColor: 'rgb(158, 158, 158)',
+        }, 
+        {
+            label: 'Act EPS',
+            data: earning_act,
+            backgroundColor: 'rgb(0, 0, 255, 0.5)',
+            borderColor: 'rgb(0, 0, 255)'
+        },
+        
+        ],
+    },
+
+    options: {
+        responsive:true,
+        maintainAspectRatio: false,
+        layout: {
+            padding: 10
+        },
+        scales: {
+            xAxes: [{
+                display: false,
+                ticks: {
+                  minTicksLimit: 5,
+                },
+                ticks: {
+                    beginAtZero: false
+                }, 
+                gridLines: {
+                    drawOnChartArea: false
+                }   
+            }],
+            yAxes: [{
+                ticks: {
+                    beginAtZero: false
+                }, 
+            }],
+        },
+
+        elements: {
+            point: {
+                radius: 7
+            }
+        },
+
+        tooltips: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+                label: (item) => `${item.yLabel} USD`,
+            },
+        },
+        hover: {
+            mode: 'index',
+            intersect: false
+        },
+   }
+});
+
+var eps_surprise = document.getElementById("eps_surprise");
+var full_eps_code = ""
+var financial_quarter_list = {{financial_quarter_list|safe}};
+for (i=earning_act.length-1; i>=0; i--) {
+
+    percentage_diff = (Number(earning_act[i].y) - Number(earning_est[i].y)) / Math.abs((earning_est[i].y)) * 100
+    percentage_diff = Math.round(percentage_diff * 100) / 100
+    percentage_diff =  String(percentage_diff) + "%"
+
+    if (percentage_diff.includes("-")) {
+        full_eps_code += `<div class="eps_label">${financial_quarter_list[i]}<br><span style="color:red">Surprise:<br>${percentage_diff}</span></div>`
+    }
+
+    else if (percentage_diff == "NaN%") {
+        full_eps_code += `<div class="eps_label">${financial_quarter_list[i]}</div>`
+    }
+
+    else {
+        full_eps_code += `<div class="eps_label">${financial_quarter_list[i]}<br><span style="color:green">Surprise:<br>+${percentage_diff}</span></div>`
+    }    
+}
+
+eps_surprise.innerHTML = full_eps_code;
+
+</script>
+{% endblock %}

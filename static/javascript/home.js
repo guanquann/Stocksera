@@ -47,3 +47,15 @@ window.onclick = function(event) {
     privacy_model.style.display = "none";
   }
 }
+
+var i = 0;
+var txt = 'We track trending tickers and their sentiment on Reddit, Twitter & News Articles';
+var speed = 30;
+
+function typeWriter() {
+  if (i < txt.length) {
+    document.getElementsByClassName("typewriter")[0].innerHTML += txt.charAt(i);
+    i++;
+    setTimeout(typeWriter, speed);
+  }
+}

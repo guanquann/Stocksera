@@ -1,0 +1,25 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Penny Stocks{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/penny_stocks.css' %}">
+<script src="{% static 'javascript/penny_stocks.js' %}"></script>
+{% endblock %}
+
+{% block main_nav %}
+    <div class="top_nav">
+    <div>
+        <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" onkeyup="show_spinner();this.form.submit();" autocomplete="off">
+    </div>
+</div>
+{% endblock %}
+
+{% block main_content %}
+    <div class="header">Penny Stocks</div>
+    <div class="table_div">
+        {{ df_penny_stocks|safe }}
+    </div>
+{% endblock %}

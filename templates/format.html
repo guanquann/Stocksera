@@ -5,48 +5,65 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stocks Analysis</title>
+    <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'style/format.css' %}">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
     <script src="{% static 'javascript/format.js' %}"></script>
+    {% block additional_script %}{% endblock %}
 </head>
 
-<body onload="update_price_color()" style="font-family:arial">
+<body onload="update_price_color();{% block onload_properties%}{% endblock %}" style="font-family:arial">
 <div>
-    <form action="" method="POST" autocomplete="off"> {% csrf_token %}
     <div id="nav_bar_div">
         <div>
             <ul>
-                <li class="nav_bar_title"><i>Stocks Analysis</i></li>
-                <li class="nav_bar" onclick="show_ticker_iframe()"><img src="{% static 'images/ticker_analysis.svg' %}">Ticker Analysis</li>
-                <li class="nav_bar" onclick="show_reddit_iframe()"><img src="{% static 'images/reddit.svg' %}">Reddit Trending</li>
-                <li class="nav_bar" onclick="show_reddit_etf_iframe()"><img src="{% static 'images/etf.svg' %}">Reddit ETF</li>
-                <li class="nav_bar" onclick="show_google_iframe()"><img src="{% static 'images/google.svg' %}">Google Trending</li>
-                <li class="nav_bar" onclick="show_industry_iframe()"><img src="{% static 'images/industry.svg' %}">Industries</li>
-                <li class="nav_bar" onclick="show_opinion_iframe()"><img src="{% static 'images/opinion.svg' %}">Opinion</li>
-                <li class="nav_bar" onclick="show_contact_iframe()"><img src="{% static 'images/contact.svg' %}">Contact</li>
+                <li ><img class="main_logo" src="{% static 'images/logo.svg' %}"></li>
+
+                <a href="{% url 'main' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/home.svg' %}">Home</li></a>
+
+                <div onmouseover="expand_nav(this)" onmouseout="expand_nav(this)">
+                    <li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/ticker_analysis.svg' %}">Stocks</li>
+                    <a href="{% url 'ticker' %}"><li class="sub_nav_bar" style="display: none;">Ticker Analysis</li></a>
+                    <a href="{% url 'options' %}"><li class="sub_nav_bar" style="display: none;">Options</li></a>
+                    <a href="{% url 'earnings_calendar' %}"><li class="sub_nav_bar" style="display: none;">Earnings Calendar</li></a>
+                </div>
+                
+                <div onmouseover="expand_nav(this)" onmouseout="expand_nav(this)">
+                    <li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/reddit.svg' %}">Reddit</li>
+                    <a href="{% url 'reddit_analysis' %}"><li class="sub_nav_bar" style="display: none;">Trending</li></a>
+                    <a href="{% url 'subreddit_count' %}"><li class="sub_nav_bar" style="display: none;">Subreddit Sub.</li></a>
+                    <a href="{% url 'reddit_etf' %}"><li class="sub_nav_bar" style="display: none;">Reddit ETF</li></a>
+                    <a href="{% url 'opinion' %}"><li class="sub_nav_bar" style="display: none;">Top DD</li></a>
+                </div> 
+
+                <div onmouseover="expand_nav(this)" onmouseout="expand_nav(this)">
+                    <li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/discover.svg' %}">Discover</li>
+                    <a href="{% url 'top_movers' %}"><li class="sub_nav_bar" style="display:none">Top Movers</li></a>
+                    <a href="{% url 'short_interest' %}"><li class="sub_nav_bar" style="display: none;">Short Interest</li></a>
+                    <a href="{% url 'low_float' %}"><li class="sub_nav_bar" style="display: none;">Low Float</li></a>
+                    <a href="{% url 'penny_stocks' %}"><li class="sub_nav_bar" style="display: none;">Penny Stocks</li></a>
+                </div>
+
+                <a href="{% url 'latest_news' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/newspaper.svg' %}">News Sentiment</li></a>
+                <a href="{% url 'industry_analysis' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/industry.svg' %}">Industries</li></a>
+                <a href="{% url 'contact' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/contact.svg' %}">Contact</li></a>
             </ul>
         </div>
-        <div style="text-align: center;">
-            <button id="nav_bar_btn" class="nav_bar_btn" type="button" onclick="hide_nav_bar()"><</button>
-        </div>
+
+    </div>
+    <div id="nav_bar_div_sm" onclick="hide_nav_bar()">
+        &#9776; MENU
     </div>
 
-    <div style="display:inline-block;width:75%">
-        <div class="ticker-wrap">
-            <div class="ticker">
-                {% for name in popular_name_list|length|get_range %}
-                <div class="ticker_item">
-                    <b>{{popular_name_list|index:name}} &#183 {{price_list|index:name|index:0}} <span> {{price_list|index:name|index:1}} ({{price_list|index:name|index:2}}%) </span></b>
-                </div>|
-                {% endfor %}
-            </div>
+    <div id="main_div">
+        {% block main_nav %}{% endblock %}
+        <div id="main_content">
+            {% block main_content %}{% endblock %}
         </div>
-        <!-- <iframe src="ticker" style="width:84vw;height:99vh;border:0px"></iframe> -->
-        {% block main_content %}
-
-        {% endblock %}
     </div>
-    </form>
 </div>
 </body>
+
+{% block bottom_script %}{% endblock %}
+
 </html>

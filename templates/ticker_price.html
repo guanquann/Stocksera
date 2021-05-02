@@ -1,102 +1,199 @@
-<!DOCTYPE html>
+{% extends "format.html" %}
 {% load static %}
 {% load filter %}
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Ticker Price</title>
-    <link rel="stylesheet" href="{% static 'style/ticker_price.css' %}">
-    <script src="{% static 'javascript/ticker_price.js' %}"></script>
-</head>
+{% block title %}StocksEra | Ticker{% endblock %}
 
-<body style="margin-left:3%;height:62vh;margin-top:60px;font-family:arial" onload="display_data()">
-    <form action="" method="POST" autocomplete="off"> {% csrf_token %}
-        <div class="instructions" style="width: 70%;">
-            <p style="margin: 1%;">Enter a ticker symbol you are interested to view or click any of the buttons below!</p>
-            <button name="ticker_btn" value="TSLA">TSLA</button>
-            <button name="ticker_btn" value="GME">GME</button>
-            <button name="ticker_btn" value="AMC">AMC</button>
-            <button name="ticker_btn" value="NIO">NIO</button>
-            <button name="ticker_btn" value="NFLX">NFLX</button>
-            <button name="ticker_btn" value="AMZN">AMZN</button>
-            <button name="ticker_btn" value="BB">BB</button>
-            <button name="ticker_btn" value="F">F</button>
-            <button name="ticker_btn" value="PLTR">PLTR</button>
-            <button name="ticker_btn" value="AAPL">AAPL</button>
-            <button name="ticker_btn" value="SPY">SPY</button>
-            <button name="ticker_btn" value="QQQ">QQQ</button>          
-        </div> 
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/ticker_price.css' %}">
+<script src="{% static 'javascript/ticker_price.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}display_data(){% endblock %}
+ 
+{% block main_nav %}
+<div class="top_nav">
+    <form action="" method="GET" autocomplete="off">
         <div>
+            <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" onkeyup="this.form.submit();show_spinner();" autocomplete="off">
+        </div>
+</div>
+{% endblock %}
+
+{% block main_content %} 
+<div>
+    <div id="spinner_div"></div>
+        <div class="instructions">
+            <p style="margin: 1%;">Enter a ticker symbol you are interested to view or click any of the buttons below!</p>
+        </div> 
+        
+        <div class="ticker_header">
+            <div id="error_msg" style="display:none;" class="instructions">
+                There is no ticker named {{incorrect_ticker}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).
+            </div>
+       
             <div>
-                <input class="ticker_dropdown" name="ticker" value={{ticker_selected}}>
-                <button class="submit_btn" type="submit">Submit</button>
+                <div style="display:none" id="img_div">
+                    {% if img != "" %}
+                    <a href={{website}} target="_blank"><img src={{img}} onerror=this.src="{% static 'images/not_available.svg' %}"></a>
+                    {% else %}
+                    <a href={{website}} target="_blank"><img src="{% static 'images/not_available.svg' %}"></a>
+                    {% endif %}
+                </div>
+                <div style="display:none" id="ticker_intro">
+                    <span style="font-size:24px;font-weight:bolder">{{official_name}} ({{ticker_selected}})</span>
+                    <br>Sector: <b>{{sector}}</b><br>Industry: <b>{{industry}}</b>
+                </div>
             </div>
-            <br>
-            <div id="error_msg" style="display:none;margin-top: 5%;" class="instructions">
-                There is not ticker named {{incorrect_ticker}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).
+
+            <div style="display:none" id="more_info_div">
+                <button class="more_info_btn" name="financial" type="submit" value={{ticker_selected}} onclick="show_spinner()">Financials</button>
+                <button class="more_info_btn" name="options" type="submit" value={{ticker_selected}} onclick="show_spinner()">Options</button>
+                <button class="more_info_btn" name="competitors" type="submit" value={{ticker_selected}} onclick="show_spinner()">Competitors</button>
             </div>
-            <div style="display:none" id="img_div">
-                {% if img != "" %}
-                <a href={{website}} target="_blank"><img src={{img}}></a>
-                {% else %}
-                <a href={{website}} target="_blank"><img src="{% static 'images/not_available.svg' %}"</a>
-                {% endif %}
-            </div>
-            <div style="display:none" id="ticker_intro">
-                <a href={{website}} target="_blank" class="ticker_selected"><span style="font-size:x-large;font-weight:bolder">{{official_name}} ({{ticker_selected}})</span></a>
-                <br>Sector: <b>{{sector}}</b><br>Industry: <b>{{industry}}</b>
-            </div>
-            <div style="display:none" class="ticker_summary">{{summary}}</div>
 
             <div style="display:none" id="days_btn">
-                <button class="change_day_btn" name="one_day_btn">1D</button>
-                <button class="change_day_btn"  name="five_day_btn">5D</button>
-                <button class="change_day_btn"  name="one_month_btn">1M</button>
-                <button class="change_day_btn"  name="one_year_btn">1Y</button>
-                <button class="change_day_btn" name="five_year_btn">5Y</button>
+                <button class="change_day_btn" name="one_day" onclick="show_spinner()" value="true">1D</button>
+                <button class="change_day_btn"  name="five_day" onclick="show_spinner()" value="true">5D</button>
+                <button class="change_day_btn"  name="one_month" onclick="show_spinner()" value="true">1M</button>
+                <button class="change_day_btn"  name="one_year" onclick="show_spinner()" value="true">1Y</button>
+                <button class="change_day_btn" name="five_year" onclick="show_spinner()" value="true">5Y</button>
             </div>
         </div>
         <div id="latest_price" style="display: none;">
-            {{latest_price}} USD 
-            <div style="font-size: 1.3vw; width: 5vw; margin-left: 1%;">
+            {{latest_price}}USD 
+            <div>
                 {{price_change}} {{price_percentage_change}}
             </div>
         </div>
-        <div class="chart-container" style="position: relative; height:70vh;width:93vw;max-height:450px;display:none">
+        <div class="chart-container" style="display:none;">
             <canvas id="price_chart"></canvas>
         </div>
-    
-        <div style="display:none" id="ticker_table">          
-            <div class="col" style="border-right: 1px solid #9e9e9e;">
-                <div class="details">Open: ${{mkt_open}}</div>
-                <div class="details">High: ${{mkt_high}}</div>
-                <div class="details_last_row">Low ${{mkt_low}}</div>
+     
+        <div style="display:none" id="ticker_table">     
+            <p><b>Key Statistics</b></p>
+            <div class="scrollable_div">
+                <table>
+                    <tr>
+                        <td>Open: ${{mkt_open}}</td>
+                        <td>Prev Close: ${{mkt_close}}</td>
+                    </tr>
+                    <tr>
+                        <td>High: ${{mkt_high}}</td>
+                        <td>52-wk High: ${{mkt_year_high}}</td>
+                    </tr>
+                    <tr>
+                        <td>Low: ${{mkt_low}}</td>
+                        <td>52-wk Low: ${{mkt_year_low}}</td>
+                    </tr>
+                    <tr>
+                        <td>Volume: {{mkt_vol}}</td>
+                        <td>10D Avg Vol: {{averageDailyVolume10Day}}</td>
+                    </tr>
+                    <tr>
+                        <td>200D Avg Price: ${{twoHundredDayAverage}}</td>
+                        <td>Price Target: ${{price_target}}</td>
+                    </tr>
+                    <tr>
+                        <td>Outstanding Shares: {{shares_outstanding}}</td>
+                        <td>Floating Shares: {{shares_float}}</td>
+                    </tr>
+                    <tr>
+                        <td>Short Float: {{short_float}}</td>
+                        <td>Short Ratio: {{short_ratio}}</td>
+                    </tr>
+                    <tr>
+                        <td>P/E: {{p_e_ratio}}</td>
+                        <td>Forward P/E: {{forward_p_e}}</td>
+                    </tr>
+                    <tr>
+                        <td>Div. Yield: {{dividend_yield}}</td>
+                        <td>Dividend: {{dividend_amount}}</td>
+                    </tr>
+                    <tr>
+                        <td>Ex Div. Date: {{ex_div_date}}</td>
+                        <td>Mkt Cap: {{mkt_cap}}</td>
+                    </tr>
+                    <tr>
+                        <td>Beta: {{beta}}</td>
+                        <td>EPS: {{eps}}</td>
+                    </tr>
+                    <tr>
+                        <td>RSI: {{rsi}}</td>
+                        <td>SMA 20: {{sma20}}</td>
+                    </tr>
+                    <tr>
+                        <td>SMA 50: {{sma50}}</td>
+                        <td>SMA 200: {{sma200}}</td>
+                    </tr>
+                </table>     
             </div>
-            <div class="col">
-                <div class="details">Prev Close: ${{mkt_close}}</div>
-                <div class="details">52-wk High: ${{mkt_year_high}}</div>
-                <div class="details_last_row">52-wk Low: ${{mkt_year_low}}</div>
+            
+            <p><b>Major Holders</b></p>
+            <div class="scrollable_div">
+                {{major_holders|safe}}
+            </div>
+                
+            <p><b>Institutional Holders</b></p>
+            <div class="scrollable_div">
+                {{institutional_holders|safe}}
+            </div>
+            
+            <p><b>Upgrades & Downgrades</b></p>
+            <div class="scrollable_div">
+                {{recommendations|safe}}
             </div>
         </div>
-    </form>
-</body>
 
+        <div style="display:none" class="ticker_summary">
+            <p><b>Summary</b></p>
+            {{summary}}<br>
+            <a href={{website}} target="_blank" class="read_more"><i>Read More...</i></a>
+        </div>
+
+        <div style="display:none" class="ticker_news">
+            <p><b>Recent News Articles</b></p>
+            <div class="scrollable_div">
+            {{news_df|safe}}
+        </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block bottom_script %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-<script>
+<script type="text/javascript">
+var graphDate = {{ ticker_date_max|safe }};
+var tickerPrice = {{ ticker_price_max|safe }};
+var data_type = {{duration}};
+
+if (data_type == 0) {
+    var graphFirstPrice = {{mkt_close}};
+}
+else {
+    var graphFirstPrice = tickerPrice[0];
+}
+var graphLastPrice = {{latest_price}};
+
+if (Number(graphFirstPrice) > Number(graphLastPrice)) {
+    borderColor = "#ef5350";  // red color
+}
+else {
+    borderColor = "#26a69a";  // green color
+}
+
 var price_chart = document.getElementById('price_chart');
 var myChart = new Chart(price_chart, {
     type: 'line',
     data: {
-        labels: {{ ticker_date_max|safe }},
+        labels: graphDate,
         datasets: [{
             label: 'Price',
-            // lineTension: 0,  <!--straight lines instead of curves-->
-            data: {{ ticker_price_max|safe }},
-            fill: false,
-            borderColor: '#10b6cc',
-            // backgroundColor: '#10b6cc',
-            // borderWidth: 0.1,
+            lineTension: 0,  // straight line instead of curve
+            data: tickerPrice,
+            borderColor: borderColor,
+            backgroundColor: 'transparent',
             tension: 0.1,
         }]
     },
@@ -110,27 +207,36 @@ var myChart = new Chart(price_chart, {
         scales: {
             yAxes: [{
                 ticks: {
-                    beginAtZero: false
-                }
+                    beginAtZero: false,
+                    callback: function(value, index, values) {
+                            return "$" + value;
+                    }
+                }, 
+                gridLines: {
+                    drawOnChartArea: false
+                }   
             }],
 
             xAxes: [{
                 ticks: {
-                  maxTicksLimit: 5,
-                  maxRotation: 0,
-                  minRotation: 0
+                  maxTicksLimit: 10,
+                  maxRotation: 45,
+                  minRotation: 0,
                 },
+                gridLines: {
+                    drawOnChartArea: false
+                }   
             }]
         },
 
-        <!-- To remove the point of each label -->
+        // To remove the point of each label
         elements: {
             point: {
                 radius: 0
             }
         },
 
-        <!-- To show value when hover on any part of the graph -->
+        // To show value when hover on any part of the graph
         tooltips: {
             mode: 'index',
             intersect: false,
@@ -143,23 +249,6 @@ var myChart = new Chart(price_chart, {
             intersect: false
         },
     },
-
-<!--    plugins :{-->
-<!--        beforeDraw: function(c) {-->
-<!--            var data = c.data.datasets[0].data;-->
-<!--            for (let i in data) {-->
-<!--                let bar = c.data.datasets[0]._meta['0'].data[i]._model;-->
-<!--                if (data[i] > 180) {-->
-<!--                    bar.backgroundColor = 'blue'-->
-<!--                    bar.borderColor = 'blue';-->
-<!--                }-->
-<!--                else {-->
-<!--                    bar.backgroundColor = 'red';-->
-<!--                    bar.borderColor = 'red';-->
-<!--                }-->
-<!--            }-->
-<!--        }-->
-<!--    }-->
 });
 </script>
-</html>
+{% endblock %}

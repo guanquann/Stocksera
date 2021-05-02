@@ -1,4 +1,4 @@
-import shared
+import scheduled_tasks.get_reddit_trending.shared as shared
 import requests
 import numbers
 import multitasking as multitasking

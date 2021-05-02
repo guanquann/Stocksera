@@ -1,0 +1,25 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Short Interest{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/short_interest.css' %}">
+<script src="{% static 'javascript/short_interest.js' %}"></script>
+{% endblock %}
+
+{% block main_nav %}
+    <div class="top_nav">
+    <div>
+        <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" onkeyup="show_spinner();this.form.submit();" autocomplete="off">
+    </div>
+</div>
+{% endblock %}
+
+{% block main_content %}
+    <div class="header">Short Interest</div>
+    <div class="table_div">
+        {{ df_high_short_interest|safe }}
+    </div>
+{% endblock %}

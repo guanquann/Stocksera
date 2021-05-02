@@ -11,66 +11,21 @@ function update_price_color() {
     }
 }
 
-function show_ticker_iframe() {
-    document.getElementsByTagName("iframe")[0]["src"] = "ticker"
-}
-
-function show_reddit_iframe() {
-    document.getElementsByTagName("iframe")[0]["src"] = "reddit_analysis"
-}
-
-function show_google_iframe() {
-    document.getElementsByTagName("iframe")[0]["src"] = "google_analysis"
-}
-
-function show_industry_iframe() {
-    document.getElementsByTagName("iframe")[0]["src"] = "industry"
-}
-
-function show_reddit_etf_iframe() {
-    document.getElementsByTagName("iframe")[0]["src"] = "reddit_etf"
-}
-
-function show_opinion_iframe() {
-    document.getElementsByTagName("iframe")[0]["src"] = "opinion"
-}
-
-function show_contact_iframe() {
-    document.getElementsByTagName("iframe")[0]["src"] = "contact"
-}
-
-function hide_nav_bar() {
-    var nav_bar_btn = document.getElementById("nav_bar_btn");
-    var nav_bar_div = document.getElementById("nav_bar_div");
-    var nav_bar_title = document.getElementsByClassName("nav_bar_title")[0];
-    var nav_bar = document.getElementsByClassName("nav_bar");
-    var logo = document.getElementsByTagName("img");
-    var iframe = document.getElementsByTagName("iframe")[0];
-
-    if (nav_bar_btn.innerHTML == "&gt;") {  // &gt; == ">"
-        nav_bar_div.style.width = "200px";
-        for (i=0; i<logo.length; i++) {
-            logo[i].style.width = "15px";
-            nav_bar[i].style.fontSize = "medium";
-            nav_bar[i].style.textAlign = "";
-            nav_bar[i].style.marginTop = "";
-            nav_bar[i].style.marginBottom = "";
+function expand_nav(elem) {
+    sub_nav_bar = elem.getElementsByClassName("sub_nav_bar");
+    for (i=0; i<sub_nav_bar.length; i++) {
+        if (sub_nav_bar[i].style.display == "none") {
+            sub_nav_bar[i].style.removeProperty("display");
         }
-        nav_bar_title.style.fontSize = "medium";
-        iframe.style.width = "84vw";
-        nav_bar_btn.innerHTML = "<";
-    }
-    else {
-        nav_bar_div.style.width = "70px";
-        for (i=0; i<logo.length; i++) {
-            logo[i].style.width = "35px";
-            nav_bar[i].style.fontSize = "xx-small";
-            nav_bar[i].style.textAlign = "center";
-            nav_bar[i].style.marginTop = "9%";
-            nav_bar[i].style.marginBottom = "9%";
+        else {
+            sub_nav_bar[i].style.display = "none";
         }
-        nav_bar_title.style.fontSize = "xx-small";
-        iframe.style.width = "94vw";
-        nav_bar_btn.innerHTML = ">";
     }
+}
+
+function show_spinner() {
+    var add_to_div = `<div class="spinner_container">
+                          <img src="/static/images/spinner.gif" class="spinner">`
+
+    document.getElementById("spinner_div").innerHTML = add_to_div
 }

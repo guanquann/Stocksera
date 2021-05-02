@@ -1,5 +1,5 @@
 import argparse
-from AutoDD import *
+from scheduled_tasks.get_reddit_trending.AutoDD import *
 from collections import Counter
 
 

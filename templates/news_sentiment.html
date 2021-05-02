@@ -1,0 +1,31 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | News{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/ticker_price.css' %}">
+<script src="{% static 'javascript/news_sentiment.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}display_data(){% endblock %}
+ 
+{% block main_nav %}
+<div class="top_nav">
+    <form action="" method="GET" autocomplete="off">
+        <div>
+            <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" onkeyup="this.form.submit();show_spinner();" autocomplete="off">
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block main_content %}
+    <div style="display:none" class="ticker_news">
+            <p><b>Recent News Articles</b></p>
+            <div class="scrollable_div">
+                {{news_df|safe}}
+            </div>
+    </div>
+{% endblock %}

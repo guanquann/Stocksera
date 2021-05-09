@@ -9,6 +9,7 @@ import psycopg2
 
 from yahoo_earnings_calendar import YahooEarningsCalendar
 from finvizfinance.quote import finvizfinance
+from finvizfinance.group import (overview, valuation, performance)
 
 from django.shortcuts import render, redirect
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
@@ -576,7 +577,14 @@ def penny_stocks(request):
 
 def industries_analysis(request):
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
-    return render(request, 'industry.html')
+    screen = performance.Performance()
+    df_screen = screen.ScreenerView().to_html(index=False)
+    # df_screen = screen.ScreenerView(group="Industry")
+    # print(df_screen)
+    return render(request, 'industry.html', {"popular_ticker_list": popular_ticker_list,
+                                             "popular_name_list": popular_name_list,
+                                             "price_list": price_list,
+                                             "df_screen": df_screen})
 
 
 def reddit_etf(request):

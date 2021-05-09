@@ -1,24 +1,64 @@
-<!DOCTYPE html>
+{% extends "format.html" %}
 {% load static %}
 {% load filter %}
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Industry</title>
-    <link rel="stylesheet" href="{% static 'style/home.css' %}">
-    <script src="{% static 'javascript/home.js' %}"></script>
-</head>
+{% block title %}StocksEra | Industry{% endblock %}
 
-<body onload="update_price_color()" style="font-family:arial">
+{% block additional_script %}
+<!--<link rel="stylesheet" href="{% static 'style/ticker_price.css' %}">-->
+<!--<script src="{% static 'javascript/industry.js' %}"></script>-->
+{% endblock %}
+
+{% block onload_properties%}restore_dark_mode(){% endblock %}
+
+{% block main_nav %}
+    <div class="ticker-wrap">
+        <div class="ticker">
+            {% for name in popular_name_list|length|get_range %}
+            <div class="ticker_item">
+                <b>{{popular_name_list|index:name}} &#183 {{price_list|index:name|index:0}} <span> {{price_list|index:name|index:1}} ({{price_list|index:name|index:2}}%) </span></b>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block main_content %}
 <div>
-    <form action="" method="POST" autocomplete="off"> {% csrf_token %}
-testing
-        testing
-        <br><br><br><br><br>
-        testing
-    </form>
+    {{df_screen|safe}}
+    <canvas id="treemap"></canvas>
 </div>
+{% endblock %}
 
-</body>
-</html>
+{% block bottom_script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-treemap@0.2.3"></script>
+<script>
+var topTags = [
+  {tag:'python',num:133269},{tag:'javascript',num:109742},{tag:'java',num:65490},{tag:'c#',num:45445},{tag:'html',num:43767},{tag:'android',num:42657},{tag:'reactjs',num:38844},{tag:'php',num:34381},{tag:'sql',num:29996},{tag:'python',num:29942},{tag:'css',num:29654},{tag:'r',num:28319},{tag:'c++',num:27389},{tag:'node.js',num:25415},{tag:'angular',num:24093},{tag:'pandas',num:23826},{tag:'arrays',num:23075},{tag:'jquery',num:18968},{tag:'mysql',num:18863},{tag:'swift',num:17971},{tag:'ios',num:17600},{tag:'json',num:15589},{tag:'laravel',num:15537},{tag:'flutter',num:15201},{tag:'c',num:15195},{tag:'django',num:14748},{tag:'sql',num:12752},{tag:'reactjs',num:10974},{tag:'excel',num:10962},{tag:'list',num:10726},{tag:'regex',num:10676}
+];
+
+var canvas = document.getElementById("treemap");
+var ctx = canvas.getContext("2d");
+var chart = window.chart = new Chart(ctx, {
+  type: "treemap",
+  data: {
+    datasets: [{
+      tree: topTags,
+      key: "num",
+      groups: ['tag'],
+      spacing: 0.5,
+      borderWidth: 1.5,
+      fontColor: "black",
+      borderColor: "grey"
+    }]
+  },
+  options: {
+   responsive: true,
+    maintainAspectRatio: false,
+    legend: { display: true },
+    tooltips: { enabled: true }
+  }
+});
+</script>
+{% endblock %}

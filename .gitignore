@@ -7,3 +7,5 @@ venv/
 *.txt
 testing.py
 .vscode
+db.sqlite3
+config.py

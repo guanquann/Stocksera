@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/earnings_calendar.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}{% endblock %}
+{% block onload_properties%}restore_dark_mode(){% endblock %}
 
 {% block main_nav %}
     <div class="ticker-wrap">
@@ -58,8 +58,9 @@
             var d = new Date(current_date);
             var dayName = days[d.getDay()];
             html_string += `</div>
-                            <div id="${earning_date}"><h2>${earning_date} (${dayName})</h2></div>
-                            <div class="earnings_div">`
+                            <div class="daily_content ${earning_date}">
+                            <h2>${earning_date} (${dayName})</h2></div>
+                            <div class="earnings_div ${earning_date}">`
         }
 
         mkt_cap = Number(earnings_calendar[earning][2])
@@ -81,28 +82,28 @@
             }
         }
             
-        html_string += ` <div class="earnings_container">
+        html_string += ` <span class="earnings_container">
                             <a href=""><img src="${earnings_calendar[earning][5]}" onerror=this.src="{% static 'images/not_available.svg' %}" class="company_img"></a>
-                            <div><span>Name: </span>${earnings_calendar[earning][0]}</div>
-                            <div><span>Ticker: </span>${earnings_calendar[earning][1]}</div>
-                            <div><span>Mkt Cap: </span>${mkt_cap}</div>
-                            <div><span>EPS Est: </span>${eps_est}</div>
-                         </div>`
+                            <p><span>Name: </span>${earnings_calendar[earning][0]}</p>
+                            <p><span>Ticker: </span>${earnings_calendar[earning][1]}</p>
+                            <p><span>Mkt Cap: </span>${mkt_cap}</p>
+                            <p><span>EPS Est: </span>${eps_est}</p>
+                         </span>`
     }   
-    html_string += `</div>`
+    html_string += `</div></div>`
     document.getElementById("main").innerHTML += html_string;
 
-    earning_date_string = `<select onchange="date_filter()" id="select_date"><option></option>`
+    earning_date_string = `<select onchange="date_filter(this)" id="select_date"><option>All</option>`
     for (earning_date of earning_date_list) {
         earning_date_string += `<option><a href="#${earning_date}">${earning_date}</a></option>`
     }
     earning_date_string += `</select>
                             <span>Sort By: </span>
-                            <select>
-                                <option>Mkt Cap</option>
+                            <select onchange="sort_by(this)">
+                                <option>Market Cap</option>
                                 <option>EPS</option>
-                            </select><span id="to_top">
-                            <a href="#top">To Top</a></span>`
+                            </select>
+                            <span id="to_top"><a href="#top"><div class="triangle-up"></div></a></span>`
     document.getElementsByClassName("menu")[0].innerHTML += earning_date_string;
 </script>
 {% endblock %}

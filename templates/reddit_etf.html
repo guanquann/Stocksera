@@ -9,6 +9,8 @@
 <script src="{% static 'javascript/reddit_etf.js' %}"></script>
 {% endblock %}
 
+{% block onload_properties%}restore_dark_mode();{% endblock %}
+
 {% block main_content %} 
     <div id="instructions">
         Reddit ETF is based on the trending stocks on WSB. If a new ticker enters the Top 10 mentioned ticker list before the market opens, it will be bought at 9.30AM. Any ticker that falls out of the Top 10 list will be sold.

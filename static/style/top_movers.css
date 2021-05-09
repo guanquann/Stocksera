@@ -1,16 +1,27 @@
 @media only screen and (max-width: 900px) {
+    #gainers, #losers {
+        margin-top: 50px;
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
     table {
         margin-left: auto;
         margin-right: auto;
-        font-size: 12px;
     }
 }
 
 @media only screen and (min-width: 900px) {
+    #gainers, #losers {
+        width: 98%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
     table {
         margin-left: auto;
         margin-right: auto;
-        font-size: 12px;
     }
 }
 
@@ -18,31 +29,6 @@
     overflow-x: auto;
     overflow-y: auto;
     margin-bottom: 15px;
-}
-
-table {
-    border-collapse: collapse;
-    white-space: nowrap;
-}
-
-td {
-    width:50vw;
-}
-
-table td, table th {
-border: 1px solid #ddd;
-padding: 8px;
-}
-
-table tr:nth-child(even) {background-color: #f2f2f2;}
-
-table tr:hover {background-color: #ddd;}
-
-table th {
-padding-top: 12px;
-padding-bottom: 12px;
-text-align: left;
-color: white;
 }
 
 #gainers .header {
@@ -54,7 +40,7 @@ color: white;
     font-size: 15px;
 }
 
-#gainers table th {
+#gainers th {
     background-color: rgb(38, 166, 154);
 }
 
@@ -62,6 +48,6 @@ color: white;
     color: red;
 }
 
-#losers table th {
+#losers th {
     background-color: red;
 }

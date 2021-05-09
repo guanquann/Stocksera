@@ -41,7 +41,32 @@ const searchTicker = () =>{
     }
 }
 
-function date_filter() {
-    // selected_date = document.getElementById("select_date").value;
+function date_filter(elem) {
+    var selected_date = elem.value;
+    var main_divs = document.getElementById("main").getElementsByTagName("div");
+    for (main_div=1; main_div<main_divs.length; main_div++) {
+        if (selected_date == "All") {
+            main_divs[main_div].style.removeProperty("display");
+        }
 
+        else if (! main_divs[main_div].classList.contains(selected_date)) {
+            main_divs[main_div].style.display = "none";
+        }
+        else {
+            main_divs[main_div].style.removeProperty("display");
+        }
+    }
+}
+
+function sort_by(elem) {
+    var sort_selection = elem.value;
+    for (earning=0; earning<earnings_container_div.length; earning++) {
+        if (sort_selection == "Market Cap") {
+            mkt_cap = earnings_calendar[earning][2];
+
+        }
+        else {
+            continue
+        }
+    }
 }

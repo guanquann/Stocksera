@@ -1,3 +1,25 @@
+@media only screen and (max-width: 900px) {
+    .earnings_container {
+        width: calc(100% / 6);
+        border: 2px solid grey;
+        margin: 1px;
+        text-align: center;
+        padding: 3px;
+        word-wrap: break-word;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    .earnings_container {
+        width: 120px;
+        border: 2px solid grey;
+        margin: 1px;
+        text-align: center;
+        padding: 3px;
+        word-wrap: break-word;
+    }
+}
+
 .menu {
     position: sticky;
     top: 0%;
@@ -9,20 +31,13 @@
     float: right;
     margin-right: 20px;
     font-weight: bold;
-    font-style: italic;
-    font-size: 15px;
     border: 2px solid grey;
     border-radius: 3px;
     padding: 3px;
-    text-decoration: none;
 }
 
 #to_top a {
     color: grey;
-}
-
-#to_top a:hover{
-    color: #26a69a;
 }
 
 button {
@@ -69,20 +84,13 @@ h2 {
 }
 
 .company_img {
-    width: 110px;
+    width: 100%;
+    background-color: white;
 }
 
-.earnings_container {
-    width: 120px;
-    border: 2px solid grey;
-    margin: 1px;
-    text-align: center;
-    padding: 3px;
-    word-wrap: break-word;
-}
-
-.earnings_container div {
+.earnings_container p {
     text-align: left;
+    margin: 1px;
 }
 
 .earnings_container span {

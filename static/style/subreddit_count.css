@@ -28,11 +28,31 @@
     border-radius: 50%;
     width: 65px;
     height: 65px;
-    background-color: #e9eaea;
+    border: 2px solid white;
+    background-color: white;
 }
 
-.subreddit_intro div {
+.subreddit_intro .main_div {
+    margin-left: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.subreddit_diff {
+    margin-top: 17px;
+    margin-left: 15px;
+    background-color: #f1c40f;
+    border-radius: 8px;
+
+}
+
+.subreddit_diff div {
     margin-left: 7px;
+    margin-right: 7px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: black;
 }
 
 .subreddit_intro .lg {
@@ -48,6 +68,7 @@
     background-color: #f1c40f;
     padding: 3px;
     border-radius: 8px;
+    margin-left: 7px;
 }
 
 .subreddit_intro .sm {

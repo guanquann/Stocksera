@@ -12,7 +12,7 @@
     {% block additional_script %}{% endblock %}
 </head>
 
-<body onload="update_price_color();{% block onload_properties%}{% endblock %}" style="font-family:arial">
+<body onload="update_price_color();{% block onload_properties%}{% endblock %}">
 <div>
     <div id="nav_bar_div">
         <div>
@@ -48,6 +48,14 @@
                 <a href="{% url 'industry_analysis' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/industry.svg' %}">Industries</li></a>
                 <a href="{% url 'contact' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/contact.svg' %}">Contact</li></a>
             </ul>
+            <div><img src="{% static 'images/day_icon.svg' %}" class="sun_icon"></div>
+            <div><img src="{% static 'images/night_icon.svg' %}" class="night_icon"></div>
+
+            <label class="switch">
+                <input id="dark_mode" type="checkbox" onchange="activate_dark_mode()">
+                <span class="slider round"></span>
+            </label>
+
         </div>
 
     </div>

@@ -1,9 +1,14 @@
 function display_input() {
-    if (document.getElementById("quote").value != "") {
+    var error_msg_class = document.getElementById("error_msg").className;
+    if (error_msg_class == "instructions error_false") {
         document.getElementById("date_dropdown").style.removeProperty("display");
         document.getElementById("graph_section").style.removeProperty("display");
         document.getElementById("list_format").style.removeProperty("display");
         document.getElementById("options_choice").style.removeProperty("display");
+        document.getElementsByClassName("ticker_stats")[0].style.removeProperty("display");
+    }
+    else if (error_msg_class == "instructions error_true") {
+        document.getElementById("error_msg").style.removeProperty("display");
     }
 }
 

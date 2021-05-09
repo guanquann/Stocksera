@@ -9,12 +9,18 @@
 <script src="{% static 'javascript/top_movers.js' %}"></script>
 {% endblock %}
 
+{% block onload_properties%}restore_dark_mode(){% endblock %}
+
 {% block main_nav %}
-    <div class="top_nav">
-    <div>
-        <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" onkeyup="show_spinner();this.form.submit();" autocomplete="off">
+    <div class="ticker-wrap">
+        <div class="ticker">
+            {% for name in popular_name_list|length|get_range %}
+            <div class="ticker_item">
+                <b>{{popular_name_list|index:name}} &#183 {{price_list|index:name|index:0}} <span> {{price_list|index:name|index:1}} ({{price_list|index:name|index:2}}%) </span></b>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-</div>
 {% endblock %}
 
 {% block main_content %}

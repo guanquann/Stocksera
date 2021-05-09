@@ -1,14 +1,13 @@
 function display_data() {
-    if (document.getElementsByName("quote")[0].value == "-") {
+    var error_msg_class = document.getElementById("error_msg").className;
+    if (error_msg_class == "instructions error_true") {
         document.getElementById("error_msg").style.removeProperty("display");
-        document.getElementsByName("quote")[0].value = "";
     }
 
-    else if (document.getElementsByName("quote")[0].value != "") {
+    else if (error_msg_class == "instructions error_false") {
         document.getElementsByClassName("ticker_summary")[0].style.removeProperty("display");
         document.getElementsByClassName("chart-container")[0].style.removeProperty("display");
-        document.getElementsByClassName("ticker_news")[0].style.removeProperty("display");
-        
+
         document.getElementById("more_info_div").style.removeProperty("display");
         document.getElementById("img_div").style.removeProperty("display");
         document.getElementById("ticker_intro").style = "display:inline-block;";
@@ -24,4 +23,8 @@ function display_data() {
             document.getElementById("latest_price").style.color = "#26a69a";
         }
     }
+}
+
+function expand_iframe(elem) {
+    elem.style.height = elem.contentWindow.document.body.scrollHeight + 'px';
 }

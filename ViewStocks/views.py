@@ -1,5 +1,6 @@
 import os
 import time
+from datetime import datetime, timedelta
 
 from custom_extensions.custom_words import *
 from helpers import *
@@ -44,7 +45,7 @@ def stock_price(request):
 
     elif request.GET.get("quote"):
         ticker_selected = request.GET['quote'].upper()
-        try: 
+        try:
             ticker = yf.Ticker(ticker_selected)
             ticker_fin = finvizfinance(ticker_selected)
             ticker_fin_fundament = ticker_fin.TickerFundament()
@@ -67,28 +68,13 @@ def stock_price(request):
                 duration = "4"
             else:
                 price_df = ticker.history(period="1d", interval="2m")
-                ticker_date_max = list(map(lambda x: x.split(" ")[1].split("-")[0].rsplit(":", 1)[0],
+                ticker_date_max = list(map(lambda x: x.split()[1].split("-")[0].rsplit(":", 1)[0],
                                        price_df.index.astype(str).to_list()))
                 duration = "0"
 
             information = ticker.info
             img = information["logo_url"]
             official_name = ticker_fin_fundament["Company"]
-
-            try:
-                recommendations = ticker_fin.TickerOuterRatings()
-                recommendations = recommendations.to_html(index=False)
-            except AttributeError:
-                recommendations = "N/A"
-
-            major_holders = ticker.major_holders
-            major_holders = major_holders.to_html(index=False, header=False)
-            
-            institutional_holders = ticker.institutional_holders
-            if institutional_holders is not None:
-                institutional_holders = institutional_holders.to_html(index=False)
-            else:
-                institutional_holders = "N/A"
 
             # print(ticker.calendar)
             # print(ticker.financials)
@@ -148,7 +134,13 @@ def stock_price(request):
             mkt_year_low = round(information["fiftyTwoWeekLow"], 2)
             
             price_change = round(latest_price - mkt_close, 2)
-            price_percentage_change = ticker_fin_fundament['Change']
+            price_percentage_change = round(((latest_price - mkt_close) / mkt_close) * 100, 2)
+
+            if price_change > 0:
+                price_change = "+" + str(price_change)
+                price_percentage_change = "+" + str(price_percentage_change) + "%"
+            else:
+                price_percentage_change = str(price_percentage_change) + "%"
 
             shares_outstanding = ticker_fin_fundament['Shs Outstand']
             shares_float = ticker_fin_fundament['Shs Float']
@@ -159,12 +151,6 @@ def stock_price(request):
             sma20 = ticker_fin_fundament['SMA20']
             sma50 = ticker_fin_fundament['SMA50']
             sma200 = ticker_fin_fundament['SMA200']
-
-            news_df = ticker_fin.TickerNews()
-            news_df["Date"] = news_df["Date"].dt.date
-            del news_df["Link"]
-
-            news_df = news_df.to_html(index=False)
 
             return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
                                                          "ticker_date_max": ticker_date_max,
@@ -185,20 +171,159 @@ def stock_price(request):
                                                          "twoHundredDayAverage": twoHundredDayAverage,
                                                          "averageDailyVolume10Day": averageDailyVolume10Day,
                                                          "forward_p_e": forward_p_e, "eps": eps, "beta": beta,
-                                                         "recommendations": recommendations,
-                                                         "institutional_holders": institutional_holders,
-                                                         "major_holders": major_holders,
                                                          "website": website, "summary": summary,
                                                          "shares_outstanding": shares_outstanding,
                                                          "shares_float": shares_float,
                                                          "short_float": short_float,
                                                          "short_ratio": short_ratio, "price_target": price_target,
                                                          "rsi": rsi, "sma20": sma20, "sma50": sma50, "sma200": sma200,
-                                                         "news_df": news_df
-                                                         })
+                                                         "error": "error_false"})
         except (IndexError, KeyError, Exception):
-            return render(request, 'ticker_price.html', {"ticker_selected": "-", "incorrect_ticker": ticker_selected})
+            return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected, "error": "error_true"})
     return render(request, 'ticker_price.html')
+
+
+def ticker_recommendations(request):
+    if request.GET.get("quote"):
+        ticker_selected = request.GET['quote'].upper()
+    else:
+        ticker_selected = "AAPL"
+    ticker_fin = finvizfinance(ticker_selected)
+    try:
+        recommendations = ticker_fin.TickerOuterRatings()
+        recommendations = recommendations.to_html(index=False)
+    except AttributeError:
+        recommendations = "N/A"
+    return render(request, 'iframe_format.html', {"title": "Recommendations", "table": recommendations})
+
+
+def ticker_major_holders(request):
+    if request.GET.get("quote"):
+        ticker_selected = request.GET['quote'].upper()
+    else:
+        ticker_selected = "AAPL"
+    ticker = yf.Ticker(ticker_selected)
+    major_holders = ticker.major_holders
+    major_holders = major_holders.to_html(index=False, header=False)
+    return render(request, 'iframe_format.html', {"title": "Major Holders", "table": major_holders})
+
+
+def ticker_institutional_holders(request):
+    if request.GET.get("quote"):
+        ticker_selected = request.GET['quote'].upper()
+    else:
+        ticker_selected = "AAPL"
+    ticker = yf.Ticker(ticker_selected)
+    institutional_holders = ticker.institutional_holders
+    if institutional_holders is not None:
+        institutional_holders = institutional_holders.to_html(index=False)
+    else:
+        institutional_holders = "N/A"
+    return render(request, 'iframe_format.html', {"title": "Institutional Holders", "table": institutional_holders})
+
+
+def sub_news(request):
+    if request.GET.get("quote"):
+        ticker_selected = request.GET['quote'].upper()
+    else:
+        ticker_selected = "AAPL"
+    ticker_fin = finvizfinance(ticker_selected)
+
+    news_df = ticker_fin.TickerNews()
+    news_df["Date"] = news_df["Date"].dt.date
+    link = news_df["Link"].to_list()
+    del news_df["Link"]
+
+    sentiment_list = list()
+    all_titles = news_df['Title'].tolist()
+    for title in all_titles:
+        vs = analyzer.polarity_scores(title)
+        sentiment_score = vs['compound']
+        if sentiment_score > 0.25:
+            sentiment = "Bullish"
+        elif sentiment_score < -0.25:
+            sentiment = "Bearish"
+        else:
+            sentiment = "Neutral"
+        sentiment_list.append(sentiment)
+
+    news_df["Sentiment"] = sentiment_list
+    news_df = news_df.to_html(index=False)
+    return render(request, 'iframe_format.html', {"title": "News", "table": news_df, "link": link,
+                                                  "class": "ticker_news"})
+
+
+def latest_news(request):
+    if request.GET.get("quote"):
+        ticker_selected = request.GET['quote'].upper()
+    else:
+        ticker_selected = "AAPL"
+    ticker = yf.Ticker(ticker_selected)
+    ticker_fin = finvizfinance(ticker_selected)
+    ticker_fin_fundament = ticker_fin.TickerFundament()
+
+    information = ticker.info
+    img = information["logo_url"]
+    official_name = ticker_fin_fundament["Company"]
+
+    sector = ticker_fin_fundament['Sector']
+    industry = ticker_fin_fundament["Industry"]
+
+    news_df = ticker_fin.TickerNews()
+    news_df["Date"] = news_df["Date"].dt.date
+    link = news_df["Link"].to_list()
+    del news_df["Link"]
+
+    sentiment_list = list()
+    all_news = news_df['Title'].tolist()
+    for title in all_news:
+        vs = analyzer.polarity_scores(title)
+        sentiment_score = vs['compound']
+        if sentiment_score > 0.25:
+            sentiment = "Bullish"
+        elif sentiment_score < -0.25:
+            sentiment = "Bearish"
+        else:
+            sentiment = "Neutral"
+        sentiment_list.append(sentiment)
+
+    news_df["Sentiment"] = sentiment_list
+
+    num_rows = 0
+    total_score = 0
+    latest_date = news_df["Date"].unique()[0]
+    today_news = news_df[news_df['Date'] == latest_date]['Title'].tolist()
+    for title in today_news:
+        vs = analyzer.polarity_scores(title)
+        sentiment_score = vs['compound']
+        if sentiment_score != 0:
+            num_rows += 1
+            total_score += sentiment_score
+
+    if num_rows == 0:
+        avg_score = 25
+    else:
+        avg_score = round((total_score / num_rows) * 100, 2)
+
+    db.execute("SELECT * FROM news_sentiment WHERE date_updated=%s", (str(datetime.now()).split()[0],))
+    ticker_sentiment = db.fetchall()
+    days = 1
+    while not ticker_sentiment:
+        db.execute("SELECT * FROM news_sentiment WHERE date_updated=%s", (str(datetime.now()-timedelta(days=days)).split()[0],))
+        ticker_sentiment = db.fetchall()
+        days += 1
+    ticker_sentiment = list(map(list, ticker_sentiment))
+
+    return render(request, 'news_sentiment.html', {"ticker_selected": ticker_selected,
+                                                   "news_df": news_df.to_html(index=False),
+                                                   "link": link,
+                                                   "official_name": official_name,
+                                                   "img": img,
+                                                   "industry": industry,
+                                                   "sector": sector,
+                                                   "ticker_sentiment": ticker_sentiment,
+                                                   "latest_date": latest_date,
+                                                   "avg_score": avg_score})
 
 
 def financial(request):
@@ -259,101 +384,105 @@ def financial(request):
 def options(request):
     if request.GET.get("quote"):
         ticker_selected = request.GET['quote'].upper()
-        ticker = yf.Ticker(ticker_selected)
-
-        information = ticker.info
         try:
-            sector = information["sector"]
-            industry = information["industry"]
-        except KeyError:
-            sector = "-"
-            industry = "-"
-        img = information["logo_url"]
-        official_name = information["longName"]
+            ticker = yf.Ticker(ticker_selected)
 
-        options_dates = ticker.options
+            information = ticker.info
+            try:
+                sector = information["sector"]
+                industry = information["industry"]
+            except KeyError:
+                sector = "-"
+                industry = "-"
+            img = information["logo_url"]
+            official_name = information["longName"]
 
-        if request.GET.get("date"):
-            date_selected = request.GET["date"]
-        else:
-            date_selected = options_dates[0]
+            options_dates = ticker.options
 
-        calls = ticker.option_chain(date_selected).calls
+            if request.GET.get("date"):
+                date_selected = request.GET["date"]
+            else:
+                date_selected = options_dates[0]
 
-        del calls["contractSize"]
-        del calls["currency"]
-        calls.columns = ["Contract Name", "Last Trade Date", "Strike", "Last Price", "Bid", "Ask", "Change",
-                         "% Change", "Volume", "Open Interest", "Implied Volatility", "ITM"]
+            calls = ticker.option_chain(date_selected).calls
 
-        last_adj_close_price = float(ticker.info['previousClose'])
-        df_calls = calls.pivot_table(
-            index="Strike", values=["Volume", "Open Interest"], aggfunc="sum"
-        ).reindex()
-        df_calls["Strike"] = df_calls.index
-        df_calls["Type"] = "calls"
-        df_calls["Open Interest"] = df_calls["Open Interest"]
-        df_calls["Volume"] = df_calls["Volume"]
-        df_calls["oi+v"] = df_calls["Open Interest"] + df_calls["Volume"]
-        df_calls["Spot"] = round(last_adj_close_price, 2)
+            del calls["contractSize"]
+            del calls["currency"]
+            calls.columns = ["Contract Name", "Last Trade Date", "Strike", "Last Price", "Bid", "Ask", "Change",
+                             "% Change", "Volume", "Open Interest", "Implied Volatility", "ITM"]
 
-        calls["Volume"].fillna('-', inplace=True)
-        calls["Open Interest"].fillna('-', inplace=True)
-        calls["Implied Volatility"] = calls["Implied Volatility"].astype("float").multiply(100)
-        
-        calls["Change"] = calls["Change"].round(2)
-        calls["% Change"] = calls["% Change"].round(2)
-        calls["Implied Volatility"] = calls["Implied Volatility"].round(2)
+            last_adj_close_price = float(ticker.info['previousClose'])
+            df_calls = calls.pivot_table(
+                index="Strike", values=["Volume", "Open Interest"], aggfunc="sum"
+            ).reindex()
+            df_calls["Strike"] = df_calls.index
+            df_calls["Type"] = "calls"
+            df_calls["Open Interest"] = df_calls["Open Interest"]
+            df_calls["Volume"] = df_calls["Volume"]
+            df_calls["oi+v"] = df_calls["Open Interest"] + df_calls["Volume"]
+            df_calls["Spot"] = round(last_adj_close_price, 2)
 
-        puts = ticker.option_chain(date_selected).puts
+            calls["Volume"].fillna('-', inplace=True)
+            calls["Open Interest"].fillna('-', inplace=True)
+            calls["Implied Volatility"] = calls["Implied Volatility"].astype("float").multiply(100)
 
-        del puts["contractSize"]
-        del puts["currency"]
-        puts.columns = ["Contract Name", "Last Trade Date", "Strike", "Last Price", "Bid", "Ask", "Change",
-                        "% Change", "Volume", "Open Interest", "Implied Volatility", "ITM"]
+            calls["Change"] = calls["Change"].round(2)
+            calls["% Change"] = calls["% Change"].round(2)
+            calls["Implied Volatility"] = calls["Implied Volatility"].round(2)
 
-        df_puts = puts.pivot_table(
-            index="Strike", values=["Volume", "Open Interest"], aggfunc="sum"
-        ).reindex()
-        df_puts["Strike"] = df_puts.index
-        df_puts["Type"] = "puts"
-        df_puts["Open Interest"] = df_puts["Open Interest"]
-        df_puts["Volume"] = -df_puts["Volume"]
-        df_puts["Open Interest"] = -df_puts["Open Interest"]
-        df_puts["oi+v"] = df_puts["Open Interest"] + df_puts["Volume"]
-        df_puts["Spot"] = round(last_adj_close_price, 2)
+            puts = ticker.option_chain(date_selected).puts
 
-        puts["Volume"].fillna('-', inplace=True)
-        puts["Open Interest"].fillna('-', inplace=True)
-        puts["Implied Volatility"] = puts["Implied Volatility"].astype("float").multiply(100)
+            del puts["contractSize"]
+            del puts["currency"]
+            puts.columns = ["Contract Name", "Last Trade Date", "Strike", "Last Price", "Bid", "Ask", "Change",
+                            "% Change", "Volume", "Open Interest", "Implied Volatility", "ITM"]
 
-        puts["Change"] = puts["Change"].round(2)
-        puts["% Change"] = puts["% Change"].round(2)
-        puts["Implied Volatility"] = puts["Implied Volatility"].round(2)
+            df_puts = puts.pivot_table(
+                index="Strike", values=["Volume", "Open Interest"], aggfunc="sum"
+            ).reindex()
+            df_puts["Strike"] = df_puts.index
+            df_puts["Type"] = "puts"
+            df_puts["Open Interest"] = df_puts["Open Interest"]
+            df_puts["Volume"] = -df_puts["Volume"]
+            df_puts["Open Interest"] = -df_puts["Open Interest"]
+            df_puts["oi+v"] = df_puts["Open Interest"] + df_puts["Volume"]
+            df_puts["Spot"] = round(last_adj_close_price, 2)
 
-        df_merge = pd.merge(calls, puts, on="Strike")
-        df_merge = df_merge[["Last Price_x", "Change_x", "% Change_x", "Volume_x", "Open Interest_x", "Strike",
-                             "Last Price_y", "Change_y", "% Change_y", "Volume_y", "Open Interest_y"]]
-        df_merge.columns = ["Last Price", "Change", "% Change", "Volume", "Open Interest", "Strike",
-                            "Last Price", "Change", "% Change", "Volume", "Open Interest"]
-        
-        df_opt = pd.merge(df_calls, df_puts, left_index=True, right_index=True)
-        df_opt = df_opt[["Open Interest_x", "Open Interest_y"]].rename(
-            columns={"Open Interest_x": "OI Calls", "Open Interest_y": "OI Puts"})
-        max_pain, call_loss_list, put_loss_list = get_max_pain(df_opt)        
-        
-        return render(request, 'options.html', {"ticker_selected": ticker_selected, 
-                                                "official_name": official_name,
-                                                "img": img,
-                                                "industry": industry,
-                                                "sector": sector,
-                                                "options_dates": options_dates, 
-                                                "date_selected": date_selected, 
-                                                "max_pain": max_pain, 
-                                                "call_loss_list": call_loss_list, 
-                                                "put_loss_list": put_loss_list, 
-                                                "calls": calls.to_html(index=False), 
-                                                "puts": puts.to_html(index=False), 
-                                                "merge": df_merge.to_html(index=False)})
+            puts["Volume"].fillna('-', inplace=True)
+            puts["Open Interest"].fillna('-', inplace=True)
+            puts["Implied Volatility"] = puts["Implied Volatility"].astype("float").multiply(100)
+
+            puts["Change"] = puts["Change"].round(2)
+            puts["% Change"] = puts["% Change"].round(2)
+            puts["Implied Volatility"] = puts["Implied Volatility"].round(2)
+
+            df_merge = pd.merge(calls, puts, on="Strike")
+            df_merge = df_merge[["Last Price_x", "Change_x", "% Change_x", "Volume_x", "Open Interest_x", "Strike",
+                                 "Last Price_y", "Change_y", "% Change_y", "Volume_y", "Open Interest_y"]]
+            df_merge.columns = ["Last Price", "Change", "% Change", "Volume", "Open Interest", "Strike",
+                                "Last Price", "Change", "% Change", "Volume", "Open Interest"]
+
+            df_opt = pd.merge(df_calls, df_puts, left_index=True, right_index=True)
+            df_opt = df_opt[["Open Interest_x", "Open Interest_y"]].rename(
+                columns={"Open Interest_x": "OI Calls", "Open Interest_y": "OI Puts"})
+            max_pain, call_loss_list, put_loss_list = get_max_pain(df_opt)
+
+            return render(request, 'options.html', {"ticker_selected": ticker_selected,
+                                                    "official_name": official_name,
+                                                    "img": img,
+                                                    "industry": industry,
+                                                    "sector": sector,
+                                                    "options_dates": options_dates,
+                                                    "date_selected": date_selected,
+                                                    "max_pain": max_pain,
+                                                    "call_loss_list": call_loss_list,
+                                                    "put_loss_list": put_loss_list,
+                                                    "calls": calls.to_html(index=False),
+                                                    "puts": puts.to_html(index=False),
+                                                    "merge": df_merge.to_html(index=False),
+                                                    "error": "error_false"})
+        except (IndexError, KeyError, Exception):
+            return render(request, 'options.html', {"ticker_selected": ticker_selected, "error": "error_true"})
     else:
         return render(request, 'options.html')
 
@@ -394,13 +523,15 @@ def reddit_analysis(request):
 
 
 def subreddit_count(request):
-    db.execute("SELECT * FROM subreddit_count ")
+    db.execute("SELECT * FROM subreddit_count")
     subscribers = db.fetchall()
     subscribers = list(map(list, subscribers))
     return render(request, 'subreddit_count.html', {"subscribers": subscribers})
 
 
 def top_movers(request):
+    popular_ticker_list, popular_name_list, price_list = ticker_bar()
+
     top_gainers = pd.read_html("https://finance.yahoo.com/screener/predefined/day_gainers")[0]
     top_gainers["PE Ratio (TTM)"] = top_gainers["PE Ratio (TTM)"].replace(np.nan, "N/A")
     del top_gainers["52 Week Range"]
@@ -409,53 +540,38 @@ def top_movers(request):
     top_losers["PE Ratio (TTM)"] = top_gainers["PE Ratio (TTM)"].replace(np.nan, "N/A")
     del top_losers["52 Week Range"]
 
-    return render(request, 'top_movers.html', {"top_gainers": top_gainers.to_html(index=False),
+    return render(request, 'top_movers.html', {"popular_ticker_list": popular_ticker_list,
+                                               "popular_name_list": popular_name_list,
+                                               "price_list": price_list,
+                                               "top_gainers": top_gainers.to_html(index=False),
                                                "top_losers": top_losers.to_html(index=False)})
 
 
 def short_interest(request):
+    popular_ticker_list, popular_name_list, price_list = ticker_bar()
     df_high_short_interest = get_high_short_interest()
-    return render(request, 'short_interest.html',
-                  {"df_high_short_interest": df_high_short_interest.to_html(index=False)})
+    return render(request, 'short_interest.html', {"popular_ticker_list": popular_ticker_list,
+                                                   "popular_name_list": popular_name_list,
+                                                   "price_list": price_list,
+                                                   "df_high_short_interest": df_high_short_interest.to_html(index=False)})
 
 
 def low_float(request):
+    popular_ticker_list, popular_name_list, price_list = ticker_bar()
     df_low_float = get_low_float()
-    return render(request, 'low_float.html', {"df_low_float": df_low_float.to_html(index=False)})
+    return render(request, 'low_float.html', {"popular_ticker_list": popular_ticker_list,
+                                              "popular_name_list": popular_name_list,
+                                              "price_list": price_list,
+                                              "df_low_float": df_low_float.to_html(index=False)})
 
 
 def penny_stocks(request):
+    popular_ticker_list, popular_name_list, price_list = ticker_bar()
     df_penny_stocks = get_penny_stocks()
-    return render(request, 'penny_stocks.html', {"df_penny_stocks": df_penny_stocks.to_html(index=False)})
-
-
-def latest_news(request):
-    if request.GET.get("quote"):
-        ticker_selected = request.GET['quote'].upper()
-    else:
-        ticker_selected = "AAPL"
-    ticker_fin = finvizfinance(ticker_selected)
-
-    news_df = ticker_fin.TickerNews()
-    news_df["Date"] = news_df["Date"].dt.date
-    del news_df["Link"]
-
-    sentiment_list = list()
-    all_titles = news_df['Title'].tolist()
-    for title in all_titles:
-        vs = analyzer.polarity_scores(title)
-        sentiment_score = vs['compound']
-        if sentiment_score > 0.25:
-            sentiment = "Bullish"
-        elif sentiment_score < -0.25:
-            sentiment = "Bearish"
-        else:
-            sentiment = "Neutral"
-        sentiment_list.append(sentiment)
-
-    news_df["Sentiment"] = sentiment_list
-    news_df = news_df.to_html(index=False)
-    return render(request, 'news_sentiment.html', {"news_df": news_df})
+    return render(request, 'penny_stocks.html', {"popular_ticker_list": popular_ticker_list,
+                                                 "popular_name_list": popular_name_list,
+                                                 "price_list": price_list,
+                                                 "df_penny_stocks": df_penny_stocks.to_html(index=False)})
 
 
 def industries_analysis(request):

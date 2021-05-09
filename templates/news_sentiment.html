@@ -5,11 +5,11 @@
 {% block title %}StocksEra | News{% endblock %}
 
 {% block additional_script %}
-<link rel="stylesheet" href="{% static 'style/ticker_price.css' %}">
+<link rel="stylesheet" href="{% static 'style/news_sentiment.css' %}">
 <script src="{% static 'javascript/news_sentiment.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}display_data(){% endblock %}
+{% block onload_properties%}display_data();restore_dark_mode(){% endblock %}
  
 {% block main_nav %}
 <div class="top_nav">
@@ -22,10 +22,113 @@
 {% endblock %}
 
 {% block main_content %}
-    <div style="display:none" class="ticker_news">
-            <p><b>Recent News Articles</b></p>
-            <div class="scrollable_div">
-                {{news_df|safe}}
-            </div>
+    <div style="display:flex">
+        <div style="" id="img_div">
+            {% if img != "" %}
+            <a href={{website}} target="_blank"><img src="{{img}}" onerror=this.src="{% static 'images/not_available.svg' %}"></a>
+            {% else %}
+            <a href={{website}} target="_blank"><img src="{% static 'images/not_available.svg' %}"></a>
+            {% endif %}
+        </div>
+        <div style="" id="ticker_intro">
+            <span style="font-size:24px;font-weight:bolder">{{official_name}} ({{ticker_selected}})</span>
+            <br>Sector: <b>{{sector}}</b><br>Industry: <b>{{industry}}</b>
+        </div>
     </div>
+    <div class="sentiment_msg">Latest Sentiment as of {{latest_date}}: {{avg_score}}%</div>
+    <div class="chart-container">
+        <canvas id="sentiment_chart"></canvas>
+    </div>
+
+    <div style="display:none" class="ticker_news">
+        <p><b>Recent News Articles</b></p>
+        <div class="chart-container">
+            <canvas id="personal_sentiment_chart"></canvas>
+        </div>
+        <div class="scrollable_div">
+            {{news_df|safe}}
+        </div>
+    </div>
+{% endblock %}
+
+{% block bottom_script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script>
+    var link = {{link|safe}}
+    var table = document.getElementsByTagName("tr");
+    for (row=1; row<table.length; row++) {
+        var td = table[row].getElementsByTagName("td")[1];
+        td.innerHTML = `<a href="${link[row]}" target="_blank" style="color:inherit;">${td.innerHTML}</a>`
+    }
+
+    var ticker_sentiment = {{ticker_sentiment|safe}};
+    var ticker_list = [], ticker_score = [];
+    for (sentiment of ticker_sentiment) {
+        ticker_list.push(sentiment[0]);
+        ticker_score.push(sentiment[1]);
+    }
+
+    var options_dict = {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+            display: false
+         },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: false,
+                    callback: function(value, index, values) {
+                            return value + "%";
+                    }
+                },
+                gridLines: {
+                    drawOnChartArea: false
+                }
+            }],
+            xAxes: [{
+                ticks: {
+                  maxRotation: 45,
+                  minRotation: 0,
+                },
+                gridLines: {
+                    drawOnChartArea: false
+                }
+            }]
+        },
+        // To remove the point of each label
+        elements: {
+            point: {
+                radius: 0
+            }
+        },
+        // To show value when hover on any part of the graph
+        tooltips: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+                label: (item) => `${item.yLabel}%`,
+            },
+        },
+        hover: {
+            mode: 'index',
+            intersect: false
+        },
+    };
+
+    var sentiment_chart = document.getElementById('sentiment_chart');
+    var myChart = new Chart(sentiment_chart, {
+        type: 'bar',
+        data: {
+            labels: ticker_list,
+            datasets: [{
+                data: ticker_score,
+                backgroundColor: 'rgba(255, 159, 64, 0.5)',
+                borderColor: 'rgb(255, 159, 64)',
+                borderWidth: '2',
+            }]
+        },
+        options: options_dict
+    });
+</script>
 {% endblock %}

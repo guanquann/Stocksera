@@ -1,19 +1,27 @@
 @media only screen and (max-width: 900px) {
-	#nav_bar_div {
+    body, button, input, select {
+        font-size: 10px;
+        background-color: transparent;
+    }
+
+    #nav_bar_div {
+		opacity: 0;
 		display: none;
-		width: 15%;
+		z-index: 999;
+		width: 130px;
 		height: 100vh;
 		vertical-align: top;
 		background-color: #e9eaea;
 		position: fixed;
-		font-size: 15px;
+		font-size: 11px;
+		transition: 0.5s;
 	}
 
 	#nav_bar_div_sm {
 		display: flex;
 		position: absolute;
-		margin-top: 50vh;
-		left: -30px;
+		margin-top: 44vh;
+		left: -25px;
 		background-color: gold;
 		border-radius: 5px;
 		padding-top: 5px;
@@ -21,23 +29,112 @@
 		padding-left: 13px;
 		padding-right: 13px;
 		transform: rotate(90deg);
-		z-index: 999;
+		z-index: 9;
 	}
 
 	#nav_bar_div_sm:hover {
 		cursor: pointer;
 	}
 
+	ul {
+        margin-top: 52px;
+	}
+
+    .switch {
+        margin-left: 39px;
+        bottom: 1.5vh;
+        position: fixed;
+        display: inline-block;
+        width: 45px;
+        height: 25px;
+    }
+
+    .sun_icon {
+        width: 15px;
+        position: fixed;
+        bottom: 2.2vh;
+        margin-left: 22px;
+    }
+
+    .night_icon {
+        width: 13px;
+        position: fixed;
+        bottom: 2.3vh;
+        margin-left: 87px;
+    }
+
 	#main_content {
-		width: 100vw; 
+		width: 99vw;
 		height: 99vh;
 		border: 0px;
 		overflow-y: auto;
 		margin-left: 1%;
 	}
+
+    .ticker-wrap {
+        background-color:#e9eaea;
+        position: fixed;
+        width: 100%;
+        overflow: hidden;
+        height: 30px;
+        box-sizing: content-box;
+        z-index: 999;
+    }
+
+    .top_nav {
+        background-color:#e9eaea;
+        position: fixed;
+        width: 100%;
+        overflow: hidden;
+        height: 30px;
+        box-sizing: content-box;
+        z-index: 999;
+    }
+
+    .top_nav div {
+        margin-top: 3px;
+        margin-left: 16px;
+        width: fit-content;
+    }
+
+    .ticker-wrap .ticker {
+        display: inline-block;
+        height: 30px;
+        line-height: 30px;
+        white-space: nowrap;
+        box-sizing: content-box;
+        -webkit-animation-iteration-count: infinite;
+        animation-iteration-count: infinite;
+        -webkit-animation-timing-function: linear;
+        animation-timing-function: linear;
+        -webkit-animation-name: ticker;
+        animation-name: ticker;
+        -webkit-animation-duration: 100s;
+        animation-duration: 100s;
+    }
+
+    .ticker-wrap .ticker_item {
+        display: inline-block;
+        padding: 0 2rem;
+        font-size: 1.2rem;
+        color: black;
+    }
+
+    .ticker_input {
+        border: 1px solid grey;
+        border-radius: 6px;
+        padding: 4.5px;
+        text-transform: uppercase;
+        max-width: 100px;
+    }
 }	
 
 @media only screen and (min-width: 900px) {
+    body, button, input, select {
+        font-size: 13px;
+        background-color: transparent;
+    }
+
 	#nav_bar_div {
 		display: inline-block;
 		width: 200px;
@@ -52,6 +149,29 @@
 		display: none;
 	}
 
+    .switch {
+        margin-left: 72px;
+        bottom: 1.5vh;
+        position: fixed;
+        display: inline-block;
+        width: 45px;
+        height: 25px;
+    }
+
+    .sun_icon {
+        width: 15px;
+        position: fixed;
+        bottom: 2.5vh;
+        margin-left: 54px;
+    }
+
+    .night_icon {
+        width: 13px;
+        position: fixed;
+        bottom: 2.55vh;
+        margin-left: 121px;
+    }
+
 	#main_div {
 		display: inline-block;
 		width: calc(100% - 200px);
@@ -65,11 +185,68 @@
 		margin-top: 50px;
 		margin-left: 1%;
 	}
-}	
+
+	.ticker-wrap {
+        background-color:#e9eaea;
+        position: fixed;
+        width: 100%;
+        overflow: hidden;
+        height: 46px;
+        box-sizing: content-box;
+        z-index: 999;
+    }
+
+    .top_nav {
+        background-color:#e9eaea;
+        position: fixed;
+        width: 100%;
+        overflow: hidden;
+        height: 46px;
+        box-sizing: content-box;
+        z-index: 999;
+    }
+
+    .top_nav div {
+        margin-top: 7px;
+        margin-left: 20px;
+        width: fit-content;
+    }
+
+    .ticker-wrap .ticker {
+        display: inline-block;
+        height: 46px;
+        line-height: 46px;
+        white-space: nowrap;
+        box-sizing: content-box;
+        -webkit-animation-iteration-count: infinite;
+        animation-iteration-count: infinite;
+        -webkit-animation-timing-function: linear;
+        animation-timing-function: linear;
+        -webkit-animation-name: ticker;
+        animation-name: ticker;
+        -webkit-animation-duration: 100s;
+        animation-duration: 100s;
+    }
+
+    .ticker-wrap .ticker_item {
+        display: inline-block;
+        padding: 0 2rem;
+        font-size: 1.2rem;
+        color: black;
+    }
+
+    .ticker_input {
+        border: 1px solid grey;
+        border-radius: 6px;
+        padding: 7px;
+        text-transform: uppercase;
+        max-width: 120px;
+    }
+}
 
 body {
     margin:0;
-	font-size: 13px;
+	font-family: Arial;
 }
 
 @-webkit-keyframes ticker {
@@ -96,61 +273,9 @@ body {
 	}
 }
 
-.ticker-wrap {
-    background-color:#e9eaea;
-	position: fixed;
-	width: 100%;
-	overflow: hidden;
-	height: 46px;
-	box-sizing: content-box;
-	z-index: 999;
-}
-
-.top_nav {
-    background-color:#e9eaea;
-	position: fixed;
-	width: 100%;
-	overflow: hidden;
-	height: 46px;
-	box-sizing: content-box;
-	z-index: 999;
-}
-
-.top_nav div {
-	margin-top: 7px;
-	margin-left: 20px;
-	width: fit-content;
-}
-
-.ticker-wrap .ticker {
-    display: inline-block;
-	height: 46px;
-	line-height: 46px;
-	white-space: nowrap;
-	box-sizing: content-box;
-	-webkit-animation-iteration-count: infinite;
-	animation-iteration-count: infinite;
-	-webkit-animation-timing-function: linear;
-	animation-timing-function: linear;
-	-webkit-animation-name: ticker;
-	animation-name: ticker;
-	-webkit-animation-duration: 100s;
-	animation-duration: 100s;
-}
-
-.ticker-wrap .ticker_item {
-	display: inline-block;
-	padding: 0 2rem;
-	font-size: 1.2rem;
-	color: black;
-}
-
-.ticker_input {
-    border: 1px solid grey;
-    border-radius: 6px;
-    padding: 7px;
-    text-transform: uppercase;
-    max-width: 18vw;
+button:hover {
+    cursor: pointer;
+    transition: 0.5s;
 }
 
 input:focus, select:focus, button:focus {
@@ -215,6 +340,37 @@ ul {
 
 a {
 	text-decoration: none;
+	color: black;
+}
+
+table {
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+td {
+    width:50vw;
+}
+
+table td, table th {
+    border: 1px solid #ddd;
+    padding: 6px;
+}
+
+table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+table tr:hover {
+    background-color: #ddd;
+}
+
+table th {
+    padding-top: 9px;
+    padding-bottom: 9px;
+    text-align: left;
+    color: white;
+    background-color: rgb(38, 166, 154);
 }
 
 .spinner_container {
@@ -222,7 +378,7 @@ a {
     height: 100vh;
     position: fixed;
     background-color: white;
-    opacity: 0.5;
+    opacity: 0.35;
 }
 
 .spinner {
@@ -249,6 +405,90 @@ a {
 	border-left: 12px solid transparent;
 	border-right: 12px solid transparent;
 	border-bottom: 18px solid #555;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #5e5e5e;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(19px);
+    -ms-transform: translateX(19px);
+    transform: translateX(19px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.dark_mode {
+    background-color: black;
+    color: wheat;
+}
+
+.dark_mode table tr {
+    background-color: transparent;
+}
+
+.dark_mode #nav_bar_div, .dark_mode .instructions {
+    background-color: #505050;
+}
+
+.dark_mode #main_div > div:first-of-type {
+    background-color: #505050;
+}
+
+.dark_mode select, .dark_mode input {
+    border: 1px solid wheat;
+    color: wheat;
+}
+
+.dark_mode button, .dark_mode option {
+    background-color: wheat;
+    color: black;
+}
+
+.dark_mode button:hover {
+    background-color: #ffba39;
 }
 
 ::-webkit-scrollbar {

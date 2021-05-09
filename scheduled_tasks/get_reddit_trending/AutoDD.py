@@ -6,7 +6,6 @@
 __author__ = "Fufu Fang kaito1410 Napo2k gobbedy"
 __copyright__ = "The GNU General Public License v3.0"
 
-import os
 import sys
 import os
 import re
@@ -18,6 +17,7 @@ from tabulate import tabulate
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import psycopg2
 
+import config
 from scheduled_tasks.get_reddit_trending.fast_yahoo import *
 from custom_extensions.stopwords import stopwords_list
 from custom_extensions.custom_words import new_words
@@ -43,7 +43,7 @@ subreddit_dict = {'pennystocks': 'pnnystks',
                   'Daytrading': 'daytrade',
                   'StockMarket': 'stkmrkt',
                   'stocks': 'stocks',
-                  'investing': 'investng',
+                  'investing': 'investing',
                   'wallstreetbets': 'WSB'}
 
 # x base point of for a ticker that appears on a subreddit title or text body that fits the search criteria
@@ -63,11 +63,10 @@ negative_sentiment = 0
 # rocket emoji
 rocket = '🚀'
 
-# =================================================================================================
 # praw credentials
-CLIENT_ID = "3RbFQX8O9UqDCA"
-CLIENT_SECRET = "NalOX_ZQqGWP4eYKZv6bPlAb2aWOcA"
-USER_AGENT = "subreddit_scraper"
+CLIENT_ID = config.API_REDDIT_CLIENT_ID
+CLIENT_SECRET = config.API_REDDIT_CLIENT_SECRET
+USER_AGENT = config.API_REDDIT_USER_AGENT
 
 
 def get_sentiment(text, increment):
@@ -84,36 +83,6 @@ def get_sentiment(text, increment):
     return increment, sentiment
 
 
-def get_submission_praw(n, sub_dict):
-    """
-    Returns a list of results for submission in past:
-    1st list: current result from n hours ago until now
-    2nd list: prev result from 2n hours ago until n hours ago
-    """
-
-    mid_interval = datetime.today() - timedelta(hours=n)
-    timestamp_mid = int(mid_interval.timestamp())
-    timestamp_start = int((mid_interval - timedelta(hours=n)).timestamp())
-    timestamp_end = int(datetime.today().timestamp())
-    print("praw")
-    reddit = praw.Reddit(client_id=CLIENT_ID, client_secret=CLIENT_SECRET, user_agent=USER_AGENT)
-
-    recent = {}
-    prev = {}
-    for key in sub_dict:
-        subreddit = reddit.subreddit(key)
-        all_results = []
-        # praw limitation gets only 1000 posts
-        for post in subreddit.new(limit=1000):
-            all_results.append([post.title, post.link_flair_text, post.selftext, post.score, post.created_utc])
-
-        # start --> mid --> end
-        recent[key] = [posts for posts in all_results if timestamp_mid <= posts[4] <= timestamp_end]
-        prev[key] = [posts for posts in all_results if timestamp_start <= posts[4] < timestamp_mid]
-
-    return recent, prev
-
-
 def get_submission_psaw(n, sub_dict):
     """
     Returns a list of results for submission in past:
@@ -126,7 +95,7 @@ def get_submission_psaw(n, sub_dict):
     timestamp_mid = int(mid_interval.timestamp())
     timestamp_start = int((mid_interval - timedelta(hours=n)).timestamp())
     timestamp_end = int(datetime.today().timestamp())
-    print("psaw")
+    print("psaw", timestamp_start, timestamp_mid, timestamp_end)
     recent = {}
     prev = {}
     for key in sub_dict:
@@ -163,112 +132,17 @@ def get_submission_generators(n, sub, allsub, use_psaw):
     if allsub:
         sub_dict = subreddit_dict
 
-    if use_psaw:
-        recent, prev = get_submission_psaw(n, sub_dict)
+    recent, prev = get_submission_psaw(n, sub_dict)
 
-        print("Searching for tickers...")
-        current_scores, current_rocket_scores, current_positive, current_negative = get_ticker_scores_psaw(recent)
-        prev_scores, prev_rocket_scores, prev_positive, prev_negative = get_ticker_scores_psaw(prev)
-
-    else:
-        recent, prev = get_submission_praw(n, sub_dict)
-        if recent and not prev:
-            print('submission results were not found for the previous time period. '
-                  'This may be a popular subreddit with lots of submissions. '
-                  'Try reducing the time interval with the --interval parameter')
-            return
-        elif not recent and not prev:
-            print("praw did not fetch any results for the sub: ")
-            print(sub)
-            print("try switching to psaw")
-            return
-        else:
-            print("Searching for tickers...")
-            current_scores, current_rocket_scores, current_positive, current_negative = get_ticker_scores_praw(recent)
-            prev_scores, prev_rocket_scores, prev_positive, prev_negative = get_ticker_scores_praw(prev)
+    print("Searching for tickers...")
+    current_scores, current_rocket_scores, current_positive, current_negative = get_ticker_scores_psaw(recent)
+    prev_scores, prev_rocket_scores, prev_positive, prev_negative = get_ticker_scores_psaw(prev)
 
     return current_scores, current_rocket_scores, current_positive, current_negative, \
            prev_scores, prev_rocket_scores, prev_positive, prev_negative
 
 
-def get_ticker_scores_praw(sub_gen_dict):
-    """
-    Return two dictionaries:
-    --sub_scores_dict: a dictionary of dictionaries. This dictionaries' keys are the requested subreddit: all subreddits
-    if args.allsub is True, and just args.sub otherwise. The value paired with each subreddit key is a dictionary of
-    scores, where each key is a ticker found in the reddit submissions.
-    --rocket_scores_dict: a dictionary whose keys are the tickers found in reddit submissions, and value is the number
-    of rocker emojis found for each ticker.
-
-    :param sub_gen_dict: A dictionary of generators for each subreddit, as outputted by get_submission_generators
-    """
-
-    # Python regex pattern for stocks codes
-    pattern = '(?<=\$)?\\b[A-Z]{3,5}\\b(?:\.[A-Z]{1,2})?'
-
-    # Dictionaries containing the summaries
-    sub_scores_dict = {}
-
-    # Dictionaries containing the rocket count
-    rocket_scores_dict = {}
-
-    # Dictionaries containing sentiment ratio
-    positive_sentiment_dict = {}
-    negative_sentiment_dict = {}
-    sentiment = "neutral"
-
-    for sub, submission_list in sub_gen_dict.items():
-
-        sub_scores_dict[sub] = {}
-
-        for submission in submission_list:
-            # every ticker in the title will earn this base points
-            increment = base_points
-
-            # flair is worth bonus points
-            if submission[1] is not None:
-                if 'DD' in submission[1]:
-                    increment += bonus_points
-                elif 'Catalyst' in submission[1]:
-                    increment += bonus_points
-                elif 'technical analysis' in submission[1]:
-                    increment += bonus_points
-
-            # every 3 upvotes are worth 1 extra point
-            if upvote_factor > 0 and submission[3] is not None:
-                increment += math.ceil(submission[3]/upvote_factor)
-
-            # search the text body for the ticker/tickers
-            selftext_extracted = set()
-            if submission[2] is not None:
-                selftext = ' ' + submission[2] + ' '
-                selftext_extracted = set(re.findall(pattern, selftext))
-                increment, sentiment = get_sentiment(selftext, increment)
-
-            # search the title for the ticker/tickers
-            title = ' ' + submission[0] + ' '
-            title_extracted = set(re.findall(pattern, title))
-            if submission[2] is None:
-                increment, sentiment = get_sentiment(title, increment)
-
-            extracted_tickers = selftext_extracted.union(title_extracted)
-            extracted_tickers = {ticker.replace('.', '-') for ticker in extracted_tickers}
-
-            count_rocket = title.count(rocket) + selftext.count(rocket)
-            for ticker in extracted_tickers:
-                rocket_scores_dict[ticker] = rocket_scores_dict.get(ticker, 0) + count_rocket
-
-                # title_extracted is a set, duplicate tickers from the same title counted once only
-                sub_scores_dict[sub][ticker] = sub_scores_dict[sub].get(ticker, 0) + increment
-
-                if sentiment == "positive":
-                    positive_sentiment_dict[ticker] = positive_sentiment_dict.get(ticker, 0) + 1
-                if sentiment == "negative":
-                    negative_sentiment_dict[ticker] = negative_sentiment_dict.get(ticker, 0) + 1
-
-    return sub_scores_dict, rocket_scores_dict, positive_sentiment_dict, negative_sentiment_dict
-
-
+word_dict = {}
 def get_ticker_scores_psaw(sub_gen_dict):
     """
     Return two dictionaries:
@@ -310,7 +184,7 @@ def get_ticker_scores_psaw(sub_gen_dict):
                     increment += bonus_points
                 elif 'Catalyst' in submission.link_flair_text:
                     increment += bonus_points
-                elif 'technical analysis' in submission.link_flair_text:
+                elif 'Technical Analysis' in submission.link_flair_text:
                     increment += bonus_points
 
             # every 3 upvotes are worth 1 extra point
@@ -319,14 +193,22 @@ def get_ticker_scores_psaw(sub_gen_dict):
 
             # search the title for the ticker/tickers
             if hasattr(submission, 'title'):
-                title = ' ' + submission.title + ' '
+                title = ' ' + submission.title.upper() + ' '
+                # print(title , submission)
+                bag_of_words = [re.sub(r"[^A-Z0-9]+", '', k) for k in title.split()]
+                for word in bag_of_words:
+                    word_dict[word] = word_dict.get(word, 0) + 1
                 title_extracted = set(re.findall(pattern, title))
                 increment, sentiment = get_sentiment(title, increment)
 
             # search the text body for the ticker/tickers
             selftext_extracted = set()
             if hasattr(submission, 'selftext'):
-                selftext = ' ' + submission.selftext + ' '
+                selftext = ' ' + submission.selftext.upper() + ' '
+                bag_of_words = [re.sub(r"[^A-Z0-9]+", '', k) for k in title.split()]
+                for word in bag_of_words:
+                    word_dict[word] = word_dict.get(word, 0) + 1
+
                 selftext_extracted = set(re.findall(pattern, selftext))
                 increment, sentiment = get_sentiment(selftext, increment)
 
@@ -355,7 +237,7 @@ def populate_df(current_scores_dict, prev_scores_dict, interval):
     """
     dict_result = {}
     total_sub_scores = {}
-
+    print(dict(sorted(word_dict.items(), key=lambda item: item[1])))
     for sub, current_sub_scores_dict in current_scores_dict.items():
         total_sub_scores[sub] = {}
         for symbol, current_score in current_sub_scores_dict.items():
@@ -409,7 +291,7 @@ def filter_df(df, min_val):
     return df
 
 
-def get_financial_stats(results_df, threads=True, minprice=0, maxprice=99999999):
+def get_financial_stats(results_df, threads=True):
     # dictionary of ticker summary profile information to get from yahoo
     summary_profile_measures = {'industry': 'industry'}
 
@@ -428,7 +310,7 @@ def get_financial_stats(results_df, threads=True, minprice=0, maxprice=99999999)
 
     # check for valid symbols and get quick stats
     ticker_list = list(results_df.index.values)
-    quick_stats_df = get_quick_stats(ticker_list, threads, minprice, maxprice)
+    quick_stats_df = get_quick_stats(ticker_list, threads)
     valid_ticker_list = list(quick_stats_df.index.values)
 
     summary_stats_df = download_advanced_stats(valid_ticker_list, module_name_map, threads)
@@ -440,7 +322,7 @@ def get_financial_stats(results_df, threads=True, minprice=0, maxprice=99999999)
     return results_df
 
 
-def get_quick_stats(ticker_list, threads=True, minprice=0, maxprice=99999999):
+def get_quick_stats(ticker_list, threads=True):
 
     quick_stats = {'regularMarketPreviousClose': 'prvCls', 'fiftyDayAverage': '50DayAvg',
                    'regularMarketVolume': 'volume', 'averageDailyVolume3Month': '3MonthVolAvg',
@@ -519,7 +401,7 @@ def get_quick_stats(ticker_list, threads=True, minprice=0, maxprice=99999999):
             valid = True
 
         # if the ticker has any valid column, and price is in the range, append
-        if valid and minprice <= price <= maxprice:
+        if valid:
             stat_list = [symbol, price, day_change, change_50day, volume, mkt_cap, stock_float, beta]
             processed_stats_table.append(stat_list)
 

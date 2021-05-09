@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/subreddit_count.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}{% endblock %}
+{% block onload_properties%}restore_dark_mode(){% endblock %}
  
 {% block main_nav %}
 <div class="top_nav">
@@ -24,10 +24,15 @@
 {% block main_content %}
     <div class="subreddit_intro">
         <img src="{% static 'images/subreddit_icon/wallstreetbets.png' %}">
-        <div>
-            <div class="lg">wallstreetbets</div>
-            <div class="sm">r/wallstreetbets
-                <div class="explore"><a href="https://www.reddit.com/r/wallstreetbets" target="_blank">Explore ></a></div>
+        <div class="main_div">
+            <div>
+                <div class="lg">wallstreetbets</div>
+                <div class="sm">r/wallstreetbets
+                    <div class="explore"><a href="https://www.reddit.com/r/wallstreetbets" target="_blank">Explore ></a></div>
+                </div>
+            </div>
+            <div class="subreddit_diff">
+                <div id="wsb_diff"></div>
             </div>
         </div>
     </div>
@@ -37,11 +42,16 @@
 
     <div class="subreddit_intro">
         <img src="{% static 'images/subreddit_icon/stocks.png' %}">
+        <div class="main_div">
         <div>
             <div class="lg">Stocks - Investing and trading for all</div>
             <div class="sm">r/stocks
                 <div class="explore"><a href="https://www.reddit.com/r/stocks" target="_blank">Explore ></a></div>
             </div>
+        </div>
+        </div>
+        <div class="subreddit_diff">
+            <div id="stocks_diff"></div>
         </div>
     </div>
     <div class="chart-container">
@@ -50,10 +60,15 @@
 
     <div class="subreddit_intro">
         <img src="{% static 'images/subreddit_icon/stockmarket.png' %}">
-        <div>
-            <div class="lg">r/StockMarket - Reddit's Front Page of the Stock Market</div>
-            <div class="sm">r/StockMarket
-                <div class="explore"><a href="https://www.reddit.com/r/stockmarket" target="_blank">Explore ></a></div>
+        <div class="main_div">
+            <div>
+                <div class="lg">r/StockMarket - Reddit's Front Page of the Stock Market</div>
+                <div class="sm">r/StockMarket
+                    <div class="explore"><a href="https://www.reddit.com/r/stockmarket" target="_blank">Explore ></a></div>
+                </div>
+            </div>
+            <div class="subreddit_diff">
+                <div id="stockmarket_diff"></div>
             </div>
         </div>
     </div>
@@ -63,10 +78,15 @@
 
     <div class="subreddit_intro">
         <img src="{% static 'images/subreddit_icon/gme.png' %}">
-        <div>
-            <div class="lg">GameStop Stock</div>
-            <div class="sm">r/GME
-                <div class="explore"><a href="https://www.reddit.com/r/gme" target="_blank">Explore ></a></div>
+        <div class="main_div">
+            <div>
+                <div class="lg">GameStop Stock</div>
+                <div class="sm">r/GME
+                    <div class="explore"><a href="https://www.reddit.com/r/gme" target="_blank">Explore ></a></div>
+                </div>
+            </div>
+            <div class="subreddit_diff">
+                <div id="gamestop_diff"></div>
             </div>
         </div>
     </div>
@@ -76,10 +96,15 @@
 
     <div class="subreddit_intro">
         <img src="{% static 'images/subreddit_icon/superstonk.png' %}">
-        <div>
-            <div class="lg">🦍💎Superstonk✋🚀</div>
-            <div class="sm">r/Superstonk
-                <div class="explore"><a href="https://www.reddit.com/r/superstonk" target="_blank">Explore ></a></div>
+        <div class="main_div">
+            <div>
+                <div class="lg">🦍💎Superstonk✋🚀</div>
+                <div class="sm">r/Superstonk
+                    <div class="explore"><a href="https://www.reddit.com/r/superstonk" target="_blank">Explore ></a></div>
+                </div>
+            </div>
+            <div class="subreddit_diff">
+                <div id="superstonk_diff"></div>
             </div>
         </div>
     </div>
@@ -89,10 +114,15 @@
 
     <div class="subreddit_intro">
         <img src="{% static 'images/subreddit_icon/amc.png' %}">
-        <div>
-            <div class="lg">amcstock</div>
-            <div class="sm">r/amcstock
-                <div class="explore"><a href="https://www.reddit.com/r/amcstock" target="_blank">Explore ></a></div>
+        <div class="main_div">
+            <div>
+                <div class="lg">amcstock</div>
+                <div class="sm">r/amcstock
+                    <div class="explore"><a href="https://www.reddit.com/r/amcstock" target="_blank">Explore ></a></div>
+                </div>
+            </div>
+            <div class="subreddit_diff">
+                <div id="amc_diff"></div>
             </div>
         </div>
     </div>
@@ -202,7 +232,7 @@
             labels: stocks_date,
             datasets: [{
                 data: stocks_count,
-                borderColor: 'black',
+                borderColor: '#c39889',
                 backgroundColor: 'transparent',
                 tension: 0.1,
             }]
@@ -269,5 +299,20 @@
         },
         options: options_dict
     });
+
+    function find_day_gain(list_name, id) {
+        list_length = list_name.length;
+        var diff = list_name[list_length-1] - list_name[list_length-2];
+        var percentage_diff = Math.round(diff / list_name[list_length-2] * 10000) / 100
+        document.getElementById(id).innerHTML = "+" + diff + "<br> +" + percentage_diff + "%";
+    }
+
+    find_day_gain(wsb_count, "wsb_diff")
+    find_day_gain(stocks_count, "stocks_diff")
+    find_day_gain(StockMarket_count, "stockmarket_diff")
+    find_day_gain(gme_count, "gamestop_diff")
+    find_day_gain(superstonk_count, "superstonk_diff")
+    find_day_gain(amc_count, "amc_diff")
+
 </script>
 {% endblock %}

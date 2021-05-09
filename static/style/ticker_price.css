@@ -1,16 +1,14 @@
 @media only screen and (max-width: 900px) {
+    .top_section {
+        width: 90%;
+        margin:auto;
+    }
+
     .chart-container {
         position: relative; 
         height:55vh;
-        width:90vw;
+        width:90%;
         max-height:250px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .ticker_header {
-        padding-top: 10px;
-        width: 90vw;
         margin-left: auto;
         margin-right: auto;
     }
@@ -19,7 +17,6 @@
         margin-left: auto;
         margin-right: auto;
         width: 90vw;
-        font-size: 12px;
     }
 
     #latest_price {
@@ -40,36 +37,32 @@
     .instructions {
         margin-left: auto;
         margin-right: auto;
-        margin-bottom: 1%;
+        margin-top: 50px;
+        margin-bottom: 10px;
         text-align: center;
         padding: 1%;
         background-color: #E9EAEA;
         border-radius: 10px;
-        width: 90%;
+        width: 70%;
     }
 
-    .ticker_summary {
-        margin-left: auto;
-        margin-right: auto;
-        width: 90vw;
-        line-height: 1.2;
-        font-size: 13px;
+    #ticker_intro span {
+        font-size:15px;
+        font-weight:bold;
     }
 }
 
 @media only screen and (min-width: 900px) {
+    .top_section {
+        width: 98%;
+        margin:auto;
+    }
+
     .chart-container {
         position: relative; 
         height:55vh;
-        width:83vw;
+        width:98%;
         max-height:250px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .ticker_header {
-        padding-top: 10px;
-        width: 98%;
         margin-left: auto;
         margin-right: auto;
     }
@@ -81,7 +74,7 @@
     }
 
     #latest_price {
-        font-size: 3vw;
+        font-size: 40px;
         display: flex;
         margin-top: 1%;
         width: 98%;
@@ -90,61 +83,45 @@
     }
     
     #latest_price div {
-        font-size: 1.3vw; 
-        width: 5vw; 
+        font-size: 17px;
+        width: 10px;
         margin-left: 1%;
     }
 
     .instructions {
         margin-left: auto;
         margin-right: auto;
-        margin-bottom: 1%;
+        margin-bottom: 10px;
         text-align: center;
         padding: 1%;
         background-color: #E9EAEA;
         border-radius: 10px;
         width: 50%;
+        max-width: 500px;
     }
 
-    .ticker_summary {
-        margin-left: auto;
-        margin-right: auto;
-        width: 98%;
-        line-height: 1.5;
-        font-size: 14px;
+    #ticker_intro span {
+        font-size:22px;
+        font-weight:bold;
     }
-}
-
-button:hover {
-    cursor: pointer;
-}
-
-button:focus, input:focus {
-    outline: none;
-}
-
-.ticker_input {
-    border: 1px solid grey;
-    border-radius: 6px;
-    padding: 7px;
-    text-transform: uppercase;
-    max-width: 18vw;
 }
 
 #more_info_div {
     text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .more_info_btn {
     border: 1px solid #9c9c9c;
     border-radius: 6px;
-    padding: 7px;
+    padding: 5.5px;
     font-weight: bold;
-    margin: 1%;
+    margin-left: 8px;
+    margin-right: 8px;
 }
 
-.more_info_btn:hover {
-    outline: none;
+.more_info_btn:hover, .change_day_btn:hover {
     background-color: #26a69a;
 }
 
@@ -153,7 +130,8 @@ button:focus, input:focus {
 }
 
 #ticker_intro {
-    width: 80%;
+    width: 70%;
+    margin-left: 8px
 }
 
 .read_more {
@@ -163,34 +141,36 @@ button:focus, input:focus {
 
 .read_more:hover {
     color: #26a69a;
-} 
-
-#img_div img {
-    border-radius: 50%;
-    width:100%;
-    border:1px solid black;
 }
 
 #img_div {
     width: 6%;
     min-width: 50px;
+    max-width: 80px;
     display: inline-block;
 }
 
-.change_day_btn {
-    border-left: 0px;
-    border-right: 0px;
-    border-top: 0px;
-    border-bottom: 3px solid gray;
-    padding-left: 0.55rem;
-    padding-right: 0.55rem;
-    background-color: white;
+#img_div img {
+    border-radius: 50%;
+    width: 100%;
+    border: 2px solid white;
+    /*background-color: white;*/
 }
 
-.change_day_btn:hover {
-    cursor: pointer;
-    border-bottom: 3px solid #26a69a;
+.change_day_btn {
+    /*border-left: 0px;
+    border-right: 0px;
+    border-top: 0px;
+    border-bottom: 2px solid gray;*/
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding-left: 0.55rem;
+    padding-right: 0.55rem;
 }
+
+/*.change_day_btn:hover {
+    border-bottom: 3px solid #26a69a;
+}*/
 
 .change_day_btn:focus {
     outline: none;
@@ -203,28 +183,27 @@ button:focus, input:focus {
 
 p {
     margin-bottom: 5px;
+    margin-top: 5px;
 }
 
-table {
-    border-collapse: collapse;
-    white-space: nowrap;
+.ticker_summary {
+    line-height: 1.5;
 }
 
-td {
-    width:50vw;
+.show_more_btn {
+    font-weight: bold;
+    border: 0;
+    padding: 0;
+    margin-top: 11px;
+    margin-bottom: 5px;
+    background-color: transparent;
 }
 
-table td, table th {
-border: 1px solid #ddd;
-padding: 8px;
+.show_more_btn span {
+    color: grey;
 }
 
-table tr:nth-child(even) {background-color: #f2f2f2;}
-
-table tr:hover {background-color: #ddd;}
-
-table th {
-padding-top: 12px;
-padding-bottom: 12px;
-text-align: left;
+iframe {
+    border: 0;
+    width: 100%;
 }

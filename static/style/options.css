@@ -1,21 +1,60 @@
-.main_div {
-    padding-top: 10px; 
-    width: 98%; 
-    margin: auto;
+@media only screen and (max-width: 900px) {
+    .instructions {
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 50px;
+        margin-bottom: 10px;
+        text-align: center;
+        padding: 1%;
+        background-color: #E9EAEA;
+        border-radius: 10px;
+        width: 70%;
+    }
+
+    .contents {
+       width: 90%;
+       margin-left: auto;
+       margin-right: auto;
+    }
+
+    #ticker_intro span {
+        font-size:15px;
+        font-weight:bold;
+    }
 }
 
-#instructions {
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 1%;
-    padding: 2%;
-    background-color: #E9EAEA;
-    border-radius: 10px;
-    width: 70%;
+@media only screen and (min-width: 900px) {
+    .instructions {
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 10px;
+        text-align: center;
+        padding: 1%;
+        background-color: #E9EAEA;
+        border-radius: 10px;
+        width: 50%;
+        max-width: 500px;
+    }
+
+    .contents {
+       width: 98%;
+       margin-left: auto;
+       margin-right: auto;
+    }
+
+    #ticker_intro span {
+        font-size:22px;
+        font-weight:bold;
+    }
 }
 
-.ticker_stats {
-    display: flex;
+.instructions p {
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+#error_msg {
+    margin-top: 5%;
 }
 
 #img_div img {
@@ -27,12 +66,15 @@
 #img_div {
     width: 6%;
     min-width: 50px;
+    max-width: 80px;
     display: inline-block;
 }
 
+
 #ticker_intro {
-    width: 80%;
+    width: 70%;
     padding-left: 7px;
+    display: inline-block;
 }
 
 .navigation_menu {
@@ -84,7 +126,7 @@ h2 {
 .chart-container {
     position: relative; 
     height:55vh;
-    width:100%;
+    width:98%;
     max-height:250px;
     margin-left: auto;
     margin-right: auto;
@@ -175,26 +217,4 @@ h2 {
 
 .puts_symbol_background {
     background-color: red;
-}
-
-table {
-    border-collapse: collapse;
-    width: 100%;
-    white-space: nowrap;
-}
-
-table td, table th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-table tr:nth-child(even) {background-color: #f2f2f2;}
-
-table tr:hover {background-color: #ddd;}
-
-table th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    color: white;
 }

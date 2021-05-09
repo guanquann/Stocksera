@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/ticker_price.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}display_data(){% endblock %}
+{% block onload_properties%}display_data();restore_dark_mode(){% endblock %}
  
 {% block main_nav %}
 <div class="top_nav">
@@ -24,24 +24,24 @@
 <div>
     <div id="spinner_div"></div>
         <div class="instructions">
-            <p style="margin: 1%;">Enter a ticker symbol you are interested to view or click any of the buttons below!</p>
+            <p>Enter a ticker symbol you are interested to view or click any of the buttons below!</p>
         </div> 
         
-        <div class="ticker_header">
-            <div id="error_msg" style="display:none;" class="instructions">
-                There is no ticker named {{incorrect_ticker}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).
+        <div class="top_section">
+            <div id="error_msg" style="display:none;" class="instructions {{error}}">
+                There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).
             </div>
        
             <div>
                 <div style="display:none" id="img_div">
                     {% if img != "" %}
-                    <a href={{website}} target="_blank"><img src={{img}} onerror=this.src="{% static 'images/not_available.svg' %}"></a>
+                    <a href={{website}} target="_blank"><img src="{{img}}" onerror=this.src="{% static 'images/not_available.svg' %}"></a>
                     {% else %}
                     <a href={{website}} target="_blank"><img src="{% static 'images/not_available.svg' %}"></a>
                     {% endif %}
                 </div>
                 <div style="display:none" id="ticker_intro">
-                    <span style="font-size:24px;font-weight:bolder">{{official_name}} ({{ticker_selected}})</span>
+                    <span>{{official_name}} ({{ticker_selected}})</span>
                     <br>Sector: <b>{{sector}}</b><br>Industry: <b>{{industry}}</b>
                 </div>
             </div>
@@ -59,6 +59,7 @@
                 <button class="change_day_btn"  name="one_year" onclick="show_spinner()" value="true">1Y</button>
                 <button class="change_day_btn" name="five_year" onclick="show_spinner()" value="true">5Y</button>
             </div>
+            </form>
         </div>
         <div id="latest_price" style="display: none;">
             {{latest_price}}USD 
@@ -128,36 +129,35 @@
                     </tr>
                 </table>     
             </div>
-            
-            <p><b>Major Holders</b></p>
-            <div class="scrollable_div">
-                {{major_holders|safe}}
+
+            <div style="display:none" class="ticker_summary">
+                <p><b>Summary</b></p>
+                {{summary}}<br>
+                <a href={{website}} target="_blank" class="read_more"><i>Read More...</i></a>
             </div>
-                
-            <p><b>Institutional Holders</b></p>
-            <div class="scrollable_div">
-                {{institutional_holders|safe}}
-            </div>
-            
-            <p><b>Upgrades & Downgrades</b></p>
-            <div class="scrollable_div">
-                {{recommendations|safe}}
-            </div>
+
+            <form action="/major_holders" method="GET" autocomplete="off" target="major_holders">
+                <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn">Major Holders <span>&#x25BA;</span></button>
+            </form>
+            <iframe name="major_holders" scrolling="no" onload="expand_iframe(this)"></iframe>
+
+            <form action="/institutional_holders" method="GET" autocomplete="off" target="institutional_holders">
+                <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn">Institutional Holders <span>&#x25BA;</span></button>
+            </form>
+            <iframe name="institutional_holders" scrolling="no" onload="expand_iframe(this)"></iframe>
+
+            <form action="/recommendations" method="GET" autocomplete="off" target="recommendations">
+                <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn">Upgrades & Downgrades <span>&#x25BA;</span></button>
+            </form>
+            <iframe name="recommendations" scrolling="no" onload="expand_iframe(this)"></iframe>
+
+            <form action="/sub_news" method="GET" autocomplete="off" target="news_article">
+                <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn">Recent News Articles <span>&#x25BA;</span></button>
+            </form>
+            <iframe name="news_article" scrolling="no" onload="expand_iframe(this)"></iframe>
         </div>
 
-        <div style="display:none" class="ticker_summary">
-            <p><b>Summary</b></p>
-            {{summary}}<br>
-            <a href={{website}} target="_blank" class="read_more"><i>Read More...</i></a>
-        </div>
 
-        <div style="display:none" class="ticker_news">
-            <p><b>Recent News Articles</b></p>
-            <div class="scrollable_div">
-            {{news_df|safe}}
-        </div>
-        </div>
-    </form>
 </div>
 {% endblock %}
 

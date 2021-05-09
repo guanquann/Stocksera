@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/reddit_sentiment.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}check_table(){% endblock %}
+{% block onload_properties%}restore_dark_mode();check_table(){% endblock %}
 
 {% block main_nav %}
     <div class="ticker-wrap">
@@ -24,7 +24,7 @@
 {% endblock %}
 
 {% block main_content %} 
-    <div id="instructions">
+    <div class="instructions">
         Select the sub-reddit you are interested to view!
     </div>
     <form action="" method="GET" autocomplete="off">

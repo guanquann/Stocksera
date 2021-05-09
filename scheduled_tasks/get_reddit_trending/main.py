@@ -7,20 +7,14 @@ def main():
     # Instantiate the parser
     parser = argparse.ArgumentParser(description='AutoDD Optional Parameters')
 
-    parser.add_argument('--interval', nargs='?', const=48, type=int, default=48,
+    parser.add_argument('--interval', nargs='?', const=48, type=int, default=24,
                         help='Choose a time interval in hours to filter the results, default is 24 hours')
 
     parser.add_argument('--sub', nargs='?', const='wallstreetbets', type=str, default='wallstreetbets',
                         help='Choose a different subreddit to search for tickers in, default is wallstreetbets')
 
-    parser.add_argument('--min', nargs='?', const=10, type=int, default=10,
-                        help='Filter out results that have less than the min score, default is 10')
-
-    parser.add_argument('--minprice', nargs='?', const=0, type=int, default=0,
-                        help='Filter out results less than the min price set, default is 0')
-
-    parser.add_argument('--maxprice', nargs='?', const=9999999, type=int, default=9999999,
-                        help='Filter out results more than the max price set, default is 9999999')
+    parser.add_argument('--min', nargs='?', const=30, type=int, default=30,
+                        help='Filter out results that have less than the min score, default is 30')
 
     parser.add_argument('--sort', nargs='?', const=1, type=int, default=1,
                         help='Sort the results table by descending order of score, 1 = sort by total score, '
@@ -41,7 +35,7 @@ def main():
     parser.add_argument('--csv', default=True, action='store_true',
                         help='Using this parameter produces a table_records.csv file, rather than a .txt file')
 
-    parser.add_argument('--filename', nargs='?', const='table_records', type=str, default='table_records1',
+    parser.add_argument('--filename', nargs='?', const='table_records', type=str, default='table_records_test',
                         help='Change the file name from table_records to whatever you wish')
 
     args = parser.parse_args()
@@ -68,7 +62,7 @@ def main():
     results_df = results_df.fillna(value=0).astype({'negative': 'int32'})
 
     print("Getting financial stats...")
-    results_df = get_financial_stats(results_df, args.threads, args.minprice, args.maxprice)
+    results_df = get_financial_stats(results_df, args.threads)
 
     # Sort by Total (sort = 1), Recent (sort = 2), Prev (sort = 3), Change (sort = 4), Rockets (sort = 5)
     results_df.sort_values(by=results_df.columns[args.sort - 1], inplace=True, ascending=False)

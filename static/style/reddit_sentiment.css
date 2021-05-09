@@ -1,8 +1,4 @@
-body {
-    font-family: Arial;
-}
-
-#instructions {
+.instructions {
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 1%;
@@ -13,29 +9,11 @@ body {
     width: 40%;
 }
 
-select, option, input {
+select, option {
     border: 1px solid black;
     border-radius: 3px;
     padding: 0.4%;
     margin-bottom: 1%;
-}
-
-.submit_btn {
-    border: 1px solid;
-    border-radius: 3px;
-    background-color: #26a69a;
-    padding: 0.4%;
-}
-
-button:hover {
-    cursor: pointer;
-    outline: 0;
-    border: 1px solid;
-    background-color: #23e0ce;
-}
-
-button:focus {
-    outline: 0;
 }
 
 #filter_section {
@@ -77,11 +55,6 @@ button:focus {
     color: grey;
 }
 
-#reddit_table {
-  border-collapse: collapse;
-  white-space: nowrap;
-}
-
 #reddit_table th {
     cursor: pointer;
 }
@@ -92,21 +65,4 @@ button:focus {
 
 #reddit_table .th-sort-desc::after {
     content: "\25be";
-}
-
-#reddit_table td, #reddit_table th {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-#reddit_table tr:nth-child(even) {background-color: #f2f2f2;}
-
-#reddit_table tr:hover {background-color: #ddd;}
-
-#reddit_table th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: left;
-  background-color: #26a69a;
-  color: white;
 }

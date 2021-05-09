@@ -55,29 +55,6 @@ h2 button:focus {
     margin:auto;
     overflow: auto;
 }
-
-table {
-    border-collapse: collapse;
-    width: 100%;
-    white-space: nowrap;  
-}
-
-table td, table th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-    
-table tr:nth-child(even) {background-color: #f2f2f2;}
-
-table tr:hover {background-color: #ddd;}
-
-table th {
-padding-top: 8px;
-padding-bottom: 8px;
-text-align: left;
-color: white;
-background-color: #26a69a;
-}
   
 #eps_surprise {
     display: flex;

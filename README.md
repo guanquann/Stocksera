@@ -1,9 +1,9 @@
-# Stocks Sentimental Analysis on Reddit and News Articles
+# Stocks Sentiment Analysis on Reddit and News Articles
 
 ##### Note: This project is still under development...
 
 ## Introduction:
-This project aims to find trending stocks on Reddit and news articles and provide sentimental analysis to them.
+This project aims to find trending stocks on Reddit and news articles and provide sentiment analysis to them.
 
 PostgreSQL database is used to store the sentiment score of tickers over time.
 

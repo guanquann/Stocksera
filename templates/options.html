@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="{% static 'style/options.css' %}">
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode();display_input();update_table();draw_open_interest();draw_max_pain(){% endblock %}
+{% block onload_properties%}restore_dark_mode();display_input();update_table();draw_open_interest_and_volume();draw_max_pain(){% endblock %}
 
 {% block main_nav %}
 <div class="top_nav">
@@ -66,6 +66,11 @@
             </div>
             <div class="max_pain_div">Max Pain: ${{max_pain}}</div>
 
+            <h2>Volume</h2>
+            <div class="chart-container">
+                <canvas id="volume_chart"></canvas>
+            </div>
+
             <h2>Open Interest</h2>
             <div class="chart-container">
                 <canvas id="oi_chart"></canvas>
@@ -115,8 +120,9 @@
                 {{merge|safe}}
             </div>
         </div>
+        <p>Data from: <a href="https://finance.yahoo.com/" target="_blank">finance.yahoo.com</a></p>
         </div>
-    </div>    
+    </div>
 </form>
 {% endblock %}
 
@@ -137,7 +143,7 @@ for (row=1; row<tr.length; row++) {
 
 function draw_max_pain() {      
     var max_pain_chart = document.getElementById('max_pain_chart');
-    var display_chart = new Chart(max_pain_chart, {
+    var max_pain_chart = new Chart(max_pain_chart, {
         type: 'bar',
         data: {
             labels: strike_list,

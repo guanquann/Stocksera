@@ -23,8 +23,14 @@
 .menu {
     position: sticky;
     top: 0%;
+    padding: 5px;
+    border-radius: 5px;
+    z-index: 999;
     background-color: white;
-    padding-bottom: 4px;
+}
+
+.dark_mode .menu {
+    background-color: #505050;
 }
 
 #to_top {
@@ -36,8 +42,8 @@
     padding: 3px;
 }
 
-#to_top a {
-    color: grey;
+.dark_mode #to_top {
+    border: 2px solid wheat;
 }
 
 button {
@@ -62,7 +68,7 @@ select {
     border-radius: 3px;
 }
 
-#search_ticker {
+input {
     border: 1px solid grey;
     border-radius: 3px;
     padding: 0.4%;
@@ -70,7 +76,7 @@ select {
     max-width: 18vw;
 }
 
-#search_ticker:focus {
+input:focus {
     outline: none;
 }
 

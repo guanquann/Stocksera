@@ -2,7 +2,7 @@
 {% load static %}
 {% load filter %}
  
-{% block title %}StocksEra | Financial{% endblock %}
+{% block title %}StocksEra | Financials{% endblock %}
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/financial.css' %}">
@@ -12,7 +12,6 @@
 {% block onload_properties%}restore_dark_mode(){% endblock %}
 
 {% block main_nav %}
-<div id="spinner_div"></div>
 <div class="top_nav">
     <form action="" method="GET" autocomplete="off">
         <div>
@@ -20,49 +19,67 @@
         </div>
     </form>
 </div>
+<div id="spinner_div"></div>
 {% endblock %}
 
 {% block main_content %} 
-    <div id="instructions">
-        Reddit ETF is based on the trending stocks on WSB. If a new ticker enters the Top 10 mentioned ticker list before the market opens, it will be bought at 9.30AM. Any ticker that falls out of the Top 10 list will be sold.
+    <div class="instructions">
+        <p>INSERT TEXT HERE</p>
     </div> 
 
-    <div>
-        <h2>Current Assets<button type="button" onclick="show_graph(this)" class="selected_btn">Graph</button><button type="button" onclick="show_table(this)">Table</button></h2>
-        <div class="chart-container">
-            <canvas id="current_assets"></canvas>
+    <div class="top_section">
+        <div>
+            <div id="img_div">
+                {% if img != "" %}
+                <img src="{{img}}" onerror=this.src="{% static 'images/not_available.svg' %}">
+                {% else %}
+                <img src="{% static 'images/not_available.svg' %}">
+                {% endif %}
+            </div>
+            <div  id="ticker_intro">
+                <span>{{official_name}} ({{ticker_selected}})</span>
+                <br>Sector: <b>{{sector}}</b><br>Industry: <b>{{industry}}</b>
+            </div>
         </div>
-        <div id="current_assets_table" class="table_div" style="display: none;"></div>
-    </div>
 
-    <div>
-        <h2>Non Current Assets<button type="button" onclick="show_graph(this)" class="selected_btn">Graph</button><button type="button" onclick="show_table(this)">Table</button></h2>
-        <div class="chart-container">
-            <canvas id="non_current_assets"></canvas>
+        <div>
+            <h2>Current Assets<button type="button" onclick="show_graph(this)" class="selected_btn">Graph</button><button type="button" onclick="show_table(this)">Table</button></h2>
+            <div class="chart-container">
+                <canvas id="current_assets"></canvas>
+            </div>
+            <div id="current_assets_table" class="table_div scrollable_div" style="display: none;"></div>
         </div>
-        <div id="non_current_assets_table" class="table_div" style="display: none;"></div>
-    </div>
 
-    <div>
-        <h2>Liabilities<button type="button" onclick="show_graph(this)" class="selected_btn">Graph</button><button type="button" onclick="show_table(this)">Table</button></h2>
-        <div class="chart-container">
-            <canvas id="liabilities"></canvas>
+        <div>
+            <h2>Non Current Assets<button type="button" onclick="show_graph(this)" class="selected_btn">Graph</button><button type="button" onclick="show_table(this)">Table</button></h2>
+            <div class="chart-container">
+                <canvas id="non_current_assets"></canvas>
+            </div>
+            <div id="non_current_assets_table" class="table_div scrollable_div" style="display: none;"></div>
         </div>
-        <div id="liabilities_table" class="table_div" style="display: none;"></div>
-    </div>
 
-    <div>
-        <h2>Stockholders' Equity<button type="button" onclick="show_graph(this)" class="selected_btn">Graph</button><button type="button" onclick="show_table(this)">Table</button></h2>
-        <div class="chart-container">
-            <canvas id="stockholders_equity"></canvas>
+        <div>
+            <h2>Liabilities<button type="button" onclick="show_graph(this)" class="selected_btn">Graph</button><button type="button" onclick="show_table(this)">Table</button></h2>
+            <div class="chart-container">
+                <canvas id="liabilities"></canvas>
+            </div>
+            <div id="liabilities_table" class="table_div scrollable_div" style="display: none;"></div>
         </div>
-        <div id="stockholders_equity_table" class="table_div" style="display: none;"></div>
-    </div>
 
-    <h2>Earnings</h2>
-    <div class="earnings-container">
-        <canvas id="earning_chart"></canvas>
-        <div id="eps_surprise"></div>
+        <div>
+            <h2>Stockholders' Equity<button type="button" onclick="show_graph(this)" class="selected_btn">Graph</button><button type="button" onclick="show_table(this)">Table</button></h2>
+            <div class="chart-container">
+                <canvas id="stockholders_equity"></canvas>
+            </div>
+            <div id="stockholders_equity_table" class="table_div scrollable_div" style="display: none;"></div>
+        </div>
+
+        <h2>Earnings</h2>
+        <div class="earnings-container">
+            <canvas id="earning_chart"></canvas>
+            <div id="eps_surprise"></div>
+        </div>
+        <p>Data from: <a href="https://finance.yahoo.com/" target="_blank">finance.yahoo.com</a></p>
     </div>
 
 {% endblock %}

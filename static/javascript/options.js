@@ -75,7 +75,7 @@ function show_choice(elem) {
     }
 }
 
-function draw_open_interest() {
+function draw_open_interest_and_volume() {
     var tr = document.getElementsByTagName("table")[2].querySelectorAll("tr");
 
     var tr_length = Math.round(tr.length / 2);
@@ -83,19 +83,92 @@ function draw_open_interest() {
     var lower_limit = tr_length - diff;
     var upper_limit = tr_length + diff;
 
-    var calls_oi_list = [];
-    var puts_oi_list = [];
+    var calls_oi_list = [], puts_oi_list = []
+    var calls_vol_list = [], puts_vol_list = []
     var strike_list = [];
 
     for (row=lower_limit; row<upper_limit; row++) {
         var td = tr[row].querySelectorAll("td");
+        calls_vol_list.push(td[3].innerHTML);
         calls_oi_list.push(td[4].innerHTML);
+        puts_vol_list.push(td[9].innerHTML);
         puts_oi_list.push(td[10].innerHTML);
         strike_list.push(td[5].innerHTML);
     }
 
+    options_dict = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: false
+                },
+                gridLines: {
+                    drawOnChartArea: false
+                },
+
+            }],
+
+            xAxes: [{
+                ticks: {
+                    maxTicksLimit: 20,
+                    maxRotation: 45,
+                    minRotation: 0,
+                    callback: function(value, index, values) {
+                        return "$" + value;
+                    }
+                },
+                gridLines: {
+                    drawOnChartArea: false
+                },
+            }]
+        },
+        // To remove the point of each label
+        elements: {
+            point: {
+                radius: 0
+            }
+        },
+
+        // To show value when hover on any part of the graph
+        tooltips: {
+            mode: 'index',
+            intersect: false,
+        },
+        hover: {
+            mode: 'index',
+            intersect: false
+        },
+    }
+
+    var volume_chart = document.getElementById('volume_chart');
+    var volume_chart = new Chart(volume_chart, {
+        type: 'line',
+        data: {
+            labels: strike_list,
+            datasets: [{
+                label: 'Calls',
+                lineTension: 0,  // straight line instead of curve
+                data: calls_vol_list,
+                borderColor: "green",
+                backgroundColor: 'transparent',
+                tension: 0.1,
+            },
+            {
+                label: 'Puts',
+                lineTension: 0,  // straight line instead of curve
+                data: puts_vol_list,
+                borderColor: "red",
+                backgroundColor: 'transparent',
+                tension: 0.1,
+            }]
+        },
+        options: options_dict,
+    });
+
     var oi_chart = document.getElementById('oi_chart');
-    var display_chart = new Chart(oi_chart, {
+    var oi_chart = new Chart(oi_chart, {
         type: 'line',
         data: {
             labels: strike_list,
@@ -116,52 +189,7 @@ function draw_open_interest() {
                 tension: 0.1,
             }]
         },
-
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: false
-                    }, 
-                    gridLines: {
-                        drawOnChartArea: false
-                    },
-                    
-                }],
-
-                xAxes: [{
-                    ticks: {
-                        maxTicksLimit: 20,
-                        maxRotation: 45,
-                        minRotation: 0,
-                        callback: function(value, index, values) {
-                            return "$" + value;
-                        }
-                    },
-                    gridLines: {
-                        drawOnChartArea: false
-                    },  
-                }]
-            },
-            // To remove the point of each label
-            elements: {
-                point: {
-                    radius: 0
-                }
-            },
-
-            // To show value when hover on any part of the graph
-            tooltips: {
-                mode: 'index',
-                intersect: false,
-            },
-            hover: {
-                mode: 'index',
-                intersect: false
-            },
-        },
+        options: options_dict,
     });
 
     

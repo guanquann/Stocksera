@@ -1,5 +1,5 @@
 @media only screen and (max-width: 900px) {
-    .top_section {
+    #short_vol_data {
         width: 90%;
         margin:auto;
     }
@@ -12,10 +12,15 @@
         margin-left: auto;
         margin-right: auto;
     }
+
+    #ticker_intro span {
+        font-size:15px;
+        font-weight:bold;
+    }
 }
 
 @media only screen and (min-width: 900px) {
-    .top_section {
+    #short_vol_data {
         width: 98%;
         margin:auto;
     }
@@ -24,46 +29,31 @@
         position: relative;
         height:55vh;
         width:98%;
+        max-width: 900px;
         max-height:250px;
         margin-left: auto;
         margin-right: auto;
     }
+
+    #ticker_intro span {
+        font-size:22px;
+        font-weight:bold;
+    }
 }
 
-
-h2 {
-    margin-top: 30px;
-    margin-bottom: 5px;
-}
-
-h2 button {
-    border: 0px;
-    border-bottom: 2px solid #858585;
-    background-color: transparent;
-    color: #858585;
-    margin-left: 2px;
-    margin-right: 2px;
-}
-
-.selected_btn {
-    border-bottom: 2px solid green;
-    color: green;
-}
-
-.earnings-container {
+#ticker_intro {
     width: 70%;
-    min-width: 150px;
-    margin:auto;
-}
-  
-#eps_surprise {
-    display: flex;
-    justify-content: space-between;
-    font-size: 90%;
+    margin-left: 8px;
+    display: inline-block;
 }
 
-.eps_label{
-    padding-left:8px;
-    text-align:center;
-    color:grey;
+#summary {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.table_header {
+    text-align: center;
+    margin-bottom: 0;
+    margin-top: 20px;
 }

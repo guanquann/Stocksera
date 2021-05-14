@@ -7,30 +7,27 @@
         margin-left: auto;
         margin-right: auto;
     }
+
+    #ticker_intro span {
+        font-size: 15px;
+        font-weight: bold;
+    }
 }
 
 @media only screen and (min-width: 900px) {
     .chart-container {
         position: relative;
         height:55vh;
-        width:83vw;
+        width:99%;
         max-height:250px;
         margin-left: auto;
         margin-right: auto;
     }
-}
 
-#img_div {
-    width: 6%;
-    min-width: 50px;
-    display: inline-block;
-}
-
-#img_div img {
-    border-radius: 50%;
-    width: 100%;
-    border: 2px solid white;
-    background-color: white;
+    #ticker_intro span {
+        font-size: 22px;
+        font-weight: bold;
+    }
 }
 
 #ticker_intro {
@@ -40,16 +37,12 @@
 
 .sentiment_msg {
     text-align: center;
-    margin: 10px;
+    margin: 20px;
     font-weight: 600;
 }
 
 .ticker_news p {
     text-align: center;
     margin-bottom: 0;
-}
-
-.scrollable_div {
-    overflow-x:scroll;
-    overflow-y: auto;
+    margin-top: 20px;
 }

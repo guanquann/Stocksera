@@ -1,0 +1,70 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Short Volume{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/short_volume.css' %}">
+<script src="{% static 'javascript/short_volume.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}short_vol_graph();restore_dark_mode(){% endblock %}
+
+{% block main_nav %}
+<div class="top_nav">
+    <form action="" method="GET" autocomplete="off">
+        <div>
+            <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" onkeyup="this.form.submit();show_spinner();" autocomplete="off">
+        </div>
+    </form>
+</div>
+<div id="spinner_div"></div>
+{% endblock %}
+
+{% block main_content %}
+<div>
+    <div class="instructions">
+        <p>Short Volume measures the number of shares that have been shorted,  while Short Interest represents the number of shorted shares that have yet to be closed out or covered.</p>
+    </div>
+
+    <div id="short_vol_data">
+        <div>
+            <div style="display:inline-block" id="img_div">
+                {% if img != "" %}
+                <img src="{{img}}" onerror=this.src="{% static 'images/not_available.svg' %}">
+                {% else %}
+                <img src="{% static 'images/not_available.svg' %}">
+                {% endif %}
+            </div>
+            <div id="ticker_intro">
+                <span>{{official_name}} ({{ticker_selected}})</span>
+                <br>Sector: <b>{{sector}}</b><br>Industry: <b>{{industry}}</b>
+            </div>
+        </div>
+
+        <div id="summary" class="instructions"></div>
+
+        <div class="chart-container">
+            <canvas id="vol_chart"></canvas>
+        </div>
+
+        <p class="table_header"><b>Short Volume (Daily)</b></p>
+        <div class="scrollable_div">
+            {{shorted_vol_daily|safe}}
+            Note: The Total Volume and Short Volume data are limited. They do not represent the actual total volume.
+        </div>
+
+        <p class="table_header"><b>Short Volume (History)</b></p>
+        <div class="scrollable_div">
+            {{shorted_vol_group|safe}}
+        </div>
+
+        <p>Data from: <a href="http://shortvolumes.com/" target="_blank">shortvolumes.com</a></p>
+    </div>
+</div>
+{% endblock %}
+
+{% block bottom_script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+{% endblock %}

@@ -1,0 +1,70 @@
+@media only screen and (max-width: 900px) {
+    #profile span {
+        font-size: 15px;
+        font-weight: bold;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    #profile span {
+        font-size: 24px;
+        font-weight: bold;
+    }
+}
+
+#fund_selected {
+    display: none;
+}
+
+.fund_type_parent {
+    display: flex;
+    width: min-content;
+    margin: auto;
+}
+
+.fund_type {
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border: 1.5px solid gray;
+    border-radius: 3px;
+    margin: 1.5px;
+    background-color: #E9EAEA;
+}
+
+button {
+    border: 1.5px solid gray;
+    border-radius: 3px;
+    padding-top: 3px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-bottom: 4px;
+    margin: 1.5px;
+}
+
+.dark_mode .fund_type, .dark_mode button {
+    background-color: wheat;
+    color: black;
+}
+
+.fund_type:hover {
+    cursor: pointer;
+}
+
+td div {
+    display: table;
+}
+td img {
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    padding-right: 6px;
+    vertical-align: middle;
+    display: table-cell;
+}
+
+td a {
+    vertical-align: middle;
+    display: table-cell;
+}

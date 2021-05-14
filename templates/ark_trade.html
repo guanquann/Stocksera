@@ -1,0 +1,50 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | ARK Fund{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/ark_trade.css' %}">
+<script src="{% static 'javascript/ark_trade.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}load_holdings();load_profile();restore_dark_mode(){% endblock %}
+
+{% block main_nav %}
+    <div class="ticker-wrap">
+        <div class="ticker">
+            {% for name in popular_name_list|length|get_range %}
+            <div class="ticker_item">
+                <b>{{popular_name_list|index:name}} &#183 {{price_list|index:name|index:0}} <span> {{price_list|index:name|index:1}} ({{price_list|index:name|index:2}}%) </span></b>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block main_content %}
+    <div class="instructions">
+        <p>These are the positions, trades, and weight of all companies in ARK Fund. Data is updated daily.</p>
+    </div>
+    <div id="profile"></div>
+
+    <input id="fund_selected" value="ARKK">
+    <div class="fund_type_parent">
+        <div class="fund_type" onclick="update_fund(this)">ARKK</div>
+        <div class="fund_type" onclick="update_fund(this)">ARKQ</div>
+        <div class="fund_type" onclick="update_fund(this)">ARKF</div>
+        <div class="fund_type" onclick="update_fund(this)">ARKG</div>
+        <div class="fund_type" onclick="update_fund(this)">ARKW</div>
+        <div class="fund_type" onclick="update_fund(this)">ARKX</div>
+        <div class="fund_type" onclick="update_fund(this)">PRNT</div>
+        <div class="fund_type" onclick="update_fund(this)">IZRL</div>
+    </div>
+
+    <button onclick="load_holdings()" type="button">Holdings</button>
+    <button onclick="load_trades()" type="button">Trades</button>
+    <button onclick="load_ownership()" type="button">Ownership</button>
+    <div class="scrollable_div"></div>
+
+    <p>Data from: <a href="https://arkfunds.io/api/" target="_blank">arkfunds.io/api</a></p>
+{% endblock %}

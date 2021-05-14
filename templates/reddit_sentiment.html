@@ -25,7 +25,7 @@
 
 {% block main_content %} 
     <div class="instructions">
-        Select the sub-reddit you are interested to view!
+        <p>This page shows the sentiment of tickers in Reddit in the last 24H. Deleted posts, flairs, number of upvotes are also taken into account. Data is refreshed about 1H before pre-market and 1H after post-market.</p>
     </div>
     <form action="" method="GET" autocomplete="off">
         <select name="subreddit" onchange="this.form.submit()">
@@ -41,7 +41,7 @@
         </select>
     </form>
     
-    <div style="overflow-x:scroll; overflow-y: auto;">
+    <div class="table_data">
     <div id="filter_section" style="display:none">
         To remove a column from the table, select the buttons below. To add back that column, select the same button again.
         <br>

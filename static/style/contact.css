@@ -1,14 +1,3 @@
-#instructions {
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 1%;
-    text-align: center;
-    padding: 2%;
-    background-color: #E9EAEA;
-    border-radius: 10px;
-    width: 70%;
-}
-
 input {
     padding: 0.4%;
     border-bottom: 1px solid #858585;

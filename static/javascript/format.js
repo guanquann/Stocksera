@@ -39,12 +39,24 @@ function hide_nav_bar() {
 }
 
 function activate_dark_mode() {
+    var iframe = document.getElementsByTagName("iframe");
     if (document.getElementById("dark_mode").checked == true) {
         document.getElementsByTagName("body")[0].classList.add("dark_mode");
+        if (iframe.length != 0) {
+
+            for (i=0; i<iframe.length; i++) {
+                iframe[i].contentDocument.getElementsByTagName("body")[0].classList.add("dark_mode")
+            }
+        }
         localStorage.setItem("mode", "dark");
     }
     else {
         document.getElementsByTagName("body")[0].classList.remove("dark_mode");
+        if (iframe.length != 0) {
+            for (i=0; i<iframe.length; i++) {
+                iframe[i].contentDocument.getElementsByTagName("body")[0].classList.remove("dark_mode")
+            }
+        }
         localStorage.setItem("mode", "light");
     }
 }

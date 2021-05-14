@@ -18,163 +18,217 @@
             <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" onkeyup="this.form.submit();show_spinner();" autocomplete="off">
         </div>
 </div>
+<div id="spinner_div"></div>
 {% endblock %}
 
 {% block main_content %} 
 <div>
-    <div id="spinner_div"></div>
-        <div class="instructions">
-            <p>Enter a ticker symbol you are interested to view or click any of the buttons below!</p>
-        </div> 
-        
-        <div class="top_section">
-            <div id="error_msg" style="display:none;" class="instructions {{error}}">
-                There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).
-            </div>
-       
-            <div>
-                <div style="display:none" id="img_div">
-                    {% if img != "" %}
-                    <a href={{website}} target="_blank"><img src="{{img}}" onerror=this.src="{% static 'images/not_available.svg' %}"></a>
-                    {% else %}
-                    <a href={{website}} target="_blank"><img src="{% static 'images/not_available.svg' %}"></a>
-                    {% endif %}
-                </div>
-                <div style="display:none" id="ticker_intro">
-                    <span>{{official_name}} ({{ticker_selected}})</span>
-                    <br>Sector: <b>{{sector}}</b><br>Industry: <b>{{industry}}</b>
-                </div>
-            </div>
-
-            <div style="display:none" id="more_info_div">
-                <button class="more_info_btn" name="financial" type="submit" value={{ticker_selected}} onclick="show_spinner()">Financials</button>
-                <button class="more_info_btn" name="options" type="submit" value={{ticker_selected}} onclick="show_spinner()">Options</button>
-                <button class="more_info_btn" name="competitors" type="submit" value={{ticker_selected}} onclick="show_spinner()">Competitors</button>
-            </div>
-
-            <div style="display:none" id="days_btn">
-                <button class="change_day_btn" name="one_day" onclick="show_spinner()" value="true">1D</button>
-                <button class="change_day_btn"  name="five_day" onclick="show_spinner()" value="true">5D</button>
-                <button class="change_day_btn"  name="one_month" onclick="show_spinner()" value="true">1M</button>
-                <button class="change_day_btn"  name="one_year" onclick="show_spinner()" value="true">1Y</button>
-                <button class="change_day_btn" name="five_year" onclick="show_spinner()" value="true">5Y</button>
-            </div>
-            </form>
-        </div>
-        <div id="latest_price" style="display: none;">
-            {{latest_price}}USD 
-            <div>
-                {{price_change}} {{price_percentage_change}}
-            </div>
-        </div>
-        <div class="chart-container" style="display:none;">
-            <canvas id="price_chart"></canvas>
-        </div>
-     
-        <div style="display:none" id="ticker_table">     
-            <p><b>Key Statistics</b></p>
-            <div class="scrollable_div">
-                <table>
-                    <tr>
-                        <td>Open: ${{mkt_open}}</td>
-                        <td>Prev Close: ${{mkt_close}}</td>
-                    </tr>
-                    <tr>
-                        <td>High: ${{mkt_high}}</td>
-                        <td>52-wk High: ${{mkt_year_high}}</td>
-                    </tr>
-                    <tr>
-                        <td>Low: ${{mkt_low}}</td>
-                        <td>52-wk Low: ${{mkt_year_low}}</td>
-                    </tr>
-                    <tr>
-                        <td>Volume: {{mkt_vol}}</td>
-                        <td>10D Avg Vol: {{averageDailyVolume10Day}}</td>
-                    </tr>
-                    <tr>
-                        <td>200D Avg Price: ${{twoHundredDayAverage}}</td>
-                        <td>Price Target: ${{price_target}}</td>
-                    </tr>
-                    <tr>
-                        <td>Outstanding Shares: {{shares_outstanding}}</td>
-                        <td>Floating Shares: {{shares_float}}</td>
-                    </tr>
-                    <tr>
-                        <td>Short Float: {{short_float}}</td>
-                        <td>Short Ratio: {{short_ratio}}</td>
-                    </tr>
-                    <tr>
-                        <td>P/E: {{p_e_ratio}}</td>
-                        <td>Forward P/E: {{forward_p_e}}</td>
-                    </tr>
-                    <tr>
-                        <td>Div. Yield: {{dividend_yield}}</td>
-                        <td>Dividend: {{dividend_amount}}</td>
-                    </tr>
-                    <tr>
-                        <td>Ex Div. Date: {{ex_div_date}}</td>
-                        <td>Mkt Cap: {{mkt_cap}}</td>
-                    </tr>
-                    <tr>
-                        <td>Beta: {{beta}}</td>
-                        <td>EPS: {{eps}}</td>
-                    </tr>
-                    <tr>
-                        <td>RSI: {{rsi}}</td>
-                        <td>SMA 20: {{sma20}}</td>
-                    </tr>
-                    <tr>
-                        <td>SMA 50: {{sma50}}</td>
-                        <td>SMA 200: {{sma200}}</td>
-                    </tr>
-                </table>     
-            </div>
-
-            <div style="display:none" class="ticker_summary">
-                <p><b>Summary</b></p>
-                {{summary}}<br>
-                <a href={{website}} target="_blank" class="read_more"><i>Read More...</i></a>
-            </div>
-
-            <form action="/major_holders" method="GET" autocomplete="off" target="major_holders">
-                <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn">Major Holders <span>&#x25BA;</span></button>
-            </form>
-            <iframe name="major_holders" scrolling="no" onload="expand_iframe(this)"></iframe>
-
-            <form action="/institutional_holders" method="GET" autocomplete="off" target="institutional_holders">
-                <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn">Institutional Holders <span>&#x25BA;</span></button>
-            </form>
-            <iframe name="institutional_holders" scrolling="no" onload="expand_iframe(this)"></iframe>
-
-            <form action="/recommendations" method="GET" autocomplete="off" target="recommendations">
-                <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn">Upgrades & Downgrades <span>&#x25BA;</span></button>
-            </form>
-            <iframe name="recommendations" scrolling="no" onload="expand_iframe(this)"></iframe>
-
-            <form action="/sub_news" method="GET" autocomplete="off" target="news_article">
-                <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn">Recent News Articles <span>&#x25BA;</span></button>
-            </form>
-            <iframe name="news_article" scrolling="no" onload="expand_iframe(this)"></iframe>
+    <div class="instructions">
+        <p>Enter a ticker symbol you are interested to view or click any of the buttons below!</p>
+    </div>
+    <div class="top_section">
+        <div id="error_msg" style="display:none;" class="instructions {{error}}">
+            There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).
         </div>
 
+        <div>
+            <div style="display:none" id="img_div">
+                {% if img != "" %}
+                <a href={{website}} target="_blank"><img src="{{img}}" onerror=this.src="{% static 'images/not_available.svg' %}"></a>
+                {% else %}
+                <a href={{website}} target="_blank"><img src="{% static 'images/not_available.svg' %}"></a>
+                {% endif %}
+            </div>
+            <div style="display:none" id="ticker_intro">
+                <span>{{official_name}} ({{ticker_selected}})</span>
+                <br>Sector: <b>{{sector}}</b><br>Industry: <b>{{industry}}</b>
+            </div>
+        </div>
 
+        <div style="display:none" id="more_info_div">
+            <button class="more_info_btn" name="financial" type="submit" value={{ticker_selected}} onclick="show_spinner()">Financials</button>
+            <button class="more_info_btn" name="options" type="submit" value={{ticker_selected}} onclick="show_spinner()">Options</button>
+            <button class="more_info_btn" name="competitors" type="submit" value={{ticker_selected}} onclick="show_spinner()">Competitors</button>
+        </div>
+
+        <div style="display:none" id="days_btn">
+            <button class="change_day_btn" name="one_day" onclick="show_spinner()" value="true">1D</button>
+            <button class="change_day_btn"  name="five_day" onclick="show_spinner()" value="true">5D</button>
+            <button class="change_day_btn"  name="one_month" onclick="show_spinner()" value="true">1M</button>
+            <button class="change_day_btn"  name="one_year" onclick="show_spinner()" value="true">1Y</button>
+            <button class="change_day_btn" name="five_year" onclick="show_spinner()" value="true">5Y</button>
+        </div>
+        </form>
+    </div>
+    <div id="latest_price" style="display: none;"></div>
+    <div class="chart-container" style="display:none;">
+        <canvas id="price_chart"></canvas>
+    </div>
+
+    <div style="display:none" id="ticker_table">
+        <p class="header"><b>Key Statistics</b></p>
+        <div class="scrollable_div"></div>
+
+        <div style="display:none" class="ticker_summary">
+            <p class="header"><b>Summary</b></p>
+            {{summary}}<br>
+            <a href={{website}} target="_blank" class="read_more"><i>Read More...</i></a>
+        </div>
+
+        <form action="/major_holders" method="GET" autocomplete="off" target="major_holders">
+            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn">Major Holders <span>&#x25BA;</span></button>
+        </form>
+        <iframe name="major_holders" scrolling="no" onload="expand_iframe(this)"></iframe>
+
+        <form action="/institutional_holders" method="GET" autocomplete="off" target="institutional_holders">
+            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn">Institutional Holders <span>&#x25BA;</span></button>
+        </form>
+        <iframe name="institutional_holders" scrolling="no" onload="expand_iframe(this)"></iframe>
+
+        <form action="/recommendations" method="GET" autocomplete="off" target="recommendations">
+            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn">Upgrades & Downgrades <span>&#x25BA;</span></button>
+        </form>
+        <iframe name="recommendations" scrolling="no" onload="expand_iframe(this)"></iframe>
+
+        <form action="/sub_news" method="GET" autocomplete="off" target="news_article">
+            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn">Recent News Articles <span>&#x25BA;</span></button>
+        </form>
+        <iframe name="news_article" scrolling="no" onload="expand_iframe(this)"></iframe>
+
+        <p>Data from: <a href="https://finance.yahoo.com/" target="_blank">finance.yahoo.com</a> and <a href="https://finviz.com/groups.ashx" target="_blank">finviz.com</a></p>
+    </div>
 </div>
 {% endblock %}
 
 {% block bottom_script %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script type="text/javascript">
+var None = "N/A", False = false
+var information = {{information|safe}}
+var ticker_fin_fundament = {{ticker_fin_fundament|safe}}
+
+var latest_price = information["regularMarketPrice"], mkt_close = information["previousClose"]
+if (information.hasOwnProperty("beta") == true) {
+    beta = information["beta"]
+}
+else {
+    beta = "N/A"
+}
+
+if (information.hasOwnProperty("trailingEps") == true) {
+    eps = information["trailingEps"]
+}
+else {
+    eps = "N/A"
+}
+
+if (information.hasOwnProperty("trailingPE") == true) {
+    p_e_ratio = information["trailingPE"]
+}
+else {
+    p_e_ratio = "N/A"
+}
+
+if (information.hasOwnProperty("forwardPE") == true) {
+    forward_p_e = information["forwardPE"]
+}
+else {
+    forward_p_e = "N/A"
+}
+
+dividend_yield = information["trailingAnnualDividendYield"]
+dividend_amount = information["trailingAnnualDividendRate"]
+if (dividend_yield != "N/A") {
+    dividend_yield = String(Math.round(dividend_yield * 10000) / 100) + "%"
+    dividend_amount = "$" + String(dividend_amount)
+}
+
+table_code = `
+    <table>
+        <tr>
+            <td>Open: $${information["regularMarketOpen"]}</td>
+            <td>Prev Close: $${mkt_close}</td>
+        </tr>
+        <tr>
+            <td>High: $${information["dayHigh"]}</td>
+            <td>52-wk High: $${information["fiftyTwoWeekHigh"]}</td>
+        </tr>
+        <tr>
+            <td>Low: $${information["regularMarketDayLow"]}</td>
+            <td>52-wk Low: $${information["fiftyTwoWeekLow"]}</td>
+        </tr>
+        <tr>
+            <td>Volume: ${information["regularMarketVolume"]}</td>
+            <td>10D Avg Vol: ${information["averageDailyVolume10Day"]}</td>
+        </tr>
+        <tr>
+            <td>200D Avg Price: $${information["twoHundredDayAverage"]}</td>
+            <td>Price Target: $${ticker_fin_fundament['Target Price']}</td>
+        </tr>
+        <tr>
+            <td>Outstanding Shares: ${ticker_fin_fundament['Shs Outstand']}</td>
+            <td>Floating Shares: ${ticker_fin_fundament['Shs Float']}</td>
+        </tr>
+<!--        <tr>-->
+<!--            <td>Short Float: ${ticker_fin_fundament['Short Float']}</td>-->
+<!--            <td>Short Ratio: ${ticker_fin_fundament['Short Ratio']}</td>-->
+<!--        </tr>-->
+        <tr>
+            <td>P/E: ${p_e_ratio}</td>
+            <td>Forward P/E: ${forward_p_e}</td>
+        </tr>
+        <tr>
+            <td>Div. Yield: ${dividend_yield}</td>
+            <td>Dividend: ${dividend_amount}</td>
+        </tr>
+        <tr>
+            <td>Income: ${ticker_fin_fundament["Income"]}</td>
+            <td>Mkt Cap: ${ticker_fin_fundament["Market Cap"]}</td>
+        </tr>
+        <tr>
+            <td>Beta: ${beta}</td>
+            <td>EPS: ${eps}</td>
+        </tr>
+        <tr>
+            <td>RSI: ${ticker_fin_fundament['RSI (14)']}</td>
+            <td>SMA 20: ${ticker_fin_fundament['SMA20']}</td>
+        </tr>
+        <tr>
+            <td>SMA 50: ${ticker_fin_fundament['SMA50']}</td>
+            <td>SMA 200: ${ticker_fin_fundament['SMA200']}</td>
+        </tr>
+    </table>`
+document.getElementsByClassName("scrollable_div")[0].innerHTML = table_code;
+
+
+var price_change = Math.round((latest_price - mkt_close) * 100) / 100
+var price_percentage_change = Math.round(((latest_price - mkt_close) / mkt_close) * 10000) / 100
+if (price_change > 0) {
+    price_change = "+" + String(price_change)
+    price_percentage_change = "+" + String(price_percentage_change) + "%"
+}
+else {
+    price_percentage_change = String(price_percentage_change) + "%"
+}
+
+latest_price_code = `
+    ${latest_price}USD
+    <div>
+        ${price_change} ${price_percentage_change}
+    </div>`
+document.getElementById("latest_price").innerHTML = latest_price_code;
+
 var graphDate = {{ ticker_date_max|safe }};
 var tickerPrice = {{ ticker_price_max|safe }};
 var data_type = {{duration}};
 
 if (data_type == 0) {
-    var graphFirstPrice = {{mkt_close}};
+    var graphFirstPrice = information["previousClose"];
 }
 else {
     var graphFirstPrice = tickerPrice[0];
 }
-var graphLastPrice = {{latest_price}};
+var graphLastPrice = information["regularMarketPrice"];
 
 if (Number(graphFirstPrice) > Number(graphLastPrice)) {
     borderColor = "#ef5350";  // red color

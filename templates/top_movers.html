@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/top_movers.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode(){% endblock %}
+{% block onload_properties%}{% endblock %}
 
 {% block main_nav %}
     <div class="ticker-wrap">
@@ -24,6 +24,9 @@
 {% endblock %}
 
 {% block main_content %}
+    <div class="instructions">
+        <p>Top mover stocks moves by the largest proportion in price (in both ways) due to earnings, rumours, news, mergers and so on. If it's down, buy the dip!</p>
+    </div>
     <div id="gainers">
         <div class="header">Top Gainers</div>
         <div class="table_div">

@@ -13,6 +13,7 @@
 </head>
 
 <body onload="update_price_color();{% block onload_properties%}{% endblock %}">
+<script>restore_dark_mode()</script>
 <div>
     <div id="nav_bar_div">
         <div>
@@ -24,7 +25,9 @@
                 <div onmouseover="expand_nav(this)" onmouseout="expand_nav(this)">
                     <li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/ticker_analysis.svg' %}">Stocks</li>
                     <a href="{% url 'ticker' %}"><li class="sub_nav_bar" style="display: none;">Ticker Analysis</li></a>
+                    <a href="{% url 'financial' %}"><li class="sub_nav_bar" style="display: none;">Financials</li></a>
                     <a href="{% url 'options' %}"><li class="sub_nav_bar" style="display: none;">Options</li></a>
+                    <a href="{% url 'short_volume' %}"><li class="sub_nav_bar" style="display: none;">Short Volume</li></a>
                     <a href="{% url 'earnings_calendar' %}"><li class="sub_nav_bar" style="display: none;">Earnings Calendar</li></a>
                 </div>
                 
@@ -42,6 +45,7 @@
                     <a href="{% url 'short_interest' %}"><li class="sub_nav_bar" style="display: none;">Short Interest</li></a>
                     <a href="{% url 'low_float' %}"><li class="sub_nav_bar" style="display: none;">Low Float</li></a>
                     <a href="{% url 'penny_stocks' %}"><li class="sub_nav_bar" style="display: none;">Penny Stocks</li></a>
+                    <a href="{% url 'ark_trades' %}"><li class="sub_nav_bar" style="display: none;">ARK Trades</li></a>
                 </div>
 
                 <a href="{% url 'latest_news' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/newspaper.svg' %}">News Sentiment</li></a>

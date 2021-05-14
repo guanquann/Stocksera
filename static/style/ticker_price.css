@@ -34,18 +34,6 @@
         margin-left: 1%;
     }
 
-    .instructions {
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 50px;
-        margin-bottom: 10px;
-        text-align: center;
-        padding: 1%;
-        background-color: #E9EAEA;
-        border-radius: 10px;
-        width: 70%;
-    }
-
     #ticker_intro span {
         font-size:15px;
         font-weight:bold;
@@ -88,18 +76,6 @@
         margin-left: 1%;
     }
 
-    .instructions {
-        margin-left: auto;
-        margin-right: auto;
-        margin-bottom: 10px;
-        text-align: center;
-        padding: 1%;
-        background-color: #E9EAEA;
-        border-radius: 10px;
-        width: 50%;
-        max-width: 500px;
-    }
-
     #ticker_intro span {
         font-size:22px;
         font-weight:bold;
@@ -113,7 +89,7 @@
 }
 
 .more_info_btn {
-    border: 1px solid #9c9c9c;
+    border: 1.5px solid #9c9c9c;
     border-radius: 6px;
     padding: 5.5px;
     font-weight: bold;
@@ -131,7 +107,7 @@
 
 #ticker_intro {
     width: 70%;
-    margin-left: 8px
+    margin-left: 8px;
 }
 
 .read_more {
@@ -143,26 +119,8 @@
     color: #26a69a;
 }
 
-#img_div {
-    width: 6%;
-    min-width: 50px;
-    max-width: 80px;
-    display: inline-block;
-}
-
-#img_div img {
-    border-radius: 50%;
-    width: 100%;
-    border: 2px solid white;
-    /*background-color: white;*/
-}
-
 .change_day_btn {
-    /*border-left: 0px;
-    border-right: 0px;
-    border-top: 0px;
-    border-bottom: 2px solid gray;*/
-    border: 1px solid gray;
+    border: 1.5px solid gray;
     border-radius: 4px;
     padding-left: 0.55rem;
     padding-right: 0.55rem;
@@ -181,7 +139,7 @@
     overflow-y: auto;
 }
 
-p {
+.header {
     margin-bottom: 5px;
     margin-top: 5px;
 }
@@ -199,8 +157,17 @@ p {
     background-color: transparent;
 }
 
+.dark_mode .show_more_btn {
+    color: wheat;
+    background-color: transparent;
+}
+
 .show_more_btn span {
     color: grey;
+}
+
+.show_more_btn:hover {
+    background-color: transparent;
 }
 
 iframe {

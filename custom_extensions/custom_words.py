@@ -188,4 +188,5 @@ new_words = {
     "outpace": 2,
     "outpaces": 2,
     "outpacing": 2,
+    "inflation": -2,
 }

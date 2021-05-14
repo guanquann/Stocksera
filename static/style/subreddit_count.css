@@ -7,29 +7,51 @@
         margin-left: auto;
         margin-right: auto;
     }
+
+    .subreddit_intro .lg {
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 17px;
+        margin-top: 17px;
+    }
+
+    .subreddit_intro img {
+        border-radius: 50%;
+        width: 55px;
+        height: 55px;
+        border: 0.8px solid white;
+        background-color: black;
+    }
 }
 
 @media only screen and (min-width: 900px) {
     .chart-container {
         position: relative;
         height:55vh;
-        width:83vw;
+        width: 99%;
         max-height:250px;
         margin-left: auto;
         margin-right: auto;
+    }
+
+    .subreddit_intro .lg {
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 32px;
+        margin-top: 17px;
+    }
+
+    .subreddit_intro img {
+        border-radius: 50%;
+        width: 65px;
+        height: 65px;
+        border: 0.8px solid white;
+        background-color: black;
     }
 }
 
 .subreddit_intro {
     display: flex;
-}
-
-.subreddit_intro img {
-    border-radius: 50%;
-    width: 65px;
-    height: 65px;
-    border: 2px solid white;
-    background-color: white;
 }
 
 .subreddit_intro .main_div {
@@ -44,31 +66,29 @@
     margin-left: 15px;
     background-color: #f1c40f;
     border-radius: 8px;
-
+    height: fit-content;
 }
 
 .subreddit_diff div {
     margin-left: 7px;
     margin-right: 7px;
     margin-top: 10px;
+    margin-bottom: 10px;
     font-weight: bold;
     color: black;
 }
 
-.subreddit_intro .lg {
-    font-size: 26px;
-    font-weight: 700;
-    line-height: 32px;
-    margin-top: 17px;
-}
-
-.subreddit_intro .explore {
+.explore {
     font-size: 10px;
     font-weight: bold;
     background-color: #f1c40f;
-    padding: 3px;
+    padding: 2px;
     border-radius: 8px;
     margin-left: 7px;
+}
+
+.explore a {
+    color: black;
 }
 
 .subreddit_intro .sm {

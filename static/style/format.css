@@ -14,7 +14,6 @@
 		background-color: #e9eaea;
 		position: fixed;
 		font-size: 11px;
-		transition: 0.5s;
 	}
 
 	#nav_bar_div_sm {
@@ -22,7 +21,8 @@
 		position: absolute;
 		margin-top: 44vh;
 		left: -25px;
-		background-color: gold;
+		background-color: wheat;
+		color: black;
 		border-radius: 5px;
 		padding-top: 5px;
 		padding-bottom: 10px;
@@ -93,7 +93,7 @@
 
     .top_nav div {
         margin-top: 3px;
-        margin-left: 16px;
+        margin-left: 9.5px;
         width: fit-content;
     }
 
@@ -126,6 +126,18 @@
         padding: 4.5px;
         text-transform: uppercase;
         max-width: 100px;
+    }
+
+    .instructions {
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 50px;
+        margin-bottom: 10px;
+        text-align: center;
+        padding: 3px;
+        background-color: #E9EAEA;
+        border-radius: 10px;
+        width: 70%;
     }
 }	
 
@@ -242,6 +254,18 @@
         text-transform: uppercase;
         max-width: 120px;
     }
+
+    .instructions {
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 10px;
+        text-align: center;
+        padding: 4px;
+        background-color: #E9EAEA;
+        border-radius: 10px;
+        width: 60%;
+        max-width: 520px;
+    }
 }
 
 body {
@@ -343,6 +367,30 @@ a {
 	color: black;
 }
 
+.dark_mode a {
+    color: wheat;
+}
+
+#img_div {
+    width: 6%;
+    min-width: 50px;
+    max-width: 80px;
+    display: inline-block;
+}
+
+#img_div img {
+    border-radius: 50%;
+    width: 100%;
+    border: 0.8px solid black;
+}
+
+.dark_mode #img_div img {
+    border-radius: 50%;
+    width: 100%;
+    border: 0.8px solid white;
+    background-color: white;
+}
+
 table {
     border-collapse: collapse;
     white-space: nowrap;
@@ -354,7 +402,7 @@ td {
 
 table td, table th {
     border: 1px solid #ddd;
-    padding: 6px;
+    padding: 5px;
 }
 
 table tr:nth-child(even) {
@@ -369,7 +417,6 @@ table th {
     padding-top: 9px;
     padding-bottom: 9px;
     text-align: left;
-    color: white;
     background-color: rgb(38, 166, 154);
 }
 
@@ -489,6 +536,20 @@ input:checked + .slider:before {
 
 .dark_mode button:hover {
     background-color: #ffba39;
+}
+
+.dark_mode img {
+    opacity: 0.8;
+}
+
+.dark_mode .triangle-up {
+    border-bottom: 18px solid wheat;
+}
+
+
+.scrollable_div {
+    overflow-x:scroll;
+    overflow-y: auto;
 }
 
 ::-webkit-scrollbar {

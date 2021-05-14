@@ -4,8 +4,7 @@
 __pycache__
 venv/
 *.csv
-*.txt
-testing.py
+test.py
 .vscode
 db.sqlite3
 config.py

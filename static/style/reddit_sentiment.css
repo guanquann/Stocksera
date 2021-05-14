@@ -1,12 +1,19 @@
-.instructions {
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 1%;
-    text-align: center;
-    padding: 2%;
-    background-color: #E9EAEA;
-    border-radius: 10px;
-    width: 40%;
+@media only screen and (max-width: 900px) {
+    .table_data {
+        overflow-x:scroll;
+        overflow-y: auto;
+        width: 90%;
+        margin: auto;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    .table_data {
+        overflow-x:scroll;
+        overflow-y: auto;
+        width: 98%;
+        margin: auto;
+    }
 }
 
 select, option {
@@ -22,14 +29,16 @@ select, option {
     background-color:#e9eaea;
 }
 
+.dark_mode #filter_section {
+    background-color: #505050;
+}
+
 .filter_ticker {
-    background-color: white;
     float:left;
     white-space: nowrap;
-    font-size: small;
     padding: 4px;
     margin: 5px;
-    height: 17px;
+    height: 15px;
     border: 1px solid black;
     border-radius: 3px;
 }
@@ -38,12 +47,16 @@ select, option {
     background-color: white;
     float:left;
     white-space: nowrap;
-    font-size: small;
     padding: 4px;
-    margin: 5px;
+    margin: 3px;
     height: fit-content;
     border: 1px solid black;
     border-radius: 3px;
+}
+
+.dark_mode .filter_contents {
+    background-color: wheat;
+    color: black;
 }
 
 .filter_contents:hover {

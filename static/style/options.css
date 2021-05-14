@@ -1,16 +1,4 @@
 @media only screen and (max-width: 900px) {
-    .instructions {
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 50px;
-        margin-bottom: 10px;
-        text-align: center;
-        padding: 1%;
-        background-color: #E9EAEA;
-        border-radius: 10px;
-        width: 70%;
-    }
-
     .contents {
        width: 90%;
        margin-left: auto;
@@ -24,18 +12,6 @@
 }
 
 @media only screen and (min-width: 900px) {
-    .instructions {
-        margin-left: auto;
-        margin-right: auto;
-        margin-bottom: 10px;
-        text-align: center;
-        padding: 1%;
-        background-color: #E9EAEA;
-        border-radius: 10px;
-        width: 50%;
-        max-width: 500px;
-    }
-
     .contents {
        width: 98%;
        margin-left: auto;
@@ -48,28 +24,9 @@
     }
 }
 
-.instructions p {
-    margin-bottom: 5px;
-    margin-top: 5px;
-}
-
 #error_msg {
     margin-top: 5%;
 }
-
-#img_div img {
-    border-radius: 50%;
-    width:100%;
-    border:1px solid black;
-}
-
-#img_div {
-    width: 6%;
-    min-width: 50px;
-    max-width: 80px;
-    display: inline-block;
-}
-
 
 #ticker_intro {
     width: 70%;
@@ -140,6 +97,11 @@ h2 {
     width: fit-content;
     float: right;
     margin-right: 10px;
+}
+
+.dark_mode .max_pain_div {
+    background-color: wheat;
+    color: black;
 }
 
 #calls_div, #puts_div, #straddle_div {

@@ -13,6 +13,19 @@ def ticker_exception(variable, info):
     return output
 
 
+def get_ticker_basic(ticker):
+    information = ticker.info
+    try:
+        sector = information["sector"]
+        industry = information["industry"]
+    except KeyError:
+        sector = "-"
+        industry = "-"
+    img = information["logo_url"]
+    official_name = information["longName"]
+    return official_name, img, sector, industry
+
+
 def ticker_bar():
     popular_ticker_list = ["SPY", "QQQ", "TQQQ", "DIA", "GOOG", "AAPL", "AMZN", "TSLA", "MSFT", "PLTR", "NVDA",
                            "BB", "ARKK", "ARKF"]

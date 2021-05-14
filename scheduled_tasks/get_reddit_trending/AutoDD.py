@@ -194,7 +194,7 @@ def get_ticker_scores_psaw(sub_gen_dict):
             # search the title for the ticker/tickers
             if hasattr(submission, 'title'):
                 title = ' ' + submission.title.upper() + ' '
-                # print(title , submission)
+                print(title , submission)
                 bag_of_words = [re.sub(r"[^A-Z0-9]+", '', k) for k in title.split()]
                 for word in bag_of_words:
                     word_dict[word] = word_dict.get(word, 0) + 1
@@ -383,14 +383,14 @@ def get_quick_stats(ticker_list, threads=True):
 
         if mkt_cap != "N/A":
             if 1000000 <= mkt_cap < 1000000000:
-                mkt_cap = str(round(mkt_cap / 1000000, 2)) + "M"
+                mkt_cap_text = str(round(mkt_cap / 1000000, 2)) + "M"
             elif 1000000000 <= mkt_cap < 1000000000000:
-                mkt_cap = str(round(mkt_cap / 1000000000, 2)) + "B"
+                mkt_cap_text = str(round(mkt_cap / 1000000000, 2)) + "B"
             elif mkt_cap >= 1000000000000:
-                mkt_cap = str(round(mkt_cap / 1000000000000, 2)) + "B"
+                mkt_cap_text = str(round(mkt_cap / 1000000000000, 2)) + "B"
             valid = True
         else:
-            continue
+            mkt_cap = 0
 
         if stock_float != "N/A":
             stock_float = stock_float
@@ -400,9 +400,9 @@ def get_quick_stats(ticker_list, threads=True):
             beta = "{:.2f}".format(beta)
             valid = True
 
-        # if the ticker has any valid column, and price is in the range, append
-        if valid:
-            stat_list = [symbol, price, day_change, change_50day, volume, mkt_cap, stock_float, beta]
+        # if the ticker has any valid column, and mkt_cap is in the range, append
+        if valid and mkt_cap >= 1000000000:
+            stat_list = [symbol, price, day_change, change_50day, volume, mkt_cap_text, stock_float, beta]
             processed_stats_table.append(stat_list)
 
     # construct dataframe

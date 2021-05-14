@@ -40,7 +40,26 @@ db.execute("CREATE table IF NOT EXISTS wallstreetbets ("
            "date_updated VARCHAR (20), "
            "subreddit VARCHAR (25) )")
 
-f = open(r'table_records1.csv', 'r')
-db.copy_from(f, 'wallstreetbets', sep=',')
-f.close()
+db.execute("CREATE table IF NOT EXISTS dfv_stats ("
+           "author VARCHAR(100)"
+           "title VARCHAR(300), "
+           "selftext VARCHAR(3000), "
+           "link_flair_text VARCHAR(25), "
+           "score INTEGER, "
+           "upvote_ratio FLOAT, "
+           "num_comments INTEGER, "
+
+           "img_url VARCHAR(300), "
+           "post_link VARCHAR(300), "
+           "total_awards INTEGER, "
+           "total_coin_spent INTEGER, "
+           "total_coin_rewarded INTEGER, "
+           "total_days_premium INTEGER, "
+           "total_money_spent FLOAT, "
+           "total_awards INTEGER, "
+           ")")
+
+# f = open(r'table_records1.csv', 'r')
+# db.copy_from(f, 'wallstreetbets', sep=',')
+# f.close()
 

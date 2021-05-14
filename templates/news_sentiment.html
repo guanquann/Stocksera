@@ -19,19 +19,23 @@
         </div>
     </form>
 </div>
+<div id="spinner_div"></div>
 {% endblock %}
 
 {% block main_content %}
+    <div class="instructions">
+        <p>Get the news sentiment of your favourite ticker and compare it with some of the popular tickers in Reddit!</p>
+    </div>
     <div style="display:flex">
         <div style="" id="img_div">
             {% if img != "" %}
-            <a href={{website}} target="_blank"><img src="{{img}}" onerror=this.src="{% static 'images/not_available.svg' %}"></a>
+            <img src="{{img}}" onerror=this.src="{% static 'images/not_available.svg' %}">
             {% else %}
-            <a href={{website}} target="_blank"><img src="{% static 'images/not_available.svg' %}"></a>
+            <img src="{% static 'images/not_available.svg' %}">
             {% endif %}
         </div>
         <div style="" id="ticker_intro">
-            <span style="font-size:24px;font-weight:bolder">{{official_name}} ({{ticker_selected}})</span>
+            <span>{{official_name}} ({{ticker_selected}})</span>
             <br>Sector: <b>{{sector}}</b><br>Industry: <b>{{industry}}</b>
         </div>
     </div>
@@ -45,6 +49,10 @@
         <div class="chart-container">
             <canvas id="personal_sentiment_chart"></canvas>
         </div>
+        <p><b>News Sentiment over time</b></p>
+        <div class="chart-container">
+            <canvas id="personal_sentiment_trending"></canvas>
+        </div>
         <div class="scrollable_div">
             {{news_df|safe}}
         </div>
@@ -54,11 +62,36 @@
 {% block bottom_script %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script>
+<!--    Date.prototype.addDays = function(days) {-->
+<!--        var date = new Date(this.valueOf());-->
+<!--        date.setDate(date.getDate() + days);-->
+<!--        return date;-->
+<!--    }-->
+
+<!--    function getDates(startDate, stopDate) {-->
+<!--        var dateArray = new Array();-->
+
+<!--        var currentDate = new Date (startDate);-->
+<!--        var stopDate = new Date (stopDate);-->
+<!--        while (currentDate <= stopDate) {-->
+<!--            dateArray.push(String(currentDate));-->
+<!--            currentDate = currentDate.addDays(1);-->
+<!--        }-->
+<!--        return dateArray;-->
+<!--    }-->
+
+<!--    x = getDates("2021-05-01", "2021-05-08")-->
+<!--    console.log(x)-->
+
     var link = {{link|safe}}
     var table = document.getElementsByTagName("tr");
     for (row=1; row<table.length; row++) {
+<!--        td = table[row].getElementsByTagName("td");-->
+<!--        for (i=0; i<td.length; i++) {-->
+<!--            td[i].innerHTML = `<a href="${link[row-1]}" target="_blank" style="color:inherit;">${td[i].innerHTML}</a>`-->
+<!--        }-->
         var td = table[row].getElementsByTagName("td")[1];
-        td.innerHTML = `<a href="${link[row]}" target="_blank" style="color:inherit;">${td.innerHTML}</a>`
+        td.innerHTML = `<a href="${link[row-1]}" target="_blank" style="color:inherit;">${td.innerHTML}</a>`
     }
 
     var ticker_sentiment = {{ticker_sentiment|safe}};

@@ -35,7 +35,7 @@ def main():
     parser.add_argument('--csv', default=True, action='store_true',
                         help='Using this parameter produces a table_records.csv file, rather than a .txt file')
 
-    parser.add_argument('--filename', nargs='?', const='table_records', type=str, default='table_records_test',
+    parser.add_argument('--filename', nargs='?', const='table_records', type=str, default='table_records1',
                         help='Change the file name from table_records to whatever you wish')
 
     args = parser.parse_args()

@@ -1,5 +1,4 @@
 import os
-import time
 from datetime import datetime, timedelta
 
 from custom_extensions.custom_words import *
@@ -90,69 +89,6 @@ def stock_price(request):
             else:
                 website = "https://finance.yahoo.com/quote/{}".format(ticker_selected)
 
-            latest_price = information["regularMarketPrice"]
-
-            mkt_open = round(information["regularMarketOpen"], 2)
-            mkt_close = round(information["previousClose"], 2)
-            mkt_low = round(information["regularMarketDayLow"], 2)
-            mkt_high = round(information["dayHigh"], 2)
-            mkt_vol = information["regularMarketVolume"]
-
-            twoHundredDayAverage = information["twoHundredDayAverage"]
-            averageDailyVolume10Day = information["averageDailyVolume10Day"]
-
-            dividend_yield = information["trailingAnnualDividendYield"]
-            dividend_amount = information["trailingAnnualDividendRate"]
-            if dividend_yield is not None:
-                dividend_yield = str(round(dividend_yield * 100, 2)) + "%"
-                dividend_amount = "$" + str(dividend_amount)
-            else:
-                dividend_yield = "N/A"
-                dividend_amount = "N/A"
-
-            ex_div_date = information["exDividendDate"]
-            if ex_div_date is not None:
-                ex_div_date = str(time.strftime('%Y-%m-%d %H:%M:%S',
-                                                time.localtime(information["exDividendDate"]))).split()[0]
-            else:
-                ex_div_date = "N/A"
-
-            mkt_cap = ticker_fin_fundament["Market Cap"]
-
-            p_e_ratio = ticker_exception("trailingPE", information)
-            forward_p_e = ticker_exception("forwardPE", information)
-            beta = ticker_exception("beta", information)
-            eps = ticker_exception("trailingEps", information)
-
-            if mkt_vol < 1000000:
-                mkt_vol = str(round(mkt_vol/1000, 2)) + "K"
-            elif 1000000 <= mkt_vol < 1000000000:
-                mkt_vol = str(round(mkt_vol / 1000000, 2)) + "M"
-            else:
-                mkt_vol = str(round(mkt_vol / 1000000000, 2)) + "B"
-
-            mkt_year_high = round(information["fiftyTwoWeekHigh"], 2)
-            mkt_year_low = round(information["fiftyTwoWeekLow"], 2)
-            
-            price_change = round(latest_price - mkt_close, 2)
-            price_percentage_change = round(((latest_price - mkt_close) / mkt_close) * 100, 2)
-
-            if price_change > 0:
-                price_change = "+" + str(price_change)
-                price_percentage_change = "+" + str(price_percentage_change) + "%"
-            else:
-                price_percentage_change = str(price_percentage_change) + "%"
-
-            shares_outstanding = ticker_fin_fundament['Shs Outstand']
-            shares_float = ticker_fin_fundament['Shs Float']
-            short_float = ticker_fin_fundament['Short Float']
-            short_ratio = ticker_fin_fundament['Short Ratio']
-            price_target = ticker_fin_fundament['Target Price']
-            rsi = ticker_fin_fundament['RSI (14)']
-            sma20 = ticker_fin_fundament['SMA20']
-            sma50 = ticker_fin_fundament['SMA50']
-            sma200 = ticker_fin_fundament['SMA200']
-
             return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
                                                          "ticker_date_max": ticker_date_max,
                                                          "ticker_price_max": list(map(lambda x: round(x, 2),
@@ -160,25 +96,9 @@ def stock_price(request):
                                                          "duration": duration,
                                                          "img": img, "official_name": official_name,
                                                          "sector": sector, "industry": industry,
-                                                         "mkt_open": mkt_open, "mkt_close": mkt_close,
-                                                         "mkt_low": mkt_low, "mkt_high": mkt_high, "mkt_vol": mkt_vol,
-                                                         "mkt_year_high": mkt_year_high, "mkt_year_low": mkt_year_low,
-                                                         "latest_price": latest_price, "price_change": price_change,
-                                                         "price_percentage_change": price_percentage_change,
-                                                         "dividend_yield": dividend_yield,
-                                                         "dividend_amount": dividend_amount,
-                                                         "ex_div_date": ex_div_date,
-                                                         "mkt_cap": mkt_cap, "p_e_ratio": p_e_ratio,
-                                                         "twoHundredDayAverage": twoHundredDayAverage,
-                                                         "averageDailyVolume10Day": averageDailyVolume10Day,
-                                                         "forward_p_e": forward_p_e, "eps": eps, "beta": beta,
                                                          "website": website, "summary": summary,
-                                                         "shares_outstanding": shares_outstanding,
-                                                         "shares_float": shares_float,
-                                                         "short_float": short_float,
-                                                         "short_ratio": short_ratio, "price_target": price_target,
-                                                         "rsi": rsi, "sma20": sma20, "sma50": sma50, "sma200": sma200,
-                                                         "error": "error_false"})
+                                                         "error": "error_false",
+                                                         "information": information, "ticker_fin_fundament": ticker_fin_fundament})
         except (IndexError, KeyError, Exception):
             return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected, "error": "error_true"})
     return render(request, 'ticker_price.html')
@@ -330,56 +250,63 @@ def latest_news(request):
 def financial(request):
     if request.GET.get("quote"):
         ticker_selected = request.GET['quote'].upper()
-
-        balance_list = []        
-        balance_sheet = yf.Ticker(ticker_selected).quarterly_balance_sheet.replace(np.nan, 0)
-        print(balance_sheet)
-
-        date_list = balance_sheet.columns.astype("str").to_list()
-        balance_col_list = balance_sheet.index.tolist()
-        
-        for i in range(len(balance_sheet)):
-            values = balance_sheet.iloc[i].tolist()
-            balance_list.append(values)
-
-        yec = YahooEarningsCalendar(0)
-        earnings = yec.get_earnings_of(ticker_selected)
-        
-        earnings_list, financial_quarter_list = [], []
-        # [[1, 0.56, 0.64], [2, 0.51, 0.65], [3, 0.7, 0.73], [4, 1.41, 1.68], [5, 0.98]]
-        count = 5
-        for earning in earnings:
-            if len(earnings_list) != 5:   
-                if earning["epsestimate"] is not None:
-                    if earning["epsactual"] is not None:
-                        earnings_list.append([count, earning["epsestimate"], earning["epsactual"]])
-                    else:
-                        earnings_list.append([count, earning["epsestimate"]])   
-
-                    year_num = earning["startdatetime"].split("T")[0].split("-")[0]  
-                    month_num = int(earning["startdatetime"].split("T")[0].split("-")[1])
-                    if month_num in [1, 2, 3]:
-                        year_num = int(year_num) - 1
-                        quarter = "Q4"
-                    elif month_num in [4, 5, 6]:
-                        quarter = "Q1"
-                    elif month_num in [7, 8, 9]:
-                        quarter = "Q2"
-                    else:
-                        quarter = "Q3"
-                    financial_quarter_list.append("{} {}".format(year_num, quarter))
-
-                count -= 1  
-            else:
-                break
-        return render(request, 'financial.html', {"ticker_selected": ticker_selected,
-                                                  "date_list": date_list,
-                                                  "balance_list": balance_list,
-                                                  "balance_col_list": balance_col_list,
-                                                  "earnings_list": earnings_list,
-                                                  "financial_quarter_list": financial_quarter_list, })
     else:
-        return render(request, 'financial.html')
+        ticker_selected = "AAPL"
+    balance_list = []
+    ticker = yf.Ticker(ticker_selected)
+
+    official_name, img, sector, industry = get_ticker_basic(ticker)
+
+    balance_sheet = ticker.quarterly_balance_sheet.replace(np.nan, 0)
+    # print(balance_sheet)
+
+    date_list = balance_sheet.columns.astype("str").to_list()
+    balance_col_list = balance_sheet.index.tolist()
+
+    for i in range(len(balance_sheet)):
+        values = balance_sheet.iloc[i].tolist()
+        balance_list.append(values)
+
+    yec = YahooEarningsCalendar(0)
+    earnings = yec.get_earnings_of(ticker_selected)
+
+    earnings_list, financial_quarter_list = [], []
+    # [[1, 0.56, 0.64], [2, 0.51, 0.65], [3, 0.7, 0.73], [4, 1.41, 1.68], [5, 0.98]]
+    count = 5
+    for earning in earnings:
+        if len(earnings_list) != 5:
+            if earning["epsestimate"] is not None:
+                if earning["epsactual"] is not None:
+                    earnings_list.append([count, earning["epsestimate"], earning["epsactual"]])
+                else:
+                    earnings_list.append([count, earning["epsestimate"]])
+
+                year_num = earning["startdatetime"].split("T")[0].split("-")[0]
+                month_num = int(earning["startdatetime"].split("T")[0].split("-")[1])
+                if month_num in [1, 2, 3]:
+                    year_num = int(year_num) - 1
+                    quarter = "Q4"
+                elif month_num in [4, 5, 6]:
+                    quarter = "Q1"
+                elif month_num in [7, 8, 9]:
+                    quarter = "Q2"
+                else:
+                    quarter = "Q3"
+                financial_quarter_list.append("{} {}".format(year_num, quarter))
+
+            count -= 1
+        else:
+            break
+    return render(request, 'financial.html', {"ticker_selected": ticker_selected,
+                                              "official_name": official_name,
+                                              "img": img,
+                                              "industry": industry,
+                                              "sector": sector,
+                                              "date_list": date_list,
+                                              "balance_list": balance_list,
+                                              "balance_col_list": balance_col_list,
+                                              "earnings_list": earnings_list,
+                                              "financial_quarter_list": financial_quarter_list, })
 
 
 def options(request):
@@ -388,15 +315,7 @@ def options(request):
         try:
             ticker = yf.Ticker(ticker_selected)
 
-            information = ticker.info
-            try:
-                sector = information["sector"]
-                industry = information["industry"]
-            except KeyError:
-                sector = "-"
-                industry = "-"
-            img = information["logo_url"]
-            official_name = information["longName"]
+            official_name, img, sector, industry = get_ticker_basic(ticker)
 
             options_dates = ticker.options
 
@@ -488,6 +407,28 @@ def options(request):
         return render(request, 'options.html')
 
 
+def short_volume(request):
+    if request.GET.get("quote"):
+        ticker_selected = request.GET['quote'].upper()
+    else:
+        ticker_selected = "AAPL"
+
+    ticker = yf.Ticker(ticker_selected)
+    official_name, img, sector, industry = get_ticker_basic(ticker)
+
+    url = "http://shortvolumes.com/?t={}".format(ticker_selected)
+    table = pd.read_html(url)
+    shorted_vol_daily = table[3].loc[1:].to_html(index=False, header=False)
+    shorted_vol_group = table[4].dropna().to_html(index=False, header=False)
+    return render(request, 'short_volume.html', {"ticker_selected": ticker_selected,
+                                                 "official_name": official_name,
+                                                 "img": img,
+                                                 "industry": industry,
+                                                 "sector": sector,
+                                                 "shorted_vol_daily": shorted_vol_daily,
+                                                 "shorted_vol_group": shorted_vol_group})
+
+
 def earnings_calendar(request):
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
     db.execute("SELECT * FROM earnings_calendar ORDER BY earning_date ASC")
@@ -575,16 +516,26 @@ def penny_stocks(request):
                                                  "df_penny_stocks": df_penny_stocks.to_html(index=False)})
 
 
+def ark_trades(request):
+    return render(request, 'ark_trade.html')
+
+
 def industries_analysis(request):
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
     screen = performance.Performance()
-    df_screen = screen.ScreenerView().to_html(index=False)
+    sector = screen.ScreenerView(group="Sector")
+    sector.drop(sector.columns[[7, 8, 9, 11]], axis=1, inplace=True)
+    sector = sector.rename({'Change': 'Perf Day'}, axis=1)
+    sector = sector[['Name', "Perf Day", "Perf Week", "Perf Month", "Perf Quart", "Perf Half", "Perf Year", "Perf YTD"]]
+    wsb_df = pd.DataFrame({"Name": ["WSB"], "Perf Day": ["5%"], "Perf Week": ["5%"], "Perf Month": ["5%"], "Perf Quart": ["5%"], "Perf Half": ["5%"], "Perf Year": ["5"], "Perf YTD": ["5%"]})
+    sector = wsb_df.append(sector, ignore_index=True)
+    df_sector = sector.to_html(index=False)
     # df_screen = screen.ScreenerView(group="Industry")
     # print(df_screen)
     return render(request, 'industry.html', {"popular_ticker_list": popular_ticker_list,
                                              "popular_name_list": popular_name_list,
                                              "price_list": price_list,
-                                             "df_screen": df_screen})
+                                             "df_sector": df_sector})
 
 
 def reddit_etf(request):

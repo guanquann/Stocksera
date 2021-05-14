@@ -10,9 +10,21 @@
 
 {% block onload_properties%}update_table(){% endblock %}
 
+{% block main_nav %}
+    <div class="ticker-wrap">
+        <div class="ticker">
+            {% for name in popular_name_list|length|get_range %}
+            <div class="ticker_item">
+                <b>{{popular_name_list|index:name}} &#183 {{price_list|index:name|index:0}} <span> {{price_list|index:name|index:1}} ({{price_list|index:name|index:2}}%) </span></b>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
 {% block main_content %} 
-    <div id="instructions">
-        Do contact us if you have any feedbacks or suggestions. We will get to you as soon as possible!
+    <div class="instructions">
+        <p>Do contact us if you have any feedbacks or suggestions. We will get to you as soon as possible!</p>
     </div> 
     <div>
         <input type="text" placeholder="Name:" style="margin-right:3%;" required>

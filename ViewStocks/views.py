@@ -105,10 +105,7 @@ def stock_price(request):
 
 
 def ticker_recommendations(request):
-    if request.GET.get("quote"):
-        ticker_selected = request.GET['quote'].upper()
-    else:
-        ticker_selected = "AAPL"
+    ticker_selected = default_ticker(request)
     ticker_fin = finvizfinance(ticker_selected)
     try:
         recommendations = ticker_fin.TickerOuterRatings()
@@ -119,10 +116,7 @@ def ticker_recommendations(request):
 
 
 def ticker_major_holders(request):
-    if request.GET.get("quote"):
-        ticker_selected = request.GET['quote'].upper()
-    else:
-        ticker_selected = "AAPL"
+    ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
     major_holders = ticker.major_holders
     major_holders = major_holders.to_html(index=False, header=False)
@@ -130,10 +124,7 @@ def ticker_major_holders(request):
 
 
 def ticker_institutional_holders(request):
-    if request.GET.get("quote"):
-        ticker_selected = request.GET['quote'].upper()
-    else:
-        ticker_selected = "AAPL"
+    ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
     institutional_holders = ticker.institutional_holders
     if institutional_holders is not None:
@@ -144,10 +135,7 @@ def ticker_institutional_holders(request):
 
 
 def sub_news(request):
-    if request.GET.get("quote"):
-        ticker_selected = request.GET['quote'].upper()
-    else:
-        ticker_selected = "AAPL"
+    ticker_selected = default_ticker(request)
     ticker_fin = finvizfinance(ticker_selected)
 
     news_df = ticker_fin.TickerNews()
@@ -175,10 +163,7 @@ def sub_news(request):
 
 
 def latest_news(request):
-    if request.GET.get("quote"):
-        ticker_selected = request.GET['quote'].upper()
-    else:
-        ticker_selected = "AAPL"
+    ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
     ticker_fin = finvizfinance(ticker_selected)
     ticker_fin_fundament = ticker_fin.TickerFundament()
@@ -248,10 +233,7 @@ def latest_news(request):
 
 
 def financial(request):
-    if request.GET.get("quote"):
-        ticker_selected = request.GET['quote'].upper()
-    else:
-        ticker_selected = "AAPL"
+    ticker_selected = default_ticker(request)
     balance_list = []
     ticker = yf.Ticker(ticker_selected)
 
@@ -280,7 +262,6 @@ def financial(request):
                     earnings_list.append([count, earning["epsestimate"], earning["epsactual"]])
                 else:
                     earnings_list.append([count, earning["epsestimate"]])
-
                 year_num = earning["startdatetime"].split("T")[0].split("-")[0]
                 month_num = int(earning["startdatetime"].split("T")[0].split("-")[1])
                 if month_num in [1, 2, 3]:
@@ -293,7 +274,6 @@ def financial(request):
                 else:
                     quarter = "Q3"
                 financial_quarter_list.append("{} {}".format(year_num, quarter))
-
             count -= 1
         else:
             break
@@ -316,10 +296,8 @@ def options(request):
             ticker = yf.Ticker(ticker_selected)
 
             official_name, img, sector, industry = get_ticker_basic(ticker)
-
             options_dates = ticker.options
-
-            if request.GET.get("date"):
+            if request.GET.get("date") != "" and request.GET.get("date") is not None:
                 date_selected = request.GET["date"]
             else:
                 date_selected = options_dates[0]
@@ -408,11 +386,7 @@ def options(request):
 
 
 def short_volume(request):
-    if request.GET.get("quote"):
-        ticker_selected = request.GET['quote'].upper()
-    else:
-        ticker_selected = "AAPL"
-
+    ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
     official_name, img, sector, industry = get_ticker_basic(ticker)
 
@@ -550,5 +524,5 @@ def opinion(request):
     return render(request, 'opinion.html')
 
 
-def contact(request):
-    return render(request, 'contact.html')
+def about(request):
+    return render(request, 'about.html')

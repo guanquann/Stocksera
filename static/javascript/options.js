@@ -12,6 +12,10 @@ function display_input() {
     }
 }
 
+function reset_dropdown() {
+    document.getElementsByName("date")[0].value = "";
+}
+
 function update_table() {
     var tables = document.getElementsByClassName("dataframe");
 
@@ -191,6 +195,4 @@ function draw_open_interest_and_volume() {
         },
         options: options_dict,
     });
-
-    
 }

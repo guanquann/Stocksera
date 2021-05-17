@@ -5,12 +5,12 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def ticker_exception(variable, info):
-    if variable in info and info[variable] is not None:
-        output = info[variable]
+def default_ticker(request):
+    if request.GET.get("quote"):
+        ticker_selected = request.GET['quote'].upper()
     else:
-        output = "N/A"
-    return output
+        ticker_selected = "AAPL"
+    return ticker_selected
 
 
 def get_ticker_basic(ticker):

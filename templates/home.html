@@ -1,26 +1,23 @@
-<!DOCTYPE html>
+{% extends "format.html" %}
 {% load static %}
 {% load filter %}
 
-<html lang="en">
-<head>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>StocksEra | Home</title>
-    <link rel="stylesheet" href="{% static 'style/home.css' %}">  
-    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/> 
-</head>
+{% block title %}StocksEra | Home{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/home.css' %}">
+<link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
+{% endblock %}
+
+{% block onload_properties%}typeWriter();restore_dark_mode(){% endblock %}
+
+{% block main_nav %}
+<div class="top_nav">
+</div>
+{% endblock %}
+
+{% block main_content %}
 <body onload="typeWriter()">
-    <div class="nav_bar">
-        <ul>
-            <li class="hamburger_icon" onclick="show_nav_bar()">&#9776;</li>
-            <li class="munu"><a href="#analyse_ticker">Ticker</a></li>
-            <li class="munu"><a href="#reddit_trending">Trending</a></li>
-            <li class="munu">About</li>
-            <li class="munu"><a href="#subscribe">Subscribe</a></li>
-        </ul>
-    </div>
-
-
     <div style="scroll-behavior: smooth;">
         <div class="section_1">
             <div style="text-align: center;width:70%; margin: auto; transform: translateY(10%)">
@@ -33,48 +30,71 @@
             </div>
         </div>
 
-        <div class="analyse_ticker" id="analyse_ticker">
-            <div class="section_description">
+        <div id="contents_title">What we provide:</div>
+
+        <div id="contents_section">
+            <div class="contents_div">
+                <div><img src="{% static 'images/ticker_stats.png' %}"></div>
                 <h2>Analyse Ticker Easily</h2>
-                <p>Get the latest price and key statistics such as EPS, Market Cap and Average Volume of your favourite ticker before making an investment.</p>
-                <br>
-                <p>Identify major institution holders and ratings of the ticker easily too!</p>
-                <br>
-                <p>View financial statement of the company, the ticker's options and see how the rest of its competitors perform.</p>
+                <div class="contents_description">View financial statement of the company, the ticker's options and see how the rest of its competitors perform.</div>
                 <div class="href_btn"><a href="ticker">VIEW MORE</a></div>
             </div>
-            <div class="img_div">
-                <img src="{% static 'images/ticker_stats.png' %}">
-            </div>
-        </div>
 
-        <div class="reddit_trending" id="reddit_trending">
-            <div class="img_div">
-                <img src="{% static 'images/reddit_trending.png' %}">
-            </div>
-            <div class="section_description">
+            <div class="contents_div">
+                <div><img src="{% static 'images/reddit_trending.png' %}"></div>
                 <h2>Trending Ticker on Reddit 🚀</h2>
-                <p>Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</p>
+                <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
                 <div class="href_btn"><a href="reddit_analysis">VIEW MORE</a></div>
             </div>
-        </div>
 
-        <div class="reddit_etf">
-            <div class="section_description">
+            <div class="contents_div">
+                <div><img src="{% static 'images/reddit_trending.png' %}"></div>
                 <h2>Actively Managed ETF</h2>
-                <p>Reddit ETF is based on the trending stocks on WSB. If a new ticker enters the Top 10 mentioned ticker list before the market opens, it will be bought at 9.30AM. Any ticker that falls out of the Top 10 list will be sold.</p>
+                <div class="contents_description">Reddit ETF is based on the trending stocks and their sentiment levels on WSB.</div>
                 <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
             </div>
-            <div class="img_div">
-                <img src="{% static 'images/reddit_trending.png' %}">
-            </div>
-        </div>
 
-        <div class="subscribe" id="subscribe">
-            <p>It only takes a few seconds to subscribe in order to receive weekly newsletter and have priority access to beta versions.</p>
-            <input type="email" placeholder="Email Address:">
-            <br>
-            <button>SUBSCRIBE</button>
+            <div class="contents_div">
+                <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+                <h2>Trending Ticker on Reddit 🚀</h2>
+                <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
+                <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
+            </div>
+
+            <div class="contents_div">
+                <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+                <h2>Trending Ticker on Reddit 🚀</h2>
+                <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
+                <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
+            </div>
+
+            <div class="contents_div">
+                <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+                <h2>Trending Ticker on Reddit 🚀</h2>
+                <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
+                <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
+            </div>
+
+            <div class="contents_div">
+                <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+                <h2>Trending Ticker on Reddit 🚀</h2>
+                <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
+                <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
+            </div>
+
+            <div class="contents_div">
+                <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+                <h2>Trending Ticker on Reddit 🚀</h2>
+                <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
+                <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
+            </div>
+
+            <div class="contents_div">
+                <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+                <h2>Trending Ticker on Reddit 🚀</h2>
+                <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
+                <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
+            </div>
         </div>
 
         <div class="footer">
@@ -121,7 +141,9 @@
             </div>
         </div>
     </div>
-</body>
+{% endblock %}
+
+{% block bottom_script %}
 <script src="{% static 'javascript/home.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script>
@@ -136,7 +158,7 @@ var myChart = new Chart(price_chart, {
             label: 'Price',
             lineTension: 0,  // straight line instead of curve
             data: tickerPrice,
-            borderColor: "white",
+            borderColor: "grey",
             backgroundColor: 'transparent',
             tension: 0.1,
         }]
@@ -156,22 +178,22 @@ var myChart = new Chart(price_chart, {
                 ticks: {
                     beginAtZero: false,
                     display: false,
-                }, 
+                },
                 gridLines: {
                     display: false
-                }   
+                }
             }],
 
             xAxes: [{
                 ticks: {
                     beginAtZero: false,
                     display: false,
-                }, 
+                },
                 gridLines: {
 
                     display: false,
                     display: false,
-                }  
+                }
             }]
         },
 
@@ -191,4 +213,4 @@ var myChart = new Chart(price_chart, {
     },
 });
 </script>
-</html>
+{% endblock %}

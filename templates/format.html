@@ -50,7 +50,7 @@
 
                 <a href="{% url 'latest_news' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/newspaper.svg' %}">News Sentiment</li></a>
                 <a href="{% url 'industry_analysis' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/industry.svg' %}">Industries</li></a>
-                <a href="{% url 'contact' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/contact.svg' %}">Contact</li></a>
+                <a href="{% url 'about' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/about.svg' %}">About</li></a>
             </ul>
             <div><img src="{% static 'images/day_icon.svg' %}" class="sun_icon"></div>
             <div><img src="{% static 'images/night_icon.svg' %}" class="night_icon"></div>
@@ -73,6 +73,7 @@
             {% block main_content %}{% endblock %}
         </div>
     </div>
+
 </div>
 </body>
 

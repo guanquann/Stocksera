@@ -6,10 +6,9 @@
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/ark_trade.css' %}">
-<script src="{% static 'javascript/ark_trade.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}load_holdings();load_profile();restore_dark_mode(){% endblock %}
+{% block onload_properties%}load_holdings(0);load_profile();restore_dark_mode(){% endblock %}
 
 {% block main_nav %}
     <div class="ticker-wrap">
@@ -24,27 +23,53 @@
 {% endblock %}
 
 {% block main_content %}
-    <div class="instructions">
-        <p>These are the positions, trades, and weight of all companies in ARK Fund. Data is updated daily.</p>
-    </div>
-    <div id="profile"></div>
+   <div class="top_section">
+        <div class="instructions">
+            <p>These are the positions, trades, and weight of all companies in ARK Fund. Data is updated daily.</p>
+        </div>
 
-    <input id="fund_selected" value="ARKK">
-    <div class="fund_type_parent">
-        <div class="fund_type" onclick="update_fund(this)">ARKK</div>
-        <div class="fund_type" onclick="update_fund(this)">ARKQ</div>
-        <div class="fund_type" onclick="update_fund(this)">ARKF</div>
-        <div class="fund_type" onclick="update_fund(this)">ARKG</div>
-        <div class="fund_type" onclick="update_fund(this)">ARKW</div>
-        <div class="fund_type" onclick="update_fund(this)">ARKX</div>
-        <div class="fund_type" onclick="update_fund(this)">PRNT</div>
-        <div class="fund_type" onclick="update_fund(this)">IZRL</div>
-    </div>
+        <input id="fund_selected" value="ARKK">
+        <div class="fund_type_parent">
+            <div class="fund_type selected" onclick="update_fund(this)">ARKK</div>
+            <div class="fund_type" onclick="update_fund(this)">ARKQ</div>
+            <div class="fund_type" onclick="update_fund(this)">ARKF</div>
+            <div class="fund_type" onclick="update_fund(this)">ARKG</div>
+            <div class="fund_type" onclick="update_fund(this)">ARKW</div>
+            <div class="fund_type" onclick="update_fund(this)">ARKX</div>
+            <div class="fund_type" onclick="update_fund(this)">PRNT</div>
+            <div class="fund_type" onclick="update_fund(this)">IZRL</div>
+        </div>
 
-    <button onclick="load_holdings()" type="button">Holdings</button>
-    <button onclick="load_trades()" type="button">Trades</button>
-    <button onclick="load_ownership()" type="button">Ownership</button>
-    <div class="scrollable_div"></div>
+        <div id="profile"></div>
 
-    <p>Data from: <a href="https://arkfunds.io/api/" target="_blank">arkfunds.io/api</a></p>
+        <div class="button_parent">
+            <button class="btn_type selected" onclick="load_holdings(0)" type="button">Holdings</button>
+            <button class="btn_type" onclick="load_trades(1)" type="button">Trades</button>
+            <button class="btn_type" onclick="load_news(2)" type="button">News</button>
+            <input placeholder="Ticker:" onkeyup="searchFun()" id="ticker_name">
+        </div>
+        <div class="scrollable_div"></div>
+
+        <div id="ticker_model" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h4 style="margin: 10px;">ARK Holding</h4>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <div id="ticker_description" class="scrollable_div"></div>
+                        <div id="ticker_trade" class="scrollable_div"></div>
+                        <div id="fund_ownership" class="scrollable_div"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p>Data from: <a href="https://arkfunds.io/api/" target="_blank">arkfunds.io/api</a></p>
+   </div>
+{% endblock %}
+
+{% block bottom_script %}
+<script src="{% static 'javascript/ark_trade.js' %}"></script>
 {% endblock %}

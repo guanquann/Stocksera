@@ -18,7 +18,7 @@
 
 	#nav_bar_div_sm {
 		display: flex;
-		position: absolute;
+		position: fixed;
 		margin-top: 44vh;
 		left: -25px;
 		background-color: wheat;
@@ -29,6 +29,7 @@
 		padding-left: 13px;
 		padding-right: 13px;
 		transform: rotate(90deg);
+		font-weight: bold;
 		z-index: 9;
 	}
 
@@ -65,10 +66,10 @@
 
 	#main_content {
 		width: 99vw;
-		height: 99vh;
+		/*height: 99vh;*/
 		border: 0px;
 		overflow-y: auto;
-		margin-left: 1%;
+		/*margin-left: 1%;*/
 	}
 
     .ticker-wrap {
@@ -191,11 +192,11 @@
 	}
 
 	#main_content {
-		height: 90vh;
+		/*height: 90.5vh;*/
 		border: 0px;
 		overflow-y: auto;
 		margin-top: 50px;
-		margin-left: 1%;
+		/*margin-left: 1%;*/
 	}
 
 	.ticker-wrap {
@@ -302,7 +303,7 @@ button:hover {
     transition: 0.5s;
 }
 
-input:focus, select:focus, button:focus {
+input:focus, select:focus, button:focus, textarea:focus {
 	outline: none;
 }
 
@@ -394,6 +395,7 @@ a {
 table {
     border-collapse: collapse;
     white-space: nowrap;
+    margin: auto;
 }
 
 td {
@@ -554,7 +556,7 @@ input:checked + .slider:before {
 
 ::-webkit-scrollbar {
     width: 5px;  /* for vertical scrollbar */
-    height: 5px; /* for horizontal scrollbar */
+    height: 2.5px; /* for horizontal scrollbar */
     background: transparent;  /* Optional: just make scrollbar invisible */
 }
 /* Optional: show position indicator in red */

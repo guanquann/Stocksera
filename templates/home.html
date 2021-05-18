@@ -17,130 +17,129 @@
 {% endblock %}
 
 {% block main_content %}
-<body onload="typeWriter()">
-    <div style="scroll-behavior: smooth;">
-        <div class="section_1">
-            <div style="text-align: center;width:70%; margin: auto; transform: translateY(10%)">
-                <img style="width:70%;max-width: 550px;" src="{% static 'images/logo.svg' %}">
-                <h2>StocksEra</h2>
-                <p style="width: fit-content; margin: auto; min-height: 55px;" class="typewriter"></p>
-                <div class="chart-container">
-                    <canvas id="price_chart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <div id="contents_title">What we provide:</div>
-
-        <div id="contents_section">
-            <div class="contents_div">
-                <div><img src="{% static 'images/ticker_stats.png' %}"></div>
-                <h2>Analyse Ticker Easily</h2>
-                <div class="contents_description">View financial statement of the company, the ticker's options and see how the rest of its competitors perform.</div>
-                <div class="href_btn"><a href="ticker">VIEW MORE</a></div>
-            </div>
-
-            <div class="contents_div">
-                <div><img src="{% static 'images/reddit_trending.png' %}"></div>
-                <h2>Trending Ticker on Reddit 🚀</h2>
-                <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
-                <div class="href_btn"><a href="reddit_analysis">VIEW MORE</a></div>
-            </div>
-
-            <div class="contents_div">
-                <div><img src="{% static 'images/reddit_trending.png' %}"></div>
-                <h2>Actively Managed ETF</h2>
-                <div class="contents_description">Reddit ETF is based on the trending stocks and their sentiment levels on WSB.</div>
-                <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
-            </div>
-
-            <div class="contents_div">
-                <div><img src="{% static 'images/reddit_trending.png' %}"></div>
-                <h2>Trending Ticker on Reddit 🚀</h2>
-                <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
-                <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
-            </div>
-
-            <div class="contents_div">
-                <div><img src="{% static 'images/reddit_trending.png' %}"></div>
-                <h2>Trending Ticker on Reddit 🚀</h2>
-                <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
-                <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
-            </div>
-
-            <div class="contents_div">
-                <div><img src="{% static 'images/reddit_trending.png' %}"></div>
-                <h2>Trending Ticker on Reddit 🚀</h2>
-                <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
-                <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
-            </div>
-
-            <div class="contents_div">
-                <div><img src="{% static 'images/reddit_trending.png' %}"></div>
-                <h2>Trending Ticker on Reddit 🚀</h2>
-                <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
-                <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
-            </div>
-
-            <div class="contents_div">
-                <div><img src="{% static 'images/reddit_trending.png' %}"></div>
-                <h2>Trending Ticker on Reddit 🚀</h2>
-                <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
-                <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
-            </div>
-
-            <div class="contents_div">
-                <div><img src="{% static 'images/reddit_trending.png' %}"></div>
-                <h2>Trending Ticker on Reddit 🚀</h2>
-                <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
-                <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <ul>
-                <li id="disclaimer">Disclaimer</li>
-                <li id="contact">Contact</li>
-                <li id="privacy">Privacy</li>
-            </ul>
-        </div>
- 
-        <div id="disclaimer_model" class="modal">
-            <div class="modal-content">
-            <div class="modal-header">
-                <span class="close">&times;</span>
-                <h4 style="margin: 10px;">Disclaimer</h4>
-            </div>
-            <div class="modal-body">
-                <p>Trading in financial instruments involves high risks including the risk of losing some, or all, of your investment amount, and may not be suitable for all investors. Before deciding to trade, you should be fully informed of the risks and costs associated with trading the financial markets, conduct your own Due-Diligence (DD) and seek professional advice where needed. StocksEra will not be responsible for any losses or damages incurred as a result of your trading.</p>
-            </div>
-            </div>
-        </div>
-        
-        <div id="contact_model" class="modal">
-            <div class="modal-content">
-            <div class="modal-header">
-                <span class="close">&times;</span>
-                <h4 style="margin: 10px;">Contact</h4>
-            </div>
-            <div class="modal-body">
-                <p>Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body</p>
-            </div>
-            </div>
-        </div>
-
-        <div id="privacy_model" class="modal">
-            <div class="modal-content">
-            <div class="modal-header">
-                <span class="close">&times;</span>
-                <h4 style="margin: 10px;">Privacy</h4>
-            </div>
-            <div class="modal-body">
-                <p>Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body</p>
-            </div>
+<div>
+    <div class="section_1">
+        <div style="text-align: center;width:70%; margin: auto; transform: translateY(10%)">
+            <img style="width:70%;max-width: 550px;" src="{% static 'images/logo.svg' %}">
+            <h2>StocksEra</h2>
+            <p style="width: fit-content; margin: auto; min-height: 55px;" class="typewriter"></p>
+            <div class="chart-container">
+                <canvas id="price_chart"></canvas>
             </div>
         </div>
     </div>
+
+    <div id="contents_title">What we provide:</div>
+
+    <div id="contents_section">
+        <div class="contents_div">
+            <div><img src="{% static 'images/ticker_stats.png' %}"></div>
+            <h2>Analyse Ticker Easily</h2>
+            <div class="contents_description">View financial statement of the company, the ticker's options and see how the rest of its competitors perform.</div>
+            <div class="href_btn"><a href="ticker">VIEW MORE</a></div>
+        </div>
+
+        <div class="contents_div">
+            <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+            <h2>Trending Ticker on Reddit 🚀</h2>
+            <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
+            <div class="href_btn"><a href="reddit_analysis">VIEW MORE</a></div>
+        </div>
+
+        <div class="contents_div">
+            <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+            <h2>Actively Managed ETF</h2>
+            <div class="contents_description">Reddit ETF is based on the trending stocks and their sentiment levels on WSB.</div>
+            <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
+        </div>
+
+        <div class="contents_div">
+            <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+            <h2>Trending Ticker on Reddit 🚀</h2>
+            <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
+            <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
+        </div>
+
+        <div class="contents_div">
+            <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+            <h2>Trending Ticker on Reddit 🚀</h2>
+            <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
+            <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
+        </div>
+
+        <div class="contents_div">
+            <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+            <h2>Trending Ticker on Reddit 🚀</h2>
+            <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
+            <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
+        </div>
+
+        <div class="contents_div">
+            <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+            <h2>Trending Ticker on Reddit 🚀</h2>
+            <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
+            <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
+        </div>
+
+        <div class="contents_div">
+            <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+            <h2>Trending Ticker on Reddit 🚀</h2>
+            <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
+            <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
+        </div>
+
+        <div class="contents_div">
+            <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+            <h2>Trending Ticker on Reddit 🚀</h2>
+            <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
+            <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <ul>
+            <li id="disclaimer">Disclaimer</li>
+            <li id="contact">Contact</li>
+            <li id="privacy">Privacy</li>
+        </ul>
+    </div>
+
+    <div id="disclaimer_model" class="modal">
+        <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <h4 style="margin: 10px;">Disclaimer</h4>
+        </div>
+        <div class="modal-body">
+            <p>Trading in financial instruments involves high risks including the risk of losing some, or all, of your investment amount, and may not be suitable for all investors. Before deciding to trade, you should be fully informed of the risks and costs associated with trading the financial markets, conduct your own Due-Diligence (DD) and seek professional advice where needed. StocksEra will not be responsible for any losses or damages incurred as a result of your trading.</p>
+        </div>
+        </div>
+    </div>
+
+    <div id="contact_model" class="modal">
+        <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <h4 style="margin: 10px;">Contact</h4>
+        </div>
+        <div class="modal-body">
+            <p>Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body</p>
+        </div>
+        </div>
+    </div>
+
+    <div id="privacy_model" class="modal">
+        <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <h4 style="margin: 10px;">Privacy</h4>
+        </div>
+        <div class="modal-body">
+            <p>Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body Some text in the Modal Body</p>
+        </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block bottom_script %}

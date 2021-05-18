@@ -18,14 +18,14 @@
     font-weight: bold;
 }
 
-#contact_title {
+#contact_title, #acknowledgement_title {
     text-align: center;
     font-size: 20px;
     font-weight: bold;
     margin-top: 50px;
 }
 
-.about {
+.about, .acknowledgement_div {
     line-height: 1.5;
 }
 
@@ -55,6 +55,11 @@
     background-color: transparent;
 }
 
+.acknowledgement_div a {
+    text-decoration: underline;
+    color: blue;
+}
+
 .github_div {
     text-align: center;
     margin-top: 10px;
@@ -62,6 +67,9 @@
 
 .github_div img {
     width:30px;
+    background-color: white;
+    border-radius: 50%;
+    border: 2px solid white;
 }
 
 button {

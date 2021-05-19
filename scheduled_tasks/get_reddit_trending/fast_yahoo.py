@@ -200,14 +200,4 @@ def quick_stats_request(request_symbol_list, field_list):
     if not "quoteResponse" in json_dict:
         return None
     data_list = json_dict['quoteResponse']['result']
-
     return data_list
-
-
-# https://query2.finance.yahoo.com/v10/finance/quoteSummary/aapl?modules=summaryDetail -- for payoutRatio
-# https://query2.finance.yahoo.com/v10/finance/quoteSummary/nakd?modules=summaryProfile -- for industry
-# https://query2.finance.yahoo.com/v10/finance/quoteSummary/aapl?modules=financialData -- quickRatio
-# https://query2.finance.yahoo.com/v10/finance/quoteSummary/nakd?modules=price -- regularMarketChangePercent (available in quotes but not other modules)
-# https://query2.finance.yahoo.com/v10/finance/quoteSummary/nakd?modules=defaultKeyStatistics -- floatShares (available in quotes but not other modules)
-
-# https://query2.finance.yahoo.com/v10/finance/quoteSummary/aapl?modules=summaryDetail,summaryProfile,financialData,price,defaultKeyStatistics -- basically all data

@@ -1,37 +1,19 @@
-""" AutoDD: Automatically does the so called Due Diligence for you. """
-
-# AutoDD - Automatically does the "due diligence" for you.
-# Copyright (C) 2021  Fufu Fang, Steven Zhu
-
-__author__ = "Fufu Fang kaito1410 Napo2k gobbedy"
-__copyright__ = "The GNU General Public License v3.0"
-
 import sys
 import os
 import re
 import locale
 from datetime import datetime, timedelta
 from psaw import PushshiftAPI
-import praw
 from tabulate import tabulate
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-import psycopg2
+import sqlite3
 
-import config
+import scheduled_tasks.config as config
 from scheduled_tasks.get_reddit_trending.fast_yahoo import *
 from custom_extensions.stopwords import stopwords_list
 from custom_extensions.custom_words import new_words
 
-if os.environ.get('DATABASE_URL'):
-    postgres_url = os.environ.get('DATABASE_URL')
-    conn = psycopg2.connect(postgres_url, sslmode='require')
-# If using local database
-else:
-    conn = psycopg2.connect(user="postgres",
-                            password="admin",
-                            database="stocks_analysis")
-
-conn.autocommit = True
+conn = sqlite3.connect("../database.db", check_same_thread=False)
 db = conn.cursor()
 
 analyzer = SentimentIntensityAnalyzer()
@@ -95,7 +77,6 @@ def get_submission_psaw(n, sub_dict):
     timestamp_mid = int(mid_interval.timestamp())
     timestamp_start = int((mid_interval - timedelta(hours=n)).timestamp())
     timestamp_end = int(datetime.today().timestamp())
-    print("psaw", timestamp_start, timestamp_mid, timestamp_end)
     recent = {}
     prev = {}
     for key in sub_dict:
@@ -194,7 +175,7 @@ def get_ticker_scores_psaw(sub_gen_dict):
             # search the title for the ticker/tickers
             if hasattr(submission, 'title'):
                 title = ' ' + submission.title.upper() + ' '
-                print(title , submission)
+                # print(title , submission)
                 bag_of_words = [re.sub(r"[^A-Z0-9]+", '', k) for k in title.split()]
                 for word in bag_of_words:
                     word_dict[word] = word_dict.get(word, 0) + 1
@@ -237,7 +218,7 @@ def populate_df(current_scores_dict, prev_scores_dict, interval):
     """
     dict_result = {}
     total_sub_scores = {}
-    print(dict(sorted(word_dict.items(), key=lambda item: item[1])))
+    # print(dict(sorted(word_dict.items(), key=lambda item: item[1])))
     for sub, current_sub_scores_dict in current_scores_dict.items():
         total_sub_scores[sub] = {}
         for symbol, current_score in current_sub_scores_dict.items():
@@ -246,7 +227,7 @@ def populate_df(current_scores_dict, prev_scores_dict, interval):
                 dict_result[symbol][1] += current_score
                 # dict_result[symbol][3] = current_score
             else:
-                dict_result[symbol] = [current_score, current_score, 0, 0]   # [current_score, current_score, 0, current_score]
+                dict_result[symbol] = [current_score, current_score, 0, 0]
             total_sub_scores[sub][symbol] = total_sub_scores[sub].get(symbol, 0) + current_score
 
     for sub, prev_sub_scores_dict in prev_scores_dict.items():
@@ -291,7 +272,7 @@ def filter_df(df, min_val):
     return df
 
 
-def get_financial_stats(results_df, threads=True):
+def get_financial_stats(results_df, min_vol, min_mkt_cap, threads=True):
     # dictionary of ticker summary profile information to get from yahoo
     summary_profile_measures = {'industry': 'industry'}
 
@@ -310,7 +291,7 @@ def get_financial_stats(results_df, threads=True):
 
     # check for valid symbols and get quick stats
     ticker_list = list(results_df.index.values)
-    quick_stats_df = get_quick_stats(ticker_list, threads)
+    quick_stats_df = get_quick_stats(ticker_list, min_vol, min_mkt_cap, threads)
     valid_ticker_list = list(quick_stats_df.index.values)
 
     summary_stats_df = download_advanced_stats(valid_ticker_list, module_name_map, threads)
@@ -322,7 +303,7 @@ def get_financial_stats(results_df, threads=True):
     return results_df
 
 
-def get_quick_stats(ticker_list, threads=True):
+def get_quick_stats(ticker_list, min_vol, min_mkt_cap, threads=True):
 
     quick_stats = {'regularMarketPreviousClose': 'prvCls', 'fiftyDayAverage': '50DayAvg',
                    'regularMarketVolume': 'volume', 'averageDailyVolume3Month': '3MonthVolAvg',
@@ -370,27 +351,29 @@ def get_quick_stats(ticker_list, threads=True):
 
         if volume != "N/A":
             if volume <= 50000:
-                continue
+                volume_text = volume
             elif 50000 < volume < 1000000:
-                volume = str(round(volume / 1000, 2)) + "K"
+                volume_text = str(round(volume / 1000, 2)) + "K"
             elif 1000000 <= volume < 1000000000:
-                volume = str(round(volume / 1000000, 2)) + "M"
-            elif volume >= 1000000000:
-                volume = str(round(volume / 1000000000, 2)) + "B"
+                volume_text = str(round(volume / 1000000, 2)) + "M"
+            else:
+                volume_text = str(round(volume / 1000000000, 2)) + "B"
             valid = True
         else:
-            continue
+            volume = 0
+            volume_text = ""
 
         if mkt_cap != "N/A":
-            if 1000000 <= mkt_cap < 1000000000:
+            if mkt_cap < 1000000000:
                 mkt_cap_text = str(round(mkt_cap / 1000000, 2)) + "M"
             elif 1000000000 <= mkt_cap < 1000000000000:
                 mkt_cap_text = str(round(mkt_cap / 1000000000, 2)) + "B"
-            elif mkt_cap >= 1000000000000:
+            else:
                 mkt_cap_text = str(round(mkt_cap / 1000000000000, 2)) + "B"
             valid = True
         else:
             mkt_cap = 0
+            mkt_cap_text = ""
 
         if stock_float != "N/A":
             stock_float = stock_float
@@ -401,8 +384,8 @@ def get_quick_stats(ticker_list, threads=True):
             valid = True
 
         # if the ticker has any valid column, and mkt_cap is in the range, append
-        if valid and mkt_cap >= 1000000000:
-            stat_list = [symbol, price, day_change, change_50day, volume, mkt_cap_text, stock_float, beta]
+        if valid and mkt_cap >= min_mkt_cap and volume >= min_vol:
+            stat_list = [symbol, price, day_change, change_50day, volume_text, mkt_cap_text, stock_float, beta]
             processed_stats_table.append(stat_list)
 
     # construct dataframe
@@ -418,7 +401,6 @@ def get_quick_stats(ticker_list, threads=True):
 
 
 def print_df(df, filename, writecsv, subreddit, all_sub):
-    # turn index (symbols) into regular column for printing purposes
     df.reset_index(inplace=True)
 
     now = datetime.now()
@@ -426,6 +408,21 @@ def print_df(df, filename, writecsv, subreddit, all_sub):
     df['date_updated'] = dt_string
     if all_sub is False:
         df['subreddit'] = subreddit
+
+    cols_to_change = ["one_day_score", "recent", "previous", "rockets", "positive", "negative"]
+    for col in cols_to_change:
+        df[col] = df[col].astype(float)
+    df['change'] = df['change'].apply(lambda x: round(x, 2))
+    df['industry'] = df['industry'].str.replace("—", "-")
+
+    # Save to sql database
+    for row_num in range(len(df)):
+        db.execute(
+            "INSERT INTO {} VALUES "
+            "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)".format(subreddit),
+            tuple(df.loc[row_num].tolist()))
+        conn.commit()
+    print("Saved to SQL Database successfully.")
 
     # save the file to the same dir as the AutoDD.py script
     completeName = os.path.join(sys.path[0], filename)
@@ -444,5 +441,4 @@ def print_df(df, filename, writecsv, subreddit, all_sub):
             file.write(tabulate(df, headers='keys', floatfmt='.2f', showindex=False))
             file.write('\n\n')
 
-    print("Wrote to file successfully: ")
-    print(completeName)
+    print("Wrote to file successfully {}".format(completeName))

@@ -6,5 +6,8 @@ venv/
 *.csv
 test.py
 .vscode
+*.db
 db.sqlite3
 config.py
+price_prediction.py
+senate_stocks_picks.py

@@ -1,10 +1,8 @@
-import os
 from datetime import datetime, timedelta
+import sqlite3
 
 from custom_extensions.custom_words import *
 from helpers import *
-
-import psycopg2
 
 from yahoo_earnings_calendar import YahooEarningsCalendar
 from finvizfinance.quote import finvizfinance
@@ -13,17 +11,7 @@ from finvizfinance.group import (overview, valuation, performance)
 from django.shortcuts import render, redirect
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-# If using database from Heroku
-if os.environ.get('DATABASE_URL'):
-    postgres_url = os.environ.get('DATABASE_URL')
-    conn = psycopg2.connect(postgres_url, sslmode='require')
-# If using local database
-else:
-    conn = psycopg2.connect(user="postgres",
-                            password="admin",
-                            database="stocks_analysis")
-
-conn.autocommit = True
+conn = sqlite3.connect(r"scheduled_tasks/database.db", check_same_thread=False)
 db = conn.cursor()
 
 analyzer = SentimentIntensityAnalyzer()
@@ -211,11 +199,11 @@ def latest_news(request):
     else:
         avg_score = round((total_score / num_rows) * 100, 2)
 
-    db.execute("SELECT * FROM news_sentiment WHERE date_updated=%s", (str(datetime.now()).split()[0],))
+    db.execute("SELECT * FROM news_sentiment WHERE date_updated=?", (str(datetime.now()).split()[0],))
     ticker_sentiment = db.fetchall()
     days = 1
     while not ticker_sentiment:
-        db.execute("SELECT * FROM news_sentiment WHERE date_updated=%s", (str(datetime.now()-timedelta(days=days)).split()[0],))
+        db.execute("SELECT * FROM news_sentiment WHERE date_updated=?", (str(datetime.now()-timedelta(days=days)).split()[0],))
         ticker_sentiment = db.fetchall()
         days += 1
     ticker_sentiment = list(map(list, ticker_sentiment))
@@ -419,13 +407,15 @@ def reddit_analysis(request):
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
     if request.GET.get("subreddit"):
         subreddit = request.GET.get("subreddit").lower().replace(" ", "")
-        if subreddit == "all":
-            db.execute("SELECT * FROM reddit_trending ORDER BY score DESC")
-        else:
-            db.execute("SELECT * FROM {} ORDER BY recent DESC LIMIT 50".format(subreddit))
-        trending_tickers = db.fetchall()
-        database_mapping = {"wallstreetbets": "Wall Street Bets"}
 
+        db.execute("SELECT date_updated FROM wallstreetbets ORDER BY ID DESC LIMIT 1")
+        latest_date = db.fetchone()[0]
+
+        db.execute("SELECT * FROM wallstreetbets WHERE date_updated=?", (latest_date,))
+        trending_tickers = db.fetchall()
+        trending_tickers = list(map(list, trending_tickers))
+
+        database_mapping = {"wallstreetbets": "Wall Street Bets"}
         subreddit = database_mapping[subreddit]
         return render(request, 'reddit_sentiment.html', {"popular_ticker_list": popular_ticker_list,
                                                          "popular_name_list": popular_name_list,

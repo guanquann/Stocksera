@@ -1,22 +1,12 @@
-import os
 from datetime import datetime
+import sqlite3
 
-import psycopg2
 from finvizfinance.quote import finvizfinance
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 from custom_extensions.custom_words import *
 
-# If using database from Heroku
-if os.environ.get('DATABASE_URL'):
-    postgres_url = os.environ.get('DATABASE_URL')
-    conn = psycopg2.connect(postgres_url, sslmode='require')
-# If using local database
-else:
-    conn = psycopg2.connect("dbname=stocks_analysis "
-                            "user=postgres "
-                            "password=admin")
-conn.autocommit = True
+conn = sqlite3.connect("database.db", check_same_thread=False)
 db = conn.cursor()
 
 analyzer = SentimentIntensityAnalyzer()
@@ -51,5 +41,6 @@ for ticker_selected in interested_tickers:
     else:
         avg_score = round((total_score / num_rows) * 100, 2)
 
-    db.execute("INSERT INTO news_sentiment VALUES (%s, %s, %s)", (ticker_selected, avg_score, date_updated))
+    db.execute("INSERT INTO news_sentiment VALUES (?, ?, ?)", (ticker_selected, avg_score, date_updated))
+    conn.commit()
     print("INSERT {} INTO DATABASE SUCCESSFULLY!".format(ticker_selected))

@@ -1,24 +1,17 @@
 from datetime import datetime
-import os
+import sqlite3
 import praw
-import psycopg2
 
-CLIENT_ID = "3RbFQX8O9UqDCA"
-CLIENT_SECRET = "NalOX_ZQqGWP4eYKZv6bPlAb2aWOcA"
-USER_AGENT = "subreddit_scraper"
+from scheduled_tasks.config import *
+
+CLIENT_ID = API_REDDIT_CLIENT_ID
+CLIENT_SECRET = API_REDDIT_CLIENT_SECRET
+USER_AGENT = API_REDDIT_USER_AGENT
 reddit = praw.Reddit(client_id=CLIENT_ID, client_secret=CLIENT_SECRET, user_agent=USER_AGENT)
 
-# If using database from Heroku
-if os.environ.get('DATABASE_URL'):
-    postgres_url = os.environ.get('DATABASE_URL')
-    conn = psycopg2.connect(postgres_url, sslmode='require')
-# If using local database
-else:
-    conn = psycopg2.connect("dbname=stocks_analysis "
-                            "user=postgres "
-                            "password=admin")
-conn.autocommit = True
+conn = sqlite3.connect("database.db", check_same_thread=False)
 db = conn.cursor()
+
 # db.execute("DELETE FROM subreddit_count")
 interested_subreddit = ["wallstreetbets", "stocks", "StockMarket", "GME", "Superstonk", "amcstock"]
 date_updated = str(datetime.now()).split()[0]
@@ -26,4 +19,6 @@ date_updated = str(datetime.now()).split()[0]
 for subreddit_name in interested_subreddit:
     subreddit = reddit.subreddit(subreddit_name)
     subscribers = subreddit.subscribers
-    db.execute("INSERT INTO subreddit_count VALUES (%s, %s, %s)", (subreddit_name, subscribers, date_updated))
+    active = subreddit.accounts_active
+    db.execute("INSERT INTO subreddit_count VALUES (?, ?, ?, ?)", (subreddit_name, subscribers, active, date_updated))
+    conn.commit()

@@ -9,7 +9,7 @@
 <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
 {% endblock %}
 
-{% block onload_properties%}typeWriter();restore_dark_mode(){% endblock %}
+{% block onload_properties%}loadWriter();restore_dark_mode(){% endblock %}
 
 {% block main_nav %}
 <div class="top_nav">
@@ -29,8 +29,7 @@
         </div>
     </div>
 
-    <div id="contents_title">What we provide:</div>
-
+    <div id="contents_title">What we provide</div>
     <div id="contents_section">
         <div class="contents_div">
             <div><img src="{% static 'images/ticker_stats.png' %}"></div>
@@ -93,6 +92,14 @@
             <h2>Trending Ticker on Reddit 🚀</h2>
             <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
             <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
+        </div>
+    </div>
+
+    <div id="experience_title">Your experience matters</div>
+    <div>
+        <div class="experience_div">
+            <div>Responsive web design and dark mode available - because we care about your experience</div>
+            <img src="{% static 'images/reddit_trending.png' %}">
         </div>
     </div>
 
@@ -201,13 +208,6 @@ var myChart = new Chart(price_chart, {
             point: {
                 radius: 0
             }
-        },
-
-        options: {
-            animations: {
-                animationEasing: 'linear',
-                duration: 3000,
-            },
         },
     },
 });

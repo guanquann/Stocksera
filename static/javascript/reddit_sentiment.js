@@ -6,7 +6,7 @@ function check_table() {
 
     var table = document.getElementById("reddit_table");
     for (i = 0; i < (table.rows.length - 1); i++) {
-        var score_change = table.getElementsByTagName('tbody')[0].rows[i].cells[3]
+        var score_change = table.getElementsByTagName('tbody')[0].rows[i].cells[4]
         if (score_change.innerText.includes("-")) {
             score_change.style.color = "red";
         }
@@ -17,7 +17,7 @@ function check_table() {
             score_change.style.color = "green";
         }
 
-        var one_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[7];
+        var one_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[8];
         if (one_day_price.innerText.includes("-")) {
             one_day_price.innerText = one_day_price.innerText + "%";
             one_day_price.style.color = "red";
@@ -27,7 +27,7 @@ function check_table() {
             one_day_price.style.color = "green";
         }
 
-        var fifty_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[8];
+        var fifty_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[9];
         if (fifty_day_price.innerText.includes("-")) {
             fifty_day_price.innerText = fifty_day_price.innerText + "%";
             fifty_day_price.style.color = "red";
@@ -37,11 +37,10 @@ function check_table() {
             fifty_day_price.style.color = "green";
         }
 
-        var price_target = table.getElementsByTagName('tbody')[0].rows[i].cells[12];
+        var price_target = table.getElementsByTagName('tbody')[0].rows[i].cells[13];
         if (price_target.innerText != "N/A") {
             price_target.innerText = "$" + price_target.innerText;
         }
-
     }
 }
 
@@ -83,10 +82,12 @@ function reset_table() {
     }
 
     for (i = 0; i < tr.length; i++) {
-        for (col_name=1; col_name <= 14; col_name ++) {
+        for (col_name=1; col_name <= 15; col_name ++) {
             tr[i].children[col_name].style.removeProperty("display");
         }
     }
+
+    document.getElementById("search_ticker").value = ""
 
 }
 
@@ -141,7 +142,7 @@ function sortTable(n) {
             y = rows[i + 1].getElementsByTagName("TD")[n].innerHTML.replace("$", "").replace("%", "");
 
             // If column is volume/floating shares
-            if (n == 5 || n == 8) {
+            if (n == 6 || n == 10) {
                 x = rows[i].getElementsByTagName("TD")[n].innerHTML
                 y = rows[i + 1].getElementsByTagName("TD")[n].innerHTML
 

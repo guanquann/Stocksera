@@ -12,6 +12,11 @@
         margin-left: auto;
         margin-right: auto;
     }
+
+    #ticker_intro span {
+        font-size:15px;
+        font-weight:bold;
+    }
 }
 
 @media only screen and (min-width: 900px) {
@@ -28,8 +33,18 @@
         margin-left: auto;
         margin-right: auto;
     }
+
+    #ticker_intro span {
+        font-size:22px;
+        font-weight:bold;
+    }
 }
 
+#ticker_intro {
+    width: 70%;
+    margin-left: 8px;
+    display: inline-block;
+}
 
 h2 {
     margin-top: 30px;

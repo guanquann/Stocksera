@@ -21,12 +21,12 @@
 
 from __future__ import print_function
 
-from . import Ticker, multi
+from yfinance.ticker import Ticker
+import yfinance.multi as multi
 # from collections import namedtuple as _namedtuple
 
 
-class Tickers():
-
+class Tickers:
     def __repr__(self):
         return 'yfinance.Tickers object <%s>' % ",".join(self.symbols)
 

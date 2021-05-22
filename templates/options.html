@@ -45,15 +45,10 @@
 
         <div class="navigation_menu">
             <div id="date_dropdown" style="display: none;">
-                <div>Expiry Date:</div>
                 <select name="date" onchange="show_spinner();this.form.submit()">
-                    {% if date_selected %}
-                        <option value="{{date_selected}}">{{date_selected}}</option>
-                    {% endif %}
+                    <option value="{{date_selected}}">Expiry Date: {{date_selected}}</option>
                     {% for date in options_dates %}
-                        {% if date != date_selected %}
-                            <option value="{{date}}">{{date}}</option>
-                        {% endif %}
+                        <option value="{{date}}">{{date}}</option>
                     {% endfor %}
                 </select>
             </div>

@@ -137,31 +137,37 @@
 {% block bottom_script %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script type="text/javascript">
-    var wsb_date = [], wsb_count = [], stocks_date = [], stocks_count = [], StockMarket_date = [], StockMarket_count = [], gme_date = [], gme_count = [], superstonk_date = [], superstonk_count = [], amc_date = [], amc_count = []
+    var wsb_date = [], wsb_count = [], wsb_active = [], stocks_date = [], stocks_count = [], stocks_active = [],  StockMarket_date = [], StockMarket_count = [], StockMarket_active = [], gme_date = [], gme_count = [], gme_active = [], superstonk_date = [], superstonk_count = [], superstonk_active = [], amc_date = [], amc_count = [], amc_active = []
     var subscribers_list = {{subscribers|safe}}
     for (subscribers of subscribers_list) {
         if (subscribers[0] == "wallstreetbets") {
             wsb_count.push(subscribers[1])
+            wsb_active.push(subscribers[2])
             wsb_date.push(subscribers[3])
         }
         else if (subscribers[0] == "stocks") {
             stocks_count.push(subscribers[1])
+            stocks_active.push(subscribers[2])
             stocks_date.push(subscribers[3])
         }
         else if (subscribers[0] == "StockMarket") {
             StockMarket_count.push(subscribers[1])
+            StockMarket_active.push(subscribers[2])
             StockMarket_date.push(subscribers[3])
         }
         else if (subscribers[0] == "Superstonk") {
             superstonk_count.push(subscribers[1])
+            superstonk_active.push(subscribers[2])
             superstonk_date.push(subscribers[3])
         }
         else if (subscribers[0] == "amcstock") {
             amc_count.push(subscribers[1])
+            amc_active.push(subscribers[2])
             amc_date.push(subscribers[3])
         }
         else if (subscribers[0] == "GME") {
             gme_count.push(subscribers[1])
+            gme_active.push(subscribers[2])
             gme_date.push(subscribers[3])
         }
     }

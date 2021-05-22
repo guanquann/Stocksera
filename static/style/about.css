@@ -3,12 +3,56 @@
         width: 90%;
         margin:auto;
     }
+
+    .contact_div input {
+        padding: 0.4%;
+        border-bottom: 1px solid;
+        border-top: 0;
+        border-left: 0;
+        border-right: 0;
+        width: 38.5vw;
+    }
+
+    .contact_div textarea {
+        font-family: Arial;
+        padding: 0.4%;
+        width: 80vw;
+        border-top: 0;
+        border-left: 0;
+        border-right: 0;
+        height: 15vh;
+        margin-top:4%;
+        margin-bottom:1%;
+        background-color: transparent;
+    }
 }
 
 @media only screen and (min-width: 900px) {
     .top_section {
         width: 98%;
         margin:auto;
+    }
+
+    .contact_div input {
+        padding: 0.4%;
+        border-bottom: 1px solid ;
+        border-top: 0;
+        border-left: 0;
+        border-right: 0;
+        width:18vw;
+    }
+
+    .contact_div textarea {
+        font-family: Arial;
+        padding: 0.4%;
+        width: 40vw;
+        border-top: 0;
+        border-left: 0;
+        border-right: 0;
+        height: 15vh;
+        margin-top:4%;
+        margin-bottom:1%;
+        background-color: transparent;
     }
 }
 
@@ -18,46 +62,24 @@
     font-weight: bold;
 }
 
-#contact_title, #acknowledgement_title {
+#contact_title, #support_title, #acknowledgement_title {
     text-align: center;
     font-size: 20px;
     font-weight: bold;
     margin-top: 50px;
 }
 
-.about, .acknowledgement_div {
+.about, .support_div, .contact_div, .acknowledgement_div {
     line-height: 1.5;
 }
 
-.contact_div {
+.input_section {
     text-align: center;
 }
 
-.contact_div input {
-    padding: 0.4%;
-    border-bottom: 1px solid #858585;
-    border-top: 0;
-    border-left: 0;
-    border-right: 0;
-    width:18vw;
-}
-
-.contact_div textarea {
-    font-family: Arial;
-    padding: 0.4%;
-    width: 40vw;
-    border-top: 0;
-    border-left: 0;
-    border-right: 0;
-    height: 15vh;
-    margin-top:4%;
-    margin-bottom:1%;
-    background-color: transparent;
-}
-
-.acknowledgement_div a {
+.support_div a, .acknowledgement_div a {
     text-decoration: underline;
-    color: blue;
+    color: rgb(38, 166, 154);
 }
 
 .github_div {

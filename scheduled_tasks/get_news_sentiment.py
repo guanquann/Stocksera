@@ -16,8 +16,6 @@ interested_tickers = ["TSLA", "GME", "AMC", "SPY", "NIO", "BB", "PLTR", "AAPL", 
                       "OCGN", "CLOV"]
 date_updated = str(datetime.now()).split()[0]
 
-# db.execute("DELETE FROM news_sentiment")
-
 for ticker_selected in interested_tickers:
     ticker_fin = finvizfinance(ticker_selected)
 
@@ -35,7 +33,7 @@ for ticker_selected in interested_tickers:
         if sentiment_score != 0:
             num_rows += 1
             total_score += sentiment_score
-        # print(vs, title)
+
     if num_rows == 0:
         avg_score = 25
     else:

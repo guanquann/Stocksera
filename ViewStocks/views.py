@@ -35,8 +35,6 @@ def stock_price(request):
         ticker_selected = request.GET['quote'].upper()
         try:
             ticker = yf.Ticker(ticker_selected)
-            ticker_fin = finvizfinance(ticker_selected)
-            ticker_fin_fundament = ticker_fin.TickerFundament()
                             
             if "five_day" in request.GET:
                 price_df = ticker.history(period="5d", interval="30m")
@@ -61,17 +59,14 @@ def stock_price(request):
                 duration = "0"
 
             information = ticker.info
-            img = information["logo_url"]
-            official_name = ticker_fin_fundament["Company"]
+            official_name, img, sector, industry = get_ticker_basic(ticker)
+            summary = ticker_exception("longBusinessSummary", information)
 
             # print(ticker.calendar)
             # print(ticker.financials)
             # print(ticker.earnings)
             # print(ticker.sustainability, "SUS")
 
-            sector = ticker_fin_fundament['Sector']
-            industry = ticker_fin_fundament["Industry"]
-            summary = ticker_fin.TickerDescription()
             if "website" in information and information['website'] is not None:
                 website = information["website"]
             else:
@@ -86,7 +81,9 @@ def stock_price(request):
                                                          "sector": sector, "industry": industry,
                                                          "website": website, "summary": summary,
                                                          "error": "error_false",
-                                                         "information": information, "ticker_fin_fundament": ticker_fin_fundament})
+                                                         "information": information,
+                                                         "ticker_fin_fundament": {}
+                                                         })
         except (IndexError, KeyError, Exception):
             return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected, "error": "error_true"})
     return render(request, 'ticker_price.html')
@@ -94,13 +91,13 @@ def stock_price(request):
 
 def ticker_recommendations(request):
     ticker_selected = default_ticker(request)
-    ticker_fin = finvizfinance(ticker_selected)
-    try:
-        recommendations = ticker_fin.TickerOuterRatings()
-        recommendations = recommendations.to_html(index=False)
-    except AttributeError:
-        recommendations = "N/A"
-    return render(request, 'iframe_format.html', {"title": "Recommendations", "table": recommendations})
+    ticker = yf.Ticker(ticker_selected)
+
+    recommendations = ticker.recommendations
+    recommendations["Action"] = recommendations["Action"].str.replace("main", "Maintain").replace("up", "Upgrade").replace("down", "Downgrade").replace("init", "Initialised").replace("reit", "Reiterate")
+
+    return render(request, 'iframe_format.html', {"title": "Recommendations",
+                                                  "table": recommendations.to_html(index=False)})
 
 
 def ticker_major_holders(request):
@@ -199,6 +196,10 @@ def latest_news(request):
     else:
         avg_score = round((total_score / num_rows) * 100, 2)
 
+    db.execute("UPDATE news_sentiment SET sentiment=? WHERE ticker=? AND date_updated=?",
+               (avg_score, ticker_selected, str(datetime.now()).split()[0]))
+    conn.commit()
+
     db.execute("SELECT * FROM news_sentiment WHERE date_updated=?", (str(datetime.now()).split()[0],))
     ticker_sentiment = db.fetchall()
     days = 1
@@ -278,99 +279,96 @@ def financial(request):
 
 
 def options(request):
-    if request.GET.get("quote"):
-        ticker_selected = request.GET['quote'].upper()
-        try:
-            ticker = yf.Ticker(ticker_selected)
+    ticker_selected = default_ticker(request)
+    try:
+        ticker = yf.Ticker(ticker_selected)
 
-            official_name, img, sector, industry = get_ticker_basic(ticker)
-            options_dates = ticker.options
-            if request.GET.get("date") != "" and request.GET.get("date") is not None:
-                date_selected = request.GET["date"]
-            else:
-                date_selected = options_dates[0]
+        official_name, img, sector, industry = get_ticker_basic(ticker)
+        options_dates = ticker.options
+        if request.GET.get("date") != "" and request.GET.get("date") is not None:
+            date_selected = request.GET["date"]
+        else:
+            date_selected = options_dates[0]
 
-            calls = ticker.option_chain(date_selected).calls
+        calls = ticker.option_chain(date_selected).calls
 
-            del calls["contractSize"]
-            del calls["currency"]
-            calls.columns = ["Contract Name", "Last Trade Date", "Strike", "Last Price", "Bid", "Ask", "Change",
-                             "% Change", "Volume", "Open Interest", "Implied Volatility", "ITM"]
+        del calls["contractSize"]
+        del calls["currency"]
+        calls.columns = ["Contract Name", "Last Trade Date", "Strike", "Last Price", "Bid", "Ask", "Change",
+                         "% Change", "Volume", "Open Interest", "Implied Volatility", "ITM"]
 
-            last_adj_close_price = float(ticker.info['previousClose'])
-            df_calls = calls.pivot_table(
-                index="Strike", values=["Volume", "Open Interest"], aggfunc="sum"
-            ).reindex()
-            df_calls["Strike"] = df_calls.index
-            df_calls["Type"] = "calls"
-            df_calls["Open Interest"] = df_calls["Open Interest"]
-            df_calls["Volume"] = df_calls["Volume"]
-            df_calls["oi+v"] = df_calls["Open Interest"] + df_calls["Volume"]
-            df_calls["Spot"] = round(last_adj_close_price, 2)
+        last_adj_close_price = float(ticker.info['previousClose'])
+        df_calls = calls.pivot_table(
+            index="Strike", values=["Volume", "Open Interest"], aggfunc="sum"
+        ).reindex()
+        df_calls["Strike"] = df_calls.index
+        df_calls["Type"] = "calls"
+        df_calls["Open Interest"] = df_calls["Open Interest"]
+        df_calls["Volume"] = df_calls["Volume"]
+        df_calls["oi+v"] = df_calls["Open Interest"] + df_calls["Volume"]
+        df_calls["Spot"] = round(last_adj_close_price, 2)
 
-            calls["Volume"].fillna('-', inplace=True)
-            calls["Open Interest"].fillna('-', inplace=True)
-            calls["Implied Volatility"] = calls["Implied Volatility"].astype("float").multiply(100)
+        calls["Volume"].fillna('-', inplace=True)
+        calls["Open Interest"].fillna('-', inplace=True)
+        calls["Implied Volatility"] = calls["Implied Volatility"].astype("float").multiply(100)
 
-            calls["Change"] = calls["Change"].round(2)
-            calls["% Change"] = calls["% Change"].round(2)
-            calls["Implied Volatility"] = calls["Implied Volatility"].round(2)
+        calls["Change"] = calls["Change"].round(2)
+        calls["% Change"] = calls["% Change"].round(2)
+        calls["Implied Volatility"] = calls["Implied Volatility"].round(2)
 
-            puts = ticker.option_chain(date_selected).puts
+        puts = ticker.option_chain(date_selected).puts
 
-            del puts["contractSize"]
-            del puts["currency"]
-            puts.columns = ["Contract Name", "Last Trade Date", "Strike", "Last Price", "Bid", "Ask", "Change",
-                            "% Change", "Volume", "Open Interest", "Implied Volatility", "ITM"]
+        del puts["contractSize"]
+        del puts["currency"]
+        puts.columns = ["Contract Name", "Last Trade Date", "Strike", "Last Price", "Bid", "Ask", "Change",
+                        "% Change", "Volume", "Open Interest", "Implied Volatility", "ITM"]
 
-            df_puts = puts.pivot_table(
-                index="Strike", values=["Volume", "Open Interest"], aggfunc="sum"
-            ).reindex()
-            df_puts["Strike"] = df_puts.index
-            df_puts["Type"] = "puts"
-            df_puts["Open Interest"] = df_puts["Open Interest"]
-            df_puts["Volume"] = -df_puts["Volume"]
-            df_puts["Open Interest"] = -df_puts["Open Interest"]
-            df_puts["oi+v"] = df_puts["Open Interest"] + df_puts["Volume"]
-            df_puts["Spot"] = round(last_adj_close_price, 2)
+        df_puts = puts.pivot_table(
+            index="Strike", values=["Volume", "Open Interest"], aggfunc="sum"
+        ).reindex()
+        df_puts["Strike"] = df_puts.index
+        df_puts["Type"] = "puts"
+        df_puts["Open Interest"] = df_puts["Open Interest"]
+        df_puts["Volume"] = -df_puts["Volume"]
+        df_puts["Open Interest"] = -df_puts["Open Interest"]
+        df_puts["oi+v"] = df_puts["Open Interest"] + df_puts["Volume"]
+        df_puts["Spot"] = round(last_adj_close_price, 2)
 
-            puts["Volume"].fillna('-', inplace=True)
-            puts["Open Interest"].fillna('-', inplace=True)
-            puts["Implied Volatility"] = puts["Implied Volatility"].astype("float").multiply(100)
+        puts["Volume"].fillna('-', inplace=True)
+        puts["Open Interest"].fillna('-', inplace=True)
+        puts["Implied Volatility"] = puts["Implied Volatility"].astype("float").multiply(100)
 
-            puts["Change"] = puts["Change"].round(2)
-            puts["% Change"] = puts["% Change"].round(2)
-            puts["Implied Volatility"] = puts["Implied Volatility"].round(2)
+        puts["Change"] = puts["Change"].round(2)
+        puts["% Change"] = puts["% Change"].round(2)
+        puts["Implied Volatility"] = puts["Implied Volatility"].round(2)
 
-            df_merge = pd.merge(calls, puts, on="Strike")
-            df_merge = df_merge[["Last Price_x", "Change_x", "% Change_x", "Volume_x", "Open Interest_x", "Strike",
-                                 "Last Price_y", "Change_y", "% Change_y", "Volume_y", "Open Interest_y"]]
-            df_merge.columns = ["Last Price", "Change", "% Change", "Volume", "Open Interest", "Strike",
-                                "Last Price", "Change", "% Change", "Volume", "Open Interest"]
+        df_merge = pd.merge(calls, puts, on="Strike")
+        df_merge = df_merge[["Last Price_x", "Change_x", "% Change_x", "Volume_x", "Open Interest_x", "Strike",
+                             "Last Price_y", "Change_y", "% Change_y", "Volume_y", "Open Interest_y"]]
+        df_merge.columns = ["Last Price", "Change", "% Change", "Volume", "Open Interest", "Strike",
+                            "Last Price", "Change", "% Change", "Volume", "Open Interest"]
 
-            df_opt = pd.merge(df_calls, df_puts, left_index=True, right_index=True)
-            df_opt = df_opt[["Open Interest_x", "Open Interest_y"]].rename(
-                columns={"Open Interest_x": "OI Calls", "Open Interest_y": "OI Puts"})
-            max_pain, call_loss_list, put_loss_list = get_max_pain(df_opt)
+        df_opt = pd.merge(df_calls, df_puts, left_index=True, right_index=True)
+        df_opt = df_opt[["Open Interest_x", "Open Interest_y"]].rename(
+            columns={"Open Interest_x": "OI Calls", "Open Interest_y": "OI Puts"})
+        max_pain, call_loss_list, put_loss_list = get_max_pain(df_opt)
 
-            return render(request, 'options.html', {"ticker_selected": ticker_selected,
-                                                    "official_name": official_name,
-                                                    "img": img,
-                                                    "industry": industry,
-                                                    "sector": sector,
-                                                    "options_dates": options_dates,
-                                                    "date_selected": date_selected,
-                                                    "max_pain": max_pain,
-                                                    "call_loss_list": call_loss_list,
-                                                    "put_loss_list": put_loss_list,
-                                                    "calls": calls.to_html(index=False),
-                                                    "puts": puts.to_html(index=False),
-                                                    "merge": df_merge.to_html(index=False),
-                                                    "error": "error_false"})
-        except (IndexError, KeyError, Exception):
-            return render(request, 'options.html', {"ticker_selected": ticker_selected, "error": "error_true"})
-    else:
-        return render(request, 'options.html')
+        return render(request, 'options.html', {"ticker_selected": ticker_selected,
+                                                "official_name": official_name,
+                                                "img": img,
+                                                "industry": industry,
+                                                "sector": sector,
+                                                "options_dates": options_dates,
+                                                "date_selected": date_selected,
+                                                "max_pain": max_pain,
+                                                "call_loss_list": call_loss_list,
+                                                "put_loss_list": put_loss_list,
+                                                "calls": calls.to_html(index=False),
+                                                "puts": puts.to_html(index=False),
+                                                "merge": df_merge.to_html(index=False),
+                                                "error": "error_false"})
+    except (IndexError, KeyError, Exception):
+        return render(request, 'options.html', {"ticker_selected": ticker_selected, "error": "error_true"})
 
 
 def short_volume(request):
@@ -403,29 +401,42 @@ def earnings_calendar(request):
                                                       "earnings_calendar": calendar})
 
 
+def historical_data(request):
+    ticker_selected = default_ticker(request)
+    ticker = yf.Ticker(ticker_selected)
+    price_df = ticker.history(period="1y", interval="1d").reset_index().iloc[::-1]
+    price_df = price_df.round(2)
+    del price_df["Dividends"]
+    del price_df["Stock Splits"]
+    price_df = price_df.to_html(index=False)
+
+    return render(request, 'historical_data.html', {"price_df": price_df})
+
+
 def reddit_analysis(request):
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
     if request.GET.get("subreddit"):
         subreddit = request.GET.get("subreddit").lower().replace(" ", "")
-
-        db.execute("SELECT date_updated FROM wallstreetbets ORDER BY ID DESC LIMIT 1")
-        latest_date = db.fetchone()[0]
-
-        db.execute("SELECT * FROM wallstreetbets WHERE date_updated=?", (latest_date,))
-        trending_tickers = db.fetchall()
-        trending_tickers = list(map(list, trending_tickers))
-
-        database_mapping = {"wallstreetbets": "Wall Street Bets"}
-        subreddit = database_mapping[subreddit]
-        return render(request, 'reddit_sentiment.html', {"popular_ticker_list": popular_ticker_list,
-                                                         "popular_name_list": popular_name_list,
-                                                         "price_list": price_list,
-                                                         "trending_tickers": trending_tickers,
-                                                         "subreddit_selected": subreddit})
     else:
-        return render(request, 'reddit_sentiment.html', {"popular_ticker_list": popular_ticker_list,
-                                                         "popular_name_list": popular_name_list,
-                                                         "price_list": price_list})
+        subreddit = "wallstreetbets"
+
+    db.execute("SELECT date_updated FROM {} ORDER BY ID DESC LIMIT 1".format(subreddit))
+    latest_date = db.fetchone()[0]
+
+    db.execute("SELECT * FROM {} WHERE date_updated=? ORDER BY one_day_score DESC".format(subreddit), (latest_date,))
+    trending_tickers = db.fetchall()
+    trending_tickers = list(map(list, trending_tickers))
+
+    database_mapping = {"wallstreetbets": "Wall Street Bets",
+                        "stocks": "Stocks",
+                        "stockmarket": "Stock Market"}
+    subreddit = database_mapping[subreddit]
+
+    return render(request, 'reddit_sentiment.html', {"popular_ticker_list": popular_ticker_list,
+                                                     "popular_name_list": popular_name_list,
+                                                     "price_list": price_list,
+                                                     "trending_tickers": trending_tickers,
+                                                     "subreddit_selected": subreddit})
 
 
 def subreddit_count(request):
@@ -455,7 +466,9 @@ def top_movers(request):
 
 def short_interest(request):
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
-    df_high_short_interest = get_high_short_interest()
+    df_high_short_interest = pd.read_sql("SELECT * FROM short_interest", con=conn)
+    df_high_short_interest.columns = ["Ticker", "Company", "Exchange", "Short Interest", "Floating Shares",
+                                      "Outstanding Shares", "Industry"]
     return render(request, 'short_interest.html', {"popular_ticker_list": popular_ticker_list,
                                                    "popular_name_list": popular_name_list,
                                                    "price_list": price_list,
@@ -464,20 +477,13 @@ def short_interest(request):
 
 def low_float(request):
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
-    df_low_float = get_low_float()
+    df_low_float = pd.read_sql("SELECT * FROM low_float", con=conn)
+    df_low_float.columns = ["Ticker", "Company", "Exchange", "Floating Shares", "Outstanding Shares",
+                            "Short Interest", "Industry"]
     return render(request, 'low_float.html', {"popular_ticker_list": popular_ticker_list,
                                               "popular_name_list": popular_name_list,
                                               "price_list": price_list,
                                               "df_low_float": df_low_float.to_html(index=False)})
-
-
-def penny_stocks(request):
-    popular_ticker_list, popular_name_list, price_list = ticker_bar()
-    df_penny_stocks = get_penny_stocks()
-    return render(request, 'penny_stocks.html', {"popular_ticker_list": popular_ticker_list,
-                                                 "popular_name_list": popular_name_list,
-                                                 "price_list": price_list,
-                                                 "df_penny_stocks": df_penny_stocks.to_html(index=False)})
 
 
 def ark_trades(request):
@@ -504,10 +510,13 @@ def industries_analysis(request):
 
 def reddit_etf(request):
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
-    db.execute("SELECT * FROM wallstreetbets LIMIT 100")
+    db.execute("SELECT * FROM reddit_etf LIMIT 100")
+    etf = db.fetchall()
+    print(etf)
     return render(request, 'reddit_etf.html', {"popular_ticker_list": popular_ticker_list,
                                                "popular_name_list": popular_name_list,
-                                               "price_list": price_list})
+                                               "price_list": price_list,
+                                               "etf": etf})
 
 
 def opinion(request):

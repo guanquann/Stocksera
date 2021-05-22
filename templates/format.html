@@ -22,7 +22,7 @@
 
                 <a href="{% url 'main' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/home.svg' %}">Home</li></a>
 
-                <div onmouseover="expand_nav(this)" onmouseout="expand_nav(this)">
+                <div onclick="expand_nav(this)" >
                     <li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/ticker_analysis.svg' %}">Stocks</li>
                     <a href="{% url 'ticker' %}"><li class="sub_nav_bar" style="display: none;">Ticker Analysis</li></a>
                     <a href="{% url 'financial' %}"><li class="sub_nav_bar" style="display: none;">Financials</li></a>
@@ -30,8 +30,8 @@
                     <a href="{% url 'short_volume' %}"><li class="sub_nav_bar" style="display: none;">Short Volume</li></a>
                     <a href="{% url 'earnings_calendar' %}"><li class="sub_nav_bar" style="display: none;">Earnings Calendar</li></a>
                 </div>
-                
-                <div onmouseover="expand_nav(this)" onmouseout="expand_nav(this)">
+<!--                onmouseout="expand_nav(this)"-->
+                <div onclick="expand_nav(this)" >
                     <li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/reddit.svg' %}">Reddit</li>
                     <a href="{% url 'reddit_analysis' %}"><li class="sub_nav_bar" style="display: none;">Trending</li></a>
                     <a href="{% url 'subreddit_count' %}"><li class="sub_nav_bar" style="display: none;">Subreddit Sub.</li></a>
@@ -39,12 +39,11 @@
                     <a href="{% url 'opinion' %}"><li class="sub_nav_bar" style="display: none;">Top DD</li></a>
                 </div> 
 
-                <div onmouseover="expand_nav(this)" onmouseout="expand_nav(this)">
+                <div onclick="expand_nav(this)" >
                     <li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/discover.svg' %}">Discover</li>
                     <a href="{% url 'top_movers' %}"><li class="sub_nav_bar" style="display:none">Top Movers</li></a>
                     <a href="{% url 'short_interest' %}"><li class="sub_nav_bar" style="display: none;">Short Interest</li></a>
                     <a href="{% url 'low_float' %}"><li class="sub_nav_bar" style="display: none;">Low Float</li></a>
-                    <a href="{% url 'penny_stocks' %}"><li class="sub_nav_bar" style="display: none;">Penny Stocks</li></a>
                     <a href="{% url 'ark_trades' %}"><li class="sub_nav_bar" style="display: none;">ARK Trades</li></a>
                 </div>
 

@@ -1,5 +1,5 @@
 @media only screen and (max-width: 900px) {
-    .short_interest {
+    .short_interest, p {
         width: 90%;
         margin-left: auto;
         margin-right: auto;
@@ -7,7 +7,7 @@
 }
 
 @media only screen and (min-width: 900px) {
-    .short_interest {
+    .short_interest, p {
         width: 98%;
         margin-left: auto;
         margin-right: auto;
@@ -23,5 +23,4 @@
 .header {
     color: rgb(38, 166, 154);
     font-weight: bold;
-    font-size: 15px;
 }

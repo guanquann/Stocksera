@@ -11,6 +11,18 @@
 
 {% block onload_properties%}restore_dark_mode();{% endblock %}
 
+{% block main_nav %}
+    <div class="ticker-wrap">
+        <div class="ticker">
+            {% for name in popular_name_list|length|get_range %}
+            <div class="ticker_item">
+                <b>{{popular_name_list|index:name}} &#183 {{price_list|index:name|index:0}} <span> {{price_list|index:name|index:1}} ({{price_list|index:name|index:2}}%) </span></b>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
 {% block main_content %} 
     <div id="instructions">
         Reddit ETF is based on the trending stocks on WSB. If a new ticker enters the Top 10 mentioned ticker list before the market opens, it will be bought at 9.30AM. Any ticker that falls out of the Top 10 list will be sold.
@@ -45,24 +57,29 @@
     <table id="current_trade">
         <thead>
             <tr>
-                <th onclick="sortTable(0)" class="th-sort-desc">Ticker</th>
-                <th onclick="sortTable(1)" class="th-sort-desc">Open Date</th>
-                <th onclick="sortTable(2)" class="th-sort-desc">Open Price</th>
-                <th onclick="sortTable(3)" class="th-sort-desc">Current Price</th>
-                <th onclick="sortTable(4)" class="th-sort-desc">Current Value</th>
-                <th onclick="sortTable(5)" class="th-sort-desc">Performance</th>
+                <th>Ticker</th>
+                <th>Open Date</th>
+                <th>Open Price</th>
+                <th>Num Shares</th>
+                <th>Close Date</th>
+                <th>Close Price</th>
+                <th>Performance</th>
+                <th>% Perf</th>
             </tr>
         </thead>
         <tbody>
-
-            <tr>
-                <td><a href="https://finance.yahoo.com/quote/{{ticker.0}}" target="_blank">$GME</a></td>
-                <td>{{ticker.2}}</td>
-                <td>{{ticker.3}}</td>
-                <td>{{ticker.4}}</td>
-                <td>{{ticker.8}}</td>
-                <td>{{ticker.11}}</td>
-            </tr>
+            {% for ticker in etf %}
+                <tr>
+                    <td><a href="https://finance.yahoo.com/quote/{{ticker.0}}" target="_blank">{{ticker.0}}</a></td>
+                    <td>{{ticker.1}}</td>
+                    <td>{{ticker.2}}</td>
+                    <td>{{ticker.3}}</td>
+                    <td>{{ticker.4}}</td>
+                    <td>{{ticker.5}}</td>
+                    <td>{{ticker.6}}</td>
+                    <td>{{ticker.7}}</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 

@@ -24,7 +24,9 @@
 {% block main_content %} 
 <div>
     <div class="instructions">
-        <p>Enter a ticker symbol you are interested to view or click any of the buttons below!</p>
+        <p>
+            Enter a ticker symbol you are interested to view or click any of the buttons below!
+        </p>
     </div>
     <div class="top_section">
         <div id="error_msg" style="display:none;" class="instructions {{error}}">
@@ -75,6 +77,11 @@
             <a href={{website}} target="_blank" class="read_more"><i>Read More...</i></a>
         </div>
 
+        <form action="/historical_data" method="GET" autocomplete="off" target="historical_data">
+            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn">Historical Data <span>&#x25BA;</span></button>
+        </form>
+        <iframe name="historical_data" scrolling="no" onload="expand_iframe(this)"></iframe>
+
         <form action="/major_holders" method="GET" autocomplete="off" target="major_holders">
             <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn">Major Holders <span>&#x25BA;</span></button>
         </form>
@@ -105,7 +112,6 @@
 <script type="text/javascript">
 var None = "N/A", False = false
 var information = {{information|safe}}
-var ticker_fin_fundament = {{ticker_fin_fundament|safe}}
 
 var latest_price = information["regularMarketPrice"], mkt_close = information["previousClose"]
 if (information.hasOwnProperty("beta") == true) {
@@ -162,17 +168,17 @@ table_code = `
             <td>10D Avg Vol: ${information["averageDailyVolume10Day"]}</td>
         </tr>
         <tr>
-            <td>200D Avg Price: $${information["twoHundredDayAverage"]}</td>
-            <td>Price Target: $${ticker_fin_fundament['Target Price']}</td>
+            <td>50D SMA: $${information["fiftyDayAverage"]}</td>
+            <td>200D SMA: $${information["twoHundredDayAverage"]}</td>
         </tr>
         <tr>
-            <td>Outstanding Shares: ${ticker_fin_fundament['Shs Outstand']}</td>
-            <td>Floating Shares: ${ticker_fin_fundament['Shs Float']}</td>
+            <td>Outstanding Shares: ${information["sharesOutstanding"]}</td>
+            <td>Floating Shares: ${information["floatShares"]}</td>
         </tr>
-<!--        <tr>-->
-<!--            <td>Short Float: ${ticker_fin_fundament['Short Float']}</td>-->
-<!--            <td>Short Ratio: ${ticker_fin_fundament['Short Ratio']}</td>-->
-<!--        </tr>-->
+        <tr>
+            <td>Short Ratio: ${information['shortRatio']}</td>
+            <td>Short % of Float: ${information["shortPercentOfFloat"]*100}</td>
+        </tr>
         <tr>
             <td>P/E: ${p_e_ratio}</td>
             <td>Forward P/E: ${forward_p_e}</td>
@@ -182,20 +188,12 @@ table_code = `
             <td>Dividend: ${dividend_amount}</td>
         </tr>
         <tr>
-            <td>Income: ${ticker_fin_fundament["Income"]}</td>
-            <td>Mkt Cap: ${ticker_fin_fundament["Market Cap"]}</td>
+            <td>Income: ${information["netIncomeToCommon"]}</td>
+            <td>Mkt Cap: ${information["marketCap"]}</td>
         </tr>
         <tr>
             <td>Beta: ${beta}</td>
             <td>EPS: ${eps}</td>
-        </tr>
-        <tr>
-            <td>RSI: ${ticker_fin_fundament['RSI (14)']}</td>
-            <td>SMA 20: ${ticker_fin_fundament['SMA20']}</td>
-        </tr>
-        <tr>
-            <td>SMA 50: ${ticker_fin_fundament['SMA50']}</td>
-            <td>SMA 200: ${ticker_fin_fundament['SMA200']}</td>
         </tr>
     </table>`
 document.getElementsByClassName("scrollable_div")[0].innerHTML = table_code;

@@ -1,6 +1,5 @@
 function show_graph(elem) {
     var parent_div = elem.parentElement.parentElement.childNodes
-    // console.log(parent_div)
     parent_div[1].querySelectorAll("button")[0].className = "selected_btn"
     parent_div[1].querySelectorAll("button")[1].className = ""
     parent_div[5].style.display = "none";

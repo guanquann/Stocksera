@@ -9,6 +9,11 @@
         font-size:15px;
         font-weight:bold;
     }
+
+    h2 {
+        margin-top: 22px;
+        margin-bottom: 5px;
+    }
 }
 
 @media only screen and (min-width: 900px) {
@@ -21,6 +26,11 @@
     #ticker_intro span {
         font-size:22px;
         font-weight:bold;
+    }
+
+    h2 {
+        margin-top: 30px;
+        margin-bottom: 5px;
     }
 }
 
@@ -40,20 +50,11 @@
     width: fit-content;
 }
 
-select {
-    border: 1px solid grey;
+select, option {
+    border: 1px solid black;
     border-radius: 3px;
-    padding: 0.3%;
-}
-
-h2 {
-    margin-top: 30px;
-    margin-bottom: 5px;
-}
-
-#date_dropdown {
-    margin-right: 15%;
-    display: flex;
+    padding: 2%;
+    margin-top: 5px;
 }
 
 .show_selection {
@@ -92,7 +93,7 @@ h2 {
 .max_pain_div {
     background-color: #EAE9E9;
     border: 1px solid grey;
-    padding: 7px;
+    padding: 5px;
     border-radius: 6px;
     width: fit-content;
     float: right;

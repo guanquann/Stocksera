@@ -12,15 +12,15 @@ function update_price_color() {
 }
 
 function expand_nav(elem) {
-    sub_nav_bar = elem.getElementsByClassName("sub_nav_bar");
+    sub_nav_bar = document.getElementsByClassName("sub_nav_bar");
     for (i=0; i<sub_nav_bar.length; i++) {
-        if (sub_nav_bar[i].style.display == "none") {
-            sub_nav_bar[i].style.removeProperty("display");
-        }
-        else {
-            sub_nav_bar[i].style.display = "none";
-        }
+        sub_nav_bar[i].style.display = "none";
     }
+    selected_nav = elem.querySelectorAll(".sub_nav_bar");
+    for (i=0; i<selected_nav.length; i++) {
+        selected_nav[i].style.removeProperty("display");
+    }
+    localStorage.setItem("nav_bar", elem);
 }
 
 function hide_nav_bar() {

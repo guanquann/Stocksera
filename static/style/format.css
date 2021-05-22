@@ -66,10 +66,8 @@
 
 	#main_content {
 		width: 99vw;
-		/*height: 99vh;*/
 		border: 0px;
 		overflow-y: auto;
-		/*margin-left: 1%;*/
 	}
 
     .ticker-wrap {
@@ -192,11 +190,9 @@
 	}
 
 	#main_content {
-		/*height: 90.5vh;*/
 		border: 0px;
 		overflow-y: auto;
 		margin-top: 50px;
-		/*margin-left: 1%;*/
 	}
 
 	.ticker-wrap {

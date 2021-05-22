@@ -34,10 +34,6 @@ except ImportError:
 
 from . import utils
 
-# import json as _json
-# import re as _re
-# import sys as _sys
-
 from . import shared
 
 

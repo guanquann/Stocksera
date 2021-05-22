@@ -3,16 +3,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>StocksEra | {{title}}</title>
+    <title>StocksEra | Historical Data</title>
     <link rel="stylesheet" href="{% static 'style/format.css' %}">
+    <link rel="stylesheet" href="{% static 'style/historical.css' %}">
     <script src="{% static 'javascript/format.js' %}"></script>
-    <script src="{% static 'javascript/news_sentiment.js' %}"></script>
+    <script src="{% static 'javascript/historical.js' %}"></script>
 </head>
 <body onload="display_data();restore_dark_mode()">
     <script>restore_dark_mode()</script>
-    <div class="{{class}}">
+    <div>
         <div class="scrollable_div" style="max-height:450px">
-            {{table|safe}}
+            {{price_df|safe}}
         </div>
     </div>
 </body>

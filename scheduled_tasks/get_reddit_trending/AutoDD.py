@@ -8,7 +8,6 @@ from tabulate import tabulate
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import sqlite3
 
-import scheduled_tasks.config as config
 from scheduled_tasks.get_reddit_trending.fast_yahoo import *
 from custom_extensions.stopwords import stopwords_list
 from custom_extensions.custom_words import new_words
@@ -44,11 +43,6 @@ negative_sentiment = 0
 
 # rocket emoji
 rocket = '🚀'
-
-# praw credentials
-CLIENT_ID = config.API_REDDIT_CLIENT_ID
-CLIENT_SECRET = config.API_REDDIT_CLIENT_SECRET
-USER_AGENT = config.API_REDDIT_USER_AGENT
 
 
 def get_sentiment(text, increment):
@@ -95,7 +89,7 @@ def get_submission_psaw(n, sub_dict):
     return recent, prev
 
 
-def get_submission_generators(n, sub, allsub, use_psaw):
+def get_submission_generators(n, sub):
     """
     Returns two dictionaries:
     1st dictionary: current result from n hours ago until now
@@ -110,12 +104,10 @@ def get_submission_generators(n, sub, allsub, use_psaw):
         subreddit_dict[sub] = sub
 
     sub_dict = {sub: subreddit_dict[sub]}
-    if allsub:
-        sub_dict = subreddit_dict
 
     recent, prev = get_submission_psaw(n, sub_dict)
 
-    print("Searching for tickers...")
+    print("Searching for tickers in {}...".format(sub))
     current_scores, current_rocket_scores, current_positive, current_negative = get_ticker_scores_psaw(recent)
     prev_scores, prev_rocket_scores, prev_positive, prev_negative = get_ticker_scores_psaw(prev)
 
@@ -400,14 +392,13 @@ def get_quick_stats(ticker_list, min_vol, min_mkt_cap, threads=True):
     return stats_df
 
 
-def print_df(df, filename, writecsv, subreddit, all_sub):
+def print_df(df, filename, writecsv, subreddit):
     df.reset_index(inplace=True)
 
-    now = datetime.now()
+    now = datetime.utcnow()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
     df['date_updated'] = dt_string
-    if all_sub is False:
-        df['subreddit'] = subreddit
+    df['subreddit'] = subreddit
 
     cols_to_change = ["one_day_score", "recent", "previous", "rockets", "positive", "negative"]
     for col in cols_to_change:
@@ -422,7 +413,7 @@ def print_df(df, filename, writecsv, subreddit, all_sub):
             "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)".format(subreddit),
             tuple(df.loc[row_num].tolist()))
         conn.commit()
-    print("Saved to SQL Database successfully.")
+    print("Saved to {} SQL Database successfully.".format(subreddit))
 
     # save the file to the same dir as the AutoDD.py script
     completeName = os.path.join(sys.path[0], filename)

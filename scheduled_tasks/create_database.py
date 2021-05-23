@@ -45,8 +45,7 @@ db.execute("CREATE table IF NOT EXISTS reddit_etf ("
            "num_shares INTEGER, "
            "close_date TEXT, "
            "close_price FLOAT, "
-           "performance FLOAT, "
-           "performance_percent FLOAT)")
+           "status TEXT)")
 
 db.execute("CREATE table IF NOT EXISTS earnings_calendar ("
            "name TEXT, "
@@ -82,3 +81,7 @@ db.execute("CREATE table IF NOT EXISTS low_float ("
            "short_int TEXT, "
            "industry TEXT)")
 
+db.execute("CREATE table IF NOT EXISTS contact ("
+           "name TEXT, "
+           "email TEXT, "
+           "suggestions TEXT)")

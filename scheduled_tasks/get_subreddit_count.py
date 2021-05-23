@@ -12,13 +12,15 @@ reddit = praw.Reddit(client_id=CLIENT_ID, client_secret=CLIENT_SECRET, user_agen
 conn = sqlite3.connect("database.db", check_same_thread=False)
 db = conn.cursor()
 
-# db.execute("DELETE FROM subreddit_count")
 interested_subreddit = ["wallstreetbets", "stocks", "StockMarket", "GME", "Superstonk", "amcstock"]
 date_updated = str(datetime.now()).split()[0]
 
-for subreddit_name in interested_subreddit:
-    subreddit = reddit.subreddit(subreddit_name)
-    subscribers = subreddit.subscribers
-    active = subreddit.accounts_active
-    db.execute("INSERT INTO subreddit_count VALUES (?, ?, ?, ?)", (subreddit_name, subscribers, active, date_updated))
-    conn.commit()
+
+def subreddit_count():
+    for subreddit_name in interested_subreddit:
+        subreddit = reddit.subreddit(subreddit_name)
+        print("Looking at {} now.".format(subreddit))
+        subscribers = subreddit.subscribers
+        active = subreddit.accounts_active
+        db.execute("INSERT INTO subreddit_count VALUES (?, ?, ?, ?)", (subreddit_name, subscribers, active, date_updated))
+        conn.commit()

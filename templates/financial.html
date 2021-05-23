@@ -15,7 +15,8 @@
 <div class="top_nav">
     <form action="" method="GET" autocomplete="off">
         <div>
-            <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" onkeyup="show_spinner();this.form.submit()" autocomplete="off">
+            <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" autocomplete="off">
+            <button class="submit_btn" onclick="reset_dropdown();show_spinner()">Go</button>
         </div>
     </form>
 </div>

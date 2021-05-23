@@ -21,7 +21,6 @@ urlpatterns = [
     path('major_holders/', views.ticker_major_holders, name='major_holders'),
     path('institutional_holders/', views.ticker_institutional_holders, name='institutional_holders'),
     path('subreddit_count/', views.subreddit_count, name='subreddit_count'),
-    path('industry/', views.industries_analysis, name='industry_analysis'),
     path('reddit_etf/', views.reddit_etf, name='reddit_etf'),
     path('opinion/', views.opinion, name='opinion'),
     path('about/', views.about, name='about'),

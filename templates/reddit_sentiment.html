@@ -87,7 +87,7 @@
                     <tbody>
                         {% for ticker in trending_tickers %}
                         <tr>
-                            <td><a href="https://finance.yahoo.com/quote/{{ticker.0}}" target="_blank">{{ticker.0}}</a></td>
+                            <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank">{{ticker.0}}</a></td>
                             <td>{{ticker.1}}</td>
                             <td>{{ticker.2}}</td>
                             <td>{{ticker.3}}</td>

@@ -49,7 +49,7 @@ def stock_price(request):
                 ticker_date_max = price_df.index.astype(str).to_list()
                 duration = "3"
             elif "five_year" in request.GET:
-                price_df = ticker.history(period="5y", interval="1wk")
+                price_df = ticker.history(period="5y", interval="1wk").fillna(method="ffill")
                 ticker_date_max = price_df.index.astype(str).to_list()
                 duration = "4"
             else:
@@ -92,12 +92,13 @@ def stock_price(request):
 def ticker_recommendations(request):
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
-
-    recommendations = ticker.recommendations
-    recommendations["Action"] = recommendations["Action"].str.replace("main", "Maintain").replace("up", "Upgrade").replace("down", "Downgrade").replace("init", "Initialised").replace("reit", "Reiterate")
-
+    try:
+        recommendations = ticker.recommendations
+        recommendations["Action"] = recommendations["Action"].str.replace("main", "Maintain").replace("up", "Upgrade").replace("down", "Downgrade").replace("init", "Initialised").replace("reit", "Reiterate").to_html(index=False)
+    except TypeError:
+        recommendations = "N/A"
     return render(request, 'iframe_format.html', {"title": "Recommendations",
-                                                  "table": recommendations.to_html(index=False)})
+                                                  "table": recommendations})
 
 
 def ticker_major_holders(request):
@@ -490,33 +491,19 @@ def ark_trades(request):
     return render(request, 'ark_trade.html')
 
 
-def industries_analysis(request):
-    popular_ticker_list, popular_name_list, price_list = ticker_bar()
-    screen = performance.Performance()
-    sector = screen.ScreenerView(group="Sector")
-    sector.drop(sector.columns[[7, 8, 9, 11]], axis=1, inplace=True)
-    sector = sector.rename({'Change': 'Perf Day'}, axis=1)
-    sector = sector[['Name', "Perf Day", "Perf Week", "Perf Month", "Perf Quart", "Perf Half", "Perf Year", "Perf YTD"]]
-    wsb_df = pd.DataFrame({"Name": ["WSB"], "Perf Day": ["5%"], "Perf Week": ["5%"], "Perf Month": ["5%"], "Perf Quart": ["5%"], "Perf Half": ["5%"], "Perf Year": ["5"], "Perf YTD": ["5%"]})
-    sector = wsb_df.append(sector, ignore_index=True)
-    df_sector = sector.to_html(index=False)
-    # df_screen = screen.ScreenerView(group="Industry")
-    # print(df_screen)
-    return render(request, 'industry.html', {"popular_ticker_list": popular_ticker_list,
-                                             "popular_name_list": popular_name_list,
-                                             "price_list": price_list,
-                                             "df_sector": df_sector})
-
-
 def reddit_etf(request):
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
-    db.execute("SELECT * FROM reddit_etf LIMIT 100")
-    etf = db.fetchall()
-    print(etf)
+    db.execute("SELECT * FROM reddit_etf WHERE status='Open' ORDER BY open_date DESC")
+    open_trade = db.fetchall()
+
+    db.execute("SELECT * FROM reddit_etf WHERE status='Close' ORDER BY close_date DESC")
+    close_trade = db.fetchall()
+
     return render(request, 'reddit_etf.html', {"popular_ticker_list": popular_ticker_list,
                                                "popular_name_list": popular_name_list,
                                                "price_list": price_list,
-                                               "etf": etf})
+                                               "open_trade": open_trade,
+                                               "close_trade": close_trade})
 
 
 def opinion(request):
@@ -524,4 +511,10 @@ def opinion(request):
 
 
 def about(request):
+    if request.POST.get("name"):
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        suggestions = request.POST.get("suggestions")
+        db.execute("INSERT INTO contact VALUES (?, ?, ?)", (name, email, suggestions))
+        conn.commit()
     return render(request, 'about.html')

@@ -85,7 +85,7 @@
         }
             
         html_string += ` <span class="earnings_container">
-                            <a href=""><img src="${earnings_calendar[earning][5]}" onerror=this.src="{% static 'images/not_available.svg' %}" class="company_img"></a>
+                            <a href="{% url 'ticker' %}?quote=${earnings_calendar[earning][1]}" target="_blank"><img src="${earnings_calendar[earning][5]}" onerror=this.src="{% static 'images/not_available.svg' %}" class="company_img"></a>
                             <p><span>Name: </span>${earnings_calendar[earning][0]}</p>
                             <p><span>Ticker: </span>${earnings_calendar[earning][1]}</p>
                             <p><span>Mkt Cap: </span>${mkt_cap}</p>

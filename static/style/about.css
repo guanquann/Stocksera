@@ -10,6 +10,7 @@
         border-top: 0;
         border-left: 0;
         border-right: 0;
+        border-radius: 0px;
         width: 38.5vw;
     }
 
@@ -20,6 +21,7 @@
         border-top: 0;
         border-left: 0;
         border-right: 0;
+        border-radius: 0px;
         height: 15vh;
         margin-top:4%;
         margin-bottom:1%;
@@ -39,6 +41,7 @@
         border-top: 0;
         border-left: 0;
         border-right: 0;
+        border-radius: 0px;
         width:18vw;
     }
 
@@ -49,6 +52,7 @@
         border-top: 0;
         border-left: 0;
         border-right: 0;
+        border-radius: 0px;
         height: 15vh;
         margin-top:4%;
         margin-bottom:1%;

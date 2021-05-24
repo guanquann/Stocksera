@@ -16,7 +16,7 @@
     <form action="" method="GET" autocomplete="off">
         <div>
             <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" autocomplete="off">
-            <button class="submit_btn" onclick="show_spinner()">Go</button>
+            <button class="submit_btn" onclick="show_spinner()">Search</button>
         </div>
     </form>
 </div>
@@ -52,7 +52,26 @@
 
         <p class="table_header"><b>Short Volume (Daily)</b></p>
         <div class="scrollable_div">
-            {{shorted_vol_daily|safe}}
+            <table>
+                <thead>
+                    <tr>
+                      <td>Date</td>
+                      <td>Short Volume</td>
+                      <td>Total Volume</td>
+                      <td>Percent</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in short_volume_data %}
+                        <tr>
+                            <td>{{row.1}}</td>
+                            <td>{{row.2}}</td>
+                            <td>{{row.3}}</td>
+                            <td>{{row.4}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
             Note: The Total Volume and Short Volume data are limited. They do not represent the actual total volume.
         </div>
 

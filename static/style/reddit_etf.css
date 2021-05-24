@@ -24,12 +24,6 @@
     font-weight: bold;
     margin-bottom: 5px;
 }
-
-table {
-    border-collapse: collapse;
-    width: 100%;
-    white-space: nowrap;
-}
   
 table th {
     cursor: pointer;
@@ -41,21 +35,4 @@ table .th-sort-asc::after {
 
 table .th-sort-desc::after {
     content: "\25be";
-}
-
-table td, table th {
-border: 1px solid #ddd;
-padding: 8px;
-}
-
-table tr:nth-child(even) {background-color: #f2f2f2;}
-
-table tr:hover {background-color: #ddd;}
-
-table th {
-padding-top: 12px;
-padding-bottom: 12px;
-text-align: left;
-background-color: #26a69a;
-color: white;
 }

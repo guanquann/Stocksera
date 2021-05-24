@@ -6,7 +6,6 @@ from helpers import *
 
 from yahoo_earnings_calendar import YahooEarningsCalendar
 from finvizfinance.quote import finvizfinance
-from finvizfinance.group import (overview, valuation, performance)
 
 from django.shortcuts import render, redirect
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
@@ -16,6 +15,8 @@ db = conn.cursor()
 
 analyzer = SentimentIntensityAnalyzer()
 analyzer.lexicon.update(new_words)
+
+# https://query2.finance.yahoo.com/v10/finance/quoteSummary/AAPL?modules=price
 
 
 def main(request):
@@ -60,7 +61,7 @@ def stock_price(request):
 
             information = ticker.info
             official_name, img, sector, industry = get_ticker_basic(ticker)
-            summary = ticker_exception("longBusinessSummary", information)
+            summary = ticker_exception("longBusinessSummary", information).encode("ascii", "ignore").decode()
 
             # print(ticker.calendar)
             # print(ticker.financials)
@@ -314,7 +315,7 @@ def options(request):
         calls["Implied Volatility"] = calls["Implied Volatility"].astype("float").multiply(100)
 
         calls["Change"] = calls["Change"].round(2)
-        calls["% Change"] = calls["% Change"].round(2)
+        calls["% Change"] = calls["% Change"].round(2).fillna("-")
         calls["Implied Volatility"] = calls["Implied Volatility"].round(2)
 
         puts = ticker.option_chain(date_selected).puts
@@ -340,14 +341,16 @@ def options(request):
         puts["Implied Volatility"] = puts["Implied Volatility"].astype("float").multiply(100)
 
         puts["Change"] = puts["Change"].round(2)
-        puts["% Change"] = puts["% Change"].round(2)
+        puts["% Change"] = puts["% Change"].round(2).fillna("-")
         puts["Implied Volatility"] = puts["Implied Volatility"].round(2)
 
-        df_merge = pd.merge(calls, puts, on="Strike")
+        df_merge = pd.merge(calls, puts, on="Strike", how="outer")
+        df_merge.sort_values(by=["Strike"], inplace=True)
         df_merge = df_merge[["Last Price_x", "Change_x", "% Change_x", "Volume_x", "Open Interest_x", "Strike",
                              "Last Price_y", "Change_y", "% Change_y", "Volume_y", "Open Interest_y"]]
         df_merge.columns = ["Last Price", "Change", "% Change", "Volume", "Open Interest", "Strike",
                             "Last Price", "Change", "% Change", "Volume", "Open Interest"]
+        df_merge.fillna('-', inplace=True)
 
         df_opt = pd.merge(df_calls, df_puts, left_index=True, right_index=True)
         df_opt = df_opt[["Open Interest_x", "Open Interest_y"]].rename(
@@ -377,17 +380,15 @@ def short_volume(request):
     ticker = yf.Ticker(ticker_selected)
     official_name, img, sector, industry = get_ticker_basic(ticker)
 
-    url = "http://shortvolumes.com/?t={}".format(ticker_selected)
-    table = pd.read_html(url)
-    shorted_vol_daily = table[3].loc[1:].to_html(index=False, header=False)
-    shorted_vol_group = table[4].dropna().to_html(index=False, header=False)
+    db.execute("SELECT * FROM short_volume WHERE ticker=? ORDER BY reported_date DESC", (ticker_selected,))
+    short_volume_data = db.fetchall()
+    short_volume_data = list(map(list, short_volume_data))
     return render(request, 'short_volume.html', {"ticker_selected": ticker_selected,
                                                  "official_name": official_name,
                                                  "img": img,
                                                  "industry": industry,
                                                  "sector": sector,
-                                                 "shorted_vol_daily": shorted_vol_daily,
-                                                 "shorted_vol_group": shorted_vol_group})
+                                                 "short_volume_data": short_volume_data})
 
 
 def earnings_calendar(request):

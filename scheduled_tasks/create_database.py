@@ -81,6 +81,14 @@ db.execute("CREATE table IF NOT EXISTS low_float ("
            "short_int TEXT, "
            "industry TEXT)")
 
+db.execute("CREATE table IF NOT EXISTS short_volume ("
+           "ticker TEXT, "
+           "reported_date TEXT, "
+           "short_vol INTEGER, "
+           "total_vol INTEGER, "
+           "percent TEXT, "
+           "UNIQUE('ticker', 'reported_date','short_vol','total_vol','percent'))")
+
 db.execute("CREATE table IF NOT EXISTS contact ("
            "name TEXT, "
            "email TEXT, "

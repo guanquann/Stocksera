@@ -12,7 +12,7 @@ from scheduled_tasks.get_reddit_trending.fast_yahoo import *
 from custom_extensions.stopwords import stopwords_list
 from custom_extensions.custom_words import new_words
 
-conn = sqlite3.connect("../database.db", check_same_thread=False)
+conn = sqlite3.connect("database.db", check_same_thread=False)
 db = conn.cursor()
 
 analyzer = SentimentIntensityAnalyzer()

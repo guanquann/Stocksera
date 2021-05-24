@@ -60,6 +60,15 @@ h2 button {
     margin-right: 2px;
 }
 
+.dark_mode h2 button {
+    background-color: transparent;
+    color: wheat
+}
+
+.dark_mode h2 button:hover {
+    background-color: transparent;
+}
+
 .selected_btn {
     border-bottom: 2px solid green;
     color: green;

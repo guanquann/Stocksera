@@ -126,19 +126,6 @@
     padding-right: 0.55rem;
 }
 
-/*.change_day_btn:hover {
-    border-bottom: 3px solid #26a69a;
-}*/
-
-.change_day_btn:focus {
-    outline: none;
-}
-
-.scrollable_div {
-    overflow-x:scroll; 
-    overflow-y: auto;
-}
-
 .header {
     margin-bottom: 5px;
     margin-top: 5px;
@@ -146,6 +133,11 @@
 
 .ticker_summary {
     line-height: 1.5;
+}
+
+.dark_mode #ticker_table button:hover {
+    background-color: transparent;
+    color: #ffba39;
 }
 
 .show_more_btn {

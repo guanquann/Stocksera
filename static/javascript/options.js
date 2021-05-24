@@ -18,6 +18,7 @@ function reset_dropdown() {
 
 function update_table() {
     var tables = document.getElementsByClassName("dataframe");
+    var calls_itm = 0, calls_otm = 0, puts_itm = 0, puts_otm = 0;
 
     var calls_tr = tables[0].getElementsByTagName("tr");
     for (i = 1; i < calls_tr.length; i++) {
@@ -25,6 +26,10 @@ function update_table() {
             calls_tr[i].style.backgroundColor = "#26a69a";
             calls_tr[i].style.fontWeight = "bold";
             calls_tr[i].style.opacity = "0.65";
+            calls_itm += Number(calls_tr[i].children[9].innerHTML);
+        }
+        else {
+            calls_otm += Number(calls_tr[i].children[9].innerHTML);
         }
         calls_tr[i].children[7].innerHTML = calls_tr[i].children[7].innerHTML + "%"
         calls_tr[i].children[10].innerHTML = calls_tr[i].children[10].innerHTML + "%"
@@ -37,12 +42,23 @@ function update_table() {
             puts_tr[i].style.backgroundColor = "red";
             puts_tr[i].style.fontWeight = "bold";
             puts_tr[i].style.opacity = "0.65";
+            puts_itm += Number(puts_tr[i].children[9].innerHTML);
+        }
+        else {
+            puts_otm += Number(puts_tr[i].children[9].innerHTML);
         }
 
         puts_tr[i].children[7].innerHTML = puts_tr[i].children[7].innerHTML + "%"
         puts_tr[i].children[10].innerHTML = puts_tr[i].children[10].innerHTML + "%"
         puts_tr[i].children[11].style.display = "none";
     }
+
+    options_summary_code = `
+        <div class="options_summary_sub">${calls_itm}<br><span>Calls ITM</span></div>
+        <div class="options_summary_sub">${calls_otm}<br><span>Calls OTM</span></div>
+        <div class="options_summary_sub">${puts_itm}<br><span>Puts ITM</span></div>
+        <div class="options_summary_sub">${puts_otm}<br><span>Puts OTM</span></div>`
+    document.getElementsByClassName("options_summary")[0].innerHTML = options_summary_code;
 
     calls_tr[0].children[11].style.display = "none";
     puts_tr[0].children[11].style.display = "none";
@@ -57,7 +73,7 @@ function update_table() {
     }
 
     for (i=0; i<straddle.length; i++) {
-        straddle[i].children[5].style.backgroundColor = "#9b9999"
+        straddle[i].children[5].style.backgroundColor = "#b3b3b3"
     }
 }
 
@@ -83,7 +99,13 @@ function draw_open_interest_and_volume() {
     var tr = document.getElementsByTagName("table")[2].querySelectorAll("tr");
 
     var tr_length = Math.round(tr.length / 2);
-    var diff = Math.round(document.getElementsByTagName("table")[2].querySelectorAll("tr").length * 0.4);
+    if (tr.length > 10) {
+        var diff = Math.round(tr.length * 0.4);
+    }
+    else {
+        var diff = 0;
+    }
+
     var lower_limit = tr_length - diff;
     var upper_limit = tr_length + diff;
 

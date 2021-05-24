@@ -15,7 +15,7 @@
     <form action="" method="GET" autocomplete="off">
     <div>
         <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" autocomplete="off">
-        <button class="submit_btn" onclick="show_spinner();reset_dropdown()">Go</button>
+        <button class="submit_btn" onclick="show_spinner();reset_dropdown()">Search</button>
     </div>
 </div>
 <div id="spinner_div"></div>
@@ -54,6 +54,8 @@
                 </select>
             </div>
         </div>
+
+        <div class="options_summary"></div>
 
         <div id="graph_section" style="display: none;">
             <h2>Max Pain</h2>
@@ -132,7 +134,7 @@ var put_loss_list = {{ put_loss_list|safe }};
 var tr = document.getElementsByTagName("table")[2].querySelectorAll("tr");
 var strike_list = [];
 
-for (row=1; row<tr.length; row++) {
+for (row=1; row<call_loss_list.length; row++) {
     var td = tr[row].querySelectorAll("td");
     strike_list.push(td[5].innerHTML);
 }

@@ -43,4 +43,4 @@ def news_sentiment():
 
         db.execute("INSERT INTO news_sentiment VALUES (?, ?, ?)", (ticker_selected, avg_score, date_updated))
         conn.commit()
-        print("INSERT {} INTO DATABASE SUCCESSFULLY!".format(ticker_selected))
+        print("INSERT {} INTO NEWS SENTIMENT DATABASE SUCCESSFULLY!".format(ticker_selected))

@@ -132,7 +132,6 @@
         border-radius: 6px;
         padding: 4.5px;
         text-transform: uppercase;
-        min-width: 33px;
     }
 
     .instructions {
@@ -399,12 +398,11 @@ a {
 #img_div img {
     border-radius: 50%;
     width: 100%;
+    min-height: 45px;
     border: 0.8px solid black;
 }
 
 .dark_mode #img_div img {
-    border-radius: 50%;
-    width: 100%;
     border: 0.8px solid white;
     background-color: white;
 }

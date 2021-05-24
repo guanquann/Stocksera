@@ -57,6 +57,25 @@ select, option {
     margin-top: 5px;
 }
 
+.options_summary {
+    display: flex;
+    text-align: center;
+    margin: auto;
+    width: 70%;
+}
+
+.options_summary_sub {
+    background-color: #EAE9E9;
+    padding: 10px;
+    border: 1.5px solid gray;
+    border-radius: 6px;
+    margin: auto;
+}
+
+.options_summary_sub span {
+    font-weight: bold;
+}
+
 .show_selection {
     margin-right: 4%;
     margin-top: 1%;
@@ -100,7 +119,7 @@ select, option {
     margin-right: 10px;
 }
 
-.dark_mode .max_pain_div {
+.dark_mode .max_pain_div, .dark_mode .options_summary_sub {
     background-color: wheat;
     color: black;
 }

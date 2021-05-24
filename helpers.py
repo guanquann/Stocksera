@@ -105,7 +105,6 @@ def get_max_pain(chain: pd.DataFrame):
         loss_list.append(net_loss)
         call_loss_list.append(call_loss)
         put_loss_list.append(put_loss)
-
     chain["loss"] = loss_list
     max_pain = chain["loss"].idxmin()
 

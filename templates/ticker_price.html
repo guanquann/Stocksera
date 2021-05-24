@@ -16,7 +16,7 @@
     <form action="" method="GET" autocomplete="off">
         <div>
             <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" autocomplete="off">
-            <button class="submit_btn" onclick="show_spinner()">Go</button>
+            <button class="submit_btn" onclick="show_spinner()">Search</button>
         </div>
 </div>
 <div id="spinner_div"></div>
@@ -114,33 +114,49 @@
 var None = "N/A", False = false
 var information = {{information|safe}}
 
-var latest_price = information["regularMarketPrice"], mkt_close = information["previousClose"]
-if (information.hasOwnProperty("beta") == true) {
-    beta = information["beta"]
-}
-else {
-    beta = "N/A"
+var latest_price = information["regularMarketPrice"]
+mkt_close = information["previousClose"]
+
+function check_stats(property) {
+    if (information.hasOwnProperty(property) == true) {
+        property_name = information[property]
+    }
+    else {
+        property_name = "N/A"
+    }
+    return property_name
 }
 
-if (information.hasOwnProperty("trailingEps") == true) {
-    eps = information["trailingEps"]
-}
-else {
-    eps = "N/A"
-}
-
-if (information.hasOwnProperty("trailingPE") == true) {
-    p_e_ratio = information["trailingPE"]
-}
-else {
-    p_e_ratio = "N/A"
+function check_if_num(property) {
+    property_name = information[property]
+    if (typeof(property_name) == "number") {
+        property_name= Number(property_name).toLocaleString()
+    }
+    else {
+        property_name = "N/A"
+    }
+    return property_name
 }
 
-if (information.hasOwnProperty("forwardPE") == true) {
-    forward_p_e = information["forwardPE"]
+beta = check_stats("beta")
+eps = check_stats("trailingEps")
+p_e_ratio = check_stats("trailingPE")
+forward_p_e = check_stats("forwardPE")
+
+outstanding_shares = check_if_num("sharesOutstanding")
+floating_shares = check_if_num("floatShares")
+short_ratio = check_if_num("shortRatio")
+peg_ratio = check_if_num("pegRatio")
+enterpriseToRevenue = check_if_num("enterpriseToRevenue")
+income = check_if_num("netIncomeToCommon")
+mkt_cap = check_if_num("marketCap")
+
+short_percent = information["shortPercentOfFloat"]
+if (typeof(short_percent) == "number") {
+    short_percent = short_percent * 100 + "%"
 }
 else {
-    forward_p_e = "N/A"
+    short_percent = "N/A"
 }
 
 dividend_yield = information["trailingAnnualDividendYield"]
@@ -165,36 +181,40 @@ table_code = `
             <td>52-wk Low: $${information["fiftyTwoWeekLow"]}</td>
         </tr>
         <tr>
-            <td>Volume: ${information["regularMarketVolume"]}</td>
-            <td>10D Avg Vol: ${information["averageDailyVolume10Day"]}</td>
+            <td>Volume: ${Number(information["regularMarketVolume"]).toLocaleString()}</td>
+            <td>10D Avg Vol: ${Number(information["averageDailyVolume10Day"]).toLocaleString()}</td>
         </tr>
         <tr>
             <td>50D SMA: $${information["fiftyDayAverage"]}</td>
             <td>200D SMA: $${information["twoHundredDayAverage"]}</td>
         </tr>
         <tr>
-            <td>Outstanding Shares: ${information["sharesOutstanding"]}</td>
-            <td>Floating Shares: ${information["floatShares"]}</td>
+            <td>Outstanding Shares: ${outstanding_shares}</td>
+            <td>Floating Shares: ${floating_shares}</td>
         </tr>
         <tr>
-            <td>Short Ratio: ${information['shortRatio']}</td>
-            <td>Short % of Float: ${information["shortPercentOfFloat"]*100}</td>
+            <td>Short Ratio: ${short_ratio}</td>
+            <td>Short % of Float: ${short_percent}</td>
         </tr>
         <tr>
             <td>P/E: ${p_e_ratio}</td>
             <td>Forward P/E: ${forward_p_e}</td>
         </tr>
         <tr>
-            <td>Div. Yield: ${dividend_yield}</td>
-            <td>Dividend: ${dividend_amount}</td>
+            <td>PEG Ratio: ${peg_ratio}</td>
+            <td>Enterprise value / revenue: ${enterpriseToRevenue}</td>
         </tr>
         <tr>
-            <td>Income: ${information["netIncomeToCommon"]}</td>
-            <td>Mkt Cap: ${information["marketCap"]}</td>
+            <td>Income: ${income}</td>
+            <td>Mkt Cap: ${mkt_cap}</td>
         </tr>
         <tr>
             <td>Beta: ${beta}</td>
             <td>EPS: ${eps}</td>
+        </tr>
+        <tr>
+            <td>Div. Yield: ${dividend_yield}</td>
+            <td>Dividend: ${dividend_amount}</td>
         </tr>
     </table>`
 document.getElementsByClassName("scrollable_div")[0].innerHTML = table_code;

@@ -1,19 +1,17 @@
 function short_vol_graph() {
     var shorted_vol_daily = document.getElementsByTagName("table")[0].querySelectorAll("tr");
-    var date_list = [], short_vol_list = [], long_vol_list = [], percentage_list = []
+    var date_list = [], price_list = [], short_vol_list = [], long_vol_list = [], percentage_list = []
     for (tr=shorted_vol_daily.length-1; tr>0; tr--) {
         var total_td = shorted_vol_daily[tr].querySelectorAll("td");
         date_list.push(total_td[0].innerHTML);
-        short_vol_list.push(total_td[1].innerHTML);
-        long_vol_list.push(total_td[2].innerHTML - total_td[1].innerHTML);
-//        short_vol_list.push(Math.round(total_td[1].innerHTML / 10000) / 100);
-//        long_vol_list.push(Math.round((total_td[2].innerHTML - total_td[1].innerHTML) / 10000) / 100);
-        percentage_list.push(total_td[3].innerHTML.replace("%", ""));
+        price_list.push(total_td[1].innerHTML.replace("$", ""));
+        short_vol_list.push(total_td[2].innerHTML);
+        long_vol_list.push(total_td[3].innerHTML - total_td[2].innerHTML);
+        percentage_list.push(total_td[4].innerHTML.replace("%", ""));
     }
 
     var vol_chart = document.getElementById('vol_chart');
     var vol_chart = new Chart(vol_chart, {
-
         data: {
             labels: date_list,
             datasets: [
@@ -109,6 +107,102 @@ function short_vol_graph() {
             },
         },
     });
+
+    var price_chart = document.getElementById('price_chart');
+    var price_chart = new Chart(price_chart, {
+        data: {
+            labels: date_list,
+            datasets: [
+                {
+                    label: 'Close Price',
+                    type: 'line',
+                    data: price_list,
+                    borderColor: 'yellow',
+                    backgroundColor: 'transparent',
+                    yAxisID: 'A',
+                },
+                {
+                    label: 'Short Percentage',
+                    type: 'line',
+                    data: percentage_list,
+                    borderColor: 'wheat',
+                    backgroundColor: 'transparent',
+                    yAxisID: 'B',
+                }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                display: false
+             },
+            scales: {
+                yAxes: [
+                    {
+                        position: 'left',
+                        gridLines: {
+                            display: false
+                        },
+                        type: "linear",
+                        id: "A",
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Close Price',
+                            beginAtZero: false,
+                        },
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return "$" + value;
+                            },
+                        }
+                    },
+                    {
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Short Percentage',
+                            beginAtZero: true,
+                        },
+                        type: "linear",
+                        id: "B",
+                        position:"right",
+                        gridLines: {
+                            display: false
+                        },
+                        ticks: {
+                            max: 100,
+                            min: 0,
+                            callback: function(value, index, values) {
+                                return value + "%";
+                            }
+                        },
+                    }],
+
+                xAxes: [{
+                    ticks: {
+                      maxTicksLimit: 10,
+                      maxRotation: 45,
+                      minRotation: 0,
+                    },
+                    gridLines: {
+                        drawOnChartArea: false
+                    },
+                    stacked: true
+                }],
+            },
+
+            // To show value when hover on any part of the graph
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+            hover: {
+                mode: 'index',
+                intersect: false
+            },
+        },
+    });
+
     var short_vol = Number(short_vol_list[short_vol_list.length-1]);
     var short_vol_prev = Number(short_vol_list[short_vol_list.length-2]);
     var long_vol = Number(long_vol_list[long_vol_list.length-1]);

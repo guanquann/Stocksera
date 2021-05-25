@@ -31,18 +31,18 @@
     <div class="main_div">
         <div class="contents">
             <div class="ticker_stats" style="display:none">
-            <div id="img_div">
-                {% if img != "" %}
-                <img src={{img}} onerror=this.src="{% static 'images/not_available.svg' %}">
-                {% else %}
-                <img src="{% static 'images/not_available.svg' %}">
-                {% endif %}
+                <div id="img_div">
+                    {% if img != "" %}
+                    <img src={{img}} onerror=this.src="{% static 'images/not_available.svg' %}">
+                    {% else %}
+                    <img src="{% static 'images/not_available.svg' %}">
+                    {% endif %}
+                </div>
+                <div id="ticker_intro">
+                    <span>{{official_name}} ({{ticker_selected}})</span>
+                    <br>Sector: <b>{{sector}}</b><br>Industry: <b>{{industry}}</b>
+                </div>
             </div>
-            <div id="ticker_intro">
-                <span>{{official_name}} ({{ticker_selected}})</span>
-                <br>Sector: <b>{{sector}}</b><br>Industry: <b>{{industry}}</b>
-            </div>
-        </div>
 
         <div class="navigation_menu">
             <div id="date_dropdown" style="display: none;">
@@ -128,6 +128,53 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script src="{% static 'javascript/options.js' %}"></script>
 <script type="text/javascript">
+<!--Hack to convert python variables to javascript-->
+var None = "N/A", False = false;
+var information = {{information|safe}};
+
+var latest_price = information["regularMarketPrice"]
+var mkt_close = information["previousClose"]
+
+<!--Function to check that dictionary has a key-->
+function check_stats(property) {
+    if (information.hasOwnProperty(property) == true) {
+        property_name = information[property]
+    }
+    else {
+        property_name = "N/A"
+    }
+    return property_name
+}
+
+<!--If ticker does not have a website, bring users to Yahoo Finance-->
+if (information.hasOwnProperty("website") == true) {
+    var website = information["website"]
+}
+else {
+    var website = `https://finance.yahoo.com/quote/${information["symbol"]}`
+}
+
+<!--If ticker does not have an image, show a default image-->
+var img = information["logo_url"]
+if (img != "") {
+    var img_code = `<img src="${img}" onerror=this.src="{% static 'images/not_available.svg' %}">`
+}
+else {
+    var img_code = `<a href={{website}} target="_blank"><img src="{% static 'images/not_available.svg' %}">`
+}
+
+<!--Code to display image, full name, symbol, industry and sector-->
+var official_name = check_stats("longName")
+var sector = check_stats("sector")
+var industry = check_stats("industry")
+var ticker_basic_stats_code = `
+    <div id="img_div">${img_code}</div>
+    <div id="ticker_intro">
+        <span>${official_name} (${information["symbol"]})</span>
+        <br>Sector: <b>${sector}</b><br>Industry: <b>${industry}</b>
+    </div>`
+document.getElementsByClassName("ticker_stats")[0].innerHTML = ticker_basic_stats_code;
+
 var call_loss_list = {{ call_loss_list|safe }};
 var put_loss_list = {{ put_loss_list|safe }};
 

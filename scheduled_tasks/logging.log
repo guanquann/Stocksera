@@ -1,22 +1,42 @@
-INFO:root:Ticker COIN to be bought on 2021-05-10 for $266.4.
-INFO:root:Ticker APP to be bought on 2021-05-10 for $59.21.
-INFO:root:Ticker NET to be bought on 2021-05-10 for $69.9.
-INFO:root:Ticker INO to be bought on 2021-05-10 for $6.99.
-INFO:root:Ticker MVIS to be sold on 2021-05-10 at $14.04 during market open.
-INFO:root:Ticker NOK to be sold on 2021-05-10 at $5.14 during market open.
-INFO:root:Ticker SOS to be sold on 2021-05-10 at $3.9 during market open.
-INFO:root:Ticker MNMD to be sold on 2021-05-10 at $3.38 during market open.
+INFO:root:Ticker GME to be bought on 2021-05-03 for $177.49.
+INFO:root:Ticker MVIS to be bought on 2021-05-03 for $14.74.
+INFO:root:Ticker CLOV to be bought on 2021-05-03 for $10.19.
+INFO:root:Ticker AMC to be bought on 2021-05-03 for $10.11.
+INFO:root:Ticker NOK to be bought on 2021-05-03 for $4.76.
+INFO:root:Ticker MNMD to be bought on 2021-05-03 for $3.89.
+INFO:root:Ticker BTX to be bought on 2021-05-03 for $71.0.
+INFO:root:Ticker VXRT to be bought on 2021-05-03 for $9.97.
+INFO:root:Ticker NIO to be bought on 2021-05-03 for $40.34.
+INFO:root:Ticker TSLA to be bought on 2021-05-03 for $703.8.
+INFO:root:--------------------------------------------------
+INFO:root:Ticker PLTR to be bought on 2021-05-04 for $21.94.
+INFO:root:Ticker NIO to be sold on 2021-05-04 at $38.99 during market open.
+INFO:root:--------------------------------------------------
+INFO:root:Ticker RKT to be bought on 2021-05-05 for $22.71.
+INFO:root:Ticker PRPO to be bought on 2021-05-05 for $4.87.
+INFO:root:Ticker TSLA to be sold on 2021-05-05 at $681.06 during market open.
+INFO:root:Ticker BTX to be sold on 2021-05-05 at $50.51 during market open.
+INFO:root:--------------------------------------------------
+INFO:root:Ticker SOS to be bought on 2021-05-06 for $4.5.
+INFO:root:Ticker SNDL to be bought on 2021-05-06 for $0.76.
+INFO:root:Ticker AMD to be bought on 2021-05-06 for $77.63.
+INFO:root:Ticker PRPO to be sold on 2021-05-06 at $5.02 during market open.
+INFO:root:Ticker NOK to be sold on 2021-05-06 at $4.8 during market open.
+INFO:root:Ticker VXRT to be sold on 2021-05-06 at $6.79 during market open.
+INFO:root:--------------------------------------------------
+INFO:root:Ticker NOK to be bought on 2021-05-07 for $5.02.
+INFO:root:Ticker AMD to be sold on 2021-05-07 at $78.75 during market open.
+INFO:root:--------------------------------------------------
 INFO:root:--------------------------------------------------
 INFO:root:Ticker COIN to be bought on 2021-05-10 for $266.4.
 INFO:root:Ticker APP to be bought on 2021-05-10 for $59.21.
 INFO:root:Ticker NET to be bought on 2021-05-10 for $69.9.
 INFO:root:Ticker INO to be bought on 2021-05-10 for $6.99.
-INFO:root:Ticker MVIS to be sold on 2021-05-10 at $14.04 during market open.
-INFO:root:Ticker MNMD to be sold on 2021-05-10 at $3.38 during market open.
 INFO:root:Ticker SOS to be sold on 2021-05-10 at $3.9 during market open.
 INFO:root:Ticker NOK to be sold on 2021-05-10 at $5.14 during market open.
+INFO:root:Ticker MNMD to be sold on 2021-05-10 at $3.38 during market open.
+INFO:root:Ticker MVIS to be sold on 2021-05-10 at $14.04 during market open.
 INFO:root:--------------------------------------------------
-INFO:root:Ticker SPCE to be bought on 2021-05-11 for $14.53.
 INFO:root:Ticker SPCE to be bought on 2021-05-11 for $14.53.
 INFO:root:Ticker SPOT to be bought on 2021-05-11 for $221.73.
 INFO:root:Ticker CLOV to be sold on 2021-05-11 at $7.66 during market open.
@@ -29,28 +49,30 @@ INFO:root:Ticker NET to be sold on 2021-05-12 at $70.86 during market open.
 INFO:root:--------------------------------------------------
 INFO:root:Ticker UWMC to be bought on 2021-05-13 for $7.35.
 INFO:root:Ticker CLOV to be bought on 2021-05-13 for $7.92.
-INFO:root:Ticker RKT to be sold on 2021-05-13 at $16.68 during market open.
 INFO:root:Ticker SPCE to be sold on 2021-05-13 at $16.24 during market open.
+INFO:root:Ticker RKT to be sold on 2021-05-13 at $16.68 during market open.
 INFO:root:--------------------------------------------------
 INFO:root:Ticker NET to be bought on 2021-05-14 for $67.22.
 INFO:root:Ticker SPY to be bought on 2021-05-14 for $413.21.
 INFO:root:Ticker FUBO to be sold on 2021-05-14 at $18.69 during market open.
 INFO:root:Ticker SNDL to be sold on 2021-05-14 at $0.7 during market open.
 INFO:root:--------------------------------------------------
+INFO:root:--------------------------------------------------
+INFO:root:--------------------------------------------------
 INFO:root:Ticker RKT to be bought on 2021-05-17 for $17.17.
 INFO:root:Ticker NET to be sold on 2021-05-17 at $69.0 during market open.
 INFO:root:--------------------------------------------------
 INFO:root:Ticker NET to be bought on 2021-05-18 for $72.65.
 INFO:root:Ticker VIEW to be bought on 2021-05-18 for $7.24.
-INFO:root:Ticker SPY to be sold on 2021-05-18 at $415.8 during market open.
 INFO:root:Ticker APP to be sold on 2021-05-18 at $62.01 during market open.
+INFO:root:Ticker SPY to be sold on 2021-05-18 at $415.8 during market open.
 INFO:root:--------------------------------------------------
 INFO:root:Ticker SPY to be bought on 2021-05-19 for $406.92.
 INFO:root:Ticker SPOT to be bought on 2021-05-19 for $212.68.
 INFO:root:Ticker SNDL to be bought on 2021-05-19 for $0.74.
 INFO:root:Ticker CLOV to be sold on 2021-05-19 at $6.74 during market open.
-INFO:root:Ticker VIEW to be sold on 2021-05-19 at $7.24 during market open.
 INFO:root:Ticker RKT to be sold on 2021-05-19 at $17.03 during market open.
+INFO:root:Ticker VIEW to be sold on 2021-05-19 at $7.24 during market open.
 INFO:root:--------------------------------------------------
 INFO:root:Ticker APP to be bought on 2021-05-20 for $66.3.
 INFO:root:Ticker SPCE to be bought on 2021-05-20 for $20.62.
@@ -64,53 +86,33 @@ INFO:root:Ticker MNMD to be bought on 2021-05-21 for $3.65.
 INFO:root:Ticker RKT to be bought on 2021-05-21 for $17.26.
 INFO:root:Ticker NOK to be bought on 2021-05-21 for $5.15.
 INFO:root:Ticker SPY to be sold on 2021-05-21 at $416.87 during market open.
-INFO:root:Ticker APP to be sold on 2021-05-21 at $69.0 during market open.
 INFO:root:Ticker CLOV to be sold on 2021-05-21 at $7.13 during market open.
 INFO:root:Ticker TSLA to be sold on 2021-05-21 at $596.11 during market open.
+INFO:root:Ticker APP to be sold on 2021-05-21 at $69.0 during market open.
 INFO:root:--------------------------------------------------
 INFO:root:--------------------------------------------------
 INFO:root:--------------------------------------------------
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/meta
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621775997&before=1621862397&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621775997&before=1621849274&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621775997&before=1621832825&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621775997&before=1621820634&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621775997&before=1621809121&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621775997&before=1621797225&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621775997&before=1621784439&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621775997&before=1621776001&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621689597&before=1621775997&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621689597&before=1621751074&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621689597&before=1621736373&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621689597&before=1621725513&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621689597&before=1621716949&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621689597&before=1621707539&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621689597&before=1621699100&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621689597&before=1621689809&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/meta
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621776080&before=1621862480&subreddit=stocks&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621776080&before=1621793839&subreddit=stocks&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621776080&before=1621776344&subreddit=stocks&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621689680&before=1621776080&subreddit=stocks&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621689680&before=1621690074&subreddit=stocks&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/meta
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621776110&before=1621862510&subreddit=stockmarket&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621776110&before=1621777411&subreddit=stockmarket&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621689710&before=1621776110&subreddit=stockmarket&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
-INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621689710&before=1621690448&subreddit=stockmarket&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
+INFO:root:Ticker SPY to be bought on 2021-05-24 for $417.34.
+INFO:root:Ticker PRPL to be bought on 2021-05-24 for $29.38.
+INFO:root:Ticker VIEW to be bought on 2021-05-24 for $8.75.
+INFO:root:Ticker CLF to be bought on 2021-05-24 for $18.05.
+INFO:root:Ticker QQQ to be bought on 2021-05-24 for $329.37.
+INFO:root:Ticker MNMD to be sold on 2021-05-24 at $3.51 during market open.
+INFO:root:Ticker NOK to be sold on 2021-05-24 at $5.04 during market open.
+INFO:root:Ticker SNDL to be sold on 2021-05-24 at $0.75 during market open.
+INFO:root:Ticker RKT to be sold on 2021-05-24 at $17.01 during market open.
+INFO:root:Ticker UWMC to be sold on 2021-05-24 at $8.2 during market open.
 INFO:root:--------------------------------------------------
-INFO:root:--------------------------------------------------
-INFO:root:--------------------------------------------------
-INFO:root:--------------------------------------------------
-INFO:root:--------------------------------------------------
-INFO:root:Ticker SPY to be bought on 2021-05-24 for $416.87.
-INFO:root:Ticker PRPL to be bought on 2021-05-24 for $31.44.
-INFO:root:Ticker VIEW to be bought on 2021-05-24 for $8.71.
-INFO:root:Ticker CLF to be bought on 2021-05-24 for $18.6.
-INFO:root:Ticker QQQ to be bought on 2021-05-24 for $330.43.
-INFO:root:Ticker NOK to be sold on 2021-05-24 at $5.15 during market open.
-INFO:root:Ticker SNDL to be sold on 2021-05-24 at $0.79 during market open.
-INFO:root:Ticker MNMD to be sold on 2021-05-24 at $3.65 during market open.
-INFO:root:Ticker UWMC to be sold on 2021-05-24 at $8.37 during market open.
-INFO:root:Ticker RKT to be sold on 2021-05-24 at $17.26 during market open.
+INFO:root:Ticker PLTR to be bought on 2021-05-25 for $21.42.
+INFO:root:Ticker NNDM to be bought on 2021-05-25 for $6.52.
+INFO:root:Ticker PLUG to be bought on 2021-05-25 for $26.87.
+INFO:root:Ticker BNGO to be bought on 2021-05-25 for $5.5.
+INFO:root:Ticker SHOP to be bought on 2021-05-25 for $1267.0.
+INFO:root:Ticker BYND to be bought on 2021-05-25 for $118.09.
+INFO:root:Ticker VIEW to be sold on 2021-05-25 at $8.69 during market open.
+INFO:root:Ticker CLF to be sold on 2021-05-25 at $18.68 during market open.
+INFO:root:Ticker QQQ to be sold on 2021-05-25 at $334.07 during market open.
+INFO:root:Ticker SPY to be sold on 2021-05-25 at $420.33 during market open.
+INFO:root:Ticker NET to be sold on 2021-05-25 at $79.5 during market open.
+INFO:root:Ticker PRPL to be sold on 2021-05-25 at $29.18 during market open.
 INFO:root:--------------------------------------------------

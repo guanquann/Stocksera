@@ -41,6 +41,10 @@
     }
 }
 
+#img_div {
+    display: inline-block;
+}
+
 #ticker_intro {
     width: 70%;
     margin-left: 8px;

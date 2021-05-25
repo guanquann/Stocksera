@@ -54,6 +54,10 @@ def ticker_bar():
     return popular_ticker_list, popular_name_list, price_list
 
 
+def convert_date(date):
+    return date[0].split()[0]
+
+
 def get_loss_at_strike(strike, chain):
     """
     Function to get the loss at the given expiry

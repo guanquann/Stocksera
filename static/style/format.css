@@ -411,6 +411,7 @@ table {
     border-collapse: collapse;
     white-space: nowrap;
     margin: auto;
+    position: relative;
 }
 
 td {
@@ -435,6 +436,8 @@ table th {
     padding-bottom: 9px;
     text-align: left;
     background-color: rgb(38, 166, 154);
+    position: sticky;
+    top: -1px;
 }
 
 .spinner_container {

@@ -59,31 +59,19 @@ def stock_price(request):
                                        price_df.index.astype(str).to_list()))
                 duration = "0"
 
-            information = ticker.info
-            official_name, img, sector, industry = get_ticker_basic(ticker)
-            summary = ticker_exception("longBusinessSummary", information).encode("ascii", "ignore").decode()
-
-            # print(ticker.calendar)
-            # print(ticker.financials)
-            # print(ticker.earnings)
-            # print(ticker.sustainability, "SUS")
-
-            if "website" in information and information['website'] is not None:
-                website = information["website"]
+            if price_df["Close"][0] <= 1:
+                ticker_price_max = list(map(lambda x: round(x, 4), price_df["Close"].to_list()))
             else:
-                website = "https://finance.yahoo.com/quote/{}".format(ticker_selected)
+                ticker_price_max = list(map(lambda x: round(x, 2), price_df["Close"].to_list()))
+
+            information = ticker.info
 
             return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
                                                          "ticker_date_max": ticker_date_max,
-                                                         "ticker_price_max": list(map(lambda x: round(x, 2),
-                                                                                      price_df["Close"].to_list())),
+                                                         "ticker_price_max": ticker_price_max,
                                                          "duration": duration,
-                                                         "img": img, "official_name": official_name,
-                                                         "sector": sector, "industry": industry,
-                                                         "website": website, "summary": summary,
                                                          "error": "error_false",
                                                          "information": information,
-                                                         "ticker_fin_fundament": {}
                                                          })
         except (IndexError, KeyError, Exception):
             return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected, "error": "error_true"})
@@ -95,7 +83,8 @@ def ticker_recommendations(request):
     ticker = yf.Ticker(ticker_selected)
     try:
         recommendations = ticker.recommendations
-        recommendations["Action"] = recommendations["Action"].str.replace("main", "Maintain").replace("up", "Upgrade").replace("down", "Downgrade").replace("init", "Initialised").replace("reit", "Reiterate").to_html(index=False)
+        recommendations["Action"] = recommendations["Action"].str.replace("main", "Maintain").replace("up", "Upgrade").replace("down", "Downgrade").replace("init", "Initialised").replace("reit", "Reiterate")
+        recommendations = recommendations.to_html(index=False)
     except TypeError:
         recommendations = "N/A"
     return render(request, 'iframe_format.html', {"title": "Recommendations",
@@ -227,8 +216,7 @@ def financial(request):
     ticker_selected = default_ticker(request)
     balance_list = []
     ticker = yf.Ticker(ticker_selected)
-
-    official_name, img, sector, industry = get_ticker_basic(ticker)
+    information = ticker.info
 
     balance_sheet = ticker.quarterly_balance_sheet.replace(np.nan, 0)
     # print(balance_sheet)
@@ -269,10 +257,7 @@ def financial(request):
         else:
             break
     return render(request, 'financial.html', {"ticker_selected": ticker_selected,
-                                              "official_name": official_name,
-                                              "img": img,
-                                              "industry": industry,
-                                              "sector": sector,
+                                              "information": information,
                                               "date_list": date_list,
                                               "balance_list": balance_list,
                                               "balance_col_list": balance_col_list,
@@ -284,8 +269,8 @@ def options(request):
     ticker_selected = default_ticker(request)
     try:
         ticker = yf.Ticker(ticker_selected)
+        information = ticker.info
 
-        official_name, img, sector, industry = get_ticker_basic(ticker)
         options_dates = ticker.options
         if request.GET.get("date") != "" and request.GET.get("date") is not None:
             date_selected = request.GET["date"]
@@ -358,10 +343,7 @@ def options(request):
         max_pain, call_loss_list, put_loss_list = get_max_pain(df_opt)
 
         return render(request, 'options.html', {"ticker_selected": ticker_selected,
-                                                "official_name": official_name,
-                                                "img": img,
-                                                "industry": industry,
-                                                "sector": sector,
+                                                "information": information,
                                                 "options_dates": options_dates,
                                                 "date_selected": date_selected,
                                                 "max_pain": max_pain,
@@ -378,16 +360,13 @@ def options(request):
 def short_volume(request):
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
-    official_name, img, sector, industry = get_ticker_basic(ticker)
+    information = ticker.info
 
     db.execute("SELECT * FROM short_volume WHERE ticker=? ORDER BY reported_date DESC", (ticker_selected,))
     short_volume_data = db.fetchall()
     short_volume_data = list(map(list, short_volume_data))
     return render(request, 'short_volume.html', {"ticker_selected": ticker_selected,
-                                                 "official_name": official_name,
-                                                 "img": img,
-                                                 "industry": industry,
-                                                 "sector": sector,
+                                                 "information": information,
                                                  "short_volume_data": short_volume_data})
 
 
@@ -419,13 +398,24 @@ def reddit_analysis(request):
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
     if request.GET.get("subreddit"):
         subreddit = request.GET.get("subreddit").lower().replace(" ", "")
+        if ":" in subreddit:
+            subreddit = subreddit.split(":")[1]
     else:
         subreddit = "wallstreetbets"
 
-    db.execute("SELECT date_updated FROM {} ORDER BY ID DESC LIMIT 1".format(subreddit))
-    latest_date = db.fetchone()[0]
+    db.execute("SELECT DISTINCT(date_updated) FROM {} ORDER BY ID DESC LIMIT 30".format(subreddit,))
+    all_dates = db.fetchall()
 
-    db.execute("SELECT * FROM {} WHERE date_updated=? ORDER BY one_day_score DESC".format(subreddit), (latest_date,))
+    all_dates = list(map(convert_date, all_dates))
+
+    if request.GET.get("date_selected"):
+        date_selected = request.GET.get("date_selected")
+        if ":" in date_selected:
+            date_selected = date_selected.replace(" ", "").split(":")[1]
+    else:
+        date_selected = all_dates[0]
+
+    db.execute("SELECT * FROM {} WHERE date_updated LIKE '{}' ORDER BY one_day_score DESC".format(subreddit, "%" + date_selected + "%"))
     trending_tickers = db.fetchall()
     trending_tickers = list(map(list, trending_tickers))
 
@@ -437,6 +427,8 @@ def reddit_analysis(request):
     return render(request, 'reddit_sentiment.html', {"popular_ticker_list": popular_ticker_list,
                                                      "popular_name_list": popular_name_list,
                                                      "price_list": price_list,
+                                                     "all_dates": all_dates,
+                                                     "date_selected": date_selected,
                                                      "trending_tickers": trending_tickers,
                                                      "subreddit_selected": subreddit})
 

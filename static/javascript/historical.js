@@ -11,6 +11,7 @@ function display_data() {
         <th>Close</th>
         <th>Volume</th>
         <th>% Price Change</th>
+        <th>Amplitude</th>
         <th>% Vol Change</th>`
 
     historical_data = historical_data.querySelectorAll("tr");
@@ -33,6 +34,9 @@ function display_data() {
             historical_data[i].innerHTML += `<td style="color:green">+${price_percent_diff}%</td>`
         }
 
+        var amplitude = Math.round(((td[2].innerHTML - td[3].innerHTML) / td[1].innerHTML) * 10000) / 100;
+        historical_data[i].innerHTML += `<td>${amplitude}%</td>`
+
         var vol_diff = td[5].innerHTML - prev_td[5].innerHTML;
         var vol_percent_diff = Math.round((vol_diff / prev_td[5].innerHTML) * 10000) / 100
         if (String(vol_percent_diff).includes("-")) {
@@ -46,5 +50,5 @@ function display_data() {
     var d = new Date(historical_data[historical_data.length-1].querySelector("td").innerHTML);
     var dayName = days[d.getDay()];
     historical_data[historical_data.length-1].innerHTML = `<td>${dayName}</td>` + historical_data[i].innerHTML
-    historical_data[historical_data.length-1].innerHTML += "<td></td><td></td>"
+    historical_data[historical_data.length-1].innerHTML += "<td></td><td></td><td></td>"
 }

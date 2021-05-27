@@ -29,8 +29,8 @@ def short_volume(symbol):
 
 list_of_tickers = ["GME", "AMC", "BB", "CLOV", "UWMC", "NIO", "TSLA", "AAPL", "SPY", "NOK", "AMD", "NVDA", "MSFT",
                    "RBLX", "F", "PLTR", "COIN", "RKT", "MVIS", "FUBO", "DISCA", "VIAC", "SNDL", "SPCE", "FB", "SNAP",
-                   "OCGN", "QQQ", "TQQQ", "ROKU", "TWTR", "ARKK", "ARKF", "ARKG", "ARKQ", "GOOG", "INTC", "BABA",
-                   "IWM", "GOOGL", "BA", "SQ", "SHOP", "SE", "VOO", "PYPL"]
+                   "OCGN", "QQQ", "TQQQ", "ROKU", "TWTR", "ARKK", "ARKF", "ARKG", "ARKQ", "SQQQ", "INTC", "BABA",
+                   "IWM", "ROOT", "BA", "SQ", "SHOP", "SE", "VOO", "PYPL", "EXPR", "KOSS", "IPOE"]
 
 for i in list_of_tickers:
     short_volume(i)

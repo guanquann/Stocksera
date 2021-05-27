@@ -27,17 +27,23 @@
     <div class="instructions">
         <p>Top mover stocks moves by the largest proportion in price (in both ways) due to earnings, rumours, news, mergers and so on. If it's down, buy the dip!</p>
     </div>
-    <div id="gainers">
-        <div class="header">Top Gainers</div>
+    <div id="top_movers">
+        <h2>Top Movers</h2>
         <div class="table_div">
-            {{ top_gainers|safe }}
-        </div>
-    </div>
-    <div id="losers">
-        <div class="header">Top Losers</div>
-        <div class="table_div">
-            {{ top_losers|safe }}
+            {{ top_movers_combine|safe }}
         </div>
     </div>
     <p>Data from: <a href="https://finance.yahoo.com/" target="_blank">finance.yahoo.com</a></p>
+{% endblock %}
+
+{% block bottom_script %}
+<script>
+    var table = document.getElementsByTagName("table")[0];
+    var tr = table.querySelectorAll("tr");
+    for (row=1; row<tr.length; row++) {
+        var td = tr[row].querySelector("td");
+        ticker = td.innerHTML;
+        td.innerHTML = `<a href="{% url 'ticker' %}?quote=${ticker}" target="_blank">${ticker}</a>`;
+    }
+</script>
 {% endblock %}

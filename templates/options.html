@@ -55,7 +55,9 @@
             </div>
         </div>
 
-        <div class="options_summary"></div>
+        <div class="options_summary">
+            <div class="header">{{date_selected}}</div>
+        </div>
 
         <div id="graph_section" style="display: none;">
             <h2>Max Pain</h2>
@@ -132,8 +134,8 @@
 var None = "N/A", False = false;
 var information = {{information|safe}};
 
-var latest_price = information["regularMarketPrice"]
-var mkt_close = information["previousClose"]
+var latest_price = information["regularMarketPrice"];
+var mkt_close = information["previousClose"];
 
 <!--Function to check that dictionary has a key-->
 function check_stats(property) {
@@ -177,13 +179,13 @@ document.getElementsByClassName("ticker_stats")[0].innerHTML = ticker_basic_stat
 
 var call_loss_list = {{ call_loss_list|safe }};
 var put_loss_list = {{ put_loss_list|safe }};
-
 var tr = document.getElementsByTagName("table")[2].querySelectorAll("tr");
 var strike_list = [];
 
-for (row=1; row<call_loss_list.length; row++) {
+for (row=1; row<=call_loss_list.length; row++) {
     var td = tr[row].querySelectorAll("td");
-    strike_list.push(td[5].innerHTML);
+    strike_price = td[5].innerHTML;
+    strike_list.push(strike_price);
 }
 
 function draw_max_pain() {      

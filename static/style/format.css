@@ -324,9 +324,11 @@ input:focus, select:focus, button:focus, textarea:focus {
 }
 
 .main_logo {
-	width: 100%;
+	width: 80%;
 	border-radius: 0;
 	border: 0;
+    margin: 0 auto;
+    display: inherit;
 }
 
 .nav_bar img {
@@ -445,13 +447,14 @@ table th {
     height: 100vh;
     position: fixed;
     background-color: white;
-    opacity: 0.35;
+    opacity: 0.4;
+    z-index: 99;
 }
 
 .spinner {
-    margin-left: 35vw;
+    margin-left: 39vw;
     margin-top: 40vh;
-    width:90px;
+    width:65px;
     border:0px;
 }
 

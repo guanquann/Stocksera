@@ -63,3 +63,4 @@ yahoo-earnings-calendar==0.6.0
 yahoofinancials==1.6
 zipp==3.4.1
 zope.interface==5.4.0
+pytrends~=4.7.3

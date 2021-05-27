@@ -19,17 +19,22 @@ function reset_dropdown() {
 function update_table() {
     var tables = document.getElementsByClassName("dataframe");
     var calls_itm = 0, calls_otm = 0, puts_itm = 0, puts_otm = 0;
+    var next_itm_call_oi = 0, next_itm_call_strike = 0;
 
     var calls_tr = tables[0].getElementsByTagName("tr");
     for (i = 1; i < calls_tr.length; i++) {
-        if (calls_tr[i].children[11].innerHTML == "True") {
+        if (calls_tr[i].children[11].innerHTML == "False") {
+            calls_otm += Number(calls_tr[i].children[9].innerHTML);
+            if (next_itm_call_oi == 0) {
+                next_itm_call_oi = parseInt(calls_tr[i].children[9].innerHTML);
+                next_itm_call_strike = calls_tr[i].children[2].innerHTML;
+            }
+        }
+        else {
             calls_tr[i].style.backgroundColor = "#26a69a";
             calls_tr[i].style.fontWeight = "bold";
             calls_tr[i].style.opacity = "0.65";
             calls_itm += Number(calls_tr[i].children[9].innerHTML);
-        }
-        else {
-            calls_otm += Number(calls_tr[i].children[9].innerHTML);
         }
         calls_tr[i].children[7].innerHTML = calls_tr[i].children[7].innerHTML + "%"
         calls_tr[i].children[10].innerHTML = calls_tr[i].children[10].innerHTML + "%"
@@ -53,12 +58,17 @@ function update_table() {
         puts_tr[i].children[11].style.display = "none";
     }
 
+    percentage_diff_next_itm = Math.round(((next_itm_call_oi / calls_itm) * 100))
+
     options_summary_code = `
-        <div class="options_summary_sub">${calls_itm}<br><span>Calls ITM</span></div>
-        <div class="options_summary_sub">${calls_otm}<br><span>Calls OTM</span></div>
-        <div class="options_summary_sub">${puts_itm}<br><span>Puts ITM</span></div>
-        <div class="options_summary_sub">${puts_otm}<br><span>Puts OTM</span></div>`
-    document.getElementsByClassName("options_summary")[0].innerHTML = options_summary_code;
+        <div class="options_summary_sub_div">
+            <div class="options_summary_sub"><span>${calls_itm}<br></span>Calls ITM</div>
+            <div class="options_summary_sub"><span>${calls_otm}<br></span>Calls OTM</div>
+            <div class="options_summary_sub"><span>${puts_itm}<br></span>Puts ITM</div>
+            <div class="options_summary_sub"><span>${puts_otm}<br></span>Puts OTM</div>
+            <div class="options_summary_sub"><span>+${next_itm_call_oi}(${percentage_diff_next_itm}%)<br></span>Calls ITM @ $${next_itm_call_strike}</div>
+        </div>`
+    document.getElementsByClassName("options_summary")[0].innerHTML += options_summary_code;
 
     calls_tr[0].children[11].style.display = "none";
     puts_tr[0].children[11].style.display = "none";

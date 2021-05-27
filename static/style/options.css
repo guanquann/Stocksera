@@ -1,6 +1,6 @@
 @media only screen and (max-width: 900px) {
     .contents {
-       width: 90%;
+       width: 95%;
        margin-left: auto;
        margin-right: auto;
     }
@@ -58,22 +58,39 @@ select, option {
 }
 
 .options_summary {
-    display: flex;
     text-align: center;
     margin: auto;
+    margin-top: 10px;
+    background-color: #E9EAEA;
+    border: 1.5px solid gray;
+    border-radius: 6px;
+    min-width: 300px;
+    max-width: 600px;
     width: 70%;
 }
 
-.options_summary_sub {
-    background-color: #EAE9E9;
-    padding: 10px;
-    border: 1.5px solid gray;
-    border-radius: 6px;
+.options_summary .header {
+    text-align: center;
+    font-size: large;
     margin: auto;
+    margin-top: 5px;
+    font-weight: bold;
+    text-decoration: underline;
+    width: fit-content;
+}
+
+.options_summary_sub_div {
+    display: flex;
+}
+
+.options_summary_sub {
+    padding: 7px;
+    margin: auto;
+    font-weight: bold;
 }
 
 .options_summary_sub span {
-    font-weight: bold;
+    font-size: larger;
 }
 
 .show_selection {
@@ -110,8 +127,8 @@ select, option {
 }
 
 .max_pain_div {
-    background-color: #EAE9E9;
-    border: 1px solid grey;
+    background-color: #E9EAEA;
+    border: 1.5px solid grey;
     padding: 5px;
     border-radius: 6px;
     width: fit-content;
@@ -119,7 +136,7 @@ select, option {
     margin-right: 10px;
 }
 
-.dark_mode .max_pain_div, .dark_mode .options_summary_sub {
+.dark_mode .max_pain_div, .dark_mode .options_summary, .dark_mode .options_summary_sub {
     background-color: wheat;
     color: black;
 }

@@ -237,7 +237,7 @@ function load_individual_profile(elem) {
                     img_url = `https://logo.clearbit.com/${company_name.split(" ")[0].toLowerCase()}.com`
                     profile_code = `
                         <div id="img_div">
-                            <a href="http://127.0.0.1:8000/ticker/?quote=${ticker_selected}" target="_blank"><img src="${img_url}" onerror=this.src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl4idYt_TOF1TPtJ1rF8OOLgALA0WDd00shg&usqp=CAU"></a>
+                            <a href="{% url 'ticker' %}?quote=${out["ticker"]}" target="_blank"><img src="${img_url}" onerror=this.src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl4idYt_TOF1TPtJ1rF8OOLgALA0WDd00shg&usqp=CAU"></a>
                         </div>
                         <div id="ticker_intro">
                             <div><span>${company_name} (${out["ticker"]})</span><div class="explore_more"><a href="http://127.0.0.1:8000/ticker/?quote=${ticker_selected}" target="_blank">Explore More!</a></div></div>

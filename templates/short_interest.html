@@ -28,10 +28,22 @@
         <p>Short interest (SI) is the number of shares that have been sold short but have not yet been covered. The higher the SI, the higher probability of short squeezing as shortable shares reduce in number. Stocks with high SI are highly volatile.</p>
     </div>
     <div class="short_interest">
-        <div class="header">Short Interest</div>
+        <h2>Short Interest</h2>
         <div class="table_div">
             {{ df_high_short_interest|safe }}
         </div>
     </div>
     <p>Data from: <a href="https://www.highshortinterest.com" target="_blank">highshortinterest.com</a>
+{% endblock %}
+
+{% block bottom_script %}
+<script>
+    var table = document.getElementsByTagName("table")[0];
+    var tr = table.querySelectorAll("tr");
+    for (row=1; row<tr.length; row++) {
+        var td = tr[row].querySelector("td");
+        ticker = td.innerHTML;
+        td.innerHTML = `<a href="{% url 'ticker' %}?quote=${ticker}" target="_blank">${ticker}</a>`;
+    }
+</script>
 {% endblock %}

@@ -82,10 +82,15 @@
         </form>
         <iframe name="recommendations" scrolling="no" onload="expand_iframe(this)"></iframe>
 
-        <form action="/sub_news" method="GET" autocomplete="off" target="news_article">
-            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn">Recent News Articles <span>&#x25BA;</span></button>
+        <form action="/google_trends" method="GET" autocomplete="off" target="google_trends">
+            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn">Google Trending <span>&#x25BA;</span></button>
         </form>
-        <iframe name="news_article" scrolling="no" onload="expand_iframe(this)"></iframe>
+        <iframe name="google_trends" scrolling="no" onload="expand_iframe(this)"></iframe>
+
+<!--        <form action="/sub_news" method="GET" autocomplete="off" target="news_article">-->
+<!--            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn">Recent News Articles <span>&#x25BA;</span></button>-->
+<!--        </form>-->
+<!--        <iframe name="news_article" scrolling="no" onload="expand_iframe(this)"></iframe>-->
 
         <p>Data from: <a href="https://finance.yahoo.com/" target="_blank">finance.yahoo.com</a> and <a href="https://finviz.com/groups.ashx" target="_blank">finviz.com</a></p>
     </div>
@@ -139,7 +144,7 @@ if (img != "") {
     var img_code = `<img src="${img}" onerror=this.src="{% static 'images/not_available.svg' %}">`
 }
 else {
-    var img_code = `<a href={{website}} target="_blank"><img src="{% static 'images/not_available.svg' %}">`
+    var img_code = `<a href=${website} target="_blank"><img src="{% static 'images/not_available.svg' %}">`
 }
 
 <!--Code to display image, full name, symbol, industry and sector-->
@@ -195,7 +200,7 @@ mkt_cap = check_if_num("marketCap")
 
 short_percent = information["shortPercentOfFloat"]
 if (typeof(short_percent) == "number") {
-    short_percent = short_percent * 100 + "%"
+    short_percent = Math.round(short_percent * 10000) / 100 + "%"
 }
 else {
     short_percent = "N/A"

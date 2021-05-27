@@ -24,7 +24,7 @@ def buy_new_ticker(date):
     if " " in latest_date:
         latest_date = latest_date.split()[0]
         latest_date = datetime.strptime(latest_date, "%d/%m/%Y")
-    db.execute("SELECT * FROM wallstreetbets where date_updated=? LIMIT 10", (raw_date,))
+    db.execute("SELECT * FROM wallstreetbets where date_updated=? ORDER BY one_day_score DESC LIMIT 10", (raw_date,))
     rows = db.fetchall()
     for y in rows:
         symbol = y[0]
@@ -44,9 +44,9 @@ def buy_new_ticker(date):
             message = "Ticker {} to be bought on {} for ${}.".format(symbol, str(latest_date).split()[0], open_price)
             print(message)
             logging.info(message)
-            db.execute("INSERT INTO reddit_etf VALUES (?, ?, ?, ?, ?, ?, ?)",
-                       (symbol, str(latest_date).split()[0], open_price, num_shares, "N/A", "N/A", "Open"))
-            conn.commit()
+            # db.execute("INSERT INTO reddit_etf VALUES (?, ?, ?, ?, ?, ?, ?)",
+            #            (symbol, str(latest_date).split()[0], open_price, num_shares, "N/A", "N/A", "Open"))
+            # conn.commit()
 
 
 def sell_ticker(date):
@@ -56,7 +56,7 @@ def sell_ticker(date):
         latest_date = latest_date.split()[0]
         latest_date = datetime.strptime(latest_date, "%d/%m/%Y")
 
-    db.execute("SELECT * FROM wallstreetbets where date_updated=? LIMIT 10", (raw_date,))
+    db.execute("SELECT * FROM wallstreetbets where date_updated=? ORDER BY one_day_score DESC LIMIT 10", (raw_date,))
     rows = db.fetchall()
     for ticker in rows:
         symbol = ticker[0]
@@ -77,9 +77,9 @@ def sell_ticker(date):
         message = "Ticker {} to be sold on {} at ${} during market open.".format(symbol, str(latest_date).split()[0], close_price)
         print(message)
         logging.info(message)
-        db.execute("UPDATE reddit_etf SET close_date=?, close_price=?, status=? WHERE ticker=? AND status=?",
-                   (str(latest_date).split()[0], close_price, "Close", symbol, "Open"))
-        conn.commit()
+        # db.execute("UPDATE reddit_etf SET close_date=?, close_price=?, status=? WHERE ticker=? AND status=?",
+        #            (str(latest_date).split()[0], close_price, "Close", symbol, "Open"))
+        # conn.commit()
     logging.info("-" * 50)
 
 

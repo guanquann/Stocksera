@@ -4,15 +4,6 @@
         margin:auto;
     }
 
-    .chart-container {
-        position: relative;
-        height:55vh;
-        width:90%;
-        max-height:250px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
     #ticker_intro span {
         font-size:15px;
         font-weight:bold;
@@ -25,20 +16,20 @@
         margin:auto;
     }
 
-    .chart-container {
-        position: relative;
-        height:55vh;
-        width:98%;
-        max-width: 900px;
-        max-height:250px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
     #ticker_intro span {
         font-size:22px;
         font-weight:bold;
     }
+}
+
+.chart-container {
+    position: relative;
+    height:55vh;
+    width:98%;
+    max-width: 900px;
+    max-height:250px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #img_div {

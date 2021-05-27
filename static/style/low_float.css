@@ -4,6 +4,11 @@
         margin-left: auto;
         margin-right: auto;
     }
+
+    h2 {
+        margin-top: 22px;
+        margin-bottom: 5px;
+    }
 }
 
 @media only screen and (min-width: 900px) {
@@ -12,15 +17,15 @@
         margin-left: auto;
         margin-right: auto;
     }
+
+    h2 {
+        margin-top: 30px;
+        margin-bottom: 5px;
+    }
 }
 
 .table_div {
     overflow-x: auto;
     overflow-y: auto;
     margin-bottom: 15px;
-}
-
-.header {
-    color: rgb(38, 166, 154);
-    font-weight: bold;
 }

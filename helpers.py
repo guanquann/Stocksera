@@ -3,14 +3,6 @@ import pandas as pd
 import numpy as np
 
 
-def ticker_exception(variable, info):
-    if variable in info and info[variable] is not None:
-        output = info[variable]
-    else:
-        output = "N/A"
-    return output
-
-
 def default_ticker(request):
     if request.GET.get("quote"):
         ticker_selected = request.GET['quote'].upper()
@@ -19,21 +11,10 @@ def default_ticker(request):
     return ticker_selected
 
 
-def get_ticker_basic(ticker):
-    information = ticker.info
-    official_name = ticker_exception("longName", information)
-    img = information["logo_url"]
-    sector = ticker_exception("sector", information)
-    industry = ticker_exception("industry", information)
-
-    return official_name, img, sector, industry
-
-
 def ticker_bar():
-    popular_ticker_list = ["SPY", "QQQ", "TQQQ", "DIA", "GOOG", "AAPL", "AMZN", "TSLA", "MSFT", "PLTR", "NVDA",
-                           "BB", "ARKK", "ARKF"]
-    popular_name_list = ["S&P500 ETF", "NASDAQ-100", "TQQQ", "Dow ETF", "Alphabet", "Apple", "Amazon", "Tesla",
-                         "Microsoft", "Palantir", "NVIDIA", "BlackBerry", "ARK Invest", "ARK Fintech"]
+    popular_ticker_list = ["SPY", "QQQ", "TQQQ", "DIA", "AAPL", "GME", "AMC", "TSLA", "NIO", "PLTR", "NVDA"]
+    popular_name_list = ["S&P500 ETF", "NASDAQ-100", "TQQQ", "Dow ETF", "Apple", "GameStop", "AMC", "Tesla", "Nio",
+                         "Palantir", "NVIDIA"]
 
     price_list = list()
     for ticker in popular_ticker_list:

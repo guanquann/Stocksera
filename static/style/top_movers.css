@@ -5,22 +5,22 @@
         margin-right: auto;
     }
 
-    table {
-        margin-left: auto;
-        margin-right: auto;
+    h2 {
+        margin-top: 22px;
+        margin-bottom: 5px;
     }
 }
 
 @media only screen and (min-width: 900px) {
-    #gainers, #losers, p {
+    #top_movers, p {
         width: 98%;
         margin-left: auto;
         margin-right: auto;
     }
 
-    table {
-        margin-left: auto;
-        margin-right: auto;
+    h2 {
+        margin-top: 30px;
+        margin-bottom: 5px;
     }
 }
 
@@ -28,24 +28,4 @@
     overflow-x: auto;
     overflow-y: auto;
     margin-bottom: 15px;
-}
-
-#gainers .header {
-    color: rgb(38, 166, 154);
-}
-
-.header {
-    font-weight: bold;
-}
-
-#gainers th {
-    background-color: rgb(38, 166, 154);
-}
-
-#losers .header {
-    color: red;
-}
-
-#losers th {
-    background-color: red;
 }

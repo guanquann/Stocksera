@@ -1,4 +1,4 @@
-from scheduled_tasks.get_reddit_trending.AutoDD import *
+from scheduled_tasks.get_reddit_trending_stocks.AutoDD import *
 from scheduled_tasks.config import *
 from collections import Counter
 
@@ -29,7 +29,7 @@ def main():
         print("Getting financial stats for {}...".format(subreddit))
         results_df = get_financial_stats(results_df, minimum_volume, minimum_mkt_cap, allow_threading)
 
-        results_df.sort_values(by=results_df.columns[1], inplace=True, ascending=False)
+        results_df.sort_values(by=results_df.columns[0], inplace=True, ascending=False)
 
         print_df(results_df, file_name, save_to_csv, subreddit)
 

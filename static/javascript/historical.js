@@ -15,9 +15,9 @@ function display_data() {
         <th>% Vol Change</th>`
 
     historical_data = historical_data.querySelectorAll("tr");
+
     for (i=1; i<historical_data.length-1; i++) {
         var td = historical_data[i].querySelectorAll("td");
-
         var prev_td = historical_data[i+1].querySelectorAll("td");
 
         var d = new Date(td[0].innerHTML);
@@ -37,8 +37,8 @@ function display_data() {
         var amplitude = Math.round(((td[2].innerHTML - td[3].innerHTML) / td[1].innerHTML) * 10000) / 100;
         historical_data[i].innerHTML += `<td>${amplitude}%</td>`
 
-        var vol_diff = td[5].innerHTML - prev_td[5].innerHTML;
-        var vol_percent_diff = Math.round((vol_diff / prev_td[5].innerHTML) * 10000) / 100
+        var vol_diff = Number(td[5].innerHTML) - Number(prev_td[5].innerHTML);
+        var vol_percent_diff = Math.round((vol_diff / Number(prev_td[5].innerHTML)) * 10000) / 100
         if (String(vol_percent_diff).includes("-")) {
             historical_data[i].innerHTML += `<td style="color:red">${vol_percent_diff}%</td>`
         }
@@ -51,4 +51,5 @@ function display_data() {
     var dayName = days[d.getDay()];
     historical_data[historical_data.length-1].innerHTML = `<td>${dayName}</td>` + historical_data[i].innerHTML
     historical_data[historical_data.length-1].innerHTML += "<td></td><td></td><td></td>"
+
 }

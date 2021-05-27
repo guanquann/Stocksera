@@ -47,7 +47,7 @@
                     <a href="{% url 'ark_trades' %}"><li class="sub_nav_bar" style="display: none;">ARK Trades</li></a>
                 </div>
 
-                <a href="{% url 'latest_news' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/newspaper.svg' %}">News Sentiment</li></a>
+                {% comment %} <a href="{% url 'latest_news' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/newspaper.svg' %}">News Sentiment</li></a> {% endcomment %}
                 <a href="{% url 'about' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/about.svg' %}">About</li></a>
             </ul>
             <div><img src="{% static 'images/day_icon.svg' %}" class="sun_icon"></div>

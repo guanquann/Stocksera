@@ -4,6 +4,7 @@ import sqlite3
 from custom_extensions.custom_words import *
 from helpers import *
 
+from pytrends.request import TrendReq
 from yahoo_earnings_calendar import YahooEarningsCalendar
 from finvizfinance.quote import finvizfinance
 
@@ -15,6 +16,8 @@ db = conn.cursor()
 
 analyzer = SentimentIntensityAnalyzer()
 analyzer.lexicon.update(new_words)
+
+trends = TrendReq(hl='en-US', tz=360)
 
 # https://query2.finance.yahoo.com/v10/finance/quoteSummary/AAPL?modules=price
 
@@ -110,106 +113,124 @@ def ticker_institutional_holders(request):
     return render(request, 'iframe_format.html', {"title": "Institutional Holders", "table": institutional_holders})
 
 
-def sub_news(request):
+# def sub_news(request):
+#     ticker_selected = default_ticker(request)
+#     ticker_fin = finvizfinance(ticker_selected)
+#
+#     news_df = ticker_fin.TickerNews()
+#     news_df["Date"] = news_df["Date"].dt.date
+#     link = news_df["Link"].to_list()
+#     del news_df["Link"]
+#
+#     sentiment_list = list()
+#     all_titles = news_df['Title'].tolist()
+#     for title in all_titles:
+#         vs = analyzer.polarity_scores(title)
+#         sentiment_score = vs['compound']
+#         if sentiment_score > 0.25:
+#             sentiment = "Bullish"
+#         elif sentiment_score < -0.25:
+#             sentiment = "Bearish"
+#         else:
+#             sentiment = "Neutral"
+#         sentiment_list.append(sentiment)
+#
+#     news_df["Sentiment"] = sentiment_list
+#     news_df = news_df.to_html(index=False)
+#     return render(request, 'iframe_format.html', {"title": "News", "table": news_df, "link": link,
+#                                                   "class": "ticker_news"})
+#
+#
+# def latest_news(request):
+#     ticker_selected = default_ticker(request)
+#     ticker = yf.Ticker(ticker_selected)
+#     ticker_fin = finvizfinance(ticker_selected)
+#     ticker_fin_fundament = ticker_fin.TickerFundament()
+#
+#     information = ticker.info
+#     img = information["logo_url"]
+#     official_name = ticker_fin_fundament["Company"]
+#
+#     sector = ticker_fin_fundament['Sector']
+#     industry = ticker_fin_fundament["Industry"]
+#
+#     news_df = ticker_fin.TickerNews()
+#     news_df["Date"] = news_df["Date"].dt.date
+#     link = news_df["Link"].to_list()
+#     del news_df["Link"]
+#
+#     sentiment_list = list()
+#     all_news = news_df['Title'].tolist()
+#     for title in all_news:
+#         vs = analyzer.polarity_scores(title)
+#         sentiment_score = vs['compound']
+#         if sentiment_score > 0.25:
+#             sentiment = "Bullish"
+#         elif sentiment_score < -0.25:
+#             sentiment = "Bearish"
+#         else:
+#             sentiment = "Neutral"
+#         sentiment_list.append(sentiment)
+#
+#     news_df["Sentiment"] = sentiment_list
+#
+#     num_rows = 0
+#     total_score = 0
+#     latest_date = news_df["Date"].unique()[0]
+#     today_news = news_df[news_df['Date'] == latest_date]['Title'].tolist()
+#     for title in today_news:
+#         vs = analyzer.polarity_scores(title)
+#         sentiment_score = vs['compound']
+#         if sentiment_score != 0:
+#             num_rows += 1
+#             total_score += sentiment_score
+#
+#     if num_rows == 0:
+#         avg_score = 25
+#     else:
+#         avg_score = round((total_score / num_rows) * 100, 2)
+#
+#     db.execute("UPDATE news_sentiment SET sentiment=? WHERE ticker=? AND date_updated=?",
+#                (avg_score, ticker_selected, str(datetime.now()).split()[0]))
+#     conn.commit()
+#
+#     db.execute("SELECT * FROM news_sentiment WHERE date_updated=?", (str(datetime.now()).split()[0],))
+#     ticker_sentiment = db.fetchall()
+#     days = 1
+#     while not ticker_sentiment:
+#         db.execute("SELECT * FROM news_sentiment WHERE date_updated=?", (str(datetime.now()-timedelta(days=days)).split()[0],))
+#         ticker_sentiment = db.fetchall()
+#         days += 1
+#     ticker_sentiment = list(map(list, ticker_sentiment))
+#
+#     return render(request, 'news_sentiment.html', {"ticker_selected": ticker_selected,
+#                                                    "news_df": news_df.to_html(index=False),
+#                                                    "link": link,
+#                                                    "official_name": official_name,
+#                                                    "img": img,
+#                                                    "industry": industry,
+#                                                    "sector": sector,
+#                                                    "ticker_sentiment": ticker_sentiment,
+#                                                    "latest_date": latest_date,
+#                                                    "avg_score": avg_score})
+
+
+def google_trends(request):
     ticker_selected = default_ticker(request)
-    ticker_fin = finvizfinance(ticker_selected)
+    if "-USD" in ticker_selected:
+        ticker_selected = ticker_selected.split("-USD")[0]
+    print(ticker_selected)
+    trends.build_payload(kw_list=[ticker_selected], timeframe="today 12-m")
+    interest_over_time = trends.interest_over_time().reset_index()
+    interest_over_time.columns = ["Date", "Trending Score", "Is_Partial"]
 
-    news_df = ticker_fin.TickerNews()
-    news_df["Date"] = news_df["Date"].dt.date
-    link = news_df["Link"].to_list()
-    del news_df["Link"]
-
-    sentiment_list = list()
-    all_titles = news_df['Title'].tolist()
-    for title in all_titles:
-        vs = analyzer.polarity_scores(title)
-        sentiment_score = vs['compound']
-        if sentiment_score > 0.25:
-            sentiment = "Bullish"
-        elif sentiment_score < -0.25:
-            sentiment = "Bearish"
-        else:
-            sentiment = "Neutral"
-        sentiment_list.append(sentiment)
-
-    news_df["Sentiment"] = sentiment_list
-    news_df = news_df.to_html(index=False)
-    return render(request, 'iframe_format.html', {"title": "News", "table": news_df, "link": link,
-                                                  "class": "ticker_news"})
-
-
-def latest_news(request):
-    ticker_selected = default_ticker(request)
-    ticker = yf.Ticker(ticker_selected)
-    ticker_fin = finvizfinance(ticker_selected)
-    ticker_fin_fundament = ticker_fin.TickerFundament()
-
-    information = ticker.info
-    img = information["logo_url"]
-    official_name = ticker_fin_fundament["Company"]
-
-    sector = ticker_fin_fundament['Sector']
-    industry = ticker_fin_fundament["Industry"]
-
-    news_df = ticker_fin.TickerNews()
-    news_df["Date"] = news_df["Date"].dt.date
-    link = news_df["Link"].to_list()
-    del news_df["Link"]
-
-    sentiment_list = list()
-    all_news = news_df['Title'].tolist()
-    for title in all_news:
-        vs = analyzer.polarity_scores(title)
-        sentiment_score = vs['compound']
-        if sentiment_score > 0.25:
-            sentiment = "Bullish"
-        elif sentiment_score < -0.25:
-            sentiment = "Bearish"
-        else:
-            sentiment = "Neutral"
-        sentiment_list.append(sentiment)
-
-    news_df["Sentiment"] = sentiment_list
-
-    num_rows = 0
-    total_score = 0
-    latest_date = news_df["Date"].unique()[0]
-    today_news = news_df[news_df['Date'] == latest_date]['Title'].tolist()
-    for title in today_news:
-        vs = analyzer.polarity_scores(title)
-        sentiment_score = vs['compound']
-        if sentiment_score != 0:
-            num_rows += 1
-            total_score += sentiment_score
-
-    if num_rows == 0:
-        avg_score = 25
-    else:
-        avg_score = round((total_score / num_rows) * 100, 2)
-
-    db.execute("UPDATE news_sentiment SET sentiment=? WHERE ticker=? AND date_updated=?",
-               (avg_score, ticker_selected, str(datetime.now()).split()[0]))
-    conn.commit()
-
-    db.execute("SELECT * FROM news_sentiment WHERE date_updated=?", (str(datetime.now()).split()[0],))
-    ticker_sentiment = db.fetchall()
-    days = 1
-    while not ticker_sentiment:
-        db.execute("SELECT * FROM news_sentiment WHERE date_updated=?", (str(datetime.now()-timedelta(days=days)).split()[0],))
-        ticker_sentiment = db.fetchall()
-        days += 1
-    ticker_sentiment = list(map(list, ticker_sentiment))
-
-    return render(request, 'news_sentiment.html', {"ticker_selected": ticker_selected,
-                                                   "news_df": news_df.to_html(index=False),
-                                                   "link": link,
-                                                   "official_name": official_name,
-                                                   "img": img,
-                                                   "industry": industry,
-                                                   "sector": sector,
-                                                   "ticker_sentiment": ticker_sentiment,
-                                                   "latest_date": latest_date,
-                                                   "avg_score": avg_score})
+    interest_by_region = trends.interest_by_region(resolution='COUNTRY', inc_low_vol=False, inc_geo_code=False).\
+        reset_index().sort_values([ticker_selected], ascending=False).head(20).reset_index()
+    region_list = interest_by_region["geoName"].to_list()
+    region_count_list = interest_by_region[ticker_selected].to_list()
+    return render(request, "google_trend.html", {"interest_over_time": interest_over_time.to_html(index=False),
+                                                 "region_list": region_list,
+                                                 "region_count_list": region_count_list})
 
 
 def financial(request):
@@ -296,7 +317,7 @@ def options(request):
         df_calls["Spot"] = round(last_adj_close_price, 2)
 
         calls["Volume"].fillna('-', inplace=True)
-        calls["Open Interest"].fillna('-', inplace=True)
+        calls["Open Interest"].fillna(0, inplace=True)
         calls["Implied Volatility"] = calls["Implied Volatility"].astype("float").multiply(100)
 
         calls["Change"] = calls["Change"].round(2)
@@ -322,7 +343,7 @@ def options(request):
         df_puts["Spot"] = round(last_adj_close_price, 2)
 
         puts["Volume"].fillna('-', inplace=True)
-        puts["Open Interest"].fillna('-', inplace=True)
+        puts["Open Interest"].fillna(0, inplace=True)
         puts["Implied Volatility"] = puts["Implied Volatility"].astype("float").multiply(100)
 
         puts["Change"] = puts["Change"].round(2)
@@ -445,17 +466,17 @@ def top_movers(request):
 
     top_gainers = pd.read_html("https://finance.yahoo.com/screener/predefined/day_gainers")[0]
     top_gainers["PE Ratio (TTM)"] = top_gainers["PE Ratio (TTM)"].replace(np.nan, "N/A")
-    del top_gainers["52 Week Range"]
 
     top_losers = pd.read_html("https://finance.yahoo.com/screener/predefined/day_losers")[0]
     top_losers["PE Ratio (TTM)"] = top_gainers["PE Ratio (TTM)"].replace(np.nan, "N/A")
-    del top_losers["52 Week Range"]
+
+    top_movers_combine = top_gainers.append(top_losers, ignore_index=True)
+    del top_movers_combine["52 Week Range"]
 
     return render(request, 'top_movers.html', {"popular_ticker_list": popular_ticker_list,
                                                "popular_name_list": popular_name_list,
                                                "price_list": price_list,
-                                               "top_gainers": top_gainers.to_html(index=False),
-                                               "top_losers": top_losers.to_html(index=False)})
+                                               "top_movers_combine": top_movers_combine.to_html(index=False)})
 
 
 def short_interest(request):

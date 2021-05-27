@@ -8,7 +8,7 @@ from tabulate import tabulate
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import sqlite3
 
-from scheduled_tasks.get_reddit_trending.fast_yahoo import *
+from scheduled_tasks.get_reddit_trending_stocks.fast_yahoo import *
 from custom_extensions.stopwords import stopwords_list
 from custom_extensions.custom_words import new_words
 
@@ -150,6 +150,7 @@ def get_ticker_scores_psaw(sub_gen_dict):
         for submission in submission_gen:
             # every ticker in the title will earn this base points
             increment = base_points
+            print(submission)
 
             # flair is worth bonus points
             if hasattr(submission, 'link_flair_text'):
@@ -407,12 +408,12 @@ def print_df(df, filename, writecsv, subreddit):
     df['industry'] = df['industry'].str.replace("—", "-")
 
     # Save to sql database
-    for row_num in range(len(df)):
-        db.execute(
-            "INSERT INTO {} VALUES "
-            "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)".format(subreddit),
-            tuple(df.loc[row_num].tolist()))
-        conn.commit()
+    # for row_num in range(len(df)):
+    #     db.execute(
+    #         "INSERT INTO {} VALUES "
+    #         "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)".format(subreddit),
+    #         tuple(df.loc[row_num].tolist()))
+    #     conn.commit()
     print("Saved to {} SQL Database successfully.".format(subreddit))
 
     # save the file to the same dir as the AutoDD.py script

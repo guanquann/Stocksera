@@ -3,7 +3,7 @@ import sqlite3
 conn = sqlite3.connect("database.db", check_same_thread=False)
 db = conn.cursor()
 
-subreddits = ["wallstreetbets", "stocks", "stockmarket"]
+subreddits = ["wallstreetbets", "stocks", "stockmarket", "wallstreetbetselite"]
 for subreddit in subreddits:
     db.execute("CREATE table IF NOT EXISTS {} ("
                "ticker VARCHAR (10), "

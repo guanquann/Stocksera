@@ -9,19 +9,32 @@
     <link rel="stylesheet" href="{% static 'style/google_trend.css' %}">
 </head>
 <body onload="restore_dark_mode()">
-    <h3>Interest over time</h3>
+    <form action="" method="GET" autocomplete="off">
+        <select name="timing_selected" onchange="this.form.submit()">
+            <option>Selected: {{timing_selected}}</option>
+            <option value="now 1-H">Past hour</option>
+            <option value="now 4-H">Past 4 hours</option>
+            <option value="now 1-d">Past day</option>
+            <option value="now 7-d">Past 7 days</option>
+            <option value="today 1-m">Past 30 days</option>
+            <option value="today 3-m">Past 90 days</option>
+            <option value="today 12-m">Past 12 months</option>
+        </select>
+    </form>
+
+    <h3>Interest of {{ticker_selected}} over time ({{timing_selected}})</h3>
     <div class="chart-container">
         <canvas id="trending"></canvas>
     </div>
 
-    <h3>Interest across region</h3>
+    <h3>Interest of {{ticker_selected}} across region ({{timing_selected}})</h3>
     <div class="chart-container">
         <canvas id="region"></canvas>
     </div>
     <div style="display: none">
         {{interest_over_time|safe}}
     </div>
-    <div style="height:35px"></div>
+    <div style="height:44px"></div>
 </body>
 </html>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>

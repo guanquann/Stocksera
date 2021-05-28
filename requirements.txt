@@ -2,7 +2,6 @@ absl-py==0.12.0
 asgiref==3.3.1
 astunparse==1.6.3
 beautifulsoup4==4.9.3
-bs4==0.0.1
 cached-property==1.5.2
 cachetools==4.2.2
 certifi==2020.12.5
@@ -28,7 +27,6 @@ pandas==1.2.2
 praw==7.2.0
 prawcore==2.0.0
 protobuf==3.16.0
-psaw==0.1.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 PySocks==1.7.1
@@ -45,7 +43,6 @@ six==1.15.0
 sklearn==0.0
 soupsieve==2.2.1
 sqlparse==0.4.1
-stocknews==0.9.11
 tabulate==0.8.9
 termcolor==1.1.0
 threadpoolctl==2.1.0

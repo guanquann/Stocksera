@@ -113,34 +113,34 @@ def ticker_institutional_holders(request):
     return render(request, 'iframe_format.html', {"title": "Institutional Holders", "table": institutional_holders})
 
 
-# def sub_news(request):
-#     ticker_selected = default_ticker(request)
-#     ticker_fin = finvizfinance(ticker_selected)
-#
-#     news_df = ticker_fin.TickerNews()
-#     news_df["Date"] = news_df["Date"].dt.date
-#     link = news_df["Link"].to_list()
-#     del news_df["Link"]
-#
-#     sentiment_list = list()
-#     all_titles = news_df['Title'].tolist()
-#     for title in all_titles:
-#         vs = analyzer.polarity_scores(title)
-#         sentiment_score = vs['compound']
-#         if sentiment_score > 0.25:
-#             sentiment = "Bullish"
-#         elif sentiment_score < -0.25:
-#             sentiment = "Bearish"
-#         else:
-#             sentiment = "Neutral"
-#         sentiment_list.append(sentiment)
-#
-#     news_df["Sentiment"] = sentiment_list
-#     news_df = news_df.to_html(index=False)
-#     return render(request, 'iframe_format.html', {"title": "News", "table": news_df, "link": link,
-#                                                   "class": "ticker_news"})
-#
-#
+def sub_news(request):
+    # ticker_selected = default_ticker(request)
+    # ticker_fin = finvizfinance(ticker_selected)
+    #
+    # news_df = ticker_fin.TickerNews()
+    # news_df["Date"] = news_df["Date"].dt.date
+    # link = news_df["Link"].to_list()
+    # del news_df["Link"]
+    #
+    # sentiment_list = list()
+    # all_titles = news_df['Title'].tolist()
+    # for title in all_titles:
+    #     vs = analyzer.polarity_scores(title)
+    #     sentiment_score = vs['compound']
+    #     if sentiment_score > 0.25:
+    #         sentiment = "Bullish"
+    #     elif sentiment_score < -0.25:
+    #         sentiment = "Bearish"
+    #     else:
+    #         sentiment = "Neutral"
+    #     sentiment_list.append(sentiment)
+    #
+    # news_df["Sentiment"] = sentiment_list
+    # news_df = news_df.to_html(index=False)
+    return render(request, 'iframe_format.html', {"title": "News", "table": news_df, "link": link,
+                                                  "class": "ticker_news"})
+
+
 # def latest_news(request):
 #     ticker_selected = default_ticker(request)
 #     ticker = yf.Ticker(ticker_selected)
@@ -219,16 +219,31 @@ def google_trends(request):
     ticker_selected = default_ticker(request)
     if "-USD" in ticker_selected:
         ticker_selected = ticker_selected.split("-USD")[0]
-    print(ticker_selected)
-    trends.build_payload(kw_list=[ticker_selected], timeframe="today 12-m")
+
+    if request.GET.get("timing_selected"):
+        timeframe = request.GET.get("timing_selected")
+    else:
+        timeframe = "today 12-m"
+    trends.build_payload(kw_list=[ticker_selected], timeframe=timeframe)
     interest_over_time = trends.interest_over_time().reset_index()
-    interest_over_time.columns = ["Date", "Trending Score", "Is_Partial"]
 
     interest_by_region = trends.interest_by_region(resolution='COUNTRY', inc_low_vol=False, inc_geo_code=False).\
         reset_index().sort_values([ticker_selected], ascending=False).head(20).reset_index()
     region_list = interest_by_region["geoName"].to_list()
     region_count_list = interest_by_region[ticker_selected].to_list()
+
+    mapping_dict = {"now 1-H": "Past hour",
+                    "now 4-H": "Past 4 hours",
+                    "now 1-d": "Past day",
+                    "now 7-d": "Past 7 days",
+                    "today 1-m": "Past 30 days",
+                    "today 3-m": "Past 90 days",
+                    "today 12-m": "Past 12 months"}
+    timeframe = mapping_dict[timeframe]
+
     return render(request, "google_trend.html", {"interest_over_time": interest_over_time.to_html(index=False),
+                                                 "ticker_selected": ticker_selected,
+                                                 "timing_selected": timeframe,
                                                  "region_list": region_list,
                                                  "region_count_list": region_count_list})
 
@@ -316,6 +331,8 @@ def options(request):
         df_calls["oi+v"] = df_calls["Open Interest"] + df_calls["Volume"]
         df_calls["Spot"] = round(last_adj_close_price, 2)
 
+        calls["Bid"].fillna('-', inplace=True)
+        calls["Ask"].fillna('-', inplace=True)
         calls["Volume"].fillna('-', inplace=True)
         calls["Open Interest"].fillna(0, inplace=True)
         calls["Implied Volatility"] = calls["Implied Volatility"].astype("float").multiply(100)
@@ -342,6 +359,8 @@ def options(request):
         df_puts["oi+v"] = df_puts["Open Interest"] + df_puts["Volume"]
         df_puts["Spot"] = round(last_adj_close_price, 2)
 
+        puts["Bid"].fillna('-', inplace=True)
+        puts["Ask"].fillna('-', inplace=True)
         puts["Volume"].fillna('-', inplace=True)
         puts["Open Interest"].fillna(0, inplace=True)
         puts["Implied Volatility"] = puts["Implied Volatility"].astype("float").multiply(100)
@@ -436,7 +455,7 @@ def reddit_analysis(request):
     else:
         date_selected = all_dates[0]
 
-    db.execute("SELECT * FROM {} WHERE date_updated LIKE '{}' ORDER BY one_day_score DESC".format(subreddit, "%" + date_selected + "%"))
+    db.execute("SELECT * FROM {} WHERE date_updated LIKE '{}' ORDER BY one_day_score DESC LIMIT 20".format(subreddit, "%" + date_selected + "%"))
     trending_tickers = db.fetchall()
     trending_tickers = list(map(list, trending_tickers))
 

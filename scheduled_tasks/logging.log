@@ -268,3 +268,43 @@ INFO:psaw.PushshiftAPI:https://api.pushshift.io/meta
 INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621998318&before=1622084718&subreddit=wallstreetbetselite&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
 INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621911918&before=1621998318&subreddit=wallstreetbetselite&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
 INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621911918&before=1621912573&subreddit=wallstreetbetselite&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
+INFO:psaw.PushshiftAPI:https://api.pushshift.io/meta
+INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1622034875&before=1622121275&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
+INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621948475&before=1622034875&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
+INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621948475&before=1621948778&subreddit=wallstreetbets&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
+INFO:psaw.PushshiftAPI:https://api.pushshift.io/meta
+INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1622034882&before=1622121282&subreddit=stocks&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
+INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621948482&before=1622034882&subreddit=stocks&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
+INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621948482&before=1621948897&subreddit=stocks&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
+INFO:psaw.PushshiftAPI:https://api.pushshift.io/meta
+INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1622034888&before=1622121288&subreddit=stockmarket&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
+INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621948488&before=1622034888&subreddit=stockmarket&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
+INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621948488&before=1621948924&subreddit=stockmarket&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
+INFO:psaw.PushshiftAPI:https://api.pushshift.io/meta
+INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1622034895&before=1622121295&subreddit=wallstreetbetselite&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
+INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621948495&before=1622034895&subreddit=wallstreetbetselite&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
+INFO:psaw.PushshiftAPI:https://api.pushshift.io/reddit/submission/search?after=1621948495&before=1621948512&subreddit=wallstreetbetselite&filter=title&filter=link_flair_text&filter=selftext&filter=score&filter=created_utc&limit=1000&metadata=true&sort=desc
+INFO:root:--------------------------------------------------
+INFO:root:Ticker TSLA to be bought on 2021-05-27 for $620.24.
+INFO:root:Ticker SNDL to be bought on 2021-05-27 for $0.91.
+INFO:root:Ticker MVIS to be bought on 2021-05-27 for $14.78.
+INFO:root:Ticker UWMC to be bought on 2021-05-27 for $8.66.
+INFO:root:Ticker SPY to be bought on 2021-05-27 for $420.17.
+INFO:root:Ticker RBLX to be bought on 2021-05-27 for $89.26.
+INFO:root:Ticker AMZN to be bought on 2021-05-27 for $3256.0.
+INFO:root:Ticker BABA to be sold on 2021-05-27 at $214.17 during market open.
+INFO:root:Ticker PLUG to be sold on 2021-05-27 at $30.02 during market open.
+INFO:root:Ticker NNDM to be sold on 2021-05-27 at $7.27 during market open.
+INFO:root:Ticker NIO to be sold on 2021-05-27 at $37.95 during market open.
+INFO:root:Ticker SHOP to be sold on 2021-05-27 at $1231.92 during market open.
+INFO:root:Ticker PLTR to be sold on 2021-05-27 at $22.01 during market open.
+INFO:root:Ticker COIN to be sold on 2021-05-27 at $245.21 during market open.
+INFO:root:--------------------------------------------------
+INFO:root:--------------------------------------------------
+INFO:root:Ticker BB to be bought on 2021-05-28 for $9.7.
+INFO:root:Ticker AI to be bought on 2021-05-28 for $61.08.
+INFO:root:Ticker PLTR to be bought on 2021-05-28 for $22.01.
+INFO:root:Ticker RBLX to be sold on 2021-05-28 at $89.26 during market open.
+INFO:root:Ticker MVIS to be sold on 2021-05-28 at $16.07 during market open.
+INFO:root:Ticker AMZN to be sold on 2021-05-28 at $3242.0 during market open.
+INFO:root:--------------------------------------------------

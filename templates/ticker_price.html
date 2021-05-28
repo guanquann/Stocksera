@@ -147,8 +147,114 @@ else {
     var img_code = `<a href=${website} target="_blank"><img src="{% static 'images/not_available.svg' %}">`
 }
 
+<!--Check if input is an ETF/Crypto/Stock and display information to user accordingly-->
+var quoteType = information["quoteType"]
+if (quoteType == "ETF") {
+    var summary = check_stats("longBusinessSummary").replace(/[^\x00-\x7F]/g, "");
+    var official_name = check_stats("longName");
+    var total_assets = check_if_num("totalAssets");
+    var navPrice = check_stats("navPrice");
+    var three_year_return = check_stats("threeYearAverageReturn") * 100 + "%";
+    var five_year_return = check_stats("fiveYearAverageReturn") * 100 + "%";
+    var beta = check_stats("beta3Year");
+    var yield = check_stats("Yield");
+    var dividend_yield = information["trailingAnnualDividendYield"];
+    var dividend_amount = information["trailingAnnualDividendRate"];
+    if (dividend_yield != "N/A") {
+        dividend_yield = String(Math.round(dividend_yield * 10000) / 100) + "%"
+        dividend_amount = "$" + String(dividend_amount)
+    }
+    table_part_ii_code = `
+        <tr>
+            <td>Total Assets: ${total_assets}</td>
+            <td>NAV: ${navPrice}</td>
+        </tr>
+        <tr>
+            <td>3Y Return: ${three_year_return}</td>
+            <td>5Y Return: ${five_year_return}</td>
+        </tr>
+        <tr>
+            <td>Beta: ${beta}</td>
+            <td>Yield: ${yield}</td>
+        </tr>
+        <tr>
+            <td>Div. Yield: ${dividend_yield}</td>
+            <td>Dividend: ${dividend_amount}</td>
+        </tr>`
+
+}
+else if (quoteType == "CRYPTOCURRENCY") {
+    var summary = check_stats("description").replace(/[^\x00-\x7F]/g, "");
+    var official_name = check_stats("shortName");
+    var mkt_cap = check_if_num("marketCap");
+    var supply = check_if_num("circulatingSupply");
+    table_part_ii_code = `
+        <tr>
+            <td>Mkt Cap: ${mkt_cap}</td>
+            <td>Circulating Supply: ${supply}</td>
+        </tr>
+    `
+}
+else {
+    var summary = check_stats("longBusinessSummary").replace(/[^\x00-\x7F]/g, "");
+    var official_name = check_stats("longName");
+    var beta = check_stats("beta")
+    var eps = check_stats("trailingEps")
+    var p_e_ratio = check_stats("trailingPE")
+    var forward_p_e = check_stats("forwardPE")
+
+    var outstanding_shares = check_if_num("sharesOutstanding")
+    var floating_shares = check_if_num("floatShares")
+    var short_ratio = check_if_num("shortRatio")
+    var peg_ratio = check_if_num("pegRatio")
+    var enterpriseToRevenue = check_if_num("enterpriseToRevenue")
+    var income = check_if_num("netIncomeToCommon")
+    var mkt_cap = check_if_num("marketCap");
+    var short_percent = information["shortPercentOfFloat"]
+    var dividend_yield = information["trailingAnnualDividendYield"]
+    var dividend_amount = information["trailingAnnualDividendRate"]
+    if (dividend_yield != "N/A") {
+        dividend_yield = String(Math.round(dividend_yield * 10000) / 100) + "%"
+        dividend_amount = "$" + String(dividend_amount)
+    }
+    if (typeof(short_percent) == "number") {
+        short_percent = Math.round(short_percent * 10000) / 100 + "%"
+    }
+    else {
+        short_percent = "N/A"
+    }
+    table_part_ii_code = `
+        <tr>
+            <td>Outstanding Shares: ${outstanding_shares}</td>
+            <td>Floating Shares: ${floating_shares}</td>
+        </tr>
+        <tr>
+            <td>Short Ratio: ${short_ratio}</td>
+            <td>Short % of Float: ${short_percent}</td>
+        </tr>
+        <tr>
+            <td>P/E: ${p_e_ratio}</td>
+            <td>Forward P/E: ${forward_p_e}</td>
+        </tr>
+        <tr>
+            <td>PEG Ratio: ${peg_ratio}</td>
+            <td>Enterprise value / Revenue: ${enterpriseToRevenue}</td>
+        </tr>
+        <tr>
+            <td>Income: ${income}</td>
+            <td>Mkt Cap: ${mkt_cap}</td>
+        </tr>
+        <tr>
+            <td>Beta: ${beta}</td>
+            <td>EPS: ${eps}</td>
+        </tr>
+        <tr>
+            <td>Div. Yield: ${dividend_yield}</td>
+            <td>Dividend: ${dividend_amount}</td>
+        </tr>`
+}
+
 <!--Code to display image, full name, symbol, industry and sector-->
-var official_name = check_stats("longName")
 var sector = check_stats("sector")
 var industry = check_stats("industry")
 var ticker_basic_stats_code = `
@@ -177,7 +283,6 @@ latest_price_code = `
 document.getElementById("latest_price").innerHTML = latest_price_code;
 
 <!--Code to show summary of ticker-->
-summary = check_stats("longBusinessSummary");
 var summary_code = `
     <p class="header">
         <b>Summary</b>
@@ -185,33 +290,6 @@ var summary_code = `
     <a href=${website} target="_blank" class="read_more"><i>Read More...</i></a>`
 document.getElementsByClassName("ticker_summary")[0].innerHTML = summary_code;
 
-beta = check_stats("beta")
-eps = check_stats("trailingEps")
-p_e_ratio = check_stats("trailingPE")
-forward_p_e = check_stats("forwardPE")
-
-outstanding_shares = check_if_num("sharesOutstanding")
-floating_shares = check_if_num("floatShares")
-short_ratio = check_if_num("shortRatio")
-peg_ratio = check_if_num("pegRatio")
-enterpriseToRevenue = check_if_num("enterpriseToRevenue")
-income = check_if_num("netIncomeToCommon")
-mkt_cap = check_if_num("marketCap")
-
-short_percent = information["shortPercentOfFloat"]
-if (typeof(short_percent) == "number") {
-    short_percent = Math.round(short_percent * 10000) / 100 + "%"
-}
-else {
-    short_percent = "N/A"
-}
-
-dividend_yield = information["trailingAnnualDividendYield"]
-dividend_amount = information["trailingAnnualDividendRate"]
-if (dividend_yield != "N/A") {
-    dividend_yield = String(Math.round(dividend_yield * 10000) / 100) + "%"
-    dividend_amount = "$" + String(dividend_amount)
-}
 
 <!--Code to show basic statistics of ticker-->
 table_code = `
@@ -235,36 +313,8 @@ table_code = `
         <tr>
             <td>50D SMA: $${information["fiftyDayAverage"]}</td>
             <td>200D SMA: $${information["twoHundredDayAverage"]}</td>
-        </tr>
-        <tr>
-            <td>Outstanding Shares: ${outstanding_shares}</td>
-            <td>Floating Shares: ${floating_shares}</td>
-        </tr>
-        <tr>
-            <td>Short Ratio: ${short_ratio}</td>
-            <td>Short % of Float: ${short_percent}</td>
-        </tr>
-        <tr>
-            <td>P/E: ${p_e_ratio}</td>
-            <td>Forward P/E: ${forward_p_e}</td>
-        </tr>
-        <tr>
-            <td>PEG Ratio: ${peg_ratio}</td>
-            <td>Enterprise value / Revenue: ${enterpriseToRevenue}</td>
-        </tr>
-        <tr>
-            <td>Income: ${income}</td>
-            <td>Mkt Cap: ${mkt_cap}</td>
-        </tr>
-        <tr>
-            <td>Beta: ${beta}</td>
-            <td>EPS: ${eps}</td>
-        </tr>
-        <tr>
-            <td>Div. Yield: ${dividend_yield}</td>
-            <td>Dividend: ${dividend_amount}</td>
-        </tr>
-    </table>`
+        </tr>`
+table_code += table_part_ii_code + "</table>";
 document.getElementsByClassName("scrollable_div")[0].innerHTML = table_code;
 
 <!--Code to show ticker price graph-->

@@ -3,7 +3,7 @@ import sqlite3
 conn = sqlite3.connect("database.db", check_same_thread=False)
 db = conn.cursor()
 
-subreddits = ["wallstreetbets", "stocks", "stockmarket", "wallstreetbetselite"]
+subreddits = ["wallstreetbets", "stocks", "stockmarket"]
 for subreddit in subreddits:
     db.execute("CREATE table IF NOT EXISTS {} ("
                "ticker VARCHAR (10), "
@@ -12,8 +12,6 @@ for subreddit in subreddits:
                "previous INTEGER NOT NULL DEFAULT 0, "
                "change FLOAT, "
                "rockets INTEGER NOT NULL DEFAULT 0, "
-               "positive INTEGER NOT NULL DEFAULT 0, "
-               "negative INTEGER NOT NULL DEFAULT 0, "
                "price FLOAT, "
                "one_day_change_percent FLOAT, "
                "fifty_day_change_percent FLOAT, "

@@ -2,13 +2,13 @@ import sys
 import os
 import re
 import locale
+import praw
 from datetime import datetime, timedelta
-from psaw import PushshiftAPI
-from tabulate import tabulate
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import sqlite3
 
 from scheduled_tasks.get_reddit_trending_stocks.fast_yahoo import *
+import scheduled_tasks.config as cfg
 from custom_extensions.stopwords import stopwords_list
 from custom_extensions.custom_words import new_words
 
@@ -17,15 +17,6 @@ db = conn.cursor()
 
 analyzer = SentimentIntensityAnalyzer()
 analyzer.lexicon.update(new_words)
-
-# dictionary of possible subreddits to search in with their respective column name
-subreddit_dict = {'pennystocks': 'pnnystks',
-                  'RobinHoodPennyStocks': 'RHPnnyStck',
-                  'Daytrading': 'daytrade',
-                  'StockMarket': 'stkmrkt',
-                  'stocks': 'stocks',
-                  'investing': 'investing',
-                  'wallstreetbets': 'WSB'}
 
 # x base point of for a ticker that appears on a subreddit title or text body that fits the search criteria
 base_points = 2
@@ -36,6 +27,9 @@ bonus_points = 1
 # every x upvotes on the thread counts for 1 point (rounded down)
 upvote_factor = 3
 
+# every x comments on the thread counts for 1 point (rounded down)
+comments_factor = 3
+
 # x bonus points for the sentiment of ticker
 positive_sentiment = 2
 neutral_sentiment = 1
@@ -44,48 +38,48 @@ negative_sentiment = 0
 # rocket emoji
 rocket = '🚀'
 
+# Python regex pattern for stocks codes
+pattern = "(?<=\$)?\\b[A-Z]{2,5}\\b(?:\.[A-Z]{1,2})?"
+
 
 def get_sentiment(text, increment):
     vs = analyzer.polarity_scores(text)
-    if vs['compound'] >= 0.05:
+    sentiment_score = vs['compound']
+    if sentiment_score >= 0.05:
         increment += positive_sentiment
-        sentiment = "positive"
-    elif vs['compound'] <= -0.05:
+    elif sentiment_score <= -0.05:
         increment += negative_sentiment
-        sentiment = "negative"
     else:
         increment += neutral_sentiment
-        sentiment = "neutral"
-    return increment, sentiment
+    return increment, sentiment_score
 
 
-def get_submission_psaw(n, sub_dict):
+def get_submission_praw(n, sub):
     """
     Returns a list of results for submission in past:
     1st list: current result from n hours ago until now
     2nd list: prev result from 2n hours ago until n hours ago
     """
-    api = PushshiftAPI()
 
     mid_interval = datetime.today() - timedelta(hours=n)
     timestamp_mid = int(mid_interval.timestamp())
     timestamp_start = int((mid_interval - timedelta(hours=n)).timestamp())
     timestamp_end = int(datetime.today().timestamp())
+    reddit = praw.Reddit(client_id=cfg.API_REDDIT_CLIENT_ID,
+                         client_secret=cfg.API_REDDIT_CLIENT_SECRET,
+                         user_agent=cfg.API_REDDIT_USER_AGENT)
+
     recent = {}
     prev = {}
-    for key in sub_dict:
-        # results from the last n hours
-        recent[key] = api.search_submissions(after=timestamp_mid,
-                                             before=timestamp_end,
-                                             subreddit=key,
-                                             filter=['title', 'link_flair_text', 'selftext', 'score'])
+    subreddit = reddit.subreddit(sub)
+    all_results = []
+    for post in subreddit.new(limit=500):
+        all_results.append([post.title, post.link_flair_text, post.selftext, post.score, post.num_comments,
+                            post.created_utc])
 
-        # results from the last 2n hours until n hours ago
-        prev[key] = api.search_submissions(after=timestamp_start,
-                                           before=timestamp_mid,
-                                           subreddit=key,
-                                           filter=['title', 'link_flair_text', 'selftext', 'score'])
-
+    # start --> mid --> end
+    recent[sub] = [posts for posts in all_results if timestamp_mid <= posts[5] <= timestamp_end]
+    prev[sub] = [posts for posts in all_results if timestamp_start <= posts[5] < timestamp_mid]
     return recent, prev
 
 
@@ -100,23 +94,16 @@ def get_submission_generators(n, sub):
     function itself does not retrieve any reddit data (merely the generators)
     """
 
-    if sub not in subreddit_dict:
-        subreddit_dict[sub] = sub
-
-    sub_dict = {sub: subreddit_dict[sub]}
-
-    recent, prev = get_submission_psaw(n, sub_dict)
-
+    recent, prev = get_submission_praw(n, sub)
     print("Searching for tickers in {}...".format(sub))
-    current_scores, current_rocket_scores, current_positive, current_negative = get_ticker_scores_psaw(recent)
-    prev_scores, prev_rocket_scores, prev_positive, prev_negative = get_ticker_scores_psaw(prev)
 
-    return current_scores, current_rocket_scores, current_positive, current_negative, \
-           prev_scores, prev_rocket_scores, prev_positive, prev_negative
+    current_scores, current_rocket_scores = get_ticker_scores_praw(recent)
+    prev_scores, prev_rocket_scores = get_ticker_scores_praw(prev)
+
+    return current_scores, current_rocket_scores, prev_scores, prev_rocket_scores
 
 
-word_dict = {}
-def get_ticker_scores_psaw(sub_gen_dict):
+def get_ticker_scores_praw(sub_gen_dict):
     """
     Return two dictionaries:
     --sub_scores_dict: a dictionary of dictionaries. This dictionaries' keys are the requested subreddit: all subreddits
@@ -124,12 +111,8 @@ def get_ticker_scores_psaw(sub_gen_dict):
     scores, where each key is a ticker found in the reddit submissions.
     --rocket_scores_dict: a dictionary whose keys are the tickers found in reddit submissions, and value is the number
     of rocker emojis found for each ticker.
-
     :param sub_gen_dict: A dictionary of generators for each subreddit, as outputted by get_submission_generators
     """
-
-    # Python regex pattern for stocks codes
-    pattern = '(?<=\$)?\\b[A-Z]{3,5}\\b(?:\.[A-Z]{1,2})?'
 
     # Dictionaries containing the summaries
     sub_scores_dict = {}
@@ -137,71 +120,55 @@ def get_ticker_scores_psaw(sub_gen_dict):
     # Dictionaries containing the rocket count
     rocket_scores_dict = {}
 
-    # Dictionaries containing sentiment ratio
-    positive_sentiment_dict = {}
-    negative_sentiment_dict = {}
-    sentiment = "neutral"
-
-    for sub, submission_gen in sub_gen_dict.items():
-
+    for sub, submission_list in sub_gen_dict.items():
         sub_scores_dict[sub] = {}
-
-        # looping over each submission
-        for submission in submission_gen:
+        for submission in submission_list:
             # every ticker in the title will earn this base points
             increment = base_points
-            print(submission)
-
-            # flair is worth bonus points
-            if hasattr(submission, 'link_flair_text'):
-                if 'DD' in submission.link_flair_text:
-                    increment += bonus_points
-                elif 'Catalyst' in submission.link_flair_text:
-                    increment += bonus_points
-                elif 'Technical Analysis' in submission.link_flair_text:
-                    increment += bonus_points
-
-            # every 3 upvotes are worth 1 extra point
-            if hasattr(submission, 'score') and upvote_factor > 0:
-                increment += math.ceil(submission.score / upvote_factor)
+            total_sentiment_score = 0
 
             # search the title for the ticker/tickers
-            if hasattr(submission, 'title'):
-                title = ' ' + submission.title.upper() + ' '
-                # print(title , submission)
-                bag_of_words = [re.sub(r"[^A-Z0-9]+", '', k) for k in title.split()]
-                for word in bag_of_words:
-                    word_dict[word] = word_dict.get(word, 0) + 1
-                title_extracted = set(re.findall(pattern, title))
-                increment, sentiment = get_sentiment(title, increment)
+            title = ' ' + submission[0] + ' '
+            title_extracted = set(re.findall(pattern, title))
+
+            if submission[2] is None:
+                increment, sentiment_score = get_sentiment(title, increment)
+                total_sentiment_score += sentiment_score
+
+            # flair is worth bonus points
+            if submission[1] is not None:
+                flair = submission[1].lower()
+                if 'dd' in flair or 'catalyst' in flair or 'technical analysis' in flair:
+                    increment += bonus_points
 
             # search the text body for the ticker/tickers
-            selftext_extracted = set()
-            if hasattr(submission, 'selftext'):
-                selftext = ' ' + submission.selftext.upper() + ' '
-                bag_of_words = [re.sub(r"[^A-Z0-9]+", '', k) for k in title.split()]
-                for word in bag_of_words:
-                    word_dict[word] = word_dict.get(word, 0) + 1
+            self_text_extracted = set()
+            if submission[2] is not None:
+                self_text = ' ' + submission[2] + ' '
+                self_text_extracted = set(re.findall(pattern, self_text))
+                increment, sentiment_score = get_sentiment(self_text, increment)
+                total_sentiment_score += sentiment_score
 
-                selftext_extracted = set(re.findall(pattern, selftext))
-                increment, sentiment = get_sentiment(selftext, increment)
+            # every 3 upvotes are worth 1 extra point
+            if upvote_factor > 0 and submission[3] is not None:
+                increment += math.ceil(submission[3]/upvote_factor)
 
-            extracted_tickers = selftext_extracted.union(title_extracted)
+            # every 2 comments are worth 1 extra point
+            if comments_factor > 0 and submission[4] is not None:
+                increment += math.ceil(submission[4] / comments_factor)
+
+            extracted_tickers = self_text_extracted.union(title_extracted)
             extracted_tickers = {ticker.replace('.', '-') for ticker in extracted_tickers}
 
-            count_rocket = title.count(rocket) + selftext.count(rocket)
+            count_rocket = title.count(rocket) + self_text.count(rocket)
+            print(count_rocket, title, title_extracted, submission[5])
             for ticker in extracted_tickers:
                 rocket_scores_dict[ticker] = rocket_scores_dict.get(ticker, 0) + count_rocket
 
                 # title_extracted is a set, duplicate tickers from the same title counted once only
                 sub_scores_dict[sub][ticker] = sub_scores_dict[sub].get(ticker, 0) + increment
 
-                if sentiment == "positive":
-                    positive_sentiment_dict[ticker] = positive_sentiment_dict.get(ticker, 0) + 1
-                if sentiment == "negative":
-                    negative_sentiment_dict[ticker] = negative_sentiment_dict.get(ticker, 0) + 1
-
-    return sub_scores_dict, rocket_scores_dict, positive_sentiment_dict, negative_sentiment_dict
+    return sub_scores_dict, rocket_scores_dict
 
 
 def populate_df(current_scores_dict, prev_scores_dict, interval):
@@ -211,14 +178,13 @@ def populate_df(current_scores_dict, prev_scores_dict, interval):
     """
     dict_result = {}
     total_sub_scores = {}
-    # print(dict(sorted(word_dict.items(), key=lambda item: item[1])))
+
     for sub, current_sub_scores_dict in current_scores_dict.items():
         total_sub_scores[sub] = {}
         for symbol, current_score in current_sub_scores_dict.items():
             if symbol in dict_result.keys():
                 dict_result[symbol][0] += current_score
                 dict_result[symbol][1] += current_score
-                # dict_result[symbol][3] = current_score
             else:
                 dict_result[symbol] = [current_score, current_score, 0, 0]
             total_sub_scores[sub][symbol] = total_sub_scores[sub].get(symbol, 0) + current_score
@@ -230,7 +196,6 @@ def populate_df(current_scores_dict, prev_scores_dict, interval):
                 dict_result[symbol][0] += prev_score
                 dict_result[symbol][2] += prev_score
                 dict_result[symbol][3] = ((dict_result[symbol][1] - dict_result[symbol][2]) / dict_result[symbol][2]) * 100
-                # dict_result[symbol][3] -= prev_score
             else:
                 dict_result[symbol] = [prev_score, 0, prev_score, 0]  # [prev_score, 0, prev_score, -prev_score]
             total_sub_scores[sub][symbol] = total_sub_scores[sub].get(symbol, 0) + prev_score
@@ -245,7 +210,6 @@ def populate_df(current_scores_dict, prev_scores_dict, interval):
             df[sub] = pd.Series(total_score_dict)
             dtype_dict[sub] = 'int32'
         df = df.fillna(value=0).astype(dtype_dict)
-
     return df
 
 
@@ -393,7 +357,7 @@ def get_quick_stats(ticker_list, min_vol, min_mkt_cap, threads=True):
     return stats_df
 
 
-def print_df(df, filename, writecsv, subreddit):
+def print_df(df, filename, writesql, writecsv, subreddit):
     df.reset_index(inplace=True)
 
     now = datetime.utcnow()
@@ -401,36 +365,27 @@ def print_df(df, filename, writecsv, subreddit):
     df['date_updated'] = dt_string
     df['subreddit'] = subreddit
 
-    cols_to_change = ["one_day_score", "recent", "previous", "rockets", "positive", "negative"]
+    # , "positive", "negative"
+    cols_to_change = ["one_day_score", "recent", "previous", "rockets"]
     for col in cols_to_change:
         df[col] = df[col].astype(float)
     df['change'] = df['change'].apply(lambda x: round(x, 2))
     df['industry'] = df['industry'].str.replace("—", "-")
 
     # Save to sql database
-    # for row_num in range(len(df)):
-    #     db.execute(
-    #         "INSERT INTO {} VALUES "
-    #         "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)".format(subreddit),
-    #         tuple(df.loc[row_num].tolist()))
-    #     conn.commit()
-    print("Saved to {} SQL Database successfully.".format(subreddit))
+    if writesql:
+        for row_num in range(len(df)):
+            db.execute(
+                "INSERT INTO {} VALUES "
+                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)".format(subreddit),
+                tuple(df.loc[row_num].tolist()))
+            conn.commit()
+        print("Saved to {} SQL Database successfully.".format(subreddit))
 
-    # save the file to the same dir as the AutoDD.py script
-    completeName = os.path.join(sys.path[0], filename)
-
+    # Write to csv
     if writecsv:
+        completeName = os.path.join(sys.path[0], filename)
         completeName += '.csv'
         df.to_csv(completeName, index=False, float_format='%.2f', mode='a', encoding=locale.getpreferredencoding())
         print(file=open(completeName, "a"))
-
-    else:
-        completeName += '.txt'
-        with open(completeName, "a") as file:
-            file.write("date and time now = ")
-            file.write(dt_string)
-            file.write('\n')
-            file.write(tabulate(df, headers='keys', floatfmt='.2f', showindex=False))
-            file.write('\n\n')
-
-    print("Wrote to file successfully {}".format(completeName))
+        print("Wrote to file successfully {}".format(completeName))

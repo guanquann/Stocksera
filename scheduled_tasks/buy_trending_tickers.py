@@ -32,21 +32,19 @@ def buy_new_ticker(date):
         if symbol not in prev_bought_ticker:
             ticker = yf.Ticker(symbol)
             history = ticker.history(period="1mo", interval="1d")
-            # information = ticker.info
             try:
                 info = history.loc[latest_date]
             except KeyError:
                 print("Market not open today! No tickers bought!")
                 break
             open_price = round(info["Open"], 2)
-            # open_price = round(information["regularMarketOpen"], 2)
             num_shares = round(10000 / open_price, 2)
             message = "Ticker {} to be bought on {} for ${}.".format(symbol, str(latest_date).split()[0], open_price)
             print(message)
             logging.info(message)
-            # db.execute("INSERT INTO reddit_etf VALUES (?, ?, ?, ?, ?, ?, ?)",
-            #            (symbol, str(latest_date).split()[0], open_price, num_shares, "N/A", "N/A", "Open"))
-            # conn.commit()
+            db.execute("INSERT INTO reddit_etf VALUES (?, ?, ?, ?, ?, ?, ?)",
+                       (symbol, str(latest_date).split()[0], open_price, num_shares, "N/A", "N/A", "Open"))
+            conn.commit()
 
 
 def sell_ticker(date):
@@ -65,7 +63,6 @@ def sell_ticker(date):
     sell = list(set(prev_bought_ticker)-set(new_bought_ticker))
     for symbol in sell:
         ticker = yf.Ticker(symbol)
-        # information = ticker.info
         history = ticker.history(period="1mo", interval="1d")
         try:
             info = history.loc[latest_date]
@@ -73,13 +70,12 @@ def sell_ticker(date):
             print("Market not open today! No tickers sold!")
             break
         close_price = round(info["Open"], 2)
-        # close_price = round(information["regularMarketOpen"], 2)
         message = "Ticker {} to be sold on {} at ${} during market open.".format(symbol, str(latest_date).split()[0], close_price)
         print(message)
         logging.info(message)
-        # db.execute("UPDATE reddit_etf SET close_date=?, close_price=?, status=? WHERE ticker=? AND status=?",
-        #            (str(latest_date).split()[0], close_price, "Close", symbol, "Open"))
-        # conn.commit()
+        db.execute("UPDATE reddit_etf SET close_date=?, close_price=?, status=? WHERE ticker=? AND status=?",
+                   (str(latest_date).split()[0], close_price, "Close", symbol, "Open"))
+        conn.commit()
     logging.info("-" * 50)
 
 

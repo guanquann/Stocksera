@@ -23,114 +23,119 @@
 
 {% block main_content %}
     <div class="instructions">
-        <p>Identify number of new members in your favourite sub-reddit. New features coming really soon!</p>
+        <p>Identify number of new members in your favourite sub-reddit. Data is updated once daily, one hour before market opens. New features coming really soon!</p>
     </div>
-    <div class="subreddit_intro">
-        <div><img src="{% static 'images/subreddit_icon/wallstreetbets.png' %}"></div>
-        <div class="main_div">
-            <div>
-                <div class="lg">wallstreetbets</div>
-                <div class="sm">r/wallstreetbets
-                    <div class="explore"><a href="https://www.reddit.com/r/wallstreetbets" target="_blank">Explore ></a></div>
+    <div class="subreddit_count">
+        <div class="subreddit_intro">
+            <div><img src="{% static 'images/subreddit_icon/wallstreetbets.png' %}"></div>
+            <div class="main_div">
+                <div>
+                    <div class="lg">wallstreetbets</div>
+                    <div class="sm">r/wallstreetbets
+                        <div class="explore"><a href="https://www.reddit.com/r/wallstreetbets" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="wsb_diff"></div>
                 </div>
             </div>
-            <div class="subreddit_diff">
-                <div id="wsb_diff"></div>
-            </div>
         </div>
-    </div>
-    <div class="chart-container">
-        <canvas id="wsb_chart"></canvas>
-    </div>
+        <div class="subreddit_summary">
+            <div></div>
+        </div>
+        <div class="chart-container">
+            <canvas id="wsb_chart"></canvas>
+        </div>
 
-    <div class="subreddit_intro">
-        <img src="{% static 'images/subreddit_icon/stocks.png' %}">
-        <div class="main_div">
-        <div>
-            <div class="lg">Stocks - Investing and trading for all</div>
-            <div class="sm">r/stocks
-                <div class="explore"><a href="https://www.reddit.com/r/stocks" target="_blank">Explore ></a></div>
-            </div>
-        </div>
-        </div>
-        <div class="subreddit_diff">
-            <div id="stocks_diff"></div>
-        </div>
-    </div>
-    <div class="chart-container">
-        <canvas id="stocks_chart"></canvas>
-    </div>
-
-    <div class="subreddit_intro">
-        <img src="{% static 'images/subreddit_icon/stockmarket.png' %}">
-        <div class="main_div">
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/stocks.png' %}">
+            <div class="main_div">
             <div>
-                <div class="lg">r/StockMarket - Reddit's Front Page of the Stock Market</div>
-                <div class="sm">r/StockMarket
-                    <div class="explore"><a href="https://www.reddit.com/r/stockmarket" target="_blank">Explore ></a></div>
+                <div class="lg">Stocks - Investing and trading for all</div>
+                <div class="sm">r/stocks
+                    <div class="explore"><a href="https://www.reddit.com/r/stocks" target="_blank">Explore ></a></div>
                 </div>
             </div>
+            </div>
             <div class="subreddit_diff">
-                <div id="stockmarket_diff"></div>
+                <div id="stocks_diff"></div>
             </div>
         </div>
-    </div>
-    <div class="chart-container">
-        <canvas id="StockMarket_chart"></canvas>
-    </div>
+        <div class="chart-container">
+            <canvas id="stocks_chart"></canvas>
+        </div>
 
-    <div class="subreddit_intro">
-        <img src="{% static 'images/subreddit_icon/gme.png' %}">
-        <div class="main_div">
-            <div>
-                <div class="lg">GameStop Stock</div>
-                <div class="sm">r/GME
-                    <div class="explore"><a href="https://www.reddit.com/r/gme" target="_blank">Explore ></a></div>
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/stockmarket.png' %}">
+            <div class="main_div">
+                <div>
+                    <div class="lg">r/StockMarket - Reddit's Front Page of the Stock Market</div>
+                    <div class="sm">r/StockMarket
+                        <div class="explore"><a href="https://www.reddit.com/r/stockmarket" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="stockmarket_diff"></div>
                 </div>
             </div>
-            <div class="subreddit_diff">
-                <div id="gamestop_diff"></div>
-            </div>
         </div>
-    </div>
-    <div class="chart-container">
-        <canvas id="gme_chart"></canvas>
-    </div>
+        <div class="chart-container">
+            <canvas id="StockMarket_chart"></canvas>
+        </div>
 
-    <div class="subreddit_intro">
-        <img src="{% static 'images/subreddit_icon/superstonk.png' %}">
-        <div class="main_div">
-            <div>
-                <div class="lg">🦍💎Superstonk✋🚀</div>
-                <div class="sm">r/Superstonk
-                    <div class="explore"><a href="https://www.reddit.com/r/superstonk" target="_blank">Explore ></a></div>
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/gme.png' %}">
+            <div class="main_div">
+                <div>
+                    <div class="lg">GameStop Stock</div>
+                    <div class="sm">r/GME
+                        <div class="explore"><a href="https://www.reddit.com/r/gme" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="gamestop_diff"></div>
                 </div>
             </div>
-            <div class="subreddit_diff">
-                <div id="superstonk_diff"></div>
-            </div>
         </div>
-    </div>
-    <div class="chart-container">
-        <canvas id="superstonk_chart"></canvas>
-    </div>
+        <div class="chart-container">
+            <canvas id="gme_chart"></canvas>
+        </div>
 
-    <div class="subreddit_intro">
-        <img src="{% static 'images/subreddit_icon/amc.png' %}">
-        <div class="main_div">
-            <div>
-                <div class="lg">amcstock</div>
-                <div class="sm">r/amcstock
-                    <div class="explore"><a href="https://www.reddit.com/r/amcstock" target="_blank">Explore ></a></div>
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/superstonk.png' %}">
+            <div class="main_div">
+                <div>
+                    <div class="lg">🦍💎Superstonk✋🚀</div>
+                    <div class="sm">r/Superstonk
+                        <div class="explore"><a href="https://www.reddit.com/r/superstonk" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="superstonk_diff"></div>
                 </div>
             </div>
-            <div class="subreddit_diff">
-                <div id="amc_diff"></div>
+        </div>
+        <div class="chart-container">
+            <canvas id="superstonk_chart"></canvas>
+        </div>
+
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/amc.png' %}">
+            <div class="main_div">
+                <div>
+                    <div class="lg">amcstock</div>
+                    <div class="sm">r/amcstock
+                        <div class="explore"><a href="https://www.reddit.com/r/amcstock" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="amc_diff"></div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="chart-container">
-        <canvas id="amc_chart"></canvas>
+        <div class="chart-container">
+            <canvas id="amc_chart"></canvas>
+        </div>
     </div>
 {% endblock %}
 

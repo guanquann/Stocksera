@@ -1,3 +1,31 @@
+function show_subreddit_img(subreddit) {
+    if (subreddit == "Wall Street Bets") {
+        img_src = "/static/images/subreddit_icon/wallstreetbets.png"
+        subreddit_name = "wallstreetbets"
+        subreddit_description = "r/wallstreetbets"
+    }
+    else if (subreddit == "Stocks") {
+        img_src = "/static/images/subreddit_icon/stocks.png"
+        subreddit_name = "Stocks - Investing and trading for all"
+        subreddit_description = "r/stocks"
+    }
+    else if (subreddit == "Stock Market") {
+        img_src = "/static/images/subreddit_icon/stockmarket.png"
+        subreddit_name = "r/StockMarket - Reddit's Front Page of the Stock Market"
+        subreddit_description = "r/StockMarket"
+    }
+
+    subreddit_code = `
+        <div><img src=${img_src}></div>
+        <div class="main_div">
+            <div>
+                <div class="lg">${subreddit_name}</div>
+                <div class="sm">${subreddit_description}</div>
+            </div>
+        </div>`
+    document.getElementsByClassName("subreddit_intro")[0].innerHTML = subreddit_code;
+}
+
 function check_table() {
     if (typeof(document.getElementsByTagName('td')[0].innerText) != "undefined") {
         document.getElementById("filter_section").style.removeProperty("display");
@@ -17,7 +45,7 @@ function check_table() {
             score_change.style.color = "green";
         }
 
-        var one_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[8];
+        var one_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[11];
         if (one_day_price.innerText.includes("-")) {
             one_day_price.innerText = one_day_price.innerText + "%";
             one_day_price.style.color = "red";
@@ -27,7 +55,7 @@ function check_table() {
             one_day_price.style.color = "green";
         }
 
-        var fifty_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[9];
+        var fifty_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[12];
         if (fifty_day_price.innerText.includes("-")) {
             fifty_day_price.innerText = fifty_day_price.innerText + "%";
             fifty_day_price.style.color = "red";
@@ -37,7 +65,7 @@ function check_table() {
             fifty_day_price.style.color = "green";
         }
 
-        var price_target = table.getElementsByTagName('tbody')[0].rows[i].cells[13];
+        var price_target = table.getElementsByTagName('tbody')[0].rows[i].cells[16];
         if (price_target.innerText != "N/A") {
             price_target.innerText = "$" + price_target.innerText;
         }
@@ -82,7 +110,7 @@ function reset_table() {
     }
 
     for (i = 0; i < tr.length; i++) {
-        for (col_name=1; col_name <= 15; col_name ++) {
+        for (col_name=1; col_name <= 18; col_name ++) {
             tr[i].children[col_name].style.removeProperty("display");
         }
     }
@@ -106,6 +134,28 @@ for (var i = 0; i < tr.length; i++){
         else {
                 tr[i].style.display="none";
             }
+        }
+    }
+}
+
+function toggle_settings(elem) {
+    var filter_description = document.getElementsByClassName("filter_description")[0];
+    var filter_contents = document.getElementsByClassName("filter_contents");
+    var search_ticker = document.getElementById("search_ticker");
+    if (elem.innerHTML == "Collapse Toolkit") {
+        elem.innerHTML = "Expand Toolkit";
+        filter_description.style.display = "none";
+        search_ticker.style.display = "none";
+        for (i=0; i<filter_contents.length; i++) {
+            filter_contents[i].style.display = "none";
+        }
+    }
+    else {
+        elem.innerHTML = "Collapse Toolkit";
+        filter_description.style.removeProperty("display");
+        search_ticker.style.removeProperty("display");
+        for (i=0; i<filter_contents.length; i++) {
+            filter_contents[i].style.removeProperty("display");
         }
     }
 }
@@ -142,7 +192,7 @@ function sortTable(n) {
             y = rows[i + 1].getElementsByTagName("TD")[n].innerHTML.replace("$", "").replace("%", "");
 
             // If column is volume/floating shares
-            if (n == 6 || n == 10) {
+            if (n == 9 || n == 10 || n == 13) {
                 x = rows[i].getElementsByTagName("TD")[n].innerHTML
                 y = rows[i + 1].getElementsByTagName("TD")[n].innerHTML
 

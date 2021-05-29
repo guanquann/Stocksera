@@ -1,4 +1,10 @@
 @media only screen and (max-width: 900px) {
+    .subreddit_count {
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
     .chart-container {
         position: relative;
         height:55vh;
@@ -19,12 +25,18 @@
         border-radius: 50%;
         width: 55px;
         height: 55px;
-        border: 0.8px solid white;
+        border: 1.2px solid wheat;
         background-color: black;
     }
 }
 
 @media only screen and (min-width: 900px) {
+    .subreddit_count {
+        width: 98%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
     .chart-container {
         position: relative;
         height:55vh;
@@ -45,7 +57,7 @@
         border-radius: 50%;
         width: 65px;
         height: 65px;
-        border: 0.8px solid white;
+        border: 1.2px solid wheat;
         background-color: black;
     }
 }

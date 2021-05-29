@@ -224,7 +224,7 @@ def google_trends(request):
         timeframe = request.GET.get("timing_selected")
     else:
         timeframe = "today 12-m"
-    trends.build_payload(kw_list=[ticker_selected], timeframe=timeframe)
+    trends.build_payload(kw_list=[ticker_selected], timeframe=timeframe, cat=7)
     interest_over_time = trends.interest_over_time().reset_index()
 
     interest_by_region = trends.interest_by_region(resolution='COUNTRY', inc_low_vol=False, inc_geo_code=False).\
@@ -455,7 +455,7 @@ def reddit_analysis(request):
     else:
         date_selected = all_dates[0]
 
-    db.execute("SELECT * FROM {} WHERE date_updated LIKE '{}' ORDER BY one_day_score DESC LIMIT 20".format(subreddit, "%" + date_selected + "%"))
+    db.execute("SELECT * FROM {} WHERE date_updated LIKE '{}' ORDER BY total DESC LIMIT 30".format(subreddit, "%" + date_selected + "%"))
     trending_tickers = db.fetchall()
     trending_tickers = list(map(list, trending_tickers))
 

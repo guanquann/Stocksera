@@ -22,5 +22,15 @@ def subreddit_count():
         print("Looking at {} now.".format(subreddit))
         subscribers = subreddit.subscribers
         active = subreddit.accounts_active
-        db.execute("INSERT INTO subreddit_count VALUES (?, ?, ?, ?)", (subreddit_name, subscribers, active, date_updated))
+        percentage_active = round((active / subscribers)*100, 2)
+
+        db.execute("SELECT subscribers FROM subreddit_count WHERE subreddit=? ORDER BY subscribers DESC LIMIT 1",
+                   (subreddit_name, ))
+        prev_subscribers = db.fetchone()[0]
+        growth = round((subscribers / prev_subscribers) * 100 - 100, 2)
+        db.execute("INSERT INTO subreddit_count VALUES (?, ?, ?, ?, ?, ?)",
+                   (subreddit_name, subscribers, active, date_updated, percentage_active, growth))
         conn.commit()
+
+
+subreddit_count()

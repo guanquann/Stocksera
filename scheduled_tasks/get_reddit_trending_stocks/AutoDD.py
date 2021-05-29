@@ -3,6 +3,7 @@ import os
 import re
 import locale
 import praw
+from collections import Counter
 from datetime import datetime, timedelta
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import sqlite3
@@ -97,10 +98,15 @@ def get_submission_generators(n, sub):
     recent, prev = get_submission_praw(n, sub)
     print("Searching for tickers in {}...".format(sub))
 
-    current_scores, current_rocket_scores = get_ticker_scores_praw(recent)
-    prev_scores, prev_rocket_scores = get_ticker_scores_praw(prev)
+    current_scores, current_rocket_scores, current_posts_dict, current_upvotes_dict, current_comments_dict = get_ticker_scores_praw(recent)
+    prev_scores, prev_rocket_scores, prev_posts_dict, prev_upvotes_dict, prev_comments_dict = get_ticker_scores_praw(prev)
 
-    return current_scores, current_rocket_scores, prev_scores, prev_rocket_scores
+    total_rocket_score = Counter(current_rocket_scores) + Counter(prev_rocket_scores)
+    total_posts_score = Counter(current_posts_dict) + Counter(prev_posts_dict)
+    total_upvotes_score = Counter(current_upvotes_dict) + Counter(prev_upvotes_dict)
+    total_comments_score = Counter(current_comments_dict) + Counter(prev_comments_dict)
+
+    return current_scores, prev_scores, total_rocket_score, total_posts_score, total_upvotes_score, total_comments_score
 
 
 def get_ticker_scores_praw(sub_gen_dict):
@@ -119,6 +125,9 @@ def get_ticker_scores_praw(sub_gen_dict):
 
     # Dictionaries containing the rocket count
     rocket_scores_dict = {}
+    num_posts_dict = {}
+    num_upvotes_dict = {}
+    num_comments_dict = {}
 
     for sub, submission_list in sub_gen_dict.items():
         sub_scores_dict[sub] = {}
@@ -151,7 +160,7 @@ def get_ticker_scores_praw(sub_gen_dict):
 
             # every 3 upvotes are worth 1 extra point
             if upvote_factor > 0 and submission[3] is not None:
-                increment += math.ceil(submission[3]/upvote_factor)
+                increment += math.ceil(submission[3] / upvote_factor)
 
             # every 2 comments are worth 1 extra point
             if comments_factor > 0 and submission[4] is not None:
@@ -161,14 +170,18 @@ def get_ticker_scores_praw(sub_gen_dict):
             extracted_tickers = {ticker.replace('.', '-') for ticker in extracted_tickers}
 
             count_rocket = title.count(rocket) + self_text.count(rocket)
-            print(count_rocket, title, title_extracted, submission[5])
+            print(count_rocket, title, extracted_tickers)
             for ticker in extracted_tickers:
                 rocket_scores_dict[ticker] = rocket_scores_dict.get(ticker, 0) + count_rocket
+                num_posts_dict[ticker] = num_posts_dict.get(ticker, 0) + 1
+                num_upvotes_dict[ticker] = num_upvotes_dict.get(ticker, 0) + submission[3]
+                num_comments_dict[ticker] = num_comments_dict.get(ticker, 0) + submission[4]
+                print(ticker, num_posts_dict[ticker], num_upvotes_dict[ticker], num_comments_dict[ticker])
 
                 # title_extracted is a set, duplicate tickers from the same title counted once only
                 sub_scores_dict[sub][ticker] = sub_scores_dict[sub].get(ticker, 0) + increment
 
-    return sub_scores_dict, rocket_scores_dict
+    return sub_scores_dict, rocket_scores_dict, num_posts_dict, num_upvotes_dict, num_comments_dict
 
 
 def populate_df(current_scores_dict, prev_scores_dict, interval):
@@ -197,10 +210,10 @@ def populate_df(current_scores_dict, prev_scores_dict, interval):
                 dict_result[symbol][2] += prev_score
                 dict_result[symbol][3] = ((dict_result[symbol][1] - dict_result[symbol][2]) / dict_result[symbol][2]) * 100
             else:
-                dict_result[symbol] = [prev_score, 0, prev_score, 0]  # [prev_score, 0, prev_score, -prev_score]
+                dict_result[symbol] = [prev_score, 0, prev_score, 0]
             total_sub_scores[sub][symbol] = total_sub_scores[sub].get(symbol, 0) + prev_score
 
-    columns = ['one_day_score', 'recent', 'previous', 'change']  # change
+    columns = ['total', 'recent', 'previous', 'change']
     df = pd.DataFrame.from_dict(dict_result, orient='index', columns=columns)
 
     if len(current_scores_dict) > 1:
@@ -365,19 +378,23 @@ def print_df(df, filename, writesql, writecsv, subreddit):
     df['date_updated'] = dt_string
     df['subreddit'] = subreddit
 
-    # , "positive", "negative"
-    cols_to_change = ["one_day_score", "recent", "previous", "rockets"]
+    cols_to_change = ["total", "recent", "previous", "rockets"]
     for col in cols_to_change:
         df[col] = df[col].astype(float)
     df['change'] = df['change'].apply(lambda x: round(x, 2))
     df['industry'] = df['industry'].str.replace("—", "-")
+    df['recommend'] = df['recommend'].str.replace("_", " ")
+    df["rockets"] = df["rockets"].fillna(0).astype(float)
+    df["posts"] = df["posts"].fillna(0).astype(float)
+    df["upvotes"] = df["upvotes"].fillna(0).astype(float)
+    df["comments"] = df["comments"].fillna(0).astype(float)
 
     # Save to sql database
     if writesql:
         for row_num in range(len(df)):
             db.execute(
                 "INSERT INTO {} VALUES "
-                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)".format(subreddit),
+                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)".format(subreddit),
                 tuple(df.loc[row_num].tolist()))
             conn.commit()
         print("Saved to {} SQL Database successfully.".format(subreddit))

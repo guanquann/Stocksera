@@ -1,22 +1,21 @@
 from scheduled_tasks.get_reddit_trending_stocks.AutoDD import *
 from scheduled_tasks.config import *
-from collections import Counter
 
 
 def main():
     print("Getting submissions...")
     for subreddit in subreddits:
-        current_scores, current_rocket_scores, prev_scores, prev_rocket_scores = \
-            get_submission_generators(interval, subreddit)
+        current_scores, prev_scores, total_rocket_score, total_posts_score, total_upvotes_score, total_comments_score = get_submission_generators(interval, subreddit)
 
         print("Populating results for {}...".format(subreddit))
         results_df = populate_df(current_scores, prev_scores, interval)
         results_df = filter_df(results_df, minimum_score)
 
-        print("Counting rockets for {}...".format(subreddit))
-        rockets = Counter(current_rocket_scores) + Counter(prev_rocket_scores)
-        results_df.insert(loc=4, column='rockets', value=pd.Series(rockets))
-        results_df = results_df.fillna(value=0).astype({'rockets': 'int32'})
+        print("Counting rockets, posts, upvotes, comments for {}...".format(subreddit))
+        results_df.insert(loc=4, column='rockets', value=pd.Series(total_rocket_score))
+        results_df.insert(loc=5, column='posts', value=pd.Series(total_posts_score))
+        results_df.insert(loc=6, column='upvotes', value=pd.Series(total_upvotes_score))
+        results_df.insert(loc=7, column='comments', value=pd.Series(total_comments_score))
 
         print("Getting financial stats for {}...".format(subreddit))
         results_df = get_financial_stats(results_df, minimum_volume, minimum_mkt_cap, allow_threading)

@@ -13,8 +13,8 @@ if __name__ == '__main__':
     # get_news_sentiment.news_sentiment()
     # miscellaneous.get_low_float()
     # miscellaneous.get_high_short_interest()
-    # scrape_reddit.main()
-    db.execute("SELECT date_updated FROM wallstreetbets ORDER BY ID DESC LIMIT 1")
-    db_date = db.fetchone()[0]
-    buy_trending_tickers.buy_new_ticker(db_date)
-    buy_trending_tickers.sell_ticker(db_date)
+    scrape_reddit.main()
+    # db.execute("SELECT date_updated FROM wallstreetbets ORDER BY ID DESC LIMIT 1")
+    # db_date = db.fetchone()[0]
+    # buy_trending_tickers.buy_new_ticker(db_date)
+    # buy_trending_tickers.sell_ticker(db_date)

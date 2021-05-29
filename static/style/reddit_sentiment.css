@@ -5,6 +5,25 @@
         width: 90%;
         margin: auto;
     }
+
+    .subreddit_intro .lg {
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 17px;
+        margin-top: 17px;
+    }
+
+    .subreddit_intro img {
+        border-radius: 50%;
+        width: 55px;
+        height: 55px;
+        border: 1.2px solid wheat;
+        background-color: black;
+    }
+
+    .filter_ticker {
+        padding: 3px;
+    }
 }
 
 @media only screen and (min-width: 900px) {
@@ -13,6 +32,25 @@
         overflow-y: auto;
         width: 98%;
         margin: auto;
+    }
+
+    .filter_ticker {
+        padding: 5px;
+    }
+
+    .subreddit_intro .lg {
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 32px;
+        margin-top: 17px;
+    }
+
+    .subreddit_intro img {
+        border-radius: 50%;
+        width: 65px;
+        height: 65px;
+        border: 1.2px solid wheat;
+        background-color: black;
     }
 }
 
@@ -23,10 +61,36 @@ select, option {
     margin-bottom: 1%;
 }
 
+
+.subreddit_intro {
+    display: flex;
+}
+
+.subreddit_intro .main_div {
+    margin-left: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.subreddit_intro .sm {
+    color: #7c7c7c;
+    display: flex;
+}
+
 #filter_section {
     display:inline-block;
     padding: 7px;
     background-color:#e9eaea;
+}
+
+.toggle_settings {
+    cursor: pointer;
+    /*float: right;*/
+}
+
+.toggle_settings:hover {
+    text-decoration: underline;
 }
 
 .dark_mode #filter_section {
@@ -36,11 +100,12 @@ select, option {
 .filter_ticker {
     float:left;
     white-space: nowrap;
-    padding: 4px;
-    margin: 5px;
+    margin: 2.8px;
     height: 15px;
     border: 1px solid black;
     border-radius: 3px;
+    max-width: 70px;
+    text-transform: uppercase;
 }
 
 .filter_contents {
@@ -78,4 +143,12 @@ select, option {
 
 #reddit_table .th-sort-desc::after {
     content: "\25be";
+}
+
+.reformat_text {
+    text-transform: capitalize;
+}
+
+::-webkit-scrollbar {
+    height: 5px; /* for horizontal scrollbar */
 }

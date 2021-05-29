@@ -7,11 +7,14 @@ subreddits = ["wallstreetbets", "stocks", "stockmarket"]
 for subreddit in subreddits:
     db.execute("CREATE table IF NOT EXISTS {} ("
                "ticker VARCHAR (10), "
-               "one_day_score INTEGER NOT NULL DEFAULT 0, "
+               "total INTEGER NOT NULL DEFAULT 0, "
                "recent INTEGER NOT NULL DEFAULT 0, "
                "previous INTEGER NOT NULL DEFAULT 0, "
                "change FLOAT, "
                "rockets INTEGER NOT NULL DEFAULT 0, "
+               "posts INTEGER NOT NULL DEFAULT 0, "
+               "upvotes INTEGER NOT NULL DEFAULT 0, "
+               "comments INTEGER NOT NULL DEFAULT 0, "
                "price FLOAT, "
                "one_day_change_percent FLOAT, "
                "fifty_day_change_percent FLOAT, "
@@ -59,7 +62,9 @@ db.execute("CREATE table IF NOT EXISTS subreddit_count ("
            "subreddit TEXT, "
            "subscribers INTEGER, "
            "active INTEGER, "
-           "updated_date TEXT )")
+           "updated_date TEXT,"
+           "percentage_active FLOAT, "
+           "growth FLOAT)")
 
 db.execute("CREATE table IF NOT EXISTS short_interest ("
            "ticker TEXT, "

@@ -23,12 +23,11 @@ def ticker_bar():
         price_df = ticker.history(period="3d")['Close']
         opening_price = float(price_df.iloc[1])
         closing_price = float(price_df.iloc[2])
+        price_change = round(closing_price - opening_price, 2)
 
-        price_change = str(round(closing_price - opening_price, 2))
-
-        percentage_change = round((1 - opening_price / closing_price) * 100, 2)
+        percentage_change = round(((price_change / opening_price) * 100), 2)
         if percentage_change >= 0:
-            price_change = '+' + price_change
+            price_change = '+' + str(price_change)
             percentage_change = '+' + str(percentage_change)
 
         price_list.append([round(closing_price, 2), price_change, percentage_change])

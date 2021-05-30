@@ -27,3 +27,9 @@
     padding-right: 5px;
     margin-top: 1%;
 }
+
+input {
+    width: 95%;
+    height: 100%;
+    border: 0;
+}

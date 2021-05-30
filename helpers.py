@@ -12,8 +12,8 @@ def default_ticker(request):
 
 
 def ticker_bar():
-    popular_ticker_list = ["SPY", "QQQ", "TQQQ", "DIA", "AAPL", "GME", "AMC", "TSLA", "NIO", "PLTR", "NVDA"]
-    popular_name_list = ["S&P500 ETF", "NASDAQ-100", "TQQQ", "Dow ETF", "Apple", "GameStop", "AMC", "Tesla", "Nio",
+    popular_ticker_list = ["SPY", "QQQ", "DIA", "AAPL", "GME", "AMC", "TSLA", "NIO", "PLTR", "NVDA"]
+    popular_name_list = ["S&P500 ETF", "NASDAQ-100", "Dow ETF", "Apple", "GameStop", "AMC", "Tesla", "Nio",
                          "Palantir", "NVIDIA"]
 
     price_list = list()

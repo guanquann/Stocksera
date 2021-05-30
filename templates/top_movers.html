@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/top_movers.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}{% endblock %}
+{% block onload_properties%}check_table(){% endblock %}
 
 {% block main_nav %}
     <div class="ticker-wrap">
@@ -43,7 +43,7 @@
     for (row=1; row<tr.length; row++) {
         var td = tr[row].querySelector("td");
         ticker = td.innerHTML;
-        td.innerHTML = `<a href="{% url 'ticker' %}?quote=${ticker}" target="_blank">${ticker}</a>`;
+        td.innerHTML = `<a href="{% url 'ticker' %}?quote=${ticker}" target="_blank"><b>${ticker}</b></a>`;
     }
 </script>
 {% endblock %}

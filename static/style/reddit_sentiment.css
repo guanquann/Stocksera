@@ -24,6 +24,10 @@
     .filter_ticker {
         padding: 3px;
     }
+
+    td img {
+        width: 20px;
+    }
 }
 
 @media only screen and (min-width: 900px) {
@@ -51,6 +55,10 @@
         height: 65px;
         border: 1.2px solid wheat;
         background-color: black;
+    }
+
+    td img {
+        width: 30px;
     }
 }
 
@@ -143,6 +151,13 @@ select, option {
 
 #reddit_table .th-sort-desc::after {
     content: "\25be";
+}
+
+td img {
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+    background-color: white;
 }
 
 .reformat_text {

@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/reddit_etf.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode();{% endblock %}
+{% block onload_properties%}restore_dark_mode();check_table(){% endblock %}
 
 {% block main_nav %}
     <div class="ticker-wrap">
@@ -25,83 +25,88 @@
 
 {% block main_content %} 
     <div class="instructions">
-        <p>Reddit ETF is based on the trending stocks on WSB. If a new ticker enters the Top 10 mentioned ticker list before the market opens, it will be bought. Any ticker that falls out of the Top 10 list will be sold. All trades will be conducted the moment market opens.</p>
-    </div> 
-    <div style="display: flex;">
-        <div class="performance_individual">
-            <p style="margin-bottom: 0;font-size: small;">Today's Performance:</p>
-            <span style="font-size: xx-large">$120000.54</span>
-            <div class="performance_change">
-                <span>+$10000.45</span>
-                <span>+5.50%</span>
+        <p>Reddit ETF is based on the trending stocks on WSB. If a new ticker enters the Top 10 trending ticker list before the market opens, $10000 worth of shares will be bought. Any ticker that falls out of the Top 10 list will be sold. All trades will be conducted the moment market opens.</p>
+    </div>
+    <div class="reddit_etf">
+        <div style="display: flex;">
+            <div class="performance_individual">
+                <p style="margin-bottom: 0;font-size: small;">Today's Performance:</p>
+                <span style="font-size: xx-large">$120000.54</span>
+                <div class="performance_change">
+                    <span>+$10000.45</span>
+                    <span>+5.50%</span>
+                </div>
+            </div>
+            <div class="performance_individual">
+                <p style="margin-bottom: 0;font-size: small;">Last 1 Week's Performance:</p>
+                <span style="font-size: xxx-large">$120000</span>
+                <div class="performance_change">
+                    <span>+$10000.45</span>
+                    <span>+5.50%</span>
+                </div>
             </div>
         </div>
-        <div class="performance_individual">
-            <p style="margin-bottom: 0;font-size: small;">Last 1 Week's Performance:</p>
-            <span style="font-size: xxx-large">$120000</span>
-            <div class="performance_change">
-                <span>+$10000.45</span>
-                <span>+5.50%</span>
-            </div>
+
+        <div>
+            <p class="table_title">Current Trades</p>
+            <table id="current_trade">
+                <thead>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>Buy Date</th>
+                        <th>Buy Price</th>
+                        <th>Num Shares</th>
+                        <th>Latest Open Price</th>
+                        <th>Unrealized PnL</th>
+                        <th>% Change</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticker in open_trade %}
+                        <tr>
+                            <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank"><img src="{{ticker.1}}" onerror=this.src="{% static 'images/not_available.svg' %}">{{ticker.0}}</a></td>
+                            <td>{{ticker.2}}</td>
+                            <td>${{ticker.3}}</td>
+                            <td>{{ticker.4}}</td>
+                            <td>${{ticker.6}}</td>
+                            <td>{{ticker.7}}</td>
+                            <td>{{ticker.8}}%</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        <div class="performance_individual">
-            <p style="margin-bottom: 0;font-size: small;">Last 1 Week's Performance:</p>
-            <span style="font-size: xxx-large">$120000</span>
-            <div class="performance_change">
-                <span>+$10000.45</span>
-                <span>+5.50%</span>
-            </div>
+        <div>
+            <p class="table_title">Previous Trades</p>
+            <input placeholder="Search Ticker: " onkeyup="searchTicker(this)">
+            <table id="previous_trades">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable(0)" class="th-sort-desc" id='0'>Ticker</th>
+                        <th onclick="sortTable(1)" class="th-sort-desc" id='1'>Open Date</th>
+                        <th onclick="sortTable(2)" class="th-sort-desc" id='2'>Open Price</th>
+                        <th onclick="sortTable(3)" class="th-sort-desc" id='3'>Num Shares</th>
+                        <th onclick="sortTable(4)" class="th-sort-desc" id='4'>Close Date</th>
+                        <th onclick="sortTable(5)" class="th-sort-desc" id='5'>Close Price</th>
+                        <th onclick="sortTable(6)" class="th-sort-desc" id='6'>Realized PnL</th>
+                        <th onclick="sortTable(7)" class="th-sort-desc" id='7'>% Change</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticker in close_trade %}
+                        <tr>
+                            <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank"><img src="{{ticker.1}}" onerror=this.src="{% static 'images/not_available.svg' %}">{{ticker.0}}</a></td>
+                            <td>{{ticker.2}}</td>
+                            <td>${{ticker.3}}</td>
+                            <td>{{ticker.4}}</td>
+                            <td>{{ticker.5}}</td>
+                            <td>${{ticker.6}}</td>
+                            <td>{{ticker.7}}</td>
+                            <td>{{ticker.8}}%</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
-    <p class="table_title">Current Trades</p>
-    <table id="current_trade">
-        <thead>
-            <tr>
-                <th>Ticker</th>
-                <th>Open Date</th>
-                <th>Open Price</th>
-                <th>Num Shares</th>
-                <th>Close Date</th>
-                <th>Close Price</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for ticker in open_trade %}
-                <tr>
-                    <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank">{{ticker.0}}</a></td>
-                    <td>{{ticker.1}}</td>
-                    <td>{{ticker.2}}</td>
-                    <td>{{ticker.3}}</td>
-                    <td>{{ticker.4}}</td>
-                    <td>{{ticker.5}}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <p class="table_title">Previous Trades</p>
-    <table id="previous_trades">
-        <thead>
-            <tr>
-                <th>Ticker</th>
-                <th>Open Date</th>
-                <th>Open Price</th>
-                <th>Num Shares</th>
-                <th>Close Date</th>
-                <th>Close Price</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for ticker in close_trade %}
-                <tr>
-                    <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank">{{ticker.0}}</a></td>
-                    <td>{{ticker.1}}</td>
-                    <td>{{ticker.2}}</td>
-                    <td>{{ticker.3}}</td>
-                    <td>{{ticker.4}}</td>
-                    <td>{{ticker.5}}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 {% endblock %}

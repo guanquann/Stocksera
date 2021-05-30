@@ -6,6 +6,7 @@ db = conn.cursor()
 subreddits = ["wallstreetbets", "stocks", "stockmarket"]
 for subreddit in subreddits:
     db.execute("CREATE table IF NOT EXISTS {} ("
+               "rank INTEGER NOT NULL, "
                "ticker VARCHAR (10), "
                "total INTEGER NOT NULL DEFAULT 0, "
                "recent INTEGER NOT NULL DEFAULT 0, "
@@ -24,6 +25,7 @@ for subreddit in subreddits:
                "beta VARCHAR (10), "
                "short_per_float VARCHAR (10), "
                "industry VARCHAR (100), "
+               "website VARCHAR (150), "
                "prev_close VARCHAR (10), "
                "open VARCHAR (10), "
                "day_low VARCHAR (10), "
@@ -41,11 +43,14 @@ db.execute("CREATE table IF NOT EXISTS news_sentiment ("
 
 db.execute("CREATE table IF NOT EXISTS reddit_etf ("
            "ticker TEXT, "
+           "logo_url TEXT, "
            "open_date TEXT, "
            "open_price FLOAT, "
            "num_shares INTEGER, "
            "close_date TEXT, "
            "close_price FLOAT, "
+           "PnL FLOAT, "
+           "percentage FLOAT, "
            "status TEXT)")
 
 db.execute("CREATE table IF NOT EXISTS earnings_calendar ("

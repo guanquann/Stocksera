@@ -34,7 +34,7 @@ function check_table() {
 
     var table = document.getElementById("reddit_table");
     for (i = 0; i < (table.rows.length - 1); i++) {
-        var score_change = table.getElementsByTagName('tbody')[0].rows[i].cells[4]
+        var score_change = table.getElementsByTagName('tbody')[0].rows[i].cells[5]
         if (score_change.innerText.includes("-")) {
             score_change.style.color = "red";
         }
@@ -45,7 +45,7 @@ function check_table() {
             score_change.style.color = "green";
         }
 
-        var one_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[11];
+        var one_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[12];
         if (one_day_price.innerText.includes("-")) {
             one_day_price.innerText = one_day_price.innerText + "%";
             one_day_price.style.color = "red";
@@ -55,7 +55,7 @@ function check_table() {
             one_day_price.style.color = "green";
         }
 
-        var fifty_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[12];
+        var fifty_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[13];
         if (fifty_day_price.innerText.includes("-")) {
             fifty_day_price.innerText = fifty_day_price.innerText + "%";
             fifty_day_price.style.color = "red";
@@ -65,7 +65,7 @@ function check_table() {
             fifty_day_price.style.color = "green";
         }
 
-        var price_target = table.getElementsByTagName('tbody')[0].rows[i].cells[16];
+        var price_target = table.getElementsByTagName('tbody')[0].rows[i].cells[17];
         if (price_target.innerText != "N/A") {
             price_target.innerText = "$" + price_target.innerText;
         }
@@ -110,7 +110,7 @@ function reset_table() {
     }
 
     for (i = 0; i < tr.length; i++) {
-        for (col_name=1; col_name <= 18; col_name ++) {
+        for (col_name=1; col_name <= 19; col_name ++) {
             tr[i].children[col_name].style.removeProperty("display");
         }
     }
@@ -122,16 +122,15 @@ function reset_table() {
 const searchTicker = () =>{
 let filter = document.getElementById('search_ticker').value.toUpperCase();
 let filter_table = document.getElementById('reddit_table');
-
 let tr = filter_table.getElementsByTagName('tr');
 for (var i = 0; i < tr.length; i++){
-    let td = tr[i].getElementsByTagName('td')[0];
+    let td = tr[i].getElementsByTagName('td')[1];
     if(td) {
-        let textValue = td.textContent || td.innerHTML;
-        if(textValue.toUpperCase().indexOf(filter) > -1){
-            tr[i].style.display="";
+            let textValue = td.textContent || td.innerHTML;
+            if (textValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display="";
             }
-        else {
+            else {
                 tr[i].style.display="none";
             }
         }
@@ -161,15 +160,12 @@ function toggle_settings(elem) {
 }
 
 function sortTable(n) {
-    if (document.getElementById(n).className == "th-sort-desc")
-        {
-            document.getElementById(n).className = "th-sort-asc";
-        }
-
-    else
-        {
+    if (document.getElementById(n).className == "th-sort-desc") {
+        document.getElementById(n).className = "th-sort-asc";
+    }
+    else {
         document.getElementById(n).className = "th-sort-desc";
-        }
+    }
 
     var table = document.getElementById("reddit_table");
     var rows, i, x, y, count = 0;
@@ -192,7 +188,7 @@ function sortTable(n) {
             y = rows[i + 1].getElementsByTagName("TD")[n].innerHTML.replace("$", "").replace("%", "");
 
             // If column is volume/floating shares
-            if (n == 9 || n == 10 || n == 13) {
+            if (n == 10 || n == 11 || n == 14) {
                 x = rows[i].getElementsByTagName("TD")[n].innerHTML
                 y = rows[i + 1].getElementsByTagName("TD")[n].innerHTML
 

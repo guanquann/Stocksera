@@ -23,7 +23,7 @@ analyzer.lexicon.update(new_words)
 base_points = 2
 
 # x bonus points for each flair matching 'DD' or 'Catalyst' of for a ticker that appears on the subreddit
-bonus_points = 1
+bonus_points = 2
 
 # every x upvotes on the thread counts for 1 point (rounded down)
 upvote_factor = 3
@@ -74,7 +74,7 @@ def get_submission_praw(n, sub):
     prev = {}
     subreddit = reddit.subreddit(sub)
     all_results = []
-    for post in subreddit.new(limit=500):
+    for post in subreddit.new(limit=700):
         all_results.append([post.title, post.link_flair_text, post.selftext, post.score, post.num_comments,
                             post.created_utc])
 
@@ -86,7 +86,7 @@ def get_submission_praw(n, sub):
 
 def get_submission_generators(n, sub):
     """
-    Returns two dictionaries:
+    Returns four dictionaries:
     1st dictionary: current result from n hours ago until now
     2nd dictionary: prev result from 2n hours ago until n hours ago
     The two dictionaries' keys are the requested subreddit: all subreddits if allsub is True, and just "sub" otherwise
@@ -134,15 +134,10 @@ def get_ticker_scores_praw(sub_gen_dict):
         for submission in submission_list:
             # every ticker in the title will earn this base points
             increment = base_points
-            total_sentiment_score = 0
 
             # search the title for the ticker/tickers
             title = ' ' + submission[0] + ' '
             title_extracted = set(re.findall(pattern, title))
-
-            if submission[2] is None:
-                increment, sentiment_score = get_sentiment(title, increment)
-                total_sentiment_score += sentiment_score
 
             # flair is worth bonus points
             if submission[1] is not None:
@@ -150,13 +145,14 @@ def get_ticker_scores_praw(sub_gen_dict):
                 if 'dd' in flair or 'catalyst' in flair or 'technical analysis' in flair:
                     increment += bonus_points
 
-            # search the text body for the ticker/tickers
+            # search the text body for the ticker/tickers and find sentiment score
             self_text_extracted = set()
             if submission[2] is not None:
                 self_text = ' ' + submission[2] + ' '
                 self_text_extracted = set(re.findall(pattern, self_text))
                 increment, sentiment_score = get_sentiment(self_text, increment)
-                total_sentiment_score += sentiment_score
+            else:
+                increment, sentiment_score = get_sentiment(title, increment)
 
             # every 3 upvotes are worth 1 extra point
             if upvote_factor > 0 and submission[3] is not None:
@@ -170,13 +166,12 @@ def get_ticker_scores_praw(sub_gen_dict):
             extracted_tickers = {ticker.replace('.', '-') for ticker in extracted_tickers}
 
             count_rocket = title.count(rocket) + self_text.count(rocket)
-            print(count_rocket, title, extracted_tickers)
+
             for ticker in extracted_tickers:
                 rocket_scores_dict[ticker] = rocket_scores_dict.get(ticker, 0) + count_rocket
                 num_posts_dict[ticker] = num_posts_dict.get(ticker, 0) + 1
                 num_upvotes_dict[ticker] = num_upvotes_dict.get(ticker, 0) + submission[3]
                 num_comments_dict[ticker] = num_comments_dict.get(ticker, 0) + submission[4]
-                print(ticker, num_posts_dict[ticker], num_upvotes_dict[ticker], num_comments_dict[ticker])
 
                 # title_extracted is a set, duplicate tickers from the same title counted once only
                 sub_scores_dict[sub][ticker] = sub_scores_dict[sub].get(ticker, 0) + increment
@@ -244,7 +239,7 @@ def filter_df(df, min_val):
 
 def get_financial_stats(results_df, min_vol, min_mkt_cap, threads=True):
     # dictionary of ticker summary profile information to get from yahoo
-    summary_profile_measures = {'industry': 'industry'}
+    summary_profile_measures = {'industry': 'industry', 'website': 'website'}
 
     # dictionary of ticker financial information to get from yahoo
     financial_measures = {'targetMeanPrice': 'target', 'recommendationKey': 'recommend'}
@@ -265,6 +260,7 @@ def get_financial_stats(results_df, min_vol, min_mkt_cap, threads=True):
     valid_ticker_list = list(quick_stats_df.index.values)
 
     summary_stats_df = download_advanced_stats(valid_ticker_list, module_name_map, threads)
+    summary_stats_df["website"] = summary_stats_df["website"].apply(lambda x: "https://logo.clearbit.com/" + str(x).replace("http://", "").replace("www.", "").split('/')[0])
     results_df_valid = results_df.loc[valid_ticker_list]
 
     results_df = pd.concat([results_df_valid, quick_stats_df, summary_stats_df], axis=1)
@@ -372,29 +368,27 @@ def get_quick_stats(ticker_list, min_vol, min_mkt_cap, threads=True):
 
 def print_df(df, filename, writesql, writecsv, subreddit):
     df.reset_index(inplace=True)
-
+    df.index += 1
+    df.reset_index(inplace=True)
+    df.rename(columns={'index': 'rank'}, inplace=True)
     now = datetime.utcnow()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
     df['date_updated'] = dt_string
     df['subreddit'] = subreddit
 
-    cols_to_change = ["total", "recent", "previous", "rockets"]
+    cols_to_change = ["rank", "total", "recent", "previous", "rockets", "posts", "upvotes", "comments"]
     for col in cols_to_change:
-        df[col] = df[col].astype(float)
+        df[col] = df[col].fillna(0).astype(float)
     df['change'] = df['change'].apply(lambda x: round(x, 2))
     df['industry'] = df['industry'].str.replace("—", "-")
     df['recommend'] = df['recommend'].str.replace("_", " ")
-    df["rockets"] = df["rockets"].fillna(0).astype(float)
-    df["posts"] = df["posts"].fillna(0).astype(float)
-    df["upvotes"] = df["upvotes"].fillna(0).astype(float)
-    df["comments"] = df["comments"].fillna(0).astype(float)
 
     # Save to sql database
     if writesql:
         for row_num in range(len(df)):
             db.execute(
                 "INSERT INTO {} VALUES "
-                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)".format(subreddit),
+                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)".format(subreddit),
                 tuple(df.loc[row_num].tolist()))
             conn.commit()
         print("Saved to {} SQL Database successfully.".format(subreddit))

@@ -14,6 +14,11 @@
         font-weight:bold;
     }
 
+    td img {
+        width: 20px;
+        height: 20px;
+    }
+
     /* Modal Content */
     .modal-content {
         position: relative;
@@ -45,6 +50,11 @@
     #ticker_intro span {
         font-size:22px;
         font-weight:bold;
+    }
+
+    td img {
+        width: 30px;
+        height: 30px;
     }
 
     /* Modal Content */
@@ -138,9 +148,7 @@ td div {
 
 td img {
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    padding-right: 6px;
+    margin-right: 6px;
     vertical-align: middle;
     display: table-cell;
 }

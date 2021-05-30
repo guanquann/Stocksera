@@ -418,6 +418,9 @@ table {
     white-space: nowrap;
     margin: auto;
     position: relative;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
 }
 
 td {

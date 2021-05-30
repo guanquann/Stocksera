@@ -308,3 +308,92 @@ INFO:root:Ticker RBLX to be sold on 2021-05-28 at $89.26 during market open.
 INFO:root:Ticker MVIS to be sold on 2021-05-28 at $16.07 during market open.
 INFO:root:Ticker AMZN to be sold on 2021-05-28 at $3242.0 during market open.
 INFO:root:--------------------------------------------------
+INFO:root:Ticker AMC to be bought on 2021-05-18 for $14.25.
+INFO:root:Ticker GME to be bought on 2021-05-18 for $174.54.
+INFO:root:Ticker UWMC to be bought on 2021-05-18 for $8.3.
+INFO:root:Ticker COIN to be bought on 2021-05-18 for $238.83.
+INFO:root:Ticker CLOV to be bought on 2021-05-18 for $6.77.
+INFO:root:Ticker TSLA to be bought on 2021-05-18 for $568.0.
+INFO:root:Ticker RKT to be bought on 2021-05-18 for $17.66.
+INFO:root:Ticker NET to be bought on 2021-05-18 for $72.65.
+INFO:root:Ticker PLTR to be bought on 2021-05-18 for $20.52.
+INFO:root:Ticker VIEW to be bought on 2021-05-18 for $7.24.
+INFO:root:Ticker AMC to be bought on 2021-05-18 for $14.25.
+INFO:root:Ticker GME to be bought on 2021-05-18 for $174.54.
+INFO:root:Ticker UWMC to be bought on 2021-05-18 for $8.3.
+INFO:root:Ticker COIN to be bought on 2021-05-18 for $238.83.
+INFO:root:Ticker CLOV to be bought on 2021-05-18 for $6.77.
+INFO:root:Ticker TSLA to be bought on 2021-05-18 for $568.0.
+INFO:root:Ticker RKT to be bought on 2021-05-18 for $17.66.
+INFO:root:Ticker NET to be bought on 2021-05-18 for $72.65.
+INFO:root:Ticker PLTR to be bought on 2021-05-18 for $20.52.
+INFO:root:Ticker VIEW to be bought on 2021-05-18 for $7.24.
+INFO:root:--------------------------------------------------
+INFO:root:Ticker SNDL to be bought on 2021-05-19 for $0.74.
+INFO:root:Ticker VIEW to be sold on 2021-05-19 at $7.24 during market open.
+INFO:root:--------------------------------------------------
+INFO:root:Ticker SNDL to be bought on 2021-05-19 for $0.74.
+INFO:root:--------------------------------------------------
+INFO:root:Ticker SNDL to be bought on 2021-05-19 for $0.74.
+INFO:root:Ticker VIEW to be sold on 2021-05-19 at $7.24 during market open.
+INFO:root:Ticker SNDL to be bought on 2021-05-19 for $0.74.
+INFO:root:Ticker VIEW to be sold on 2021-05-19 at $7.24 during market open.
+INFO:root:Ticker SNDL to be bought on 2021-05-19 for $0.74.
+INFO:root:Ticker VIEW to be sold on 2021-05-19 at $7.24 during market open.
+INFO:root:--------------------------------------------------
+INFO:root:Ticker APP to be bought on 2021-05-20 for $66.3.
+INFO:root:Ticker SPY to be bought on 2021-05-20 for $411.8.
+INFO:root:Ticker PLTR to be sold on 2021-05-20 at $20.75 during market open.
+INFO:root:Ticker RKT to be sold on 2021-05-20 at $17.1 during market open.
+INFO:root:--------------------------------------------------
+INFO:root:Ticker SPCE to be bought on 2021-05-21 for $20.37.
+INFO:root:Ticker CLOV to be sold on 2021-05-21 at $7.13 during market open.
+INFO:root:--------------------------------------------------
+INFO:root:--------------------------------------------------
+INFO:root:Ticker VIEW to be bought on 2021-05-24 for $8.75.
+INFO:root:Ticker SPOT to be bought on 2021-05-24 for $229.66.
+INFO:root:Ticker PRPL to be bought on 2021-05-24 for $29.38.
+INFO:root:Ticker APP to be sold on 2021-05-24 at $68.42 during market open.
+INFO:root:Ticker TSLA to be sold on 2021-05-24 at $581.6 during market open.
+INFO:root:Ticker SNDL to be sold on 2021-05-24 at $0.75 during market open.
+INFO:root:--------------------------------------------------
+INFO:root:Ticker PLTR to be bought on 2021-05-25 for $21.42.
+INFO:root:Ticker IPOE to be bought on 2021-05-25 for $20.5.
+INFO:root:Ticker NNDM to be bought on 2021-05-25 for $6.52.
+INFO:root:Ticker QQQ to be bought on 2021-05-25 for $334.07.
+INFO:root:Ticker UWMC to be sold on 2021-05-25 at $8.28 during market open.
+INFO:root:Ticker VIEW to be sold on 2021-05-25 at $8.69 during market open.
+INFO:root:Ticker SPOT to be sold on 2021-05-25 at $237.01 during market open.
+INFO:root:Ticker PRPL to be sold on 2021-05-25 at $29.18 during market open.
+INFO:root:--------------------------------------------------
+INFO:root:Ticker NIO to be bought on 2021-05-26 for $36.25.
+INFO:root:Ticker PLUG to be bought on 2021-05-26 for $28.13.
+INFO:root:Ticker BABA to be bought on 2021-05-26 for $212.3.
+INFO:root:Ticker TSLA to be bought on 2021-05-26 for $607.56.
+INFO:root:Ticker SPY to be sold on 2021-05-26 at $418.87 during market open.
+INFO:root:Ticker IPOE to be sold on 2021-05-26 at $20.04 during market open.
+INFO:root:Ticker QQQ to be sold on 2021-05-26 at $333.66 during market open.
+INFO:root:Ticker NET to be sold on 2021-05-26 at $80.0 during market open.
+INFO:root:--------------------------------------------------
+INFO:root:Ticker SNDL to be bought on 2021-05-27 for $0.91.
+INFO:root:Ticker MVIS to be bought on 2021-05-27 for $14.78.
+INFO:root:Ticker UWMC to be bought on 2021-05-27 for $8.66.
+INFO:root:Ticker SPY to be bought on 2021-05-27 for $420.17.
+INFO:root:Ticker RBLX to be bought on 2021-05-27 for $89.26.
+INFO:root:Ticker AMZN to be bought on 2021-05-27 for $3256.0.
+INFO:root:Ticker COIN to be sold on 2021-05-27 at $245.21 during market open.
+INFO:root:Ticker PLTR to be sold on 2021-05-27 at $22.01 during market open.
+INFO:root:Ticker NIO to be sold on 2021-05-27 at $37.95 during market open.
+INFO:root:Ticker PLUG to be sold on 2021-05-27 at $30.02 during market open.
+INFO:root:Ticker BABA to be sold on 2021-05-27 at $214.17 during market open.
+INFO:root:Ticker NNDM to be sold on 2021-05-27 at $7.27 during market open.
+INFO:root:--------------------------------------------------
+INFO:root:Ticker BB to be bought on 2021-05-28 for $10.31.
+INFO:root:Ticker AI to be bought on 2021-05-28 for $63.4.
+INFO:root:Ticker PLTR to be bought on 2021-05-28 for $23.0.
+INFO:root:Ticker RBLX to be sold on 2021-05-28 at $96.85 during market open.
+INFO:root:Ticker MVIS to be sold on 2021-05-28 at $16.07 during market open.
+INFO:root:Ticker AMZN to be sold on 2021-05-28 at $3242.0 during market open.
+INFO:root:--------------------------------------------------
+INFO:root:--------------------------------------------------
+INFO:root:--------------------------------------------------

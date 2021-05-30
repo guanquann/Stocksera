@@ -455,7 +455,7 @@ def reddit_analysis(request):
     else:
         date_selected = all_dates[0]
 
-    db.execute("SELECT * FROM {} WHERE date_updated LIKE '{}' ORDER BY total DESC LIMIT 30".format(subreddit, "%" + date_selected + "%"))
+    db.execute("SELECT * FROM {} WHERE date_updated LIKE '{}' ORDER BY total DESC LIMIT 25".format(subreddit, "%" + date_selected + "%"))
     trending_tickers = db.fetchall()
     trending_tickers = list(map(list, trending_tickers))
 
@@ -488,6 +488,7 @@ def top_movers(request):
 
     top_losers = pd.read_html("https://finance.yahoo.com/screener/predefined/day_losers")[0]
     top_losers["PE Ratio (TTM)"] = top_gainers["PE Ratio (TTM)"].replace(np.nan, "N/A")
+    top_losers = top_losers.iloc[::-1]
 
     top_movers_combine = top_gainers.append(top_losers, ignore_index=True)
     del top_movers_combine["52 Week Range"]

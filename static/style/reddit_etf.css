@@ -1,3 +1,25 @@
+@media only screen and (max-width: 900px) {
+    .reddit_etf {
+        width: 90%;
+        margin: auto;
+    }
+
+    td img {
+        width: 20px;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    .reddit_etf {
+        width: 98%;
+        margin: auto;
+    }
+
+    td img {
+        width: 30px;
+    }
+}
+
 .performance_individual {
     background-color: #E9EAEA;
     border-radius: 10px;
@@ -18,6 +40,20 @@
     background-color: rgb(219, 27, 27);
 }
 
+input {
+    border: 1px solid grey;
+    border-radius: 6px;
+    padding: 7px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    max-width: 130px;
+}
+
+.dark_mode input {
+    border: 1px solid wheat;
+    color: wheat;
+}
+
 .table_title {
     text-align: center;
     font-size: large;
@@ -35,4 +71,11 @@ table .th-sort-asc::after {
 
 table .th-sort-desc::after {
     content: "\25be";
+}
+
+td img {
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+    background-color: white;
 }

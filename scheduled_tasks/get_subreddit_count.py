@@ -33,4 +33,5 @@ def subreddit_count():
         conn.commit()
 
 
-subreddit_count()
+if __name__ == '__main__':
+    subreddit_count()

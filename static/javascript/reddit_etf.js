@@ -107,6 +107,7 @@ function check_table() {
         }
         else {
             td[5].innerHTML = "$" + td[5].innerHTML;
+            td[6].innerHTML = "+" + td[6].innerHTML;
             td[5].style.color = "green";
             td[6].style.color = "green";
         }
@@ -122,9 +123,22 @@ function check_table() {
         }
         else {
             td[6].innerHTML = "+$" + td[6].innerHTML;
-            td[7].innerHTML = "+$" + td[7].innerHTML;
+            td[7].innerHTML = "+" + td[7].innerHTML;
             td[6].style.color = "green";
             td[7].style.color = "green";
+        }
+    }
+
+    table_titles = document.getElementsByClassName("table_title");
+    for (i=0; i<table_titles.length; i++) {
+        table_title = table_titles[i].querySelector("span");
+        if (table_title.innerHTML.includes("-")) {
+            table_title.style.color = "red";
+            table_title.innerHTML = table_title.innerHTML.replace("-", "-$");
+        }
+        else {
+            table_title.style.color = "green";
+            table_title.innerHTML = "+$" + table_title.innerHTML;
         }
     }
 }

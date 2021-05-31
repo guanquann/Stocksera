@@ -530,14 +530,22 @@ def reddit_etf(request):
     db.execute("SELECT * FROM reddit_etf WHERE status='Open' ORDER BY open_date DESC")
     open_trade = db.fetchall()
 
+    db.execute("select sum(PnL) from reddit_etf WHERE status='Open'")
+    unrealized_PnL = round(db.fetchone()[0], 2)
+
     db.execute("SELECT * FROM reddit_etf WHERE status='Close' ORDER BY close_date DESC")
     close_trade = db.fetchall()
+
+    db.execute("select sum(PnL) from reddit_etf WHERE status='Close'")
+    realized_PnL = round(db.fetchone()[0], 2)
 
     return render(request, 'reddit_etf.html', {"popular_ticker_list": popular_ticker_list,
                                                "popular_name_list": popular_name_list,
                                                "price_list": price_list,
                                                "open_trade": open_trade,
-                                               "close_trade": close_trade})
+                                               "close_trade": close_trade,
+                                               "unrealized_PnL": unrealized_PnL,
+                                               "realized_PnL": realized_PnL})
 
 
 def opinion(request):

@@ -26,8 +26,15 @@
         <p>Identify number of new members in your favourite sub-reddit. Data is updated once daily, one hour before market opens. New features coming really soon!</p>
     </div>
     <div class="subreddit_count">
+        <h2>% Growth in users over time</h2>
         <div class="chart-container">
             <canvas id="growth_chart"></canvas>
+        </div>
+
+        <h2>% Active Users</h2>
+        <div class="active_users_div">Data is collected from 2021-05-19 onwards, 1H before market open hours daily.</div>
+        <div class="chart-container">
+            <canvas id="active_chart"></canvas>
         </div>
 
         <div class="subreddit_intro">
@@ -146,36 +153,42 @@
 {% block bottom_script %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script type="text/javascript">
-    var wsb_date = [], wsb_count = [], wsb_growth = [], stocks_date = [], stocks_count = [], stocks_growth = [],  StockMarket_date = [], StockMarket_count = [], StockMarket_growth = [], gme_date = [], gme_count = [], gme_growth = [], superstonk_date = [], superstonk_count = [], superstonk_growth = [], amc_date = [], amc_count = [], amc_growth = []
+    var wsb_date = [], wsb_count = [], wsb_active = [] , wsb_growth = [], stocks_date = [], stocks_active = [] , stocks_count = [], stocks_growth = [],  StockMarket_date = [], StockMarket_count = [], StockMarket_active = [], StockMarket_growth = [], gme_date = [], gme_count = [], gme_active = [], gme_growth = [], superstonk_date = [], superstonk_count = [], superstonk_active = [], superstonk_growth = [], amc_date = [], amc_count = [], amc_active = [], amc_growth = []
     var subscribers_list = {{subscribers|safe}}
     for (subscribers of subscribers_list) {
         if (subscribers[0] == "wallstreetbets") {
             wsb_count.push(subscribers[1])
+            wsb_active.push(subscribers[4])
             wsb_growth.push(subscribers[5])
             wsb_date.push(subscribers[3])
         }
         else if (subscribers[0] == "stocks") {
             stocks_count.push(subscribers[1])
+            stocks_active.push(subscribers[4])
             stocks_growth.push(subscribers[5])
             stocks_date.push(subscribers[3])
         }
         else if (subscribers[0] == "StockMarket") {
             StockMarket_count.push(subscribers[1])
+            StockMarket_active.push(subscribers[4])
             StockMarket_growth.push(subscribers[5])
             StockMarket_date.push(subscribers[3])
         }
         else if (subscribers[0] == "Superstonk") {
             superstonk_count.push(subscribers[1])
+            superstonk_active.push(subscribers[4])
             superstonk_growth.push(subscribers[5])
             superstonk_date.push(subscribers[3])
         }
         else if (subscribers[0] == "amcstock") {
             amc_count.push(subscribers[1])
+            amc_active.push(subscribers[4])
             amc_growth.push(subscribers[5])
             amc_date.push(subscribers[3])
         }
         else if (subscribers[0] == "GME") {
             gme_count.push(subscribers[1])
+            gme_active.push(subscribers[4])
             gme_growth.push(subscribers[5])
             gme_date.push(subscribers[3])
         }
@@ -362,6 +375,103 @@
                 {
                     label: "amcstock",
                     data: amc_growth,
+                    borderColor: '#ad001d',
+                    backgroundColor: 'transparent',
+                    tension: 0.1,
+                }]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+            display: true
+         },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: false,
+                    maxTicksLimit: 6,
+                },
+                gridLines: {
+                    drawOnChartArea: false
+                }
+            }],
+            xAxes: [{
+                ticks: {
+                  maxTicksLimit: 10,
+                  maxRotation: 45,
+                  minRotation: 0,
+                },
+                gridLines: {
+                    drawOnChartArea: false
+                }
+            }]
+        },
+        // To remove the point of each label
+        elements: {
+            point: {
+                radius: 0
+            }
+        },
+        // To show value when hover on any part of the graph
+        tooltips: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+                label: (item) => `${item.yLabel}%`,
+            },
+        },
+        hover: {
+            mode: 'index',
+            intersect: false
+        },
+    }
+    });
+
+    var active_chart = document.getElementById('active_chart');
+    var active_chart = new Chart(active_chart, {
+        type: 'line',
+        data: {
+            labels: wsb_date,
+            datasets: [
+                {
+                    label: "Wallstreetbets",
+                    data: wsb_active,
+                    borderColor: '#f1c40f',
+                    backgroundColor: 'transparent',
+                    tension: 0.1,
+                },
+                {
+                    label: "Stocks",
+                    data: stocks_active,
+                    borderColor: '#c39889',
+                    backgroundColor: 'transparent',
+                    tension: 0.1,
+                },
+                {
+                    label: "StockMarket",
+                    data: StockMarket_active,
+                    borderColor: 'rgb(38, 166, 154)',
+                    backgroundColor: 'transparent',
+                    tension: 0.1,
+                },
+                {
+                    label: "GME",
+                    data: gme_active,
+                    borderColor: '#00b0ff',
+                    backgroundColor: 'transparent',
+                    tension: 0.1,
+                },
+                {
+                    label: "Superstonk",
+                    data: superstonk_active,
+                    borderColor: 'grey',
+                    backgroundColor: 'transparent',
+                    tension: 0.1,
+                },
+                {
+                    label: "amcstock",
+                    data: amc_active,
                     borderColor: '#ad001d',
                     backgroundColor: 'transparent',
                     tension: 0.1,

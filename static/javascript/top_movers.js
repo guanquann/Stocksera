@@ -69,7 +69,7 @@ function sortTable(n) {
                     x = Number(x.replace("M", "")) * 1000000
                 }
                 else {
-                    x = 9999999999
+                    x = Number(x)
                 }
 
                 if (y.includes("B")) {
@@ -79,9 +79,8 @@ function sortTable(n) {
                     y = Number(y.replace("M", "")) * 1000000
                 }
                 else {
-                    y = 9999999999
+                    y = Number(y)
                 }
-
             }
 
             // Check the direction of order

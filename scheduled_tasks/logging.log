@@ -405,3 +405,34 @@ WARNING:prawcore:Retrying due to ConnectionError(MaxRetryError("HTTPSConnectionP
 WARNING:prawcore:Retrying due to ConnectionError(MaxRetryError("HTTPSConnectionPool(host='www.reddit.com', port=443): Max retries exceeded with url: /api/v1/access_token (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x000001AFFD252E88>: Failed to establish a new connection: [Errno 11001] getaddrinfo failed'))")) status: GET https://oauth.reddit.com/r/wallstreetbets/about/
 WARNING:prawcore:Retrying due to ConnectionError(MaxRetryError("HTTPSConnectionPool(host='www.reddit.com', port=443): Max retries exceeded with url: /api/v1/access_token (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x000001F1FE9EC4C8>: Failed to establish a new connection: [Errno 11001] getaddrinfo failed'))")) status: GET https://oauth.reddit.com/r/wallstreetbets/new
 WARNING:prawcore:Retrying due to ConnectionError(MaxRetryError("HTTPSConnectionPool(host='www.reddit.com', port=443): Max retries exceeded with url: /api/v1/access_token (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x000001F1FE9FC9C8>: Failed to establish a new connection: [Errno 11001] getaddrinfo failed'))")) status: GET https://oauth.reddit.com/r/wallstreetbets/new
+INFO:root:Ticker AMD to be bought on 2021-06-01 for $78.66.
+INFO:root:Ticker BNGO to be bought on 2021-06-01 for $6.27.
+INFO:root:Ticker ASO to be bought on 2021-06-01 for $36.25.
+INFO:root:Ticker ZM to be bought on 2021-06-01 for $333.33.
+INFO:root:Ticker FB to be bought on 2021-06-01 for $331.0.
+INFO:root:Ticker GOOG to be bought on 2021-06-01 for $2421.96.
+INFO:root:Ticker UWMC to be sold on 2021-06-01 at $9.38 during market open.
+INFO:root:--------------------------------------------------
+INFO:root:--------------------------------------------------
+INFO:root:Ticker MVIS to be bought on 2021-06-02 for $18.9.
+INFO:root:Ticker AMZN to be bought on 2021-06-02 for $3223.1.
+INFO:root:Ticker SQ to be bought on 2021-06-02 for $221.33.
+INFO:root:Ticker LNG to be bought on 2021-06-02 for $85.24.
+INFO:root:Ticker NIO to be bought on 2021-06-02 for $39.99.
+INFO:root:Ticker FB to be sold on 2021-06-02 at $330.38 during market open.
+INFO:root:Ticker ZM to be sold on 2021-06-02 at $331.884 during market open.
+INFO:root:Ticker GOOG to be sold on 2021-06-02 at $2435.31 during market open.
+INFO:root:Ticker AMD to be sold on 2021-06-02 at $81.0 during market open.
+INFO:root:Ticker BNGO to be sold on 2021-06-02 at $6.22 during market open.
+INFO:root:--------------------------------------------------
+INFO:root:Ticker MVIS to be bought on 2021-06-02 for $18.9.
+INFO:root:Ticker AMZN to be bought on 2021-06-02 for $3223.1.
+INFO:root:Ticker SQ to be bought on 2021-06-02 for $221.33.
+INFO:root:Ticker LNG to be bought on 2021-06-02 for $85.24.
+INFO:root:Ticker NIO to be bought on 2021-06-02 for $39.99.
+INFO:root:Ticker AMD to be sold on 2021-06-02 at $81.0 during market open.
+INFO:root:Ticker ZM to be sold on 2021-06-02 at $331.884 during market open.
+INFO:root:Ticker BNGO to be sold on 2021-06-02 at $6.22 during market open.
+INFO:root:Ticker FB to be sold on 2021-06-02 at $330.38 during market open.
+INFO:root:Ticker GOOG to be sold on 2021-06-02 at $2435.31 during market open.
+INFO:root:--------------------------------------------------

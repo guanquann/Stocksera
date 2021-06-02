@@ -75,19 +75,23 @@ db.execute("CREATE table IF NOT EXISTS short_interest ("
            "ticker TEXT, "
            "company TEXT, "
            "exchange TEXT, "
+           "previous_close FLOAT, "
            "short_int TEXT, "
            "float TEXT, "
            "outstanding_shares TEXT,"
-           "industry TEXT)")
+           "industry TEXT, "
+           "logo_url TEXT )")
 
 db.execute("CREATE table IF NOT EXISTS low_float ("
            "ticker TEXT, "
            "company TEXT, "
            "exchange TEXT, "
+           "previous_close FLOAT, "
            "float TEXT, "
            "outstanding_shares TEXT,"
            "short_int TEXT, "
-           "industry TEXT)")
+           "industry TEXT, "
+           "logo_url TEXT )")
 
 db.execute("CREATE table IF NOT EXISTS short_volume ("
            "ticker TEXT, "
@@ -97,6 +101,18 @@ db.execute("CREATE table IF NOT EXISTS short_volume ("
            "total_vol INTEGER, "
            "percent TEXT, "
            "UNIQUE('ticker', 'reported_date','short_vol','total_vol','percent'))")
+
+db.execute("CREATE table IF NOT EXISTS top_DD ("
+           "url TEXT, "
+           "ticker TEXT, "
+           "title TEXT, "
+           "text_body TEXT, "
+           "upvotes INTEGER, "
+           "comments INTEGER, "
+           "subreddit TEXT, "
+           "date_text TEXT, "
+           "img_url TEXT, "
+           "UNIQUE('url', 'ticker', 'title', 'text_body','upvotes','comments','subreddit', 'date_text', 'img_url'))")
 
 db.execute("CREATE table IF NOT EXISTS contact ("
            "name TEXT, "

@@ -1,0 +1,43 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Top DD{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/top_DD.css' %}">
+<script src="{% static 'javascript/top_DD.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}display_data();restore_dark_mode(){% endblock %}
+
+{% block main_nav %}
+<div class="top_nav">
+    <form action="" method="GET" autocomplete="off">
+        <div>
+            <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" autocomplete="off">
+            <button class="submit_btn" onclick="show_spinner()">Search</button>
+        </div>
+</div>
+<div id="spinner_div"></div>
+{% endblock %}
+
+{% block main_content %}
+<div>
+    <div class="instructions">
+        <p>
+            Enjoy Top Due-Diligence across various subreddits on Reddit.
+        </p>
+    </div>
+</div>
+{% for dd in due_diligence %}
+{{dd.1}}
+{{dd.2}}
+{{dd.3}}
+{{dd.4}}
+{{dd.5}}
+{{dd.6}}
+{{dd.7}}
+{% endfor %}
+<img src="https://preview.redd.it/a25x7xmqp9271.png?width=3122&format=png&auto=webp&s=9da0d0667045f715e33a691496e341f116e3fa2f">
+{% endblock %}

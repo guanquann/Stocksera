@@ -502,9 +502,8 @@ def top_movers(request):
 def short_interest(request):
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
     df_high_short_interest = pd.read_sql("SELECT * FROM short_interest", con=conn)
-    df_high_short_interest.columns = ["Ticker", "Company", "Exchange", "Short Interest", "Floating Shares",
-                                      "Outstanding Shares", "Industry"]
-    return render(request, 'short_interest.html', {"popular_ticker_list": popular_ticker_list,
+    return render(request, 'short_interest.html', {
+                                                   "popular_ticker_list": popular_ticker_list,
                                                    "popular_name_list": popular_name_list,
                                                    "price_list": price_list,
                                                    "df_high_short_interest": df_high_short_interest.to_html(index=False)})
@@ -513,8 +512,6 @@ def short_interest(request):
 def low_float(request):
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
     df_low_float = pd.read_sql("SELECT * FROM low_float", con=conn)
-    df_low_float.columns = ["Ticker", "Company", "Exchange", "Floating Shares", "Outstanding Shares",
-                            "Short Interest", "Industry"]
     return render(request, 'low_float.html', {"popular_ticker_list": popular_ticker_list,
                                               "popular_name_list": popular_name_list,
                                               "price_list": price_list,
@@ -546,6 +543,13 @@ def reddit_etf(request):
                                                "close_trade": close_trade,
                                                "unrealized_PnL": unrealized_PnL,
                                                "realized_PnL": realized_PnL})
+
+
+def due_diligence(request):
+    db.execute("SELECT * FROM top_DD")
+    dd = db.fetchall()
+    dd = map(list, dd)
+    return render(request, 'top_DD.html', {"due_diligence": dd})
 
 
 def opinion(request):

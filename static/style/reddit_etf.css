@@ -7,6 +7,13 @@
     td img {
         width: 20px;
     }
+
+    .table_title {
+        text-align: center;
+        font-size: medium;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
 }
 
 @media only screen and (min-width: 900px) {
@@ -17,6 +24,13 @@
 
     td img {
         width: 30px;
+    }
+
+    .table_title {
+        text-align: center;
+        font-size: large;
+        font-weight: bold;
+        margin-bottom: 5px;
     }
 }
 
@@ -52,13 +66,6 @@ input {
 .dark_mode input {
     border: 1px solid wheat;
     color: wheat;
-}
-
-.table_title {
-    text-align: center;
-    font-size: large;
-    font-weight: bold;
-    margin-bottom: 5px;
 }
   
 table th {

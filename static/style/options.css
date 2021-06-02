@@ -39,9 +39,30 @@
 }
 
 #ticker_intro {
-    width: 70%;
+    width: 75%;
     padding-left: 7px;
     display: inline-block;
+}
+
+.price_details {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 6px;
+    padding-top: 6px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.positive_price {
+    background-color: green;
+    color: white;
+}
+
+.negative_price {
+    background-color: red;
+    color: white;
 }
 
 .navigation_menu {

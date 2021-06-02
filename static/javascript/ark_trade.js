@@ -104,7 +104,6 @@ function load_holdings(elem) {
                         ticker = ""
                     }
                     var company = stats["company"]
-                    // <td><div><img src=${img_url}><a href="http://127.0.0.1:8000/ticker/?quote=${ticker}">${company}</a></div></td>
                     img_url = `https://logo.clearbit.com/${company.split(" ")[0].toLowerCase()}.com`
                     table_code += `
                         <tr onclick="load_individual_profile(this);">

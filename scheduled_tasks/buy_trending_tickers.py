@@ -70,17 +70,15 @@ def sell_ticker(date):
         except KeyError:
             print("Market not open today! No tickers sold!")
             break
-        close_price = round(info["Open"], 2)
+        close_price = round(info["Open"], 3)
         message = "Ticker {} to be sold on {} at ${} during market open.".format(symbol, str(latest_date).split()[0], close_price)
         print(message)
         logging.info(message)
-
         db.execute("SELECT * FROM reddit_etf WHERE ticker=? AND status='Open'", (symbol, ))
         stats = db.fetchone()
-        difference = round(close_price - stats[2], 2)
-        PnL = round(difference * stats[3], 2)
-        percentage_diff = round((difference / stats[2]) * 100, 2)
-
+        difference = round(close_price - stats[3], 2)
+        PnL = round(difference * stats[4], 2)
+        percentage_diff = round((difference / stats[3]) * 100, 2)
         db.execute("UPDATE reddit_etf SET close_date=?, close_price=?, PnL=?, percentage=?, status=? "
                    "WHERE ticker=? AND status=?", (str(latest_date).split()[0], close_price, PnL, percentage_diff,
                                                    "Close", symbol, "Open"))
@@ -93,19 +91,19 @@ def update_bought_ticker_price():
     open_ticker_list = db.fetchall()
     for ticker in open_ticker_list:
         ticker_stats = yf.Ticker(ticker[0])
-        buy_price = ticker[2]
-        today_price = ticker_stats.info["regularMarketPrice"]
+        buy_price = ticker[3]
+        today_price = round(ticker_stats.info["regularMarketPrice"], 2)
         difference = today_price - buy_price
-        PnL = round(difference * ticker[3], 2)
-        percentage_diff = round((difference / ticker[2]) * 100, 2)
+        PnL = round(difference * ticker[4], 2)
+        percentage_diff = round((difference / ticker[3]) * 100, 2)
         db.execute("UPDATE reddit_etf SET close_price=?, PnL=?, percentage=? "
                    "WHERE ticker=? AND status='Open'", (today_price, PnL, percentage_diff, ticker[0]))
         conn.commit()
 
 
 if __name__ == '__main__':
-    db.execute("SELECT date_updated FROM wallstreetbets ORDER BY ID DESC LIMIT 1")
-    db_date = db.fetchone()[0]
-    buy_new_ticker(db_date)
-    sell_ticker(db_date)
+    # db.execute("SELECT date_updated FROM wallstreetbets ORDER BY ID DESC LIMIT 1")
+    # db_date = db.fetchone()[0]
+    # buy_new_ticker(db_date)
+    # sell_ticker(db_date)
     update_bought_ticker_price()

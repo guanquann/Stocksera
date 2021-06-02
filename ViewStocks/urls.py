@@ -23,6 +23,7 @@ urlpatterns = [
     path('institutional_holders/', views.ticker_institutional_holders, name='institutional_holders'),
     path('subreddit_count/', views.subreddit_count, name='subreddit_count'),
     path('reddit_etf/', views.reddit_etf, name='reddit_etf'),
+    path('due_diligence/', views.due_diligence, name='due_diligence'),
     path('opinion/', views.opinion, name='opinion'),
     path('about/', views.about, name='about'),
 ]

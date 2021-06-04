@@ -87,6 +87,7 @@ def sell_ticker(date):
 
 
 def update_bought_ticker_price():
+    print("Updating ticker price now...")
     db.execute("SELECT * FROM reddit_etf WHERE status='Open'")
     open_ticker_list = db.fetchall()
     for ticker in open_ticker_list:
@@ -102,8 +103,8 @@ def update_bought_ticker_price():
 
 
 if __name__ == '__main__':
-    # db.execute("SELECT date_updated FROM wallstreetbets ORDER BY ID DESC LIMIT 1")
-    # db_date = db.fetchone()[0]
-    # buy_new_ticker(db_date)
-    # sell_ticker(db_date)
+    db.execute("SELECT date_updated FROM wallstreetbets ORDER BY ID DESC LIMIT 1")
+    db_date = db.fetchone()[0]
+    buy_new_ticker(db_date)
+    sell_ticker(db_date)
     update_bought_ticker_price()

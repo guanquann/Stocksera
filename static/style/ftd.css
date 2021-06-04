@@ -1,0 +1,64 @@
+@media only screen and (max-width: 900px) {
+    #ftd {
+        width: 90%;
+        margin:auto;
+    }
+
+    #ticker_intro span {
+        font-size:15px;
+        font-weight:bold;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    #ftd {
+        width: 98%;
+        margin:auto;
+    }
+
+    #ticker_intro span {
+        font-size:22px;
+        font-weight:bold;
+    }
+}
+
+.chart-container {
+    position: relative;
+    height:55vh;
+    width:98%;
+    max-width: 900px;
+    max-height:250px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#img_div {
+    display: inline-block;
+}
+
+#ticker_intro {
+    width: 75%;
+    margin-left: 8px;
+    display: inline-block;
+}
+
+.price_details {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 6px;
+    padding-top: 6px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.positive_price {
+    background-color: green;
+    color: white;
+}
+
+.negative_price {
+    background-color: red;
+    color: white;
+}

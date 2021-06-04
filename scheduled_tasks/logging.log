@@ -436,3 +436,22 @@ INFO:root:Ticker BNGO to be sold on 2021-06-02 at $6.22 during market open.
 INFO:root:Ticker FB to be sold on 2021-06-02 at $330.38 during market open.
 INFO:root:Ticker GOOG to be sold on 2021-06-02 at $2435.31 during market open.
 INFO:root:--------------------------------------------------
+INFO:root:Ticker CLOV to be bought on 2021-06-03 for $10.01.
+INFO:root:Ticker CLNE to be bought on 2021-06-03 for $8.42.
+INFO:root:Ticker NOK to be bought on 2021-06-03 for $5.6.
+INFO:root:Ticker TLRY to be bought on 2021-06-03 for $20.67.
+INFO:root:Ticker AMD to be sold on 2021-06-03 at $81.13 during market open.
+INFO:root:Ticker LNG to be sold on 2021-06-03 at $86.79 during market open.
+INFO:root:Ticker ASO to be sold on 2021-06-03 at $36.75 during market open.
+INFO:root:Ticker SPCE to be sold on 2021-06-03 at $32.21 during market open.
+INFO:root:--------------------------------------------------
+INFO:root:Ticker SPCE to be sold on 2021-06-03 at $32.21 during market open.
+INFO:root:Ticker ASO to be sold on 2021-06-03 at $36.75 during market open.
+INFO:root:Ticker LNG to be sold on 2021-06-03 at $86.79 during market open.
+INFO:root:Ticker AMD to be sold on 2021-06-03 at $81.13 during market open.
+INFO:root:--------------------------------------------------
+INFO:root:Ticker WKHS to be bought on 2021-06-04 for $14.45.
+INFO:root:Ticker SNDL to be bought on 2021-06-04 for $1.33.
+INFO:root:Ticker MVIS to be sold on 2021-06-04 at $18.15 during market open.
+INFO:root:Ticker SQ to be sold on 2021-06-04 at $212.51 during market open.
+INFO:root:--------------------------------------------------

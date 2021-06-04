@@ -324,7 +324,7 @@ def get_quick_stats(ticker_list, min_vol, min_mkt_cap, threads=True):
             elif 1000000 <= volume < 1000000000:
                 volume_text = str(round(volume / 1000000, 2)) + "M"
             else:
-                volume_text = str(round(volume / 1000000000, 2)) + "B"
+                volume_text = str(round(volume / 1000000000, 2)) + "T"
             valid = True
         else:
             volume = 0
@@ -336,7 +336,7 @@ def get_quick_stats(ticker_list, min_vol, min_mkt_cap, threads=True):
             elif 1000000000 <= mkt_cap < 1000000000000:
                 mkt_cap_text = str(round(mkt_cap / 1000000000, 2)) + "B"
             else:
-                mkt_cap_text = str(round(mkt_cap / 1000000000000, 2)) + "B"
+                mkt_cap_text = str(round(mkt_cap / 1000000000000, 2)) + "T"
             valid = True
         else:
             mkt_cap = 0

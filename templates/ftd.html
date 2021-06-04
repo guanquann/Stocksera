@@ -2,14 +2,14 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | Short Volume{% endblock %}
+{% block title %}StocksEra | FTD {% endblock %}
 
 {% block additional_script %}
-<link rel="stylesheet" href="{% static 'style/short_volume.css' %}">
-<script src="{% static 'javascript/short_volume.js' %}"></script>
+<link rel="stylesheet" href="{% static 'style/ftd.css' %}">
+<script src="{% static 'javascript/ftd.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}short_vol_graph();restore_dark_mode(){% endblock %}
+{% block onload_properties%}ftd_graph(); restore_dark_mode(){% endblock %}
 
 {% block main_nav %}
 <div class="top_nav">
@@ -18,7 +18,6 @@
             <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" autocomplete="off">
             <button class="submit_btn" onclick="show_spinner()">Search</button>
         </div>
-    </form>
 </div>
 <div id="spinner_div"></div>
 {% endblock %}
@@ -26,55 +25,24 @@
 {% block main_content %}
 <div>
     <div class="instructions">
-        <p>Short Volume measures the number of shares that have been shorted,  while Short Interest represents the number of shorted shares that have yet to be closed out or covered.</p>
+        <p>
+            Failure to Deliver (FTD) data is retrieved from the US Securities and Exchange Commission (SEC). It occurs when a broker-dealer fails to deliver securities to the party on the other side of the transaction on the settlement date.
+        </p>
     </div>
-
-    <div id="short_vol_data">
+    <div id="ftd">
         <div id="ticker_basic_stats"></div>
 
-        <div id="summary" class="instructions"></div>
-
         <div class="chart-container">
-            <canvas id="vol_chart"></canvas>
+                <canvas id="ftd_chart"></canvas>
         </div>
 
-        <div class="chart-container">
-            <canvas id="price_chart"></canvas>
-        </div>
-
-        <p class="table_header"><b>Short Volume (Daily)</b></p>
-        <div class="scrollable_div">
-            <table>
-                <thead>
-                    <tr>
-                        <td>Date</td>
-                        <td>Close Price</td>
-                        <td>Short Volume</td>
-                        <td>Total Volume</td>
-                        <td>% Shorted</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in short_volume_data %}
-                        <tr>
-                            <td>{{row.1}}</td>
-                            <td>${{row.2}}</td>
-                            <td>{{row.3}}</td>
-                            <td>{{row.4}}</td>
-                            <td>{{row.5}}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            Note: The Total Volume and Short Volume data are limited. They do not represent the actual total volume.
-        </div>
-        <p>Data from: <a href="http://shortvolumes.com/" target="_blank">shortvolumes.com</a></p>
+        {{ftd|safe}}
     </div>
 </div>
 {% endblock %}
 
 {% block bottom_script %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script>
     <!--Hack to convert python variables to javascript-->
     var None = "N/A", False = false; True = true;
@@ -142,5 +110,7 @@
         </div>
         ${price_code}`
     document.getElementById("ticker_basic_stats").innerHTML = ticker_basic_stats_code;
+
+
 </script>
 {% endblock %}

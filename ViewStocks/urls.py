@@ -9,6 +9,7 @@ urlpatterns = [
     path('ticker/financial/', views.financial, name='financial'),
     path('ticker/options/', views.options, name='options'),
     path('ticker/short_volume/', views.short_volume, name='short_volume'),
+    path('ticker/failure_to_deliver/', views.failure_to_deliver, name='failure_to_deliver'),
     path('reddit_analysis/', views.reddit_analysis, name='reddit_analysis'),
     path('top_movers/', views.top_movers, name='top_movers'),
     path('short_interest/', views.short_interest, name='short_interest'),

@@ -1,9 +1,10 @@
-from datetime import datetime, timedelta
+import os
 import sqlite3
 
 from custom_extensions.custom_words import *
 from helpers import *
 
+import pandas as pd
 from pytrends.request import TrendReq
 from yahoo_earnings_calendar import YahooEarningsCalendar
 from finvizfinance.quote import finvizfinance
@@ -410,6 +411,24 @@ def short_volume(request):
                                                  "short_volume_data": short_volume_data})
 
 
+def failure_to_deliver(request):
+    ticker_selected = default_ticker(request)
+    ticker = yf.Ticker(ticker_selected)
+    file_path = r"scheduled_tasks/failure_to_deliver/ticker/{}.csv".format(ticker_selected)
+    if os.path.isfile(file_path):
+        information = ticker.info
+        ftd = pd.read_csv(file_path)
+        ftd = ftd[::-1]
+        del ftd["CUSIP"]
+        del ftd["SYMBOL"]
+        del ftd["DESCRIPTION"]
+        return render(request, 'ftd.html', {"ticker_selected": ticker_selected,
+                                            "information": information,
+                                            "ftd": ftd.to_html(index=False)})
+    else:
+        return render(request, 'ftd.html')
+
+
 def earnings_calendar(request):
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
     db.execute("SELECT * FROM earnings_calendar ORDER BY earning_date ASC")
@@ -548,7 +567,7 @@ def reddit_etf(request):
 def due_diligence(request):
     db.execute("SELECT * FROM top_DD")
     dd = db.fetchall()
-    dd = map(list, dd)
+    dd = list(map(list, dd))
     return render(request, 'top_DD.html', {"due_diligence": dd})
 
 

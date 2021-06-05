@@ -4,7 +4,8 @@ function ftd_graph() {
     ftd[0].innerHTML = `
         <th>Date</th>
         <th>Failure to Deliver</th>
-        <th>Price</th>`
+        <th>Price</th>
+        <th>Amount (FTD x $)</th>`
 
     var date_list = [], price_list = [], vol_list = []
     for (tr=ftd.length-1; tr>0; tr--) {
@@ -15,9 +16,12 @@ function ftd_graph() {
         total_td[0].innerHTML = new_date_string;
 
         vol_list.push(total_td[1].innerHTML)
+        total_td[1].innerHTML = total_td[1].innerHTML.replace(".0", "")
 
         price_list.push(total_td[2].innerHTML);
         total_td[2].innerHTML = "$" + total_td[2].innerHTML
+
+        ftd[tr].innerHTML += `<td>$${Math.round(Number(total_td[1].innerHTML) * Number(total_td[2].innerHTML.replace("$", "")))}</td>`
     }
 
     var ftd_chart = document.getElementById('ftd_chart');

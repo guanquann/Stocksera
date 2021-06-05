@@ -41,9 +41,11 @@
     var table = document.getElementsByTagName("table")[0];
     var tr = table.querySelectorAll("tr");
     for (row=1; row<tr.length; row++) {
-        var td = tr[row].querySelector("td");
-        ticker = td.innerHTML;
-        td.innerHTML = `<a href="{% url 'ticker' %}?quote=${ticker}" target="_blank">${ticker}</a>`;
+        var td = tr[row].querySelectorAll("td");
+        ticker = td[0].innerHTML;
+        td[0].innerHTML = `<a href="{% url 'ticker' %}?quote=${ticker}" target="_blank"><img src='${td[8].innerHTML}' onerror='this.src="/static/images/not_available.svg"'><b>${ticker}</b></a>`;
+        td[3].innerHTML = "$" + td[3].innerHTML;
+        td[8].style.display = "none";
     }
 </script>
 {% endblock %}

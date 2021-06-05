@@ -17,6 +17,12 @@
         font-size:15px;
         font-weight:bold;
     }
+
+    #ticker_intro {
+        width: 58%;
+        margin-left: 8px;
+        display: inline-block;
+    }
 }
 
 @media only screen and (min-width: 900px) {
@@ -38,12 +44,12 @@
         font-size:22px;
         font-weight:bold;
     }
-}
 
-#ticker_intro {
-    width: 75%;
-    margin-left: 8px;
-    display: inline-block;
+    #ticker_intro {
+        width: 73%;
+        margin-left: 8px;
+        display: inline-block;
+    }
 }
 
 .price_details {

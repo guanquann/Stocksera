@@ -10,13 +10,6 @@ function update_table() {
         <th onclick="sortTable(5)" class="th-sort-desc" id='5'>Floating Shares</th>
         <th onclick="sortTable(6)" class="th-sort-desc" id='6'>Outstanding Shares</th>
         <th onclick="sortTable(7)" class="th-sort-desc" id='7'>Industry</th>`
-
-    for (i=1; i<rows.length; i++) {
-        var td = rows[i].querySelectorAll("td");
-        td[0].innerHTML = `<img src='${td[8].innerHTML}' onerror='this.src="/static/images/not_available.svg"'><b>` + td[0].innerHTML + "</b>";
-        td[3].innerHTML = "$" + td[3].innerHTML;
-        td[8].style.display = "none";
-    }
 }
 
 function sortTable(n) {

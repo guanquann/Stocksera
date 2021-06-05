@@ -3,7 +3,6 @@
 *.pyc
 __pycache__
 venv/
-*.csv
 test.py
 .vscode
 *.db

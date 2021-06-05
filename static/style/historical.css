@@ -33,3 +33,11 @@ input {
     height: 100%;
     border: 0;
 }
+
+select {
+    border: 1px solid grey;
+    border-radius: 6px;
+    padding: 7px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}

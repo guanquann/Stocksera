@@ -40,41 +40,33 @@ function display_data() {
 
     historical_data = historical_data.querySelectorAll("tr");
 
-    for (i=2; i<historical_data.length-1; i++) {
+    for (i=2; i<historical_data.length; i++) {
         var td = historical_data[i].querySelectorAll("td");
-        var prev_td = historical_data[i+1].querySelectorAll("td");
 
         var d = new Date(td[0].innerHTML);
         var dayName = days[d.getDay()];
 
+        td[5].innerHTML = Number(td[5].innerHTML).toLocaleString()
+
+        if (String(td[6].innerHTML).includes("-")) {
+            td[6].style.color = "red";
+        }
+        else {
+            td[6].style.color = "green";
+        }
+
+        if (String(td[8].innerHTML).includes("-")) {
+            td[8].style.color = "red";
+        }
+        else {
+            td[8].style.color = "green";
+        }
+
+        td[6].innerHTML = td[6].innerHTML + "%"
+        td[7].innerHTML = td[7].innerHTML + "%"
+        td[8].innerHTML = td[8].innerHTML + "%"
         historical_data[i].innerHTML = `<td>${dayName}</td>` + historical_data[i].innerHTML
-
-        var price_diff = td[4].innerHTML - prev_td[4].innerHTML;
-        var price_percent_diff = Math.round((price_diff / prev_td[4].innerHTML) * 10000) / 100
-        if (String(price_percent_diff).includes("-")) {
-            historical_data[i].innerHTML += `<td style="color:red">${price_percent_diff}%</td>`
-        }
-        else {
-            historical_data[i].innerHTML += `<td style="color:green">+${price_percent_diff}%</td>`
-        }
-
-        var amplitude = Math.round(((td[2].innerHTML - td[3].innerHTML) / td[1].innerHTML) * 10000) / 100;
-        historical_data[i].innerHTML += `<td>${amplitude}%</td>`
-
-        var vol_diff = Number(td[5].innerHTML) - Number(prev_td[5].innerHTML);
-        var vol_percent_diff = Math.round((vol_diff / Number(prev_td[5].innerHTML)) * 10000) / 100
-        if (String(vol_percent_diff).includes("-")) {
-            historical_data[i].innerHTML += `<td style="color:red">${vol_percent_diff}%</td>`
-        }
-        else {
-            historical_data[i].innerHTML += `<td style="color:green">+${vol_percent_diff}%</td>`
-        }
     }
-
-    var d = new Date(historical_data[historical_data.length-1].querySelector("td").innerHTML);
-    var dayName = days[d.getDay()];
-    historical_data[historical_data.length-1].innerHTML = `<td>${dayName}</td>` + historical_data[i].innerHTML
-    historical_data[historical_data.length-1].innerHTML += "<td></td><td></td><td></td>"
 }
 
 const searchColumn = (elem, col_num) =>{

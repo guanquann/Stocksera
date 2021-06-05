@@ -443,14 +443,44 @@ def earnings_calendar(request):
 
 def historical_data(request):
     ticker_selected = default_ticker(request)
+
+    if request.GET.get("sort"):
+        sort_by = request.GET['sort'].replace("Sort By: ", "")
+    else:
+        sort_by = "Date"
+
+    if request.GET.get("order"):
+        order = request.GET['order'].replace("Order: ", "")
+    else:
+        order = "Descending"
+
     ticker = yf.Ticker(ticker_selected)
     price_df = ticker.history(period="1y", interval="1d").reset_index().iloc[::-1]
-    price_df = price_df.round(2)
+
     del price_df["Dividends"]
     del price_df["Stock Splits"]
+
+    price_df["% Price Change"] = price_df["Close"].shift(-1)
+    price_df["% Price Change"] = 100 * (price_df["Close"] - price_df["% Price Change"]) / price_df["% Price Change"]
+
+    price_df["Amplitude"] = 100 * (price_df["High"] - price_df["Low"]) / price_df["Open"]
+
+    price_df["% Vol Change"] = price_df["Volume"].shift(-1)
+    price_df["% Vol Change"] = 100 * (price_df["Volume"] - price_df["% Vol Change"]) / price_df["% Vol Change"]
+
+    if order == "Descending":
+        price_df.sort_values(by=[sort_by], inplace=True, ascending=False)
+    else:
+        price_df.sort_values(by=[sort_by], inplace=True)
+
+    price_df = price_df.round(2)
+    price_df = price_df.fillna(0)
     price_df = price_df.to_html(index=False)
 
-    return render(request, 'historical_data.html', {"price_df": price_df})
+    return render(request, 'historical_data.html', {"ticker_selected": ticker_selected,
+                                                    "sort_by": sort_by,
+                                                    "order": order,
+                                                    "price_df": price_df})
 
 
 def reddit_analysis(request):

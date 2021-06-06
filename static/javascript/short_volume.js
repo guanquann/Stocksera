@@ -1,3 +1,11 @@
+function display_data() {
+    var error_msg_class = document.getElementById("error_msg").className;
+    if (error_msg_class == "instructions error_true") {
+        document.getElementById("error_msg").style.removeProperty("display");
+        document.getElementById("short_vol_data").style.display = "none";
+    }
+}
+
 function short_vol_graph() {
     var shorted_vol_daily = document.getElementsByTagName("table")[0].querySelectorAll("tr");
     var date_list = [], price_list = [], short_vol_list = [], long_vol_list = [], percentage_list = []

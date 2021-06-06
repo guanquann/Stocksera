@@ -20,23 +20,13 @@ analyzer.lexicon.update(new_words)
 
 trends = TrendReq(hl='en-US', tz=360)
 
-# https://query2.finance.yahoo.com/v10/finance/quoteSummary/AAPL?modules=price
-
 
 def main(request):
     return render(request, "home.html")
 
 
 def stock_price(request):
-    if request.GET.get("financial"):
-        ticker_selected = request.GET['financial'].upper()
-        return redirect('/ticker/financial/?quote=%s' % ticker_selected)
-
-    elif request.GET.get("options"):
-        ticker_selected = request.GET['options'].upper()
-        return redirect('/ticker/options/?quote=%s' % ticker_selected)
-
-    elif request.GET.get("quote"):
+    if request.GET.get("quote"):
         ticker_selected = request.GET['quote'].upper()
         try:
             ticker = yf.Ticker(ticker_selected)
@@ -114,7 +104,7 @@ def ticker_institutional_holders(request):
     return render(request, 'iframe_format.html', {"title": "Institutional Holders", "table": institutional_holders})
 
 
-def sub_news(request):
+# def sub_news(request):
     # ticker_selected = default_ticker(request)
     # ticker_fin = finvizfinance(ticker_selected)
     #
@@ -138,8 +128,8 @@ def sub_news(request):
     #
     # news_df["Sentiment"] = sentiment_list
     # news_df = news_df.to_html(index=False)
-    return render(request, 'iframe_format.html', {"title": "News", "table": news_df, "link": link,
-                                                  "class": "ticker_news"})
+    # return render(request, 'iframe_format.html', {"title": "News", "table": news_df, "link": link,
+    #                                               "class": "ticker_news"})
 
 
 # def latest_news(request):
@@ -254,52 +244,54 @@ def financial(request):
     balance_list = []
     ticker = yf.Ticker(ticker_selected)
     information = ticker.info
+    if "symbol" in information:
+        balance_sheet = ticker.quarterly_balance_sheet.replace(np.nan, 0)
 
-    balance_sheet = ticker.quarterly_balance_sheet.replace(np.nan, 0)
-    # print(balance_sheet)
+        date_list = balance_sheet.columns.astype("str").to_list()
+        balance_col_list = balance_sheet.index.tolist()
 
-    date_list = balance_sheet.columns.astype("str").to_list()
-    balance_col_list = balance_sheet.index.tolist()
+        for i in range(len(balance_sheet)):
+            values = balance_sheet.iloc[i].tolist()
+            balance_list.append(values)
 
-    for i in range(len(balance_sheet)):
-        values = balance_sheet.iloc[i].tolist()
-        balance_list.append(values)
+        yec = YahooEarningsCalendar(0)
+        earnings = yec.get_earnings_of(ticker_selected)
 
-    yec = YahooEarningsCalendar(0)
-    earnings = yec.get_earnings_of(ticker_selected)
-
-    earnings_list, financial_quarter_list = [], []
-    # [[1, 0.56, 0.64], [2, 0.51, 0.65], [3, 0.7, 0.73], [4, 1.41, 1.68], [5, 0.98]]
-    count = 5
-    for earning in earnings:
-        if len(earnings_list) != 5:
-            if earning["epsestimate"] is not None:
-                if earning["epsactual"] is not None:
-                    earnings_list.append([count, earning["epsestimate"], earning["epsactual"]])
-                else:
-                    earnings_list.append([count, earning["epsestimate"]])
-                year_num = earning["startdatetime"].split("T")[0].split("-")[0]
-                month_num = int(earning["startdatetime"].split("T")[0].split("-")[1])
-                if month_num in [1, 2, 3]:
-                    year_num = int(year_num) - 1
-                    quarter = "Q4"
-                elif month_num in [4, 5, 6]:
-                    quarter = "Q1"
-                elif month_num in [7, 8, 9]:
-                    quarter = "Q2"
-                else:
-                    quarter = "Q3"
-                financial_quarter_list.append("{} {}".format(year_num, quarter))
-            count -= 1
-        else:
-            break
-    return render(request, 'financial.html', {"ticker_selected": ticker_selected,
-                                              "information": information,
-                                              "date_list": date_list,
-                                              "balance_list": balance_list,
-                                              "balance_col_list": balance_col_list,
-                                              "earnings_list": earnings_list,
-                                              "financial_quarter_list": financial_quarter_list, })
+        earnings_list, financial_quarter_list = [], []
+        # [[1, 0.56, 0.64], [2, 0.51, 0.65], [3, 0.7, 0.73], [4, 1.41, 1.68], [5, 0.98]]
+        count = 5
+        for earning in earnings:
+            if len(earnings_list) != 5:
+                if earning["epsestimate"] is not None:
+                    if earning["epsactual"] is not None:
+                        earnings_list.append([count, earning["epsestimate"], earning["epsactual"]])
+                    else:
+                        earnings_list.append([count, earning["epsestimate"]])
+                    year_num = earning["startdatetime"].split("T")[0].split("-")[0]
+                    month_num = int(earning["startdatetime"].split("T")[0].split("-")[1])
+                    if month_num in [1, 2, 3]:
+                        year_num = int(year_num) - 1
+                        quarter = "Q4"
+                    elif month_num in [4, 5, 6]:
+                        quarter = "Q1"
+                    elif month_num in [7, 8, 9]:
+                        quarter = "Q2"
+                    else:
+                        quarter = "Q3"
+                    financial_quarter_list.append("{} {}".format(year_num, quarter))
+                count -= 1
+            else:
+                break
+        return render(request, 'financial.html', {"ticker_selected": ticker_selected,
+                                                  "information": information,
+                                                  "date_list": date_list,
+                                                  "balance_list": balance_list,
+                                                  "balance_col_list": balance_col_list,
+                                                  "earnings_list": earnings_list,
+                                                  "financial_quarter_list": financial_quarter_list})
+    else:
+        return render(request, 'financial.html', {"ticker_selected": ticker_selected,
+                                                  "error": "error_true"})
 
 
 def options(request):
@@ -392,23 +384,27 @@ def options(request):
                                                 "put_loss_list": put_loss_list,
                                                 "calls": calls.to_html(index=False),
                                                 "puts": puts.to_html(index=False),
-                                                "merge": df_merge.to_html(index=False),
-                                                "error": "error_false"})
+                                                "merge": df_merge.to_html(index=False)})
     except (IndexError, KeyError, Exception):
         return render(request, 'options.html', {"ticker_selected": ticker_selected, "error": "error_true"})
 
 
 def short_volume(request):
     ticker_selected = default_ticker(request)
-    ticker = yf.Ticker(ticker_selected)
-    information = ticker.info
 
     db.execute("SELECT * FROM short_volume WHERE ticker=? ORDER BY reported_date DESC", (ticker_selected,))
     short_volume_data = db.fetchall()
-    short_volume_data = list(map(list, short_volume_data))
-    return render(request, 'short_volume.html', {"ticker_selected": ticker_selected,
-                                                 "information": information,
-                                                 "short_volume_data": short_volume_data})
+    if short_volume_data:
+        ticker = yf.Ticker(ticker_selected)
+        information = ticker.info
+        short_volume_data = list(map(list, short_volume_data))
+        return render(request, 'short_volume.html', {"ticker_selected": ticker_selected,
+                                                     "information": information,
+                                                     "short_volume_data": short_volume_data})
+    else:
+        return render(request, 'short_volume.html', {"ticker_selected": ticker_selected,
+                                                     "short_volume_data": short_volume_data,
+                                                     "error": "error_true"})
 
 
 def failure_to_deliver(request):
@@ -426,7 +422,7 @@ def failure_to_deliver(request):
                                             "information": information,
                                             "ftd": ftd.to_html(index=False)})
     else:
-        return render(request, 'ftd.html')
+        return render(request, 'ftd.html', {"ticker_selected": ticker_selected, "error": "error_true"})
 
 
 def earnings_calendar(request):

@@ -1,34 +1,4 @@
-.navigation_menu {
-    display: flex;
-    padding-top: 3px;
-    width: fit-content;
-}
-
-.show_selection {
-    margin-right: 4%;
-    margin-top: 1%;
-}
-
-.choices {
-    margin-top: 1%;
-}
-
-.choices:hover {
-    cursor: pointer;
-}
-
-.choice_selected {
-    color: rgb(38, 166, 154);
-    font-weight: bold;
-}
-
-.delimiter {
-    padding-left: 5px;
-    padding-right: 5px;
-    margin-top: 1%;
-}
-
-input {
+.dark_mode input, input {
     width: 95%;
     height: 100%;
     border: 0;

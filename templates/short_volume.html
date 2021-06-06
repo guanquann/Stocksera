@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/short_volume.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}short_vol_graph();restore_dark_mode(){% endblock %}
+{% block onload_properties%}display_data();short_vol_graph();restore_dark_mode(){% endblock %}
 
 {% block main_nav %}
 <div class="top_nav">
@@ -29,8 +29,24 @@
         <p>Short Volume measures the number of shares that have been shorted,  while Short Interest represents the number of shorted shares that have yet to be closed out or covered.</p>
     </div>
 
+    <div id="error_msg" style="display:none;" class="instructions {{error}}">
+        <p>Currently, only popular tickers like GME, AMC, BB, CLOV, UWMC, NIO, TSLA, AAPL, SPY, NOK, AMD, NVDA,
+            PLTR, COIN, RKT, MVIS, FUBO, DISCA, VIAC, SNDL, SPCE, FB, SNAP, OCGN, QQQ, TQQQ, ROKU, TWTR, ARKK, ARKF,
+            ARKG, ARKQ, SQQQ, INTC, BABA, IWM, ROOT, BA, SQ, SHOP, SE, VOO, PYPL, EXPR, KOSS, IPOE, WKHS, DIA, GM,
+            TLRY, CLNE, MSFT, RBLX, F have short volume data. If you like to see more tickers, drop me a message in the
+            About section.
+        </p>
+    </div>
+
     <div id="short_vol_data">
         <div id="ticker_basic_stats"></div>
+
+        <div id="more_info_div">
+            <a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}" onclick="show_spinner()">Analysis</a>
+            <a class="more_info_btn" href="{% url 'financial' %}?quote={{ticker_selected}}" onclick="show_spinner()">Financials</a>
+            <a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}" onclick="show_spinner()">Options</a>
+            <a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}" onclick="show_spinner()">FTD</a>
+        </div>
 
         <div id="summary" class="instructions"></div>
 

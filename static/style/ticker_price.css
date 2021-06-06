@@ -94,22 +94,7 @@
     }
 }
 
-#more_info_div {
-    text-align: center;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-.more_info_btn {
-    border: 1.5px solid #9c9c9c;
-    border-radius: 6px;
-    padding: 5.5px;
-    font-weight: bold;
-    margin-left: 8px;
-    margin-right: 8px;
-}
-
-.more_info_btn:hover, .change_day_btn:hover {
+.change_day_btn:hover {
     background-color: #26a69a;
 }
 

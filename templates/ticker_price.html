@@ -29,17 +29,19 @@
             Enter a ticker symbol you are interested to view or click any of the buttons below!
         </p>
     </div>
-    <div class="top_section">
-        <div id="error_msg" style="display:none;" class="instructions {{error}}">
-            <p>There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).</p>
-        </div>
 
+    <div id="error_msg" style="display:none;" class="instructions {{error}}">
+            <p>There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).</p>
+    </div>
+
+    <div class="top_section">
         <div id="ticker_basic_stats"></div>
 
         <div style="display:none" id="more_info_div">
-            <button class="more_info_btn" name="financial" type="submit" value={{ticker_selected}} onclick="show_spinner()">Financials</button>
-            <button class="more_info_btn" name="options" type="submit" value={{ticker_selected}} onclick="show_spinner()">Options</button>
-            <button class="more_info_btn" name="competitors" type="submit" value={{ticker_selected}} onclick="show_spinner()">Competitors</button>
+            <a class="more_info_btn" href="{% url 'financial' %}?quote={{ticker_selected}}" onclick="show_spinner()">Financials</a>
+            <a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}" onclick="show_spinner()">Options</a>
+            <a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}" onclick="show_spinner()">Short Vol</a>
+            <a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}" onclick="show_spinner()">FTD</a>
         </div>
 
         <div style="display:none" id="days_btn">

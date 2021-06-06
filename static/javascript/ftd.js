@@ -1,3 +1,11 @@
+function display_data() {
+    var error_msg_class = document.getElementById("error_msg").className;
+    if (error_msg_class == "instructions error_true") {
+        document.getElementById("error_msg").style.removeProperty("display");
+        document.getElementById("ftd").style.display = "none";
+    }
+}
+
 function ftd_graph() {
     var ftd = document.getElementsByTagName("table")[0].querySelectorAll("tr");
 
@@ -33,7 +41,7 @@ function ftd_graph() {
                     label: 'FTD',
                     type: 'line',
                     data: vol_list,
-                    borderColor: 'wheat',
+                    borderColor: 'yellow',
                     backgroundColor: 'transparent',
                     yAxisID: 'B',
                 },

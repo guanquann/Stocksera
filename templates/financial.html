@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/financial.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode(){% endblock %}
+{% block onload_properties%}display_data();restore_dark_mode(){% endblock %}
 
 {% block main_nav %}
 <div class="top_nav">
@@ -25,11 +25,22 @@
 
 {% block main_content %} 
     <div class="instructions">
-        <p>INSERT TEXT HERE</p>
+        <p>This page is still in beta. Currently, only the Balance Sheet of the company is available. Income Statement and Cash Flow will be added in the next update.</p>
     </div> 
+
+    <div id="error_msg" style="display:none;" class="instructions {{error}}">
+            <p>There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).</p>
+    </div>
 
     <div class="top_section">
         <div id="ticker_basic_stats"></div>
+
+        <div id="more_info_div">
+            <a class="more_info_btn" href="{% url 'financial' %}?quote={{ticker_selected}}" onclick="show_spinner()">Financials</a>
+            <a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}" onclick="show_spinner()">Options</a>
+            <a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}" onclick="show_spinner()">Short Vol</a>
+            <a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}" onclick="show_spinner()">FTD</a>
+        </div>
 
         <div>
             <h2>Current Assets<button type="button" onclick="show_graph(this)" class="selected_btn">Graph</button><button type="button" onclick="show_table(this)">Table</button></h2>

@@ -1,3 +1,11 @@
+function display_data() {
+    var error_msg_class = document.getElementById("error_msg").className;
+    if (error_msg_class == "instructions error_true") {
+        document.getElementById("error_msg").style.removeProperty("display");
+        document.getElementsByClassName("top_section")[0].style.display = "none";
+    }
+}
+
 function show_graph(elem) {
     var parent_div = elem.parentElement.parentElement.childNodes
     parent_div[1].querySelectorAll("button")[0].className = "selected_btn"

@@ -23,6 +23,17 @@
         margin-left: 8px;
         display: inline-block;
     }
+
+    .price_details {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: bold;
+        border-radius: 6px;
+        padding-top: 4px;
+        padding-bottom: 3px;
+        padding-left: 5px;
+        padding-right: 5px
+    }
 }
 
 @media only screen and (min-width: 900px) {
@@ -50,17 +61,17 @@
         margin-left: 8px;
         display: inline-block;
     }
-}
 
-.price_details {
-    display: inline-block;
-    font-size: 15px;
-    font-weight: bold;
-    border-radius: 6px;
-    padding-top: 6px;
-    padding-bottom: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
+    .price_details {
+        display: inline-block;
+        font-size: 15px;
+        font-weight: bold;
+        border-radius: 6px;
+        padding-top: 6px;
+        padding-bottom: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
 }
 
 .positive_price {

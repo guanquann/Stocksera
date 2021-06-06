@@ -79,3 +79,7 @@
     background-color: red;
     color: white;
 }
+
+.table_content {
+    max-height: 500px;
+}

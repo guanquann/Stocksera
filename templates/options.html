@@ -23,14 +23,22 @@
 
 {% block main_content %}
     <div class="instructions">
-        <p>View options chain of your favourite ticker and get the max pain price of the week!</p>
-    </div> 
-    <div id="error_msg" class="instructions {{error}}" style="display:none">
+        <p>View options chain of your favourite ticker and get the max pain price of the week! Data is updated real time. </p>
+    </div>
+
+    <div id="error_msg" style="display:none;" class="instructions {{error}}">
         <p>There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).</p>
     </div>
-    <div class="main_div">
-        <div class="contents">
-            <div class="ticker_stats"></div>
+
+    <div class="contents">
+        <div class="ticker_stats"></div>
+
+        <div id="more_info_div">
+            <a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}" onclick="show_spinner()">Analysis</a>
+            <a class="more_info_btn" href="{% url 'financial' %}?quote={{ticker_selected}}" onclick="show_spinner()">Financials</a>
+            <a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}" onclick="show_spinner()">Short Vol</a>
+            <a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}" onclick="show_spinner()">FTD</a>
+        </div>
 
         <div class="navigation_menu">
             <div id="date_dropdown" style="display: none;">
@@ -47,7 +55,7 @@
             <div class="header">{{date_selected}}</div>
         </div>
 
-        <div id="graph_section" style="display: none;">
+        <div id="graph_section">
             <h2>Max Pain</h2>
             <div class="chart-container">
                 <canvas id="max_pain_chart"></canvas>
@@ -65,7 +73,7 @@
             </div>
         </div>
 
-        <div id="options_choice" style="display: none;">
+        <div id="options_choice">
             <h2>Options Table</h2>
             <div class="navigation_menu">
                 <div class="show_selection">Show: </div>
@@ -75,7 +83,7 @@
             </div>
         </div>
 
-        <div id="list_format" style="display: none;">
+        <div id="list_format">
             <div class="itm_description calls">
                 <div class="itm_date_description">Calls for {{date_selected}}</div>
                 <div class="itm_description_right">
@@ -99,7 +107,7 @@
             </div>
         </div>
 
-        <div id="straddle_format" style="display: none;">
+        <div id="straddle_format">
             <div id="straddle_div">
                 <div id="straddle_header">
                     <div id="straddle_header_calls">Calls</div>
@@ -109,7 +117,6 @@
             </div>
         </div>
         <p>Data from: <a href="https://finance.yahoo.com/" target="_blank">finance.yahoo.com</a></p>
-        </div>
     </div>
 </form>
 {% endblock %}

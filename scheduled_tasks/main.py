@@ -9,11 +9,12 @@ conn = sqlite3.connect("database.db", check_same_thread=False)
 db = conn.cursor()
 
 if __name__ == '__main__':
+    scrape_reddit.main()
     get_subreddit_count.subreddit_count()
     get_news_sentiment.news_sentiment()
-    # miscellaneous.get_low_float()
-    # miscellaneous.get_high_short_interest()
-    scrape_reddit.main()
+    miscellaneous.get_low_float()
+    miscellaneous.get_high_short_interest()
+
     # db.execute("SELECT date_updated FROM wallstreetbets ORDER BY ID DESC LIMIT 1")
     # db_date = db.fetchone()[0]
     # buy_trending_tickers.buy_new_ticker(db_date)

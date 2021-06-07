@@ -456,3 +456,7 @@ INFO:root:Ticker MVIS to be sold on 2021-06-04 at $18.15 during market open.
 INFO:root:Ticker SQ to be sold on 2021-06-04 at $212.51 during market open.
 INFO:root:--------------------------------------------------
 INFO:root:--------------------------------------------------
+WARNING:prawcore:Retrying due to ConnectionError(MaxRetryError("HTTPSConnectionPool(host='www.reddit.com', port=443): Max retries exceeded with url: /api/v1/access_token (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x0000020BD35BD348>: Failed to establish a new connection: [Errno 11001] getaddrinfo failed'))")) status: GET https://oauth.reddit.com/r/wallstreetbets/about/
+INFO:root:Ticker SPY to be bought on 2021-06-07 for $422.59.
+INFO:root:Ticker AMZN to be sold on 2021-06-07 at $3197.33 during market open.
+INFO:root:--------------------------------------------------

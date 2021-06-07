@@ -1,5 +1,6 @@
 import os
 import sqlite3
+from datetime import datetime, timedelta
 
 from custom_extensions.custom_words import *
 from helpers import *
@@ -9,7 +10,7 @@ from pytrends.request import TrendReq
 from yahoo_earnings_calendar import YahooEarningsCalendar
 from finvizfinance.quote import finvizfinance
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 conn = sqlite3.connect(r"scheduled_tasks/database.db", check_same_thread=False)
@@ -26,11 +27,14 @@ def main(request):
 
 
 def stock_price(request):
+    """
+    Get price, graph and key statistics of a ticker. Data from yahoo finance
+    """
     if request.GET.get("quote"):
-        ticker_selected = request.GET['quote'].upper()
+        ticker_selected = request.GET['quote']
         try:
             ticker = yf.Ticker(ticker_selected)
-                            
+            # Display graph based on what user selects. Default is 1 day
             if "five_day" in request.GET:
                 price_df = ticker.history(period="5d", interval="30m")
                 ticker_date_max = list(map(lambda x: x.split(" ")[0], price_df.index.astype(str).to_list()))
@@ -53,6 +57,7 @@ def stock_price(request):
                                        price_df.index.astype(str).to_list()))
                 duration = "0"
 
+            # If price < $1, round to 4sf, else 2sf
             if price_df["Close"][0] <= 1:
                 ticker_price_max = list(map(lambda x: round(x, 4), price_df["Close"].to_list()))
             else:
@@ -64,7 +69,6 @@ def stock_price(request):
                                                          "ticker_date_max": ticker_date_max,
                                                          "ticker_price_max": ticker_price_max,
                                                          "duration": duration,
-                                                         "error": "error_false",
                                                          "information": information,
                                                          })
         except (IndexError, KeyError, Exception):
@@ -73,6 +77,9 @@ def stock_price(request):
 
 
 def ticker_recommendations(request):
+    """
+    Show upgrades/downgrades of ticker. Data from yahoo finance
+    """
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
     try:
@@ -86,6 +93,9 @@ def ticker_recommendations(request):
 
 
 def ticker_major_holders(request):
+    """
+    Show major holders of ticker. Data from yahoo finance
+    """
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
     major_holders = ticker.major_holders
@@ -94,6 +104,9 @@ def ticker_major_holders(request):
 
 
 def ticker_institutional_holders(request):
+    """
+    Show institutional holders of ticker. Data from yahoo finance
+    """
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
     institutional_holders = ticker.institutional_holders
@@ -104,125 +117,191 @@ def ticker_institutional_holders(request):
     return render(request, 'iframe_format.html', {"title": "Institutional Holders", "table": institutional_holders})
 
 
-# def sub_news(request):
-    # ticker_selected = default_ticker(request)
-    # ticker_fin = finvizfinance(ticker_selected)
-    #
-    # news_df = ticker_fin.TickerNews()
-    # news_df["Date"] = news_df["Date"].dt.date
-    # link = news_df["Link"].to_list()
-    # del news_df["Link"]
-    #
-    # sentiment_list = list()
-    # all_titles = news_df['Title'].tolist()
-    # for title in all_titles:
-    #     vs = analyzer.polarity_scores(title)
-    #     sentiment_score = vs['compound']
-    #     if sentiment_score > 0.25:
-    #         sentiment = "Bullish"
-    #     elif sentiment_score < -0.25:
-    #         sentiment = "Bearish"
-    #     else:
-    #         sentiment = "Neutral"
-    #     sentiment_list.append(sentiment)
-    #
-    # news_df["Sentiment"] = sentiment_list
-    # news_df = news_df.to_html(index=False)
-    # return render(request, 'iframe_format.html', {"title": "News", "table": news_df, "link": link,
-    #                                               "class": "ticker_news"})
+def sub_news(request):
+    """
+    Show news and sentiment of ticker in /ticker?quote={TICKER}. Data from Finviz
+    Note: News are only available if hosted locally. Read README.md for more details
+    """
+    ticker_selected = default_ticker(request)
+    ticker_fin = finvizfinance(ticker_selected)
+
+    news_df = ticker_fin.TickerNews()
+    news_df["Date"] = news_df["Date"].dt.date
+    link = news_df["Link"].to_list()
+    del news_df["Link"]
+
+    # Get sentiment of each news title and add it to a new column in news_df
+    sentiment_list = list()
+    all_titles = news_df['Title'].tolist()
+    for title in all_titles:
+        vs = analyzer.polarity_scores(title)
+        sentiment_score = vs['compound']
+        if sentiment_score > 0.25:
+            sentiment = "Bullish"
+        elif sentiment_score < -0.25:
+            sentiment = "Bearish"
+        else:
+            sentiment = "Neutral"
+        sentiment_list.append(sentiment)
+    news_df["Sentiment"] = sentiment_list
+    news_df = news_df.to_html(index=False)
+
+    return render(request, 'iframe_format.html', {"title": "News", "table": news_df, "link": link,
+                                                  "class": "ticker_news"})
 
 
-# def latest_news(request):
-#     ticker_selected = default_ticker(request)
-#     ticker = yf.Ticker(ticker_selected)
-#     ticker_fin = finvizfinance(ticker_selected)
-#     ticker_fin_fundament = ticker_fin.TickerFundament()
-#
-#     information = ticker.info
-#     img = information["logo_url"]
-#     official_name = ticker_fin_fundament["Company"]
-#
-#     sector = ticker_fin_fundament['Sector']
-#     industry = ticker_fin_fundament["Industry"]
-#
-#     news_df = ticker_fin.TickerNews()
-#     news_df["Date"] = news_df["Date"].dt.date
-#     link = news_df["Link"].to_list()
-#     del news_df["Link"]
-#
-#     sentiment_list = list()
-#     all_news = news_df['Title'].tolist()
-#     for title in all_news:
-#         vs = analyzer.polarity_scores(title)
-#         sentiment_score = vs['compound']
-#         if sentiment_score > 0.25:
-#             sentiment = "Bullish"
-#         elif sentiment_score < -0.25:
-#             sentiment = "Bearish"
-#         else:
-#             sentiment = "Neutral"
-#         sentiment_list.append(sentiment)
-#
-#     news_df["Sentiment"] = sentiment_list
-#
-#     num_rows = 0
-#     total_score = 0
-#     latest_date = news_df["Date"].unique()[0]
-#     today_news = news_df[news_df['Date'] == latest_date]['Title'].tolist()
-#     for title in today_news:
-#         vs = analyzer.polarity_scores(title)
-#         sentiment_score = vs['compound']
-#         if sentiment_score != 0:
-#             num_rows += 1
-#             total_score += sentiment_score
-#
-#     if num_rows == 0:
-#         avg_score = 25
-#     else:
-#         avg_score = round((total_score / num_rows) * 100, 2)
-#
-#     db.execute("UPDATE news_sentiment SET sentiment=? WHERE ticker=? AND date_updated=?",
-#                (avg_score, ticker_selected, str(datetime.now()).split()[0]))
-#     conn.commit()
-#
-#     db.execute("SELECT * FROM news_sentiment WHERE date_updated=?", (str(datetime.now()).split()[0],))
-#     ticker_sentiment = db.fetchall()
-#     days = 1
-#     while not ticker_sentiment:
-#         db.execute("SELECT * FROM news_sentiment WHERE date_updated=?", (str(datetime.now()-timedelta(days=days)).split()[0],))
-#         ticker_sentiment = db.fetchall()
-#         days += 1
-#     ticker_sentiment = list(map(list, ticker_sentiment))
-#
-#     return render(request, 'news_sentiment.html', {"ticker_selected": ticker_selected,
-#                                                    "news_df": news_df.to_html(index=False),
-#                                                    "link": link,
-#                                                    "official_name": official_name,
-#                                                    "img": img,
-#                                                    "industry": industry,
-#                                                    "sector": sector,
-#                                                    "ticker_sentiment": ticker_sentiment,
-#                                                    "latest_date": latest_date,
-#                                                    "avg_score": avg_score})
+def latest_news(request):
+    """
+    Show news and sentiment of ticker in /latest_news?quote={TICKER}. Data from Finviz
+    This is more detailed (graphs included) than sub_news()
+    Note: News are only available if hosted locally. Read README.md for more details
+    """
+    ticker_selected = default_ticker(request)
+    ticker = yf.Ticker(ticker_selected)
+    ticker_fin = finvizfinance(ticker_selected)
+    ticker_fin_fundament = ticker_fin.TickerFundament()
+
+    information = ticker.info
+    img = information["logo_url"]
+    official_name = ticker_fin_fundament["Company"]
+
+    sector = ticker_fin_fundament['Sector']
+    industry = ticker_fin_fundament["Industry"]
+
+    news_df = ticker_fin.TickerNews()
+    news_df["Date"] = news_df["Date"].dt.date
+    link = news_df["Link"].to_list()
+    del news_df["Link"]
+
+    sentiment_list = list()
+    all_news = news_df['Title'].tolist()
+    for title in all_news:
+        vs = analyzer.polarity_scores(title)
+        sentiment_score = vs['compound']
+        if sentiment_score > 0.25:
+            sentiment = "Bullish"
+        elif sentiment_score < -0.25:
+            sentiment = "Bearish"
+        else:
+            sentiment = "Neutral"
+        sentiment_list.append(sentiment)
+
+    news_df["Sentiment"] = sentiment_list
+
+    num_rows = 0
+    total_score = 0
+    latest_date = news_df["Date"].unique()[0]
+    today_news = news_df[news_df['Date'] == latest_date]['Title'].tolist()
+    for title in today_news:
+        vs = analyzer.polarity_scores(title)
+        sentiment_score = vs['compound']
+        if sentiment_score != 0:
+            num_rows += 1
+            total_score += sentiment_score
+
+    if num_rows == 0:
+        avg_score = 25
+    else:
+        avg_score = round((total_score / num_rows) * 100, 2)
+
+    db.execute("UPDATE news_sentiment SET sentiment=? WHERE ticker=? AND date_updated=?",
+               (avg_score, ticker_selected, str(datetime.now()).split()[0]))
+    conn.commit()
+
+    db.execute("SELECT * FROM news_sentiment WHERE date_updated=?", (str(datetime.now()).split()[0],))
+    ticker_sentiment = db.fetchall()
+    days = 1
+    while not ticker_sentiment:
+        db.execute("SELECT * FROM news_sentiment WHERE date_updated=?", (str(datetime.now()-timedelta(days=days)).split()[0],))
+        ticker_sentiment = db.fetchall()
+        days += 1
+    ticker_sentiment = list(map(list, ticker_sentiment))
+
+    return render(request, 'news_sentiment.html', {"ticker_selected": ticker_selected,
+                                                   "news_df": news_df.to_html(index=False),
+                                                   "link": link,
+                                                   "official_name": official_name,
+                                                   "img": img,
+                                                   "industry": industry,
+                                                   "sector": sector,
+                                                   "ticker_sentiment": ticker_sentiment,
+                                                   "latest_date": latest_date,
+                                                   "avg_score": avg_score})
+
+
+def historical_data(request):
+    """
+    Allow users to filter/sort historical data of ticker
+    """
+    ticker_selected = default_ticker(request)
+
+    if request.GET.get("sort"):
+        sort_by = request.GET['sort'].replace("Sort By: ", "")
+    else:
+        sort_by = "Date"
+
+    ticker = yf.Ticker(ticker_selected)
+    price_df = ticker.history(period="1y", interval="1d").reset_index().iloc[::-1]
+
+    del price_df["Dividends"]
+    del price_df["Stock Splits"]
+
+    # Add % Price Change, Amplitude, % Vol Change columns
+    price_df["% Price Change"] = price_df["Close"].shift(-1)
+    price_df["% Price Change"] = 100 * (price_df["Close"] - price_df["% Price Change"]) / price_df["% Price Change"]
+
+    price_df["Amplitude"] = 100 * (price_df["High"] - price_df["Low"]) / price_df["Open"]
+
+    price_df["% Vol Change"] = price_df["Volume"].shift(-1)
+    price_df["% Vol Change"] = 100 * (price_df["Volume"] - price_df["% Vol Change"]) / price_df["% Vol Change"]
+
+    if request.GET.get("order"):
+        order = request.GET['order'].replace("Order: ", "")
+    else:
+        order = "Descending"
+
+    if order == "Descending":
+        price_df.sort_values(by=[sort_by], inplace=True, ascending=False)
+    else:
+        price_df.sort_values(by=[sort_by], inplace=True)
+
+    price_df = price_df.round(2)
+    price_df = price_df.fillna(0)
+    price_df = price_df.to_html(index=False)
+
+    return render(request, 'historical_data.html', {"ticker_selected": ticker_selected,
+                                                    "sort_by": sort_by,
+                                                    "order": order,
+                                                    "price_df": price_df})
 
 
 def google_trends(request):
+    """
+    Get trending of ticker in Google. Data is from Google
+    """
     ticker_selected = default_ticker(request)
+
+    # Remove -USD in crpyto
     if "-USD" in ticker_selected:
         ticker_selected = ticker_selected.split("-USD")[0]
 
+    # Get timeframe of trends. Default is 12 months
     if request.GET.get("timing_selected"):
         timeframe = request.GET.get("timing_selected")
     else:
         timeframe = "today 12-m"
+
+    # cat=7 refers to finance and investing section in Google
     trends.build_payload(kw_list=[ticker_selected], timeframe=timeframe, cat=7)
     interest_over_time = trends.interest_over_time().reset_index()
 
+    # Sort trends by country level
     interest_by_region = trends.interest_by_region(resolution='COUNTRY', inc_low_vol=False, inc_geo_code=False).\
         reset_index().sort_values([ticker_selected], ascending=False).head(20).reset_index()
     region_list = interest_by_region["geoName"].to_list()
     region_count_list = interest_by_region[ticker_selected].to_list()
 
+    # Map api variable to clearer format
     mapping_dict = {"now 1-H": "Past hour",
                     "now 4-H": "Past 4 hours",
                     "now 1-d": "Past day",
@@ -240,10 +319,15 @@ def google_trends(request):
 
 
 def financial(request):
+    """
+    Get balance sheet of company. Data is from yahoo finance
+    """
     ticker_selected = default_ticker(request)
     balance_list = []
     ticker = yf.Ticker(ticker_selected)
     information = ticker.info
+
+    # To check if input is a valid ticker
     if "symbol" in information:
         balance_sheet = ticker.quarterly_balance_sheet.replace(np.nan, 0)
 
@@ -254,9 +338,9 @@ def financial(request):
             values = balance_sheet.iloc[i].tolist()
             balance_list.append(values)
 
+        # Get Actual vs Est EPS of ticker
         yec = YahooEarningsCalendar(0)
         earnings = yec.get_earnings_of(ticker_selected)
-
         earnings_list, financial_quarter_list = [], []
         # [[1, 0.56, 0.64], [2, 0.51, 0.65], [3, 0.7, 0.73], [4, 1.41, 1.68], [5, 0.98]]
         count = 5
@@ -267,6 +351,8 @@ def financial(request):
                         earnings_list.append([count, earning["epsestimate"], earning["epsactual"]])
                     else:
                         earnings_list.append([count, earning["epsestimate"]])
+
+                    # Deduce financial quarter based on date of report
                     year_num = earning["startdatetime"].split("T")[0].split("-")[0]
                     month_num = int(earning["startdatetime"].split("T")[0].split("-")[1])
                     if month_num in [1, 2, 3]:
@@ -295,13 +381,16 @@ def financial(request):
 
 
 def options(request):
+    """
+    Get options (Max pain, option chain, C/P ratio) of ticker.
+    """
     ticker_selected = default_ticker(request)
     try:
         ticker = yf.Ticker(ticker_selected)
         information = ticker.info
 
         options_dates = ticker.options
-        if request.GET.get("date") != "" and request.GET.get("date") is not None:
+        if request.GET.get("date") not in ["", None]:
             date_selected = request.GET["date"]
         else:
             date_selected = options_dates[0]
@@ -390,6 +479,9 @@ def options(request):
 
 
 def short_volume(request):
+    """
+    Get short volume of tickers (only popular ones). Data from shortvolumes.com
+    """
     ticker_selected = default_ticker(request)
 
     db.execute("SELECT * FROM short_volume WHERE ticker=? ORDER BY reported_date DESC", (ticker_selected,))
@@ -408,6 +500,9 @@ def short_volume(request):
 
 
 def failure_to_deliver(request):
+    """
+        Get FTD of tickers (only popular ones). Data from SEC
+    """
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
     file_path = r"scheduled_tasks/failure_to_deliver/ticker/{}.csv".format(ticker_selected)
@@ -426,6 +521,9 @@ def failure_to_deliver(request):
 
 
 def earnings_calendar(request):
+    """
+    Get earnings for the upcoming week. Data from yahoo finance
+    """
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
     db.execute("SELECT * FROM earnings_calendar ORDER BY earning_date ASC")
     calendar = db.fetchall()
@@ -437,49 +535,10 @@ def earnings_calendar(request):
                                                       "earnings_calendar": calendar})
 
 
-def historical_data(request):
-    ticker_selected = default_ticker(request)
-
-    if request.GET.get("sort"):
-        sort_by = request.GET['sort'].replace("Sort By: ", "")
-    else:
-        sort_by = "Date"
-
-    if request.GET.get("order"):
-        order = request.GET['order'].replace("Order: ", "")
-    else:
-        order = "Descending"
-
-    ticker = yf.Ticker(ticker_selected)
-    price_df = ticker.history(period="1y", interval="1d").reset_index().iloc[::-1]
-
-    del price_df["Dividends"]
-    del price_df["Stock Splits"]
-
-    price_df["% Price Change"] = price_df["Close"].shift(-1)
-    price_df["% Price Change"] = 100 * (price_df["Close"] - price_df["% Price Change"]) / price_df["% Price Change"]
-
-    price_df["Amplitude"] = 100 * (price_df["High"] - price_df["Low"]) / price_df["Open"]
-
-    price_df["% Vol Change"] = price_df["Volume"].shift(-1)
-    price_df["% Vol Change"] = 100 * (price_df["Volume"] - price_df["% Vol Change"]) / price_df["% Vol Change"]
-
-    if order == "Descending":
-        price_df.sort_values(by=[sort_by], inplace=True, ascending=False)
-    else:
-        price_df.sort_values(by=[sort_by], inplace=True)
-
-    price_df = price_df.round(2)
-    price_df = price_df.fillna(0)
-    price_df = price_df.to_html(index=False)
-
-    return render(request, 'historical_data.html', {"ticker_selected": ticker_selected,
-                                                    "sort_by": sort_by,
-                                                    "order": order,
-                                                    "price_df": price_df})
-
-
 def reddit_analysis(request):
+    """
+    Get trending tickers on Reddit
+    """
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
     if request.GET.get("subreddit"):
         subreddit = request.GET.get("subreddit").lower().replace(" ", "")
@@ -490,7 +549,6 @@ def reddit_analysis(request):
 
     db.execute("SELECT DISTINCT(date_updated) FROM {} ORDER BY ID DESC LIMIT 30".format(subreddit,))
     all_dates = db.fetchall()
-
     all_dates = list(map(convert_date, all_dates))
 
     if request.GET.get("date_selected"):
@@ -519,6 +577,9 @@ def reddit_analysis(request):
 
 
 def subreddit_count(request):
+    """
+    Get subreddit user count, growth, active users over time.
+    """
     db.execute("SELECT * FROM subreddit_count")
     subscribers = db.fetchall()
     subscribers = list(map(list, subscribers))
@@ -526,6 +587,9 @@ def subreddit_count(request):
 
 
 def top_movers(request):
+    """
+    Get top movers of ticker. Data is from yahoo finance
+    """
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
 
     top_gainers = pd.read_html("https://finance.yahoo.com/screener/predefined/day_gainers")[0]
@@ -545,6 +609,9 @@ def top_movers(request):
 
 
 def short_interest(request):
+    """
+    Get short interest of ticker. Data if from highshortinterest.com
+    """
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
     df_high_short_interest = pd.read_sql("SELECT * FROM short_interest", con=conn)
     return render(request, 'short_interest.html', {
@@ -555,6 +622,9 @@ def short_interest(request):
 
 
 def low_float(request):
+    """
+    Get short interest of ticker. Data if from lowfloat.com
+    """
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
     df_low_float = pd.read_sql("SELECT * FROM low_float", con=conn)
     return render(request, 'low_float.html', {"popular_ticker_list": popular_ticker_list,
@@ -564,10 +634,17 @@ def low_float(request):
 
 
 def ark_trades(request):
+    """
+    Get trades/positions of ARK Funds. Data from https://arkfunds.io/api
+    """
     return render(request, 'ark_trade.html')
 
 
 def reddit_etf(request):
+    """
+    Get ETF of r/wallstreetbets
+    Top 10 tickers before market open will be purchased daily
+    """
     popular_ticker_list, popular_name_list, price_list = ticker_bar()
     db.execute("SELECT * FROM reddit_etf WHERE status='Open' ORDER BY open_date DESC")
     open_trade = db.fetchall()
@@ -591,6 +668,9 @@ def reddit_etf(request):
 
 
 def due_diligence(request):
+    """
+    Get a list of due diligence from different subreddits on Reddit. Data is sourced manually by me
+    """
     db.execute("SELECT * FROM top_DD")
     dd = db.fetchall()
     dd = list(map(list, dd))
@@ -602,6 +682,9 @@ def opinion(request):
 
 
 def about(request):
+    """
+    About section of the website and contact me if there's any issues/suggestions
+    """
     if request.POST.get("name"):
         name = request.POST.get("name")
         email = request.POST.get("email")

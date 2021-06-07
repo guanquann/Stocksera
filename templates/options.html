@@ -41,7 +41,7 @@
         </div>
 
         <div class="navigation_menu">
-            <div id="date_dropdown" style="display: none;">
+            <div id="date_dropdown">
                 <select name="date" onchange="show_spinner();this.form.submit()">
                     <option value="{{date_selected}}">Expiry Date: {{date_selected}}</option>
                     {% for date in options_dates %}

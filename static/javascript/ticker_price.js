@@ -4,7 +4,7 @@ function display_data() {
         document.getElementById("error_msg").style.removeProperty("display");
     }
 
-    else if (error_msg_class == "instructions error_false") {
+    else {
         document.getElementsByClassName("ticker_summary")[0].style.removeProperty("display");
         document.getElementsByClassName("chart-container")[0].style.removeProperty("display");
 

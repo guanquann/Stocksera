@@ -6,9 +6,8 @@
 - View historical data of your favourite ticker
 - Gather key statistics such as EPS, beta and SMA
 - Proportion of stocks held by major holders and major institutions
-- Price targets set by different organisations
-- Recent news articles and their sentiment level
-- Data is from <a href="https://finance.yahoo.com/">yahoo finance</a> and <a href="https://finviz.com/">finviz</a>
+- Google trending
+- Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>
 
 #### /ticker/options/
 - View options chain of your favourite ticker
@@ -17,7 +16,7 @@
 - Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>
 
 #### /ticker/short_volume/
-- View short volume and percentage of your favourite ticker in the last 2 trading weeks
+- View short volume and percentage of some of the popular tickers
 - Data is from <a href="http://shortvolumes.com/">shortvolumes.com</a>
 
 #### /earnings_calendar/
@@ -35,7 +34,7 @@
 - This page is currently very basic, open to new suggestions on how to improve this page
 
 #### /reddit_etf/
-- Analyse the performance of trending tickers on Reddit
+- Analyse the performance of trending tickers on r/wallstreetbets
 - Top 10 most mentioned tickers with the highest sentiment will be added to the "Reddit ETF" when market opens
 - Tickers that fall outside the Top 10 list will be sold
 
@@ -47,9 +46,6 @@
 
 #### /low_float/
 - Identify tickers with low float
-
-#### /penny_stocks/
-- View performance of penny stocks
 
 #### /ark_trades/
 - View holdings, trades and news of all companies in ARK Fund.
@@ -80,7 +76,7 @@ pip install -r requiresments.txt
 - Register for an API in <a href="https://www.reddit.com/prefs/apps">https://www.reddit.com/prefs/apps </a> and enter credential in config.py
 
 
-#### Setting up database
+#### Setting up SQLite database
 ```
 py create_database.py
 ```

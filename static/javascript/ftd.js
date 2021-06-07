@@ -41,7 +41,7 @@ function ftd_graph() {
                     label: 'FTD',
                     type: 'line',
                     data: vol_list,
-                    borderColor: 'yellow',
+                    borderColor: 'wheat',
                     backgroundColor: 'transparent',
                     yAxisID: 'B',
                 },

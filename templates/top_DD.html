@@ -12,13 +12,7 @@
 {% block onload_properties%}restore_dark_mode(){% endblock %}
 
 {% block main_nav %}
-<div class="top_nav">
-    <form action="" method="GET" autocomplete="off">
-        <div>
-            <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" autocomplete="off">
-            <button class="submit_btn" onclick="show_spinner()">Search</button>
-        </div>
-</div>
+<div class="top_nav"></div>
 <div id="spinner_div"></div>
 {% endblock %}
 

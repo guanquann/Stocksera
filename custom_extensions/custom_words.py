@@ -1,3 +1,4 @@
+# Custom sentiment score for stocks/finance terms in both news article and Reddit
 new_words = {
     "moon": 3.5,
     "mooon": 3.5,

@@ -73,9 +73,9 @@
     .ticker-wrap {
         background-color:#e9eaea;
         position: fixed;
-        width: 100%;
+        width: 110%;
         overflow: hidden;
-        height: 30px;
+        height: 40px;
         box-sizing: content-box;
         z-index: 999;
     }

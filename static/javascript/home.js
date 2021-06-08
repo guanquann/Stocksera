@@ -50,7 +50,7 @@ window.onclick = function(event) {
 
 function loadWriter() {
     var i = 0;
-    var txt = 'We track trending tickers and their sentiment on Reddit, Twitter & News Articles';
+    var txt = 'We track trending tickers on Reddit and provide Due-Diligence at no cost.';
     var speed = 30;
     typeWriter()
     function typeWriter() {

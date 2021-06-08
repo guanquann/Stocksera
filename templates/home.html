@@ -19,10 +19,10 @@
 {% block main_content %}
 <div>
     <div class="section_1">
-        <div style="text-align: center;width:70%; margin: auto; transform: translateY(10%)">
-            <img style="width:70%;max-width: 550px;" src="{% static 'images/logo.svg' %}">
+        <div class="main_div">
+            <img src="{% static 'images/logo.svg' %}">
             <h2>StocksEra</h2>
-            <p style="width: fit-content; margin: auto; min-height: 55px;" class="typewriter"></p>
+            <p class="typewriter"></p>
             <div class="chart-container">
                 <canvas id="price_chart"></canvas>
             </div>
@@ -33,9 +33,44 @@
     <div id="contents_section">
         <div class="contents_div">
             <div><img src="{% static 'images/ticker_stats.png' %}"></div>
-            <h2>Analyse Ticker Easily</h2>
-            <div class="contents_description">View financial statement of the company, the ticker's options and see how the rest of its competitors perform.</div>
+            <h2>Ticker Analysis</h2>
+            <div class="contents_description">View latest price, key statistics, major holders, institutional holders, recommendations and sort historical data.</div>
             <div class="href_btn"><a href="ticker">VIEW MORE</a></div>
+        </div>
+
+        <div class="contents_div">
+            <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+            <h2>Financials</h2>
+            <div class="contents_description">Get Balance Sheet of a company. Income Statement and Cash Flow will be added in the next update.</div>
+            <div class="href_btn"><a href="ticker/financial/">VIEW MORE</a></div>
+        </div>
+
+        <div class="contents_div">
+            <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+            <h2>Options Data</h2>
+            <div class="contents_description">View max pain for the week, C/P Ratio and option chain of a ticker.</div>
+            <div class="href_btn"><a href="ticker/options/">VIEW MORE</a></div>
+        </div>
+
+        <div class="contents_div">
+            <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+            <h2>Short Volume</h2>
+            <div class="contents_description">Get short volume of some of the popular tickers. Data is from shortvolumes.com.</div>
+            <div class="href_btn"><a href="ticker/short_volume/">VIEW MORE</a></div>
+        </div>
+
+        <div class="contents_div">
+            <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+            <h2>Failure to Deliver</h2>
+            <div class="contents_description">View Failure to Deliver (FTD) data of some of the popular tickers. Data is updated whenever latest information from SEC is available.</div>
+            <div class="href_btn"><a href="ticker/failure_to_deliver/">VIEW MORE</a></div>
+        </div>
+
+        <div class="contents_div">
+            <div><img src="{% static 'images/reddit_trending.png' %}"></div>
+            <h2>Earnings Calendar</h2>
+            <div class="contents_description">View upcoming earning report of tickers in the coming week ahead!</div>
+            <div class="href_btn"><a href="earnings_calendar">VIEW MORE</a></div>
         </div>
 
         <div class="contents_div">
@@ -47,58 +82,46 @@
 
         <div class="contents_div">
             <div><img src="{% static 'images/reddit_trending.png' %}"></div>
-            <h2>Actively Managed ETF</h2>
-            <div class="contents_description">Reddit ETF is based on the trending stocks and their sentiment levels on WSB.</div>
+            <h2>WSB ETF</h2>
+            <div class="contents_description">WSB ETF contains the top 10 trending tickers on r/wallstreetbets. Past performance included as well.</div>
             <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
         </div>
 
         <div class="contents_div">
             <div><img src="{% static 'images/reddit_trending.png' %}"></div>
-            <h2>Trending Ticker on Reddit 🚀</h2>
-            <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
-            <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
+            <h2>Subreddit Count</h2>
+            <div class="contents_description">View percentage of growth in users and active users in popular subreddits such as r/Superstonk and r/amcstock.</div>
+            <div class="href_btn"><a href="subreddit_count">VIEW MORE</a></div>
         </div>
 
         <div class="contents_div">
             <div><img src="{% static 'images/reddit_trending.png' %}"></div>
-            <h2>Trending Ticker on Reddit 🚀</h2>
-            <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
-            <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
+            <h2>Top Due-Diligence</h2>
+            <div class="contents_description">A compilation of top due-diligence on Reddit. Data is manually sourced by Stocksera on a regular basis.</div>
+            <div class="href_btn"><a href="due_diligence">VIEW MORE</a></div>
         </div>
 
         <div class="contents_div">
             <div><img src="{% static 'images/reddit_trending.png' %}"></div>
-            <h2>Trending Ticker on Reddit 🚀</h2>
-            <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
-            <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
+            <h2>Cathie's ARK Fund</h2>
+            <div class="contents_description">Get holdings, daily trades and news of ARK Fund.</div>
+            <div class="href_btn"><a href="ark_trades">VIEW MORE</a></div>
         </div>
 
         <div class="contents_div">
             <div><img src="{% static 'images/reddit_trending.png' %}"></div>
-            <h2>Trending Ticker on Reddit 🚀</h2>
-            <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
-            <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
-        </div>
-
-        <div class="contents_div">
-            <div><img src="{% static 'images/reddit_trending.png' %}"></div>
-            <h2>Trending Ticker on Reddit 🚀</h2>
-            <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
-            <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
-        </div>
-
-        <div class="contents_div">
-            <div><img src="{% static 'images/reddit_trending.png' %}"></div>
-            <h2>Trending Ticker on Reddit 🚀</h2>
-            <div class="contents_description">Get the most trending ticker on different subreddits on Reddit based on several key indicators such as sentiment level, number of posts and upvotes.</div>
-            <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
+            <h2>Others</h2>
+            <div class="contents_description">View top movers, stocks with low float and high short interest.</div>
+            <div class="href_btn"><a href="top_movers">VIEW MORE</a></div>
         </div>
     </div>
+
+
 
     <div id="experience_title">Your experience matters</div>
     <div>
         <div class="experience_div">
-            <div>Responsive web design, dark mode available and most importantly, no annoying advertisements - because we care about your experience</div>
+            <div>Responsive web design, dark mode available and most importantly, no annoying advertisements - because we care about your experience.</div>
             <img src="{% static 'images/reddit_trending.png' %}">
         </div>
     </div>

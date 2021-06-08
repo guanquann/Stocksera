@@ -27,6 +27,7 @@
 
     td img {
         width: 20px;
+        max-height: 20px;
     }
 }
 
@@ -59,6 +60,7 @@
 
     td img {
         width: 30px;
+        max-height: 30px;
     }
 }
 

@@ -30,50 +30,48 @@ def stock_price(request):
     """
     Get price, graph and key statistics of a ticker. Data from yahoo finance
     """
-    if request.GET.get("quote"):
-        ticker_selected = request.GET['quote']
-        try:
-            ticker = yf.Ticker(ticker_selected)
-            # Display graph based on what user selects. Default is 1 day
-            if "five_day" in request.GET:
-                price_df = ticker.history(period="5d", interval="30m")
-                ticker_date_max = list(map(lambda x: x.split(" ")[0], price_df.index.astype(str).to_list()))
-                duration = "1"
-            elif "one_month" in request.GET:
-                price_df = ticker.history(period="1mo", interval="1d")
-                ticker_date_max = price_df.index.astype(str).to_list()
-                duration = "2"
-            elif "one_year" in request.GET:
-                price_df = ticker.history(period="1y", interval="1d")
-                ticker_date_max = price_df.index.astype(str).to_list()
-                duration = "3"
-            elif "five_year" in request.GET:
-                price_df = ticker.history(period="5y", interval="1wk").fillna(method="ffill")
-                ticker_date_max = price_df.index.astype(str).to_list()
-                duration = "4"
-            else:
-                price_df = ticker.history(period="1d", interval="2m")
-                ticker_date_max = list(map(lambda x: x.split()[1].split("-")[0].rsplit(":", 1)[0],
-                                       price_df.index.astype(str).to_list()))
-                duration = "0"
+    ticker_selected = default_ticker(request)
+    try:
+        ticker = yf.Ticker(ticker_selected)
+        # Display graph based on what user selects. Default is 1 day
+        if "five_day" in request.GET:
+            price_df = ticker.history(period="5d", interval="30m")
+            ticker_date_max = list(map(lambda x: x.split(" ")[0], price_df.index.astype(str).to_list()))
+            duration = "1"
+        elif "one_month" in request.GET:
+            price_df = ticker.history(period="1mo", interval="1d")
+            ticker_date_max = price_df.index.astype(str).to_list()
+            duration = "2"
+        elif "one_year" in request.GET:
+            price_df = ticker.history(period="1y", interval="1d")
+            ticker_date_max = price_df.index.astype(str).to_list()
+            duration = "3"
+        elif "five_year" in request.GET:
+            price_df = ticker.history(period="5y", interval="1wk").fillna(method="ffill")
+            ticker_date_max = price_df.index.astype(str).to_list()
+            duration = "4"
+        else:
+            price_df = ticker.history(period="1d", interval="2m")
+            ticker_date_max = list(map(lambda x: x.split()[1].split("-")[0].rsplit(":", 1)[0],
+                                   price_df.index.astype(str).to_list()))
+            duration = "0"
 
-            # If price < $1, round to 4sf, else 2sf
-            if price_df["Close"][0] <= 1:
-                ticker_price_max = list(map(lambda x: round(x, 4), price_df["Close"].to_list()))
-            else:
-                ticker_price_max = list(map(lambda x: round(x, 2), price_df["Close"].to_list()))
+        # If price < $1, round to 4sf, else 2sf
+        if price_df["Close"][0] <= 1:
+            ticker_price_max = list(map(lambda x: round(x, 4), price_df["Close"].to_list()))
+        else:
+            ticker_price_max = list(map(lambda x: round(x, 2), price_df["Close"].to_list()))
 
-            information = ticker.info
+        information = ticker.info
 
-            return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
-                                                         "ticker_date_max": ticker_date_max,
-                                                         "ticker_price_max": ticker_price_max,
-                                                         "duration": duration,
-                                                         "information": information,
-                                                         })
-        except (IndexError, KeyError, Exception):
-            return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected, "error": "error_true"})
-    return render(request, 'ticker_price.html')
+        return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
+                                                     "ticker_date_max": ticker_date_max,
+                                                     "ticker_price_max": ticker_price_max,
+                                                     "duration": duration,
+                                                     "information": information,
+                                                     })
+    except (IndexError, KeyError, Exception):
+        return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected, "error": "error_true"})
 
 
 def ticker_recommendations(request):
@@ -501,7 +499,7 @@ def short_volume(request):
 
 def failure_to_deliver(request):
     """
-        Get FTD of tickers (only popular ones). Data from SEC
+    Get FTD of tickers (only popular ones). Data from SEC
     """
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
@@ -524,22 +522,17 @@ def earnings_calendar(request):
     """
     Get earnings for the upcoming week. Data from yahoo finance
     """
-    popular_ticker_list, popular_name_list, price_list = ticker_bar()
     db.execute("SELECT * FROM earnings_calendar ORDER BY earning_date ASC")
     calendar = db.fetchall()
     calendar = list(map(list, calendar))
 
-    return render(request, 'earnings_calendar.html', {"popular_ticker_list": popular_ticker_list,
-                                                      "popular_name_list": popular_name_list,
-                                                      "price_list": price_list, 
-                                                      "earnings_calendar": calendar})
+    return render(request, 'earnings_calendar.html', {"earnings_calendar": calendar})
 
 
 def reddit_analysis(request):
     """
     Get trending tickers on Reddit
     """
-    popular_ticker_list, popular_name_list, price_list = ticker_bar()
     if request.GET.get("subreddit"):
         subreddit = request.GET.get("subreddit").lower().replace(" ", "")
         if ":" in subreddit:
@@ -567,10 +560,7 @@ def reddit_analysis(request):
                         "stockmarket": "Stock Market"}
     subreddit = database_mapping[subreddit]
 
-    return render(request, 'reddit_sentiment.html', {"popular_ticker_list": popular_ticker_list,
-                                                     "popular_name_list": popular_name_list,
-                                                     "price_list": price_list,
-                                                     "all_dates": all_dates,
+    return render(request, 'reddit_sentiment.html', {"all_dates": all_dates,
                                                      "date_selected": date_selected,
                                                      "trending_tickers": trending_tickers,
                                                      "subreddit_selected": subreddit})
@@ -590,8 +580,6 @@ def top_movers(request):
     """
     Get top movers of ticker. Data is from yahoo finance
     """
-    popular_ticker_list, popular_name_list, price_list = ticker_bar()
-
     top_gainers = pd.read_html("https://finance.yahoo.com/screener/predefined/day_gainers")[0]
     top_gainers["PE Ratio (TTM)"] = top_gainers["PE Ratio (TTM)"].replace(np.nan, "N/A")
 
@@ -602,35 +590,23 @@ def top_movers(request):
     top_movers_combine = top_gainers.append(top_losers, ignore_index=True)
     del top_movers_combine["52 Week Range"]
 
-    return render(request, 'top_movers.html', {"popular_ticker_list": popular_ticker_list,
-                                               "popular_name_list": popular_name_list,
-                                               "price_list": price_list,
-                                               "top_movers_combine": top_movers_combine.to_html(index=False)})
+    return render(request, 'top_movers.html', {"top_movers_combine": top_movers_combine.to_html(index=False)})
 
 
 def short_interest(request):
     """
     Get short interest of ticker. Data if from highshortinterest.com
     """
-    popular_ticker_list, popular_name_list, price_list = ticker_bar()
     df_high_short_interest = pd.read_sql("SELECT * FROM short_interest", con=conn)
-    return render(request, 'short_interest.html', {
-                                                   "popular_ticker_list": popular_ticker_list,
-                                                   "popular_name_list": popular_name_list,
-                                                   "price_list": price_list,
-                                                   "df_high_short_interest": df_high_short_interest.to_html(index=False)})
+    return render(request, 'short_interest.html', {"df_high_short_interest": df_high_short_interest.to_html(index=False)})
 
 
 def low_float(request):
     """
     Get short interest of ticker. Data if from lowfloat.com
     """
-    popular_ticker_list, popular_name_list, price_list = ticker_bar()
     df_low_float = pd.read_sql("SELECT * FROM low_float", con=conn)
-    return render(request, 'low_float.html', {"popular_ticker_list": popular_ticker_list,
-                                              "popular_name_list": popular_name_list,
-                                              "price_list": price_list,
-                                              "df_low_float": df_low_float.to_html(index=False)})
+    return render(request, 'low_float.html', {"df_low_float": df_low_float.to_html(index=False)})
 
 
 def ark_trades(request):
@@ -645,7 +621,6 @@ def reddit_etf(request):
     Get ETF of r/wallstreetbets
     Top 10 tickers before market open will be purchased daily
     """
-    popular_ticker_list, popular_name_list, price_list = ticker_bar()
     db.execute("SELECT * FROM reddit_etf WHERE status='Open' ORDER BY open_date DESC")
     open_trade = db.fetchall()
 
@@ -658,10 +633,7 @@ def reddit_etf(request):
     db.execute("select sum(PnL) from reddit_etf WHERE status='Close'")
     realized_PnL = round(db.fetchone()[0], 2)
 
-    return render(request, 'reddit_etf.html', {"popular_ticker_list": popular_ticker_list,
-                                               "popular_name_list": popular_name_list,
-                                               "price_list": price_list,
-                                               "open_trade": open_trade,
+    return render(request, 'reddit_etf.html', {"open_trade": open_trade,
                                                "close_trade": close_trade,
                                                "unrealized_PnL": unrealized_PnL,
                                                "realized_PnL": realized_PnL})

@@ -27,6 +27,7 @@
 .table_div {
     overflow-x: auto;
     overflow-y: auto;
+    margin-top: 15px;
     margin-bottom: 15px;
 }
 

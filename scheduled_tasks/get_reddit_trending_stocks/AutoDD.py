@@ -139,7 +139,7 @@ def get_ticker_scores_praw(sub_gen_dict):
             # search the title for the ticker/tickers
             title = ' ' + submission[0] + ' '
             title_extracted = set(re.findall(pattern, title))
-            print(submission[5], title)
+            print(submission[5], title, title_extracted)
             # flair is worth bonus points
             if submission[1] is not None:
                 flair = submission[1].lower()

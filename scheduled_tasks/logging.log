@@ -460,3 +460,8 @@ WARNING:prawcore:Retrying due to ConnectionError(MaxRetryError("HTTPSConnectionP
 INFO:root:Ticker SPY to be bought on 2021-06-07 for $422.59.
 INFO:root:Ticker AMZN to be sold on 2021-06-07 at $3197.33 during market open.
 INFO:root:--------------------------------------------------
+INFO:root:Ticker PLTR to be bought on 2021-06-08 for $24.0.
+INFO:root:Ticker AI to be bought on 2021-06-08 for $62.56.
+INFO:root:Ticker SPY to be sold on 2021-06-08 at $422.59 during market open.
+INFO:root:Ticker NOK to be sold on 2021-06-08 at $5.48 during market open.
+INFO:root:--------------------------------------------------

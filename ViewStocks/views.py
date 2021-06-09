@@ -566,6 +566,44 @@ def reddit_analysis(request):
                                                      "subreddit_selected": subreddit})
 
 
+def reddit_etf(request):
+    """
+    Get ETF of r/wallstreetbets
+    Top 10 tickers before market open will be purchased daily
+    """
+    if request.POST:
+        to_refresh = request.POST.get("refresh_btn")
+        db.execute("SELECT * FROM reddit_etf WHERE status='Open' AND ticker=?", (to_refresh, ))
+        ticker = db.fetchone()
+
+        ticker_stats = yf.Ticker(to_refresh)
+        buy_price = ticker[3]
+        today_price = round(ticker_stats.info["regularMarketPrice"], 2)
+        difference = today_price - buy_price
+        PnL = round(difference * ticker[4], 2)
+        percentage_diff = round((difference / ticker[3]) * 100, 2)
+        db.execute("UPDATE reddit_etf SET close_price=?, PnL=?, percentage=? "
+                   "WHERE ticker=? AND status='Open'", (today_price, PnL, percentage_diff, ticker[0]))
+        conn.commit()
+
+    db.execute("SELECT * FROM reddit_etf WHERE status='Open' ORDER BY open_date DESC")
+    open_trade = db.fetchall()
+
+    db.execute("select sum(PnL) from reddit_etf WHERE status='Open'")
+    unrealized_PnL = round(db.fetchone()[0], 2)
+
+    db.execute("SELECT * FROM reddit_etf WHERE status='Close' ORDER BY close_date DESC")
+    close_trade = db.fetchall()
+
+    db.execute("select sum(PnL) from reddit_etf WHERE status='Close'")
+    realized_PnL = round(db.fetchone()[0], 2)
+
+    return render(request, 'reddit_etf.html', {"open_trade": open_trade,
+                                               "close_trade": close_trade,
+                                               "unrealized_PnL": unrealized_PnL,
+                                               "realized_PnL": realized_PnL})
+
+
 def subreddit_count(request):
     """
     Get subreddit user count, growth, active users over time.
@@ -614,29 +652,6 @@ def ark_trades(request):
     Get trades/positions of ARK Funds. Data from https://arkfunds.io/api
     """
     return render(request, 'ark_trade.html')
-
-
-def reddit_etf(request):
-    """
-    Get ETF of r/wallstreetbets
-    Top 10 tickers before market open will be purchased daily
-    """
-    db.execute("SELECT * FROM reddit_etf WHERE status='Open' ORDER BY open_date DESC")
-    open_trade = db.fetchall()
-
-    db.execute("select sum(PnL) from reddit_etf WHERE status='Open'")
-    unrealized_PnL = round(db.fetchone()[0], 2)
-
-    db.execute("SELECT * FROM reddit_etf WHERE status='Close' ORDER BY close_date DESC")
-    close_trade = db.fetchall()
-
-    db.execute("select sum(PnL) from reddit_etf WHERE status='Close'")
-    realized_PnL = round(db.fetchone()[0], 2)
-
-    return render(request, 'reddit_etf.html', {"open_trade": open_trade,
-                                               "close_trade": close_trade,
-                                               "unrealized_PnL": unrealized_PnL,
-                                               "realized_PnL": realized_PnL})
 
 
 def due_diligence(request):

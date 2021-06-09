@@ -73,6 +73,11 @@
     </div>
     <div class="short_interest">
         <h2>Short Interest</h2>
+        <div id="more_info_div">
+            <a class="more_info_btn" href="{% url 'top_movers' %}" onclick="show_spinner()">Top Movers</a>
+            <a class="more_info_btn" href="{% url 'low_float' %}" onclick="show_spinner()">Low Float</a>
+            <a class="more_info_btn" href="{% url 'ark_trades' %}" onclick="show_spinner()">ARK Fund</a>
+        </div>
         <div class="table_div">
             {{ df_high_short_interest|safe }}
         </div>

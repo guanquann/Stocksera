@@ -6,7 +6,7 @@ stopwords_list = ['FDA', 'APE', 'MOON', 'HOLD', 'MERGE', 'ADS', 'FOMO', 'OTC', '
                   'HAND', 'HANDS', 'GAMMA', 'MONEY', 'DD', 'TIME', 'BOYS', 'SOLD', 'CRAZY', 'STOCK', 'PRICE', 'WEEK',
                   'DAY', 'MONTH', 'SET', 'WEEKS', 'DAYS', 'SET', 'LOT', 'GAINS', 'HEDGE', 'FUND', 'FUNDS', 'POST',
                   'ROOF', 'CLOSE', 'RED', 'DATA', 'LEVEL', 'BASED', 'COST', 'FEEL', 'TAKES', 'FLOAT', 'TOTAL', 'TIMES',
-                  'HAT', 'CHAIN', 'ITM', 'WAIT', 'RISE', 'SOLID', 'FUN', 'HEARD', 'LOTS', 'WISH', 'FUCK', 'FUD', 'SUB',
+                  'HAT', 'CHAIN', 'ITM', 'WAIT', 'RISE', 'SOLID', 'FUN', 'HEARD', 'LOTS', 'FUCK', 'FUD', 'SUB',
                   'RSI',
                   'WITH', 'WON', 'ARE', 'DID', 'HERS', 'ON', 'ISNT', 'HE', 'YOUD', 'AM', 'WHICH', 'THESE', 'UNDER',
                   'HAS', 'OTHER', 'LL', 'YOULL', 'DOES', 'RE', 'WHEN', 'ABOUT', 'YOUVE', 'THEY', 'FEW', 'YOU', 'Y',
@@ -32,4 +32,4 @@ stopwords_list = ['FDA', 'APE', 'MOON', 'HOLD', 'MERGE', 'ADS', 'FOMO', 'OTC', '
                   'FOLD', 'THO', 'POOL', 'WGO', 'PEAK', 'SHIP', 'LEG', 'RACE', 'LAWS', 'DASH', 'FAT', 'PUMP', 'DUMP',
                   'JOB', 'PPL', 'FT', 'AGE', 'GOGO', 'FROG', 'TD', 'CAKE', 'TEAM', 'RIG', 'FAM', 'EYES', 'TRIP',
                   'DARE', 'PLUS', 'IQ', 'DDS', 'ROCK', 'LAND', 'JACK', 'SI', 'GLAD', 'WOW', 'RC', 'CTO', 'PT', 'BOB',
-                  'TV', ]
+                  'TV']

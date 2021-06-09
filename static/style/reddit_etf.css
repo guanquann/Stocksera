@@ -10,7 +10,7 @@
 
     .table_title {
         text-align: center;
-        font-size: medium;
+        font-size: 15px;
         font-weight: bold;
         margin-bottom: 5px;
     }
@@ -34,24 +34,36 @@
     }
 }
 
-.performance_individual {
-    background-color: #E9EAEA;
-    border-radius: 10px;
-    padding-left: 0.7%;
-    padding-right: 0.7%;
-    padding-top: 0.4%;
-    padding-bottom: 0.4%;
-    margin: 1.5%;
-    width: 280px;
+.refresh_td {
+    max-width:22px;
 }
 
-.performance_change {
-    width: min-content;
-    float: right;
-    border-radius: 5px;
-    padding: 1%;
-    font-size: small;
-    background-color: rgb(219, 27, 27);
+.refresh_td button {
+    background-color: transparent;
+    max-width: 20px;
+    border: 0;
+    padding: 0;
+}
+
+.refresh_td img {
+    max-width: 19px;
+    border:0;
+}
+
+.previous_stats_div {
+    display: flex;
+    justify-content: space-around;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px
+}
+
+.previous_stats_div > :first-child {
+    color: green;
+}
+
+.previous_stats_div > :nth-child(2) {
+    color: red;
 }
 
 input {
@@ -85,4 +97,5 @@ td img {
     margin-right: 6px;
     vertical-align: middle;
     background-color: white;
+    opacity: 1 !important;
 }

@@ -100,34 +100,40 @@ function check_table() {
     var current_trade_tr = document.getElementById("current_trade").querySelectorAll("tr");
     for (i=1; i<current_trade_tr.length; i++) {
         var td = current_trade_tr[i].querySelectorAll("td");
-        if (td[5].innerHTML.includes("-")) {
-            td[5].innerHTML = td[5].innerHTML.replace("-", "-$");
-            td[5].style.color = "red";
-            td[6].style.color = "red";
-        }
-        else {
-            td[5].innerHTML = "$" + td[5].innerHTML;
-            td[6].innerHTML = "+" + td[6].innerHTML;
-            td[5].style.color = "green";
-            td[6].style.color = "green";
-        }
-    }
-
-    var previous_trades_tr = document.getElementById("previous_trades").querySelectorAll("tr");
-    for (i=1; i<previous_trades_tr.length; i++) {
-        var td = previous_trades_tr[i].querySelectorAll("td");
         if (td[6].innerHTML.includes("-")) {
             td[6].innerHTML = td[6].innerHTML.replace("-", "-$");
             td[6].style.color = "red";
             td[7].style.color = "red";
         }
         else {
-            td[6].innerHTML = "+$" + td[6].innerHTML;
+            td[6].innerHTML = "$" + td[6].innerHTML;
             td[7].innerHTML = "+" + td[7].innerHTML;
             td[6].style.color = "green";
             td[7].style.color = "green";
         }
     }
+
+    var previous_trades_tr = document.getElementById("previous_trades").querySelectorAll("tr");
+    var positive_trade = 0, negative_trade = 0
+    for (i=1; i<previous_trades_tr.length; i++) {
+        var td = previous_trades_tr[i].querySelectorAll("td");
+        if (td[6].innerHTML.includes("-")) {
+            td[6].innerHTML = td[6].innerHTML.replace("-", "-$");
+            td[6].style.color = "red";
+            td[7].style.color = "red";
+            negative_trade += 1;
+        }
+        else {
+            td[6].innerHTML = "+$" + td[6].innerHTML;
+            td[7].innerHTML = "+" + td[7].innerHTML;
+            td[6].style.color = "green";
+            td[7].style.color = "green";
+            positive_trade += 1;
+        }
+    }
+
+    var win_rate = Math.round(10000 * (positive_trade / (positive_trade + negative_trade))) / 100
+    document.getElementsByClassName("previous_trades_stats")[0].innerHTML = `<div class="previous_stats_div"><div>Profit: ${positive_trade}</div><div>Lose: ${negative_trade}</div><div>Win Rate: ${win_rate}%</div></div>`
 
     table_titles = document.getElementsByClassName("table_title");
     for (i=0; i<table_titles.length; i++) {

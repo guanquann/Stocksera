@@ -69,64 +69,50 @@
 
 {% block main_content %} 
     <div class="instructions">
-        <p>Reddit ETF is based on the trending stocks on WSB. If a new ticker enters the Top 10 trending ticker list before the market opens, $10000 worth of shares will be bought. Any ticker that falls out of the Top 10 list will be sold. All trades will be conducted the moment market opens.</p>
+        <p>Reddit ETF is based on the trending stocks on WSB. If a new ticker enters the Top 10 trending ticker list before the market opens, $10000 worth of shares will be bought. Any ticker that falls out of the Top 10 list will be sold. All trades will be conducted the moment market opens. Inception Date: 2021-05-18</p>
     </div>
     <div class="reddit_etf">
-        <div>Inception Date: 2021-05-18</div>
-        <div style="display: flex;">
-            <div class="performance_individual">
-                <p style="margin-bottom: 0;font-size: small;">Today's Performance:</p>
-                <span style="font-size: xx-large">$120000.54</span>
-                <div class="performance_change">
-                    <span>+$10000.45</span>
-                    <span>+5.50%</span>
-                </div>
-            </div>
-            <div class="performance_individual">
-                <p style="margin-bottom: 0;font-size: small;">Last 1 Week's Performance:</p>
-                <span style="font-size: xxx-large">$120000</span>
-                <div class="performance_change">
-                    <span>+$10000.45</span>
-                    <span>+5.50%</span>
-                </div>
-            </div>
-        </div>
 
         <div>
             <p class="table_title">Current Trades (Unrealized PnL: <span>{{unrealized_PnL}}</span>)</p>
             <div class="scrollable_div">
-                <table id="current_trade">
-                    <thead>
-                        <tr>
-                            <th>Ticker</th>
-                            <th>Buy Date</th>
-                            <th>Buy Price</th>
-                            <th>Num Shares</th>
-                            <th>Last Refreshed Price</th>
-                            <th>Unrealized PnL</th>
-                            <th>% Change</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for ticker in open_trade %}
+                <form action="" method="POST"> {% csrf_token %}
+                    <table id="current_trade">
+                        <thead>
                             <tr>
-                                <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank"><img src="{{ticker.1}}" onerror=this.src="{% static 'images/not_available.svg' %}">{{ticker.0}}</a></td>
-                                <td>{{ticker.2}}</td>
-                                <td>${{ticker.3}}</td>
-                                <td>{{ticker.4}}</td>
-                                <td>${{ticker.6}}</td>
-                                <td>{{ticker.7}}</td>
-                                <td>{{ticker.8}}%</td>
+                                <th></th>
+                                <th>Ticker</th>
+                                <th>Buy Date</th>
+                                <th>Buy Price</th>
+                                <th>Num Shares</th>
+                                <th>Last Refreshed Price</th>
+                                <th>Unrealized PnL</th>
+                                <th>% Change</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for ticker in open_trade %}
+                                <tr>
+                                    <td class="refresh_td"><button onclick="this.form.submit()" name="refresh_btn" value="{{ticker.0}}"><img src="{% static 'images/refresh.svg' %}"></button></td>
+                                    <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank"><img src="{{ticker.1}}" onerror=this.src="{% static 'images/not_available.svg' %}">{{ticker.0}}</a></td>
+                                    <td>{{ticker.2}}</td>
+                                    <td>${{ticker.3}}</td>
+                                    <td>{{ticker.4}}</td>
+                                    <td>${{ticker.6}}</td>
+                                    <td>{{ticker.7}}</td>
+                                    <td>{{ticker.8}}%</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </form>
             </div>
         </div>
         <div>
             <p class="table_title">Previous Trades (Realized PnL: <span>{{realized_PnL}}</span>)</p>
+            <div class="previous_trades_stats"></div>
             <input placeholder="Search Ticker: " onkeyup="searchTicker(this)">
-            <div class="scrollable_div">
+            <div class="scrollable_div" style="max-height: 500px">
             <table id="previous_trades">
                     <thead>
                         <tr>

@@ -438,8 +438,6 @@ table {
     margin: auto;
     position: relative;
     width: 100%;
-    overflow-x: auto;
-    overflow-y: auto;
 }
 
 td {
@@ -579,8 +577,9 @@ input:checked + .slider:before {
     color: black;
 }
 
-.dark_mode button:hover {
+.dark_mode button:hover, .dark_mode .more_info_btn:hover {
     background-color: #ffba39;
+    color: black;
 }
 
 .dark_mode img {

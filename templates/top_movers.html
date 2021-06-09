@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/top_movers.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}check_table(){% endblock %}
+{% block onload_properties%}check_table();restore_dark_mode(){% endblock %}
 
 {% block main_nav %}
     <div class="ticker-wrap">
@@ -73,6 +73,11 @@
     </div>
     <div class="top_movers">
         <h2>Top Movers 🚀</h2>
+        <div id="more_info_div">
+            <a class="more_info_btn" href="{% url 'short_interest' %}" onclick="show_spinner()">Short Interest</a>
+            <a class="more_info_btn" href="{% url 'low_float' %}" onclick="show_spinner()">Low Float</a>
+            <a class="more_info_btn" href="{% url 'ark_trades' %}" onclick="show_spinner()">ARK Fund</a>
+        </div>
         <div class="table_div">
             {{ top_movers_combine|safe }}
         </div>

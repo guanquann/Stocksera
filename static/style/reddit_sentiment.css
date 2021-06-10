@@ -96,10 +96,6 @@ select, option {
 
 .toggle_settings {
     cursor: pointer;
-    /*float: right;*/
-}
-
-.toggle_settings:hover {
     text-decoration: underline;
 }
 
@@ -168,4 +164,18 @@ td img {
 
 ::-webkit-scrollbar {
     height: 5px; /* for horizontal scrollbar */
+}
+
+.banned_words {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.banned_words:hover {
+    cursor: pointer;
+}
+
+.modal-body {
+    padding-left: 25px;
+    padding-top: 20px;
 }

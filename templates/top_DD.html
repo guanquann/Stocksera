@@ -24,6 +24,13 @@
             </p>
         </div>
     </div>
+
+    <div id="more_info_div">
+        <a class="more_info_btn" href="{% url 'reddit_analysis' %}" onclick="clickAndDisable(this);">Trending</a>
+        <a class="more_info_btn" href="{% url 'reddit_etf' %}" onclick="clickAndDisable(this);">WSB ETF</a>
+        <a class="more_info_btn" href="{% url 'subreddit_count' %}" onclick="clickAndDisable(this);">Subreddit Stats</a>
+    </div>
+
     <div class="top_dd">
         <div id="dd_contents"></div>
     </div>

@@ -19,6 +19,13 @@
     <div class="instructions">
         <p>Identify number of new members in your favourite sub-reddit. Data is updated once daily, one hour before market opens. New features coming really soon!</p>
     </div>
+
+    <div id="more_info_div">
+        <a class="more_info_btn" href="{% url 'reddit_analysis' %}" onclick="clickAndDisable(this);">Trending</a>
+        <a class="more_info_btn" href="{% url 'reddit_etf' %}" onclick="clickAndDisable(this);">WSB ETF</a>
+        <a class="more_info_btn" href="{% url 'due_diligence' %}" onclick="clickAndDisable(this);">Top DD</a>
+    </div>
+
     <div class="subreddit_count">
         <h2>% Growth in users over time</h2>
         <div class="chart-container">

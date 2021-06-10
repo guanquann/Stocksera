@@ -6,7 +6,6 @@
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/reddit_sentiment.css' %}">
-<script src="{% static 'javascript/reddit_sentiment.js' %}"></script>
 {% endblock %}
 
 {% block onload_properties%}restore_dark_mode();check_table();show_subreddit_img('{{subreddit_selected}}'){% endblock %}
@@ -71,6 +70,13 @@
     <div class="instructions">
         <p>This page shows the top 25 trending tickers in Reddit in the last 48H. Number of posts (including deleted), comments and sentiment are taken into account. Data is refreshed daily.</p>
     </div>
+
+    <div id="more_info_div">
+        <a class="more_info_btn" href="{% url 'reddit_etf' %}" onclick="clickAndDisable(this);">WSB ETF</a>
+        <a class="more_info_btn" href="{% url 'subreddit_count' %}" onclick="clickAndDisable(this);">Subreddit Stats</a>
+        <a class="more_info_btn" href="{% url 'due_diligence' %}" onclick="clickAndDisable(this);">Top DD</a>
+    </div>
+
     <form action="" method="GET" autocomplete="off">
         <div class="select_div">
             <select name="subreddit" onchange="this.form.submit()">
@@ -91,7 +97,7 @@
     <div class="table_data">
         <div class="subreddit_intro"></div>
 
-        <div id="filter_section" style="display:none">
+        <div id="filter_section">
             <div class="toggle_settings" onclick="toggle_settings(this)">Collapse Toolkit</div>
             <div class="filter_description">
                 To remove a column from the table, select the buttons below. To add back that column, select the same button again. Click reset to restore default.
@@ -119,7 +125,7 @@
             <input type="text" placeholder="Ticker:" autocomplete="off" class="filter_ticker" id="search_ticker" onkeyup="searchTicker()">
         </div>
 
-        <div id="reddit_table_section" style="display:none">
+        <div id="reddit_table_section">
             <div style="overflow-x:scroll;">
                 <table id="reddit_table">
                     <thead>
@@ -175,5 +181,28 @@
                 </table>
             </div>
         </div>
+        <div onclick="open_modal()" class="banned_words">Click to view list of banned words</div>
+        <div class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h4>List of Banned Words</h4>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        Below contains a list of words which I have excluded to improve the filtering of the tickers. If by any chance that a popular ticker that emerge in Reddit in the future is inside the list of banned words, Stocksera will not be responsible for the sharing of inaccurate data.
+                        <ul>
+                            {% for word in banned_words %}
+                            <li>{{word}}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+{% endblock %}
+
+{% block bottom_script %}
+<script src="{% static 'javascript/reddit_sentiment.js' %}"></script>
 {% endblock %}

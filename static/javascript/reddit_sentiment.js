@@ -27,11 +27,6 @@ function show_subreddit_img(subreddit) {
 }
 
 function check_table() {
-    if (typeof(document.getElementsByTagName('td')[0].innerText) != "undefined") {
-        document.getElementById("filter_section").style.removeProperty("display");
-        document.getElementById("reddit_table_section").style.removeProperty("display");
-    }
-
     var table = document.getElementById("reddit_table");
     for (i = 0; i < (table.rows.length - 1); i++) {
         var score_change = table.getElementsByTagName('tbody')[0].rows[i].cells[5]
@@ -271,4 +266,23 @@ function sortTable(n) {
             }
         }
     }
+}
+
+function open_modal() {
+    document.getElementsByClassName("modal")[0].style.display = "block";
+}
+
+var modal = document.getElementsByClassName("modal")[0];
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
 }

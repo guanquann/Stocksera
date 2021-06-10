@@ -3,6 +3,7 @@ import sqlite3
 from datetime import datetime, timedelta
 
 from custom_extensions.custom_words import *
+from custom_extensions.stopwords import *
 from helpers import *
 
 import pandas as pd
@@ -563,7 +564,8 @@ def reddit_analysis(request):
     return render(request, 'reddit_sentiment.html', {"all_dates": all_dates,
                                                      "date_selected": date_selected,
                                                      "trending_tickers": trending_tickers,
-                                                     "subreddit_selected": subreddit})
+                                                     "subreddit_selected": subreddit,
+                                                     "banned_words": sorted(stopwords_list)})
 
 
 def reddit_etf(request):

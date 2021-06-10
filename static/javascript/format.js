@@ -85,3 +85,10 @@ function show_spinner() {
 
     document.getElementById("spinner_div").innerHTML = add_to_div
 }
+
+function clickAndDisable(link) {
+ // disable subsequent clicks
+ link.onclick = function(event) {
+    event.preventDefault();
+ }
+}

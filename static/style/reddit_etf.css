@@ -45,6 +45,10 @@
     padding: 0;
 }
 
+.dark_mode .refresh_td button:hover {
+    background-color: transparent;
+}
+
 .refresh_td img {
     max-width: 19px;
     border:0;

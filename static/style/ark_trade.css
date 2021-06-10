@@ -18,22 +18,6 @@
         width: 20px;
         height: 20px;
     }
-
-    /* Modal Content */
-    .modal-content {
-        position: relative;
-        background-color: #fefefe;
-        padding: 0;
-        margin: auto;
-        width: 94vw;
-        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-        -webkit-animation-name: animatetop;
-        -webkit-animation-duration: 0.4s;
-        animation-name: animatetop;
-        animation-duration: 0.4s;
-        border-radius: 8px;
-        border: 1.5px solid gray;
-    }
 }
 
 @media only screen and (min-width: 900px) {
@@ -55,22 +39,6 @@
     td img {
         width: 30px;
         height: 30px;
-    }
-
-    /* Modal Content */
-    .modal-content {
-        position: relative;
-        background-color: #fefefe;
-        padding: 0;
-        margin-left: calc(2.5vw + 200px);
-        width: calc(95vw - 200px);
-        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-        -webkit-animation-name: animatetop;
-        -webkit-animation-duration: 0.4s;
-        animation-name: animatetop;
-        animation-duration: 0.4s;
-        border-radius: 8px;
-        border: 1.5px solid gray;
     }
 }
 

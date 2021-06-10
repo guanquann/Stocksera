@@ -145,6 +145,21 @@
         border-radius: 10px;
         width: 70%;
     }
+
+    .modal-content {
+        position: relative;
+        background-color: #fefefe;
+        padding: 0;
+        margin: auto;
+        width: 94vw;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+        -webkit-animation-name: animatetop;
+        -webkit-animation-duration: 0.4s;
+        animation-name: animatetop;
+        animation-duration: 0.4s;
+        border-radius: 8px;
+        border: 1.5px solid gray;
+    }
 }	
 
 @media only screen and (min-width: 900px) {
@@ -277,6 +292,21 @@
         border-radius: 10px;
         width: 60%;
         max-width: 520px;
+    }
+
+    .modal-content {
+        position: relative;
+        background-color: #fefefe;
+        padding: 0;
+        margin-left: calc(2.5vw + 200px);
+        width: calc(95vw - 200px);
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+        -webkit-animation-name: animatetop;
+        -webkit-animation-duration: 0.4s;
+        animation-name: animatetop;
+        animation-duration: 0.4s;
+        border-radius: 8px;
+        border: 1.5px solid gray;
     }
 }
 
@@ -577,7 +607,11 @@ input:checked + .slider:before {
     color: black;
 }
 
-.dark_mode button:hover, .dark_mode .more_info_btn:hover {
+.dark_mode button:hover {
+    background-color: #ffba39;
+}
+
+.dark_mode .more_info_btn:hover {
     background-color: #ffba39;
     color: black;
 }
@@ -644,6 +678,10 @@ input:checked + .slider:before {
     border-top-right-radius: 6px;
 }
 
+.modal-header h4 {
+    margin: 10px;
+}
+
 .dark_mode .modal-header, .dark_mode .explore_more {
     background-color: #505050;
 }
@@ -654,13 +692,18 @@ input:checked + .slider:before {
     overflow: scroll;
 }
 
+.modal-body ul {
+    list-style-type: disc;
+    margin-top: 5px;
+}
+
 ::-webkit-scrollbar {
     width: 5px;  /* for vertical scrollbar */
     height: 2.5px; /* for horizontal scrollbar */
     background: transparent;  /* Optional: just make scrollbar invisible */
 }
 
-/* Optional: show position indicator in red */
+/* Optional: show position iicator in red */
 ::-webkit-scrollbar-thumb {
     background: grey;
 }

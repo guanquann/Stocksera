@@ -44,17 +44,17 @@
         <div id="ticker_basic_stats"></div>
 
         <div id="more_info_div">
-            <a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}" onclick="show_spinner()">Analysis</a>
-            <a class="more_info_btn" href="{% url 'financial' %}?quote={{ticker_selected}}" onclick="show_spinner()">Financials</a>
-            <a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}" onclick="show_spinner()">Options</a>
-            <a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}" onclick="show_spinner()">Short Volume</a>
+            <a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Analysis</a>
+            <a class="more_info_btn" href="{% url 'financial' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Financials</a>
+            <a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Options</a>
+            <a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Short Volume</a>
         </div>
 
         <div class="chart-container">
                 <canvas id="ftd_chart"></canvas>
         </div>
 
-        <div class="scrollable_div table_content">
+        <div class="scrollable_div">
             {{ftd|safe}}
         </div>
 

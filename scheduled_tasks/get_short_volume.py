@@ -12,7 +12,7 @@ def full_ticker_list():
                        "RBLX", "F", "PLTR", "COIN", "RKT", "MVIS", "FUBO", "DISCA", "VIAC", "SNDL", "SPCE", "FB", "SNAP",
                        "OCGN", "QQQ", "TQQQ", "ROKU", "TWTR", "ARKK", "ARKF", "ARKG", "ARKQ", "SQQQ", "INTC", "BABA",
                        "IWM", "ROOT", "BA", "SQ", "SHOP", "SE", "VOO", "PYPL", "EXPR", "KOSS", "IPOE", "WKHS", "DIA", "GM",
-                       "TLRY", "CLNE"]
+                       "TLRY", "CLNE", "WISH"]
     return list_of_tickers
 
 

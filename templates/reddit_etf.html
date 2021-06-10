@@ -71,6 +71,13 @@
     <div class="instructions">
         <p>Reddit ETF is based on the trending stocks on WSB. If a new ticker enters the Top 10 trending ticker list before the market opens, $10000 worth of shares will be bought. Any ticker that falls out of the Top 10 list will be sold. All trades will be conducted the moment market opens. Inception Date: 2021-05-18</p>
     </div>
+
+    <div id="more_info_div">
+        <a class="more_info_btn" href="{% url 'reddit_analysis' %}" onclick="clickAndDisable(this);">Trending</a>
+        <a class="more_info_btn" href="{% url 'subreddit_count' %}" onclick="clickAndDisable(this);">Subreddit Stats</a>
+        <a class="more_info_btn" href="{% url 'due_diligence' %}" onclick="clickAndDisable(this);">Top DD</a>
+    </div>
+
     <div class="reddit_etf">
 
         <div>
@@ -112,7 +119,7 @@
             <p class="table_title">Previous Trades (Realized PnL: <span>{{realized_PnL}}</span>)</p>
             <div class="previous_trades_stats"></div>
             <input placeholder="Search Ticker: " onkeyup="searchTicker(this)">
-            <div class="scrollable_div" style="max-height: 500px">
+            <div class="scrollable_div">
             <table id="previous_trades">
                     <thead>
                         <tr>

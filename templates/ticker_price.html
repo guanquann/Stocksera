@@ -16,7 +16,7 @@
     <form action="" method="GET" autocomplete="off">
         <div>
             <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" autocomplete="off">
-            <button class="submit_btn" onclick="show_spinner()">Search</button>
+            <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">Search</button>
         </div>
 </div>
 <div id="spinner_div"></div>
@@ -38,18 +38,18 @@
         <div id="ticker_basic_stats"></div>
 
         <div style="display:none" id="more_info_div">
-            <a class="more_info_btn" href="{% url 'financial' %}?quote={{ticker_selected}}" onclick="show_spinner()">Financials</a>
-            <a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}" onclick="show_spinner()">Options</a>
-            <a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}" onclick="show_spinner()">Short Vol</a>
-            <a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}" onclick="show_spinner()">FTD</a>
+            <a class="more_info_btn" href="{% url 'financial' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Financials</a>
+            <a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Options</a>
+            <a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Short Vol</a>
+            <a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">FTD</a>
         </div>
 
         <div style="display:none" id="days_btn">
-            <button class="change_day_btn" name="one_day" onclick="show_spinner()" value="true">1D</button>
-            <button class="change_day_btn"  name="five_day" onclick="show_spinner()" value="true">5D</button>
-            <button class="change_day_btn"  name="one_month" onclick="show_spinner()" value="true">1M</button>
-            <button class="change_day_btn"  name="one_year" onclick="show_spinner()" value="true">1Y</button>
-            <button class="change_day_btn" name="five_year" onclick="show_spinner()" value="true">5Y</button>
+            <button class="change_day_btn" name="one_day" onclick="this.form.submit();this.disabled=true;" value="one_day">1D</button>
+            <button class="change_day_btn"  name="five_day" onclick="this.form.submit()" value="five_day">5D</button>
+            <button class="change_day_btn"  name="one_month" onclick="this.form.submit()" value="one_month">1M</button>
+            <button class="change_day_btn"  name="one_year" onclick="this.form.submit()" value="one_year">1Y</button>
+            <button class="change_day_btn" name="five_year" onclick="this.form.submit()" value="five_year">5Y</button>
         </div>
         </form>
     </div>

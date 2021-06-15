@@ -481,3 +481,12 @@ INFO:root:Ticker SLV to be sold on 2021-06-10 at $25.74 during market open.
 INFO:root:Ticker TSLA to be sold on 2021-06-10 at $603.88 during market open.
 INFO:root:Ticker AMC to be sold on 2021-06-10 at $47.93 during market open.
 INFO:root:--------------------------------------------------
+INFO:root:Ticker AMC to be bought on 2021-06-11 for $47.93.
+INFO:root:Ticker SNDL to be sold on 2021-06-11 at $1.06 during market open.
+INFO:root:--------------------------------------------------
+INFO:root:--------------------------------------------------
+INFO:root:Ticker SENS to be bought on 2021-06-14 for $4.36.
+INFO:root:Ticker WEN to be bought on 2021-06-14 for $24.58.
+INFO:root:Ticker SPCE to be sold on 2021-06-14 at $35.27 during market open.
+INFO:root:Ticker CLF to be sold on 2021-06-14 at $24.01 during market open.
+INFO:root:--------------------------------------------------

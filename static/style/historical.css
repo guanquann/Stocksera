@@ -1,3 +1,7 @@
+th {
+    min-width: 38px;
+}
+
 .dark_mode input, input {
     width: 95%;
     height: 100%;

@@ -1,6 +1,15 @@
 function display_data() {
+
+    var error_msg_class = document.getElementById("error_msg").className;
+    if (error_msg_class == "instructions error_true") {
+        document.getElementById("error_msg").style.removeProperty("display");
+        document.getElementsByClassName("news_sentiment")[0].style.display = "none";
+    }
+
+//    document.getElementsByClassName("news_sentiment")[0].style.removeProperty("display");
+
+
     var main_content = document.getElementsByClassName("ticker_news");
-    main_content[0].style.removeProperty("display");
     var tr = main_content[0].querySelector("table").getElementsByTagName("tr")
 
     var bearish_count = 0; bullish_count = 0; neutral_count = 0

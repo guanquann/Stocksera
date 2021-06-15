@@ -1,4 +1,9 @@
 @media only screen and (max-width: 900px) {
+    .news_sentiment {
+        width: 90%;
+        margin: auto;
+    }
+
     .chart-container {
         position: relative;
         height:55vh;
@@ -9,12 +14,34 @@
     }
 
     #ticker_intro span {
-        font-size: 15px;
+        font-size:15px;
+        font-weight:bold;
+    }
+
+    #ticker_intro {
+        width: 58%;
+        margin-left: 8px;
+        display: inline-block;
+    }
+
+    .price_details {
+        display: inline-block;
+        font-size: 10px;
         font-weight: bold;
+        border-radius: 6px;
+        padding-top: 4px;
+        padding-bottom: 3px;
+        padding-left: 5px;
+        padding-right: 5px
     }
 }
 
 @media only screen and (min-width: 900px) {
+    .news_sentiment {
+        width: 98%;
+        margin: auto;
+    }
+
     .chart-container {
         position: relative;
         height:55vh;
@@ -25,14 +52,36 @@
     }
 
     #ticker_intro span {
-        font-size: 22px;
+        font-size:22px;
+        font-weight:bold;
+    }
+
+    #ticker_intro {
+        width: 73%;
+        margin-left: 8px;
+        display: inline-block;
+    }
+
+    .price_details {
+        display: inline-block;
+        font-size: 15px;
         font-weight: bold;
+        border-radius: 6px;
+        padding-top: 6px;
+        padding-bottom: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
     }
 }
 
-#ticker_intro {
-    margin-left: 7px;
-    margin-top: 5px;
+.positive_price {
+    background-color: green;
+    color: white;
+}
+
+.negative_price {
+    background-color: red;
+    color: white;
 }
 
 .sentiment_msg {

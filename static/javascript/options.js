@@ -52,6 +52,7 @@ function update_table() {
         puts_tr[i].children[11].style.display = "none";
     }
 
+    c_p_ratio = Math.round(100 * (calls_itm / puts_itm)) / 100
     percentage_diff_next_itm = Math.round(((next_itm_call_oi / calls_itm) * 100))
 
     options_summary_code = `
@@ -60,6 +61,7 @@ function update_table() {
             <div class="options_summary_sub"><span>${calls_otm}<br></span>Calls OTM</div>
             <div class="options_summary_sub"><span>${puts_itm}<br></span>Puts ITM</div>
             <div class="options_summary_sub"><span>${puts_otm}<br></span>Puts OTM</div>
+            <div class="options_summary_sub"><span>${c_p_ratio}<br></span>C/P Ratio</div>
             <div class="options_summary_sub"><span>+${next_itm_call_oi}(${percentage_diff_next_itm}%)<br></span>Calls ITM @ $${next_itm_call_strike}</div>
         </div>`
     document.getElementsByClassName("options_summary")[0].innerHTML += options_summary_code;
@@ -77,7 +79,7 @@ function update_table() {
     }
 
     for (i=0; i<straddle.length; i++) {
-        straddle[i].children[5].style.backgroundColor = "#b3b3b3"
+        straddle[i].children[5].className = "straddle_strike"
     }
 }
 

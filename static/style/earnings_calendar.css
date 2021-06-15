@@ -1,17 +1,27 @@
 @media only screen and (max-width: 900px) {
+    .earnings_calendar {
+        width: 90%;
+        margin:auto;
+    }
+
     .earnings_container {
         width: calc(100% / 6);
-        border: 2px solid grey;
+        border: 1.5px solid grey;
         margin: 1px;
         text-align: center;
-        padding: 3px;
+        padding: 1px;
         word-wrap: break-word;
     }
 }
 
 @media only screen and (min-width: 900px) {
+    .earnings_calendar {
+        width: 98%;
+        margin:auto;
+    }
+
     .earnings_container {
-        width: 120px;
+        width: 118px;
         border: 2px solid grey;
         margin: 1px;
         text-align: center;
@@ -25,8 +35,8 @@
     top: 0%;
     padding: 5px;
     border-radius: 5px;
-    z-index: 999;
-    background-color: white;
+    z-index: 99;
+    background-color: #e9eaea;
 }
 
 .dark_mode .menu {
@@ -36,14 +46,10 @@
 #to_top {
     float: right;
     margin-right: 20px;
-    font-weight: bold;
-    border: 2px solid grey;
-    border-radius: 3px;
-    padding: 3px;
+    padding: 2px;
 }
 
 .dark_mode #to_top {
-    border: 2px solid wheat;
 }
 
 button {
@@ -73,7 +79,7 @@ input {
     border-radius: 3px;
     padding: 0.4%;
     text-transform: uppercase;
-    max-width: 18vw;
+    max-width: 85px;
 }
 
 input:focus {

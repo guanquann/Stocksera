@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 
 from custom_extensions.custom_words import *
 from custom_extensions.stopwords import *
+from scheduled_tasks.get_short_volume import full_ticker_list
 from helpers import *
 
 import pandas as pd
@@ -157,75 +158,71 @@ def latest_news(request):
     """
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
-    ticker_fin = finvizfinance(ticker_selected)
-    ticker_fin_fundament = ticker_fin.TickerFundament()
-
     information = ticker.info
-    img = information["logo_url"]
-    official_name = ticker_fin_fundament["Company"]
 
-    sector = ticker_fin_fundament['Sector']
-    industry = ticker_fin_fundament["Industry"]
+    # To check if input is a valid ticker
+    if "symbol" in information:
+        ticker_fin = finvizfinance(ticker_selected)
 
-    news_df = ticker_fin.TickerNews()
-    news_df["Date"] = news_df["Date"].dt.date
-    link = news_df["Link"].to_list()
-    del news_df["Link"]
+        news_df = ticker_fin.TickerNews()
+        news_df["Date"] = news_df["Date"].dt.date
+        link = news_df["Link"].to_list()
+        del news_df["Link"]
 
-    sentiment_list = list()
-    all_news = news_df['Title'].tolist()
-    for title in all_news:
-        vs = analyzer.polarity_scores(title)
-        sentiment_score = vs['compound']
-        if sentiment_score > 0.25:
-            sentiment = "Bullish"
-        elif sentiment_score < -0.25:
-            sentiment = "Bearish"
+        sentiment_list = list()
+        all_news = news_df['Title'].tolist()
+        for title in all_news:
+            vs = analyzer.polarity_scores(title)
+            sentiment_score = vs['compound']
+            if sentiment_score > 0.25:
+                sentiment = "Bullish"
+            elif sentiment_score < -0.25:
+                sentiment = "Bearish"
+            else:
+                sentiment = "Neutral"
+            sentiment_list.append(sentiment)
+
+        news_df["Sentiment"] = sentiment_list
+
+        num_rows = 0
+        total_score = 0
+        latest_date = news_df["Date"].unique()[0]
+        today_news = news_df[news_df['Date'] == latest_date]['Title'].tolist()
+        for title in today_news:
+            vs = analyzer.polarity_scores(title)
+            sentiment_score = vs['compound']
+            if sentiment_score != 0:
+                num_rows += 1
+                total_score += sentiment_score
+
+        if num_rows == 0:
+            avg_score = 25
         else:
-            sentiment = "Neutral"
-        sentiment_list.append(sentiment)
+            avg_score = round((total_score / num_rows) * 100, 2)
 
-    news_df["Sentiment"] = sentiment_list
+        db.execute("UPDATE news_sentiment SET sentiment=? WHERE ticker=? AND date_updated=?",
+                   (avg_score, ticker_selected, str(datetime.now()).split()[0]))
+        conn.commit()
 
-    num_rows = 0
-    total_score = 0
-    latest_date = news_df["Date"].unique()[0]
-    today_news = news_df[news_df['Date'] == latest_date]['Title'].tolist()
-    for title in today_news:
-        vs = analyzer.polarity_scores(title)
-        sentiment_score = vs['compound']
-        if sentiment_score != 0:
-            num_rows += 1
-            total_score += sentiment_score
-
-    if num_rows == 0:
-        avg_score = 25
-    else:
-        avg_score = round((total_score / num_rows) * 100, 2)
-
-    db.execute("UPDATE news_sentiment SET sentiment=? WHERE ticker=? AND date_updated=?",
-               (avg_score, ticker_selected, str(datetime.now()).split()[0]))
-    conn.commit()
-
-    db.execute("SELECT * FROM news_sentiment WHERE date_updated=?", (str(datetime.now()).split()[0],))
-    ticker_sentiment = db.fetchall()
-    days = 1
-    while not ticker_sentiment:
-        db.execute("SELECT * FROM news_sentiment WHERE date_updated=?", (str(datetime.now()-timedelta(days=days)).split()[0],))
+        db.execute("SELECT * FROM news_sentiment WHERE date_updated=?", (str(datetime.now()).split()[0],))
         ticker_sentiment = db.fetchall()
-        days += 1
-    ticker_sentiment = list(map(list, ticker_sentiment))
+        days = 1
+        while not ticker_sentiment:
+            db.execute("SELECT * FROM news_sentiment WHERE date_updated=?", (str(datetime.now()-timedelta(days=days)).split()[0],))
+            ticker_sentiment = db.fetchall()
+            days += 1
+        ticker_sentiment = list(map(list, ticker_sentiment))
 
-    return render(request, 'news_sentiment.html', {"ticker_selected": ticker_selected,
-                                                   "news_df": news_df.to_html(index=False),
-                                                   "link": link,
-                                                   "official_name": official_name,
-                                                   "img": img,
-                                                   "industry": industry,
-                                                   "sector": sector,
-                                                   "ticker_sentiment": ticker_sentiment,
-                                                   "latest_date": latest_date,
-                                                   "avg_score": avg_score})
+        return render(request, 'news_sentiment.html', {"ticker_selected": ticker_selected,
+                                                       "information": information,
+                                                       "news_df": news_df.to_html(index=False),
+                                                       "link": link,
+                                                       "ticker_sentiment": ticker_sentiment,
+                                                       "latest_date": latest_date,
+                                                       "avg_score": avg_score})
+    else:
+        return render(request, 'news_sentiment.html', {"ticker_selected": ticker_selected,
+                                                       "error": "error_true"})
 
 
 def historical_data(request):
@@ -493,9 +490,11 @@ def short_volume(request):
                                                      "information": information,
                                                      "short_volume_data": short_volume_data})
     else:
+        included_list = ", ".join(sorted(full_ticker_list()))
         return render(request, 'short_volume.html', {"ticker_selected": ticker_selected,
                                                      "short_volume_data": short_volume_data,
-                                                     "error": "error_true"})
+                                                     "error": "error_true",
+                                                     "included_list": included_list})
 
 
 def failure_to_deliver(request):
@@ -516,7 +515,10 @@ def failure_to_deliver(request):
                                             "information": information,
                                             "ftd": ftd.to_html(index=False)})
     else:
-        return render(request, 'ftd.html', {"ticker_selected": ticker_selected, "error": "error_true"})
+        included_list = ", ".join(sorted(full_ticker_list()))
+        return render(request, 'ftd.html', {"ticker_selected": ticker_selected,
+                                            "error": "error_true",
+                                            "included_list": included_list})
 
 
 def earnings_calendar(request):

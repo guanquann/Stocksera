@@ -27,35 +27,31 @@
     <div class="instructions">
         <p>Get the news sentiment of your favourite ticker and compare it with some of the popular tickers in Reddit!</p>
     </div>
-    <div style="display:flex">
-        <div style="" id="img_div">
-            {% if img != "" %}
-            <img src="{{img}}" onerror=this.src="{% static 'images/not_available.svg' %}">
-            {% else %}
-            <img src="{% static 'images/not_available.svg' %}">
-            {% endif %}
-        </div>
-        <div style="" id="ticker_intro">
-            <span>{{official_name}} ({{ticker_selected}})</span>
-            <br>Sector: <b>{{sector}}</b><br>Industry: <b>{{industry}}</b>
-        </div>
-    </div>
-    <div class="sentiment_msg">Latest Sentiment as of {{latest_date}}: {{avg_score}}%</div>
-    <div class="chart-container">
-        <canvas id="sentiment_chart"></canvas>
+
+    <div id="error_msg" style="display:none;" class="instructions {{error}}">
+            <p>There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).</p>
     </div>
 
-    <div style="display:none" class="ticker_news">
-        <p><b>Overall News Sentiment</b></p>
+    <div class="news_sentiment">
+        <div id="ticker_basic_stats"></div>
+
+        <div class="sentiment_msg">Latest Sentiment as of {{latest_date}}: {{avg_score}}%</div>
         <div class="chart-container">
-            <canvas id="personal_sentiment_chart"></canvas>
+            <canvas id="sentiment_chart"></canvas>
         </div>
-        <p><b>News Sentiment over time</b></p>
-        <div class="chart-container">
-            <canvas id="personal_sentiment_trending"></canvas>
-        </div>
-        <div class="scrollable_div">
-            {{news_df|safe}}
+
+        <div class="ticker_news">
+            <p><b>Overall News Sentiment</b></p>
+            <div class="chart-container">
+                <canvas id="personal_sentiment_chart"></canvas>
+            </div>
+            <p><b>News Sentiment over time</b></p>
+            <div class="chart-container">
+                <canvas id="personal_sentiment_trending"></canvas>
+            </div>
+            <div class="scrollable_div">
+                {{news_df|safe}}
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -63,106 +59,148 @@
 {% block bottom_script %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script>
-<!--    Date.prototype.addDays = function(days) {-->
-<!--        var date = new Date(this.valueOf());-->
-<!--        date.setDate(date.getDate() + days);-->
-<!--        return date;-->
-<!--    }-->
+<!--Hack to convert python variables to javascript-->
+var None = "N/A", False = false; True = true;
+var information = {{information|safe}};
 
-<!--    function getDates(startDate, stopDate) {-->
-<!--        var dateArray = new Array();-->
+<!--Code to show price change-->
+var latest_price = information["regularMarketPrice"];
+var mkt_close = information["previousClose"];
+<!--Code to show price change-->
+var price_change = Math.round((latest_price - mkt_close) * 100) / 100
+var price_percentage_change = Math.round(((latest_price - mkt_close) / mkt_close) * 10000) / 100
+if (price_change > 0) {
+    price_change = "+" + String(price_change)
+    price_percentage_change = "+" + String(price_percentage_change) + "%"
+}
+else {
+    price_percentage_change = String(price_percentage_change) + "%"
+}
 
-<!--        var currentDate = new Date (startDate);-->
-<!--        var stopDate = new Date (stopDate);-->
-<!--        while (currentDate <= stopDate) {-->
-<!--            dateArray.push(String(currentDate));-->
-<!--            currentDate = currentDate.addDays(1);-->
-<!--        }-->
-<!--        return dateArray;-->
-<!--    }-->
-
-<!--    x = getDates("2021-05-01", "2021-05-08")-->
-<!--    console.log(x)-->
-
-    var link = {{link|safe}}
-    var table = document.getElementsByTagName("tr");
-    for (row=1; row<table.length; row++) {
-<!--        td = table[row].getElementsByTagName("td");-->
-<!--        for (i=0; i<td.length; i++) {-->
-<!--            td[i].innerHTML = `<a href="${link[row-1]}" target="_blank" style="color:inherit;">${td[i].innerHTML}</a>`-->
-<!--        }-->
-        var td = table[row].getElementsByTagName("td")[1];
-        td.innerHTML = `<a href="${link[row-1]}" target="_blank" style="color:inherit;">${td.innerHTML}</a>`
+<!--Function to check that dictionary has a key-->
+function check_stats(property) {
+    if (information.hasOwnProperty(property) == true) {
+        property_name = information[property]
     }
-
-    var ticker_sentiment = {{ticker_sentiment|safe}};
-    var ticker_list = [], ticker_score = [];
-    for (sentiment of ticker_sentiment) {
-        ticker_list.push(sentiment[0]);
-        ticker_score.push(sentiment[1]);
+    else {
+        property_name = "N/A"
     }
+    return property_name
+}
 
-    var options_dict = {
-        responsive: true,
-        maintainAspectRatio: false,
-        legend: {
-            display: false
-         },
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: false,
-                    callback: function(value, index, values) {
-                            return value + "%";
-                    }
-                },
-                gridLines: {
-                    drawOnChartArea: false
+<!--If ticker does not have a website, bring users to Yahoo Finance-->
+if (information.hasOwnProperty("website") == true) {
+    var website = information["website"]
+}
+else {
+    var website = `https://finance.yahoo.com/quote/${information["symbol"]}`
+}
+
+<!--If ticker does not have an image, show a default image-->
+var img = information["logo_url"]
+if (img != "") {
+    var img_code = `<img src="${img}" onerror=this.src="{% static 'images/not_available.svg' %}">`
+}
+else {
+    var img_code = `<a href={{website}} target="_blank"><img src="{% static 'images/not_available.svg' %}">`
+}
+
+<!--Code to display image, full name, symbol, industry and sector-->
+var official_name = check_stats("longName")
+var sector = check_stats("sector")
+var industry = check_stats("industry")
+
+if (price_percentage_change.includes("-")) {
+    var price_code = `<div class="price_details negative_price">$${latest_price}<br>${price_change} (${price_percentage_change})</div>`
+}
+else {
+    var price_code = `<div class="price_details positive_price">$${latest_price}<br>${price_change} (${price_percentage_change})</div>`
+}
+
+var ticker_basic_stats_code = `
+    <div id="img_div">${img_code}</div>
+    <div id="ticker_intro">
+        <span>${official_name} (${information["symbol"]})</span>
+        <br>Sector: <b>${sector}</b><br>Industry: <b>${industry}</b>
+    </div>
+    ${price_code}`
+document.getElementById("ticker_basic_stats").innerHTML = ticker_basic_stats_code;
+
+var link = {{link|safe}}
+var table = document.getElementsByTagName("tr");
+for (row=1; row<table.length; row++) {
+    var td = table[row].getElementsByTagName("td")[1];
+    td.innerHTML = `<a href="${link[row-1]}" target="_blank" style="color:inherit;">${td.innerHTML}</a>`
+}
+
+var ticker_sentiment = {{ticker_sentiment|safe}};
+var ticker_list = [], ticker_score = [];
+for (sentiment of ticker_sentiment) {
+    ticker_list.push(sentiment[0]);
+    ticker_score.push(sentiment[1]);
+}
+
+var options_dict = {
+    responsive: true,
+    maintainAspectRatio: false,
+    legend: {
+        display: false
+     },
+    scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: false,
+                callback: function(value, index, values) {
+                        return value + "%";
                 }
-            }],
-            xAxes: [{
-                ticks: {
-                  maxRotation: 45,
-                  minRotation: 0,
-                },
-                gridLines: {
-                    drawOnChartArea: false
-                }
-            }]
-        },
-        // To remove the point of each label
-        elements: {
-            point: {
-                radius: 0
-            }
-        },
-        // To show value when hover on any part of the graph
-        tooltips: {
-            mode: 'index',
-            intersect: false,
-            callbacks: {
-                label: (item) => `${item.yLabel}%`,
             },
+            gridLines: {
+                drawOnChartArea: false
+            }
+        }],
+        xAxes: [{
+            ticks: {
+              maxRotation: 45,
+              minRotation: 0,
+            },
+            gridLines: {
+                drawOnChartArea: false
+            }
+        }]
+    },
+    // To remove the point of each label
+    elements: {
+        point: {
+            radius: 0
+        }
+    },
+    // To show value when hover on any part of the graph
+    tooltips: {
+        mode: 'index',
+        intersect: false,
+        callbacks: {
+            label: (item) => `${item.yLabel}%`,
         },
-        hover: {
-            mode: 'index',
-            intersect: false
-        },
-    };
+    },
+    hover: {
+        mode: 'index',
+        intersect: false
+    },
+};
 
-    var sentiment_chart = document.getElementById('sentiment_chart');
-    var myChart = new Chart(sentiment_chart, {
-        type: 'bar',
-        data: {
-            labels: ticker_list,
-            datasets: [{
-                data: ticker_score,
-                backgroundColor: 'rgba(255, 159, 64, 0.5)',
-                borderColor: 'rgb(255, 159, 64)',
-                borderWidth: '2',
-            }]
-        },
-        options: options_dict
-    });
+var sentiment_chart = document.getElementById('sentiment_chart');
+var myChart = new Chart(sentiment_chart, {
+    type: 'bar',
+    data: {
+        labels: ticker_list,
+        datasets: [{
+            data: ticker_score,
+            backgroundColor: 'rgba(255, 159, 64, 0.5)',
+            borderColor: 'rgb(255, 159, 64)',
+            borderWidth: '2',
+        }]
+    },
+    options: options_dict
+});
 </script>
 {% endblock %}

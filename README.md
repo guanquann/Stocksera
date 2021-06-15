@@ -1,61 +1,72 @@
 # StocksEra
 
-### Instructions
+### User Guide
 
 #### /ticker/
-- View historical data of your favourite ticker
-- Gather key statistics such as EPS, beta and SMA
-- Proportion of stocks held by major holders and major institutions
-- Google trending
+- View graph/historical data of your favourite ticker.
+- Gather key statistics such as EPS, beta and SMA.
+- Proportion of stocks held by major holders and major institutions.
+- Google trending.
 - Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>
+<img src="/static/images/ticker_stats.png" alt="Ticker Stats">
 
 #### /ticker/options/
-- View options chain of your favourite ticker
-- Find out the max-pain price of the next few weeks
-- Options chain and max-pain price are updated real time. Hence, there may be a slight delay in rendering this page. 
+- View options chain of your favourite ticker.
+- Find out the max-pain price, OTM & ITM options and Call/Put ratio of the next few weeks.
+- NOTE: Options chain and max-pain price are updated real time. Hence, there may be a slight delay in rendering this page. 
 - Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>
 
 #### /ticker/short_volume/
-- View short volume and percentage of some of the popular tickers
+- View short volume and short percentage of some of the popular tickers.
 - Data is from <a href="http://shortvolumes.com/">shortvolumes.com</a>
 
+#### /ticker/failure_to_deliver/
+- View failure to deliver data of some of the popular tickers.
+- Data is from <a href="https://www.sec.gov/data/foiadocsfailsdatahtm">SEC.gov</a>
+
 #### /earnings_calendar/
-- View ALL earnings report for the week ahead 
+- View all tickers earnings report for the week ahead 
 - Market Cap, EPS Estimate and EPS Actual
 - Sortable by market cap and day
 - Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>
 
 #### /reddit_analysis/
-- Find the most mentioned tickers with their sentiment level on Reddit
+- Find the most mentioned tickers with their sentiment level on different subreddits such as r/wallstreetbets, r/stockmarket and r/stocks.
 - Data is updated daily, around 1 hour before market open.
 
-#### /subreddit_count/
-- Look at the increase in number of redditors on popular sub-reddits such as r/wallstreetbets, r/Superstonk and r/amcstock
-- This page is currently very basic, open to new suggestions on how to improve this page
-
 #### /reddit_etf/
-- Analyse the performance of trending tickers on r/wallstreetbets
-- Top 10 most mentioned tickers with the highest sentiment will be added to the "Reddit ETF" when market opens
-- Tickers that fall outside the Top 10 list will be sold
+- Analyse the performance of trending tickers on r/wallstreetbets.
+- Top 10 most mentioned tickers with the highest sentiment will be added to the "Reddit ETF" when market opens.
+- Tickers that fall outside the Top 10 list will be sold.
+
+#### /subreddit_count/
+- Look at the increase in number of redditors on popular sub-reddits such as r/wallstreetbets, r/Superstonk and r/amcstock.
+- Growth in number of new redditors and percentage of active redditors.
+- This page is currently very basic, open to new suggestions on how to improve this page.
+
+#### /due_diligence/
+- A compilation of top due-diligence on Reddit. 
+- Data is manually sourced by Stocksera on a regular basis.
 
 #### /top_movers/
-- Identify top gainers and losers during market hours
+- Identify top gainers and losers during market hours.
 
 #### /short_interest/
-- Identify tickers with the highest short interest level
+- Identify tickers with the highest short interest level.
 
 #### /low_float/
-- Identify tickers with low float
+- Identify tickers with low float.
 
 #### /ark_trades/
 - View holdings, trades and news of all companies in ARK Fund.
-- View trades and ownership of a ticker
+- View trades and ownership of a ticker.
 - Data is from <a href="https://arkfunds.io/api/">arkfunds.io/api</a>
 
 #### /latest_news/
 - View latest news of your favorite ticker
 - Get their overall news sentiment and their sentiment level over time
 - Compare the sentiment level with other popular tickers such as GME, AAPL, TSLA.
+- NOTE: This feature is not available on pythonanywhere. To use this feature, you have to host the application locally. Please refer to the Developers section for more details
 - Data is from <a href="https://finviz.com/">finviz</a>
 
 ### For developers:
@@ -72,7 +83,7 @@ cd Stockera
 pip install -r requiresments.txt
 ```
 
-#### Enter credentials
+#### Sign up credentials for Reddit API
 - Register for an API in <a href="https://www.reddit.com/prefs/apps">https://www.reddit.com/prefs/apps </a> and enter credential in config.py
 
 
@@ -80,6 +91,11 @@ pip install -r requiresments.txt
 ```
 py create_database.py
 ```
+
+#### Setting up news sentiment
+- Go to ViewStocks/urls.py and uncommment 'sub_news/' and 'latest_news/'.
+- Go to templates/format.html and uncomment line 33
+- Go to templates/ticker_price.html and uncomment line 92-95
 
 #### Running the application
 ```

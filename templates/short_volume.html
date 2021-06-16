@@ -1,0 +1,159 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Short Volume{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/short_volume.css' %}">
+<script src="{% static 'javascript/short_volume.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}display_data();short_vol_graph();restore_dark_mode(){% endblock %}
+
+{% block main_nav %}
+<div class="top_nav">
+    <form action="" method="GET" autocomplete="off">
+        <div>
+            <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" autocomplete="off">
+            <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">Search</button>
+        </div>
+    </form>
+</div>
+<div id="spinner_div"></div>
+{% endblock %}
+
+{% block main_content %}
+<div>
+    <div class="instructions">
+        <p>Short Volume measures the number of shares that have been shorted,  while Short Interest represents the number of shorted shares that have yet to be closed out or covered.</p>
+    </div>
+
+    <div id="error_msg" style="display:none;" class="instructions {{error}}">
+        <p>Currently, only popular tickers like {{included_list|safe}} have short volume data. If you like to see more tickers, drop me a message in the
+            About section.
+        </p>
+    </div>
+
+    <div id="short_vol_data">
+        <div id="ticker_basic_stats"></div>
+
+        <div id="more_info_div">
+            <a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Analysis</a>
+            <a class="more_info_btn" href="{% url 'financial' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Financials</a>
+            <a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Options</a>
+            <a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">FTD</a>
+        </div>
+
+        <div id="summary" class="instructions"></div>
+
+        <div class="chart-container">
+            <canvas id="vol_chart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="price_chart"></canvas>
+        </div>
+
+        <p class="table_header"><b>Short Volume (Daily)</b></p>
+        <div class="scrollable_div">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Close Price</th>
+                        <th>Short Volume</th>
+                        <th>Total Volume</th>
+                        <th>% Shorted</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in short_volume_data %}
+                        <tr>
+                            <td>{{row.1}}</td>
+                            <td>${{row.2}}</td>
+                            <td>{{row.3}}</td>
+                            <td>{{row.4}}</td>
+                            <td>{{row.5}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            Note: The Total Volume and Short Volume data are limited. They do not represent the actual total volume.
+        </div>
+        <p>Data from: <a href="http://shortvolumes.com/" target="_blank">shortvolumes.com</a></p>
+    </div>
+</div>
+{% endblock %}
+
+{% block bottom_script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.min.js"></script>
+<script>
+    <!--Hack to convert python variables to javascript-->
+    var None = "N/A", False = false; True = true;
+    var information = {{information|safe}};
+
+    <!--Code to show price change-->
+    var latest_price = information["regularMarketPrice"];
+    var mkt_close = information["previousClose"];
+    <!--Code to show price change-->
+    var price_change = Math.round((latest_price - mkt_close) * 100) / 100
+    var price_percentage_change = Math.round(((latest_price - mkt_close) / mkt_close) * 10000) / 100
+    if (price_change > 0) {
+        price_change = "+" + String(price_change)
+        price_percentage_change = "+" + String(price_percentage_change) + "%"
+    }
+    else {
+        price_percentage_change = String(price_percentage_change) + "%"
+    }
+
+    <!--Function to check that dictionary has a key-->
+    function check_stats(property) {
+        if (information.hasOwnProperty(property) == true) {
+            property_name = information[property]
+        }
+        else {
+            property_name = "N/A"
+        }
+        return property_name
+    }
+
+    <!--If ticker does not have a website, bring users to Yahoo Finance-->
+    if (information.hasOwnProperty("website") == true) {
+        var website = information["website"]
+    }
+    else {
+        var website = `https://finance.yahoo.com/quote/${information["symbol"]}`
+    }
+
+    <!--If ticker does not have an image, show a default image-->
+    var img = information["logo_url"]
+    if (img != "") {
+        var img_code = `<img src="${img}" onerror=this.src="{% static 'images/not_available.svg' %}">`
+    }
+    else {
+        var img_code = `<a href={{website}} target="_blank"><img src="{% static 'images/not_available.svg' %}">`
+    }
+
+    <!--Code to display image, full name, symbol, industry and sector-->
+    var official_name = check_stats("longName")
+    var sector = check_stats("sector")
+    var industry = check_stats("industry")
+
+    if (price_percentage_change.includes("-")) {
+        var price_code = `<div class="price_details negative_price">$${latest_price}<br>${price_change} (${price_percentage_change})</div>`
+    }
+    else {
+        var price_code = `<div class="price_details positive_price">$${latest_price}<br>${price_change} (${price_percentage_change})</div>`
+    }
+
+    var ticker_basic_stats_code = `
+        <div id="img_div">${img_code}</div>
+        <div id="ticker_intro">
+            <span>${official_name} (${information["symbol"]})</span>
+            <br>Sector: <b>${sector}</b><br>Industry: <b>${industry}</b>
+        </div>
+        ${price_code}`
+    document.getElementById("ticker_basic_stats").innerHTML = ticker_basic_stats_code;
+</script>
+{% endblock %}

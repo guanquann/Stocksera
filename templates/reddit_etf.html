@@ -1,0 +1,154 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Reddit ETF{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/reddit_etf.css' %}">
+<script src="{% static 'javascript/reddit_etf.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}restore_dark_mode();check_table(){% endblock %}
+
+{% block main_nav %}
+    <div class="ticker-wrap">
+        <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+            {
+            "symbols": [
+            {
+              "proName": "FOREXCOM:SPXUSD",
+              "title": "S&P 500"
+            },
+            {
+              "proName": "FOREXCOM:NSXUSD",
+              "title": "Nasdaq 100"
+            },
+            {
+              "description": "Apple",
+              "proName": "NASDAQ:AAPL"
+            },
+            {
+              "description": "Tesla, Inc",
+              "proName": "NASDAQ:TSLA"
+            },
+            {
+              "description": "Nvidia",
+              "proName": "NASDAQ:NVDA"
+            },
+            {
+              "description": "Microsoft",
+              "proName": "NASDAQ:MSFT"
+            },
+            {
+              "description": "GameStop",
+              "proName": "NYSE:GME"
+            },
+            {
+              "description": "AMC",
+              "proName": "NYSE:AMC"
+            },
+            {
+              "description": "Blackberry",
+              "proName": "NYSE:BB"
+            }
+            ],
+            "showSymbolLogo": true,
+            "colorTheme": "light",
+            "isTransparent": true,
+            "largeChartUrl": "http://stocksera.pythonanywhere.com",
+            "displayMode": "regular",
+            "locale": "en"
+            }
+            </script>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main_content %} 
+    <div class="instructions">
+        <p>Reddit ETF is based on the trending stocks on WSB. If a new ticker enters the Top 10 trending ticker list before the market opens, $10000 worth of shares will be bought. Any ticker that falls out of the Top 10 list will be sold. All trades will be conducted the moment market opens. Inception Date: 2021-05-18</p>
+    </div>
+
+    <div id="more_info_div">
+        <a class="more_info_btn" href="{% url 'reddit_analysis' %}" onclick="clickAndDisable(this);">Trending</a>
+        <a class="more_info_btn" href="{% url 'subreddit_count' %}" onclick="clickAndDisable(this);">Subreddit Stats</a>
+        <a class="more_info_btn" href="{% url 'due_diligence' %}" onclick="clickAndDisable(this);">Top DD</a>
+    </div>
+
+    <div class="reddit_etf">
+
+        <div>
+            <p class="table_title">Current Trades (Unrealized PnL: <span>{{unrealized_PnL}}</span>)</p>
+            <div class="scrollable_div">
+                <form action="" method="POST"> {% csrf_token %}
+                    <table id="current_trade">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Ticker</th>
+                                <th>Buy Date</th>
+                                <th>Buy Price</th>
+                                <th>Num Shares</th>
+                                <th>Last Refreshed Price</th>
+                                <th>Unrealized PnL</th>
+                                <th>% Change</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ticker in open_trade %}
+                                <tr>
+                                    <td class="refresh_td"><button onclick="this.form.submit()" name="refresh_btn" value="{{ticker.0}}"><img src="{% static 'images/refresh.svg' %}"></button></td>
+                                    <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank"><img src="{{ticker.1}}" onerror=this.src="{% static 'images/not_available.svg' %}">{{ticker.0}}</a></td>
+                                    <td>{{ticker.2}}</td>
+                                    <td>${{ticker.3}}</td>
+                                    <td>{{ticker.4}}</td>
+                                    <td>${{ticker.6}}</td>
+                                    <td>{{ticker.7}}</td>
+                                    <td>{{ticker.8}}%</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+        <div>
+            <p class="table_title">Previous Trades (Realized PnL: <span>{{realized_PnL}}</span>)</p>
+            <div class="previous_trades_stats"></div>
+            <input placeholder="Search Ticker: " onkeyup="searchTicker(this)">
+            <div class="scrollable_div">
+            <table id="previous_trades">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable(0)" class="th-sort-desc" id='0'>Ticker</th>
+                            <th onclick="sortTable(1)" class="th-sort-desc" id='1'>Open Date</th>
+                            <th onclick="sortTable(2)" class="th-sort-desc" id='2'>Open Price</th>
+                            <th onclick="sortTable(3)" class="th-sort-desc" id='3'>Num Shares</th>
+                            <th onclick="sortTable(4)" class="th-sort-desc" id='4'>Close Date</th>
+                            <th onclick="sortTable(5)" class="th-sort-desc" id='5'>Close Price</th>
+                            <th onclick="sortTable(6)" class="th-sort-desc" id='6'>Realized PnL</th>
+                            <th onclick="sortTable(7)" class="th-sort-desc" id='7'>% Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ticker in close_trade %}
+                            <tr>
+                                <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank"><img src="{{ticker.1}}" onerror=this.src="{% static 'images/not_available.svg' %}">{{ticker.0}}</a></td>
+                                <td>{{ticker.2}}</td>
+                                <td>${{ticker.3}}</td>
+                                <td>{{ticker.4}}</td>
+                                <td>{{ticker.5}}</td>
+                                <td>${{ticker.6}}</td>
+                                <td>{{ticker.7}}</td>
+                                <td>{{ticker.8}}%</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

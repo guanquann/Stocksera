@@ -1,0 +1,544 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Subscribers{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/subreddit_count.css' %}">
+<script src="{% static 'javascript/subreddit_count.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}restore_dark_mode(){% endblock %}
+ 
+{% block main_nav %}
+<div class="top_nav"></div>
+{% endblock %}
+
+{% block main_content %}
+    <div class="instructions">
+        <p>Identify number of new members in your favourite sub-reddit. Data is updated once daily, one hour before market opens. New features coming really soon!</p>
+    </div>
+
+    <div id="more_info_div">
+        <a class="more_info_btn" href="{% url 'reddit_analysis' %}" onclick="clickAndDisable(this);">Trending</a>
+        <a class="more_info_btn" href="{% url 'reddit_etf' %}" onclick="clickAndDisable(this);">WSB ETF</a>
+        <a class="more_info_btn" href="{% url 'due_diligence' %}" onclick="clickAndDisable(this);">Top DD</a>
+    </div>
+
+    <div class="subreddit_count">
+        <h2>% Growth in users over time</h2>
+        <div class="chart-container">
+            <canvas id="growth_chart"></canvas>
+        </div>
+
+        <h2>% Active Users</h2>
+        <div class="active_users_div">Data is collected from 2021-05-19 onwards, 1H before market open hours daily.</div>
+        <div class="chart-container">
+            <canvas id="active_chart"></canvas>
+        </div>
+
+        <div class="subreddit_intro">
+            <div><img src="{% static 'images/subreddit_icon/wallstreetbets.png' %}"></div>
+            <div class="main_div">
+                <div>
+                    <div class="lg">wallstreetbets</div>
+                    <div class="sm">r/wallstreetbets
+                        <div class="explore"><a href="https://www.reddit.com/r/wallstreetbets" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="wsb_diff"></div>
+                </div>
+            </div>
+        </div>
+        <div class="subreddit_summary">
+            <div></div>
+        </div>
+        <div class="chart-container">
+            <canvas id="wsb_chart"></canvas>
+        </div>
+
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/stocks.png' %}">
+            <div class="main_div">
+            <div>
+                <div class="lg">Stocks - Investing and trading for all</div>
+                <div class="sm">r/stocks
+                    <div class="explore"><a href="https://www.reddit.com/r/stocks" target="_blank">Explore ></a></div>
+                </div>
+            </div>
+            </div>
+            <div class="subreddit_diff">
+                <div id="stocks_diff"></div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="stocks_chart"></canvas>
+        </div>
+
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/stockmarket.png' %}">
+            <div class="main_div">
+                <div>
+                    <div class="lg">r/StockMarket - Reddit's Front Page of the Stock Market</div>
+                    <div class="sm">r/StockMarket
+                        <div class="explore"><a href="https://www.reddit.com/r/stockmarket" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="stockmarket_diff"></div>
+                </div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="StockMarket_chart"></canvas>
+        </div>
+
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/gme.png' %}">
+            <div class="main_div">
+                <div>
+                    <div class="lg">GameStop Stock</div>
+                    <div class="sm">r/GME
+                        <div class="explore"><a href="https://www.reddit.com/r/gme" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="gamestop_diff"></div>
+                </div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="gme_chart"></canvas>
+        </div>
+
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/superstonk.png' %}">
+            <div class="main_div">
+                <div>
+                    <div class="lg">🦍💎Superstonk✋🚀</div>
+                    <div class="sm">r/Superstonk
+                        <div class="explore"><a href="https://www.reddit.com/r/superstonk" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="superstonk_diff"></div>
+                </div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="superstonk_chart"></canvas>
+        </div>
+
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/amc.png' %}">
+            <div class="main_div">
+                <div>
+                    <div class="lg">amcstock</div>
+                    <div class="sm">r/amcstock
+                        <div class="explore"><a href="https://www.reddit.com/r/amcstock" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="amc_diff"></div>
+                </div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="amc_chart"></canvas>
+        </div>
+    </div>
+{% endblock %}
+
+{% block bottom_script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script type="text/javascript">
+    var wsb_date = [], wsb_count = [], wsb_active = [] , wsb_growth = [], stocks_date = [], stocks_active = [] , stocks_count = [], stocks_growth = [],  StockMarket_date = [], StockMarket_count = [], StockMarket_active = [], StockMarket_growth = [], gme_date = [], gme_count = [], gme_active = [], gme_growth = [], superstonk_date = [], superstonk_count = [], superstonk_active = [], superstonk_growth = [], amc_date = [], amc_count = [], amc_active = [], amc_growth = []
+    var subscribers_list = {{subscribers|safe}}
+    for (subscribers of subscribers_list) {
+        if (subscribers[0] == "wallstreetbets") {
+            wsb_count.push(subscribers[1])
+            wsb_active.push(subscribers[4])
+            wsb_growth.push(subscribers[5])
+            wsb_date.push(subscribers[3])
+        }
+        else if (subscribers[0] == "stocks") {
+            stocks_count.push(subscribers[1])
+            stocks_active.push(subscribers[4])
+            stocks_growth.push(subscribers[5])
+            stocks_date.push(subscribers[3])
+        }
+        else if (subscribers[0] == "StockMarket") {
+            StockMarket_count.push(subscribers[1])
+            StockMarket_active.push(subscribers[4])
+            StockMarket_growth.push(subscribers[5])
+            StockMarket_date.push(subscribers[3])
+        }
+        else if (subscribers[0] == "Superstonk") {
+            superstonk_count.push(subscribers[1])
+            superstonk_active.push(subscribers[4])
+            superstonk_growth.push(subscribers[5])
+            superstonk_date.push(subscribers[3])
+        }
+        else if (subscribers[0] == "amcstock") {
+            amc_count.push(subscribers[1])
+            amc_active.push(subscribers[4])
+            amc_growth.push(subscribers[5])
+            amc_date.push(subscribers[3])
+        }
+        else if (subscribers[0] == "GME") {
+            gme_count.push(subscribers[1])
+            gme_active.push(subscribers[4])
+            gme_growth.push(subscribers[5])
+            gme_date.push(subscribers[3])
+        }
+    }
+
+    var options_dict = {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+            display: false
+         },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: false,
+                    maxTicksLimit: 6,
+                },
+                gridLines: {
+                    drawOnChartArea: false
+                }
+            }],
+            xAxes: [{
+                ticks: {
+                  maxTicksLimit: 10,
+                  maxRotation: 45,
+                  minRotation: 0,
+                },
+                gridLines: {
+                    drawOnChartArea: false
+                }
+            }]
+        },
+        // To remove the point of each label
+        elements: {
+            point: {
+                radius: 0
+            }
+        },
+        // To show value when hover on any part of the graph
+        tooltips: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+                label: (item) => `${item.yLabel} subscribers`,
+            },
+        },
+        hover: {
+            mode: 'index',
+            intersect: false
+        },
+    };
+
+    var wsb_chart = document.getElementById('wsb_chart');
+    var myChart = new Chart(wsb_chart, {
+        type: 'line',
+        data: {
+            labels: wsb_date,
+            datasets: [{
+                data: wsb_count,
+                borderColor: '#f1c40f',
+                backgroundColor: 'transparent',
+                tension: 0.1,
+            }]
+        },
+        options: options_dict
+    });
+
+    var stocks_chart = document.getElementById('stocks_chart');
+    var myChart = new Chart(stocks_chart, {
+        type: 'line',
+        data: {
+            labels: stocks_date,
+            datasets: [{
+                data: stocks_count,
+                borderColor: '#c39889',
+                backgroundColor: 'transparent',
+                tension: 0.1,
+            }]
+        },
+        options: options_dict
+    });
+
+    var StockMarket_chart = document.getElementById('StockMarket_chart');
+    var myChart = new Chart(StockMarket_chart, {
+        type: 'line',
+        data: {
+            labels: StockMarket_date,
+            datasets: [{
+                data: StockMarket_count,
+                borderColor: 'rgb(38, 166, 154)',
+                backgroundColor: 'transparent',
+                tension: 0.1,
+            }]
+        },
+        options: options_dict
+    });
+
+    var gme_chart = document.getElementById('gme_chart');
+    var myChart = new Chart(gme_chart, {
+        type: 'line',
+        data: {
+            labels: gme_date,
+            datasets: [{
+                data: gme_count,
+                borderColor: '#00b0ff',
+                backgroundColor: 'transparent',
+                tension: 0.1,
+            }]
+        },
+        options: options_dict
+    });
+
+    var superstonk_chart = document.getElementById('superstonk_chart');
+    var myChart = new Chart(superstonk_chart, {
+        type: 'line',
+        data: {
+            labels: superstonk_date,
+            datasets: [{
+                data: superstonk_count,
+                borderColor: 'grey',
+                backgroundColor: 'transparent',
+                tension: 0.1,
+            }]
+        },
+        options: options_dict
+    });
+
+    var amc_chart = document.getElementById('amc_chart');
+    var myChart = new Chart(amc_chart, {
+        type: 'line',
+        data: {
+            labels: amc_date,
+            datasets: [{
+                data: amc_count,
+                borderColor: '#ad001d',
+                backgroundColor: 'transparent',
+                tension: 0.1,
+            }]
+        },
+        options: options_dict
+    });
+
+    var growth_chart = document.getElementById('growth_chart');
+    var myChart = new Chart(growth_chart, {
+        type: 'line',
+        data: {
+            labels: wsb_date,
+            datasets: [
+                {
+                    label: "Wallstreetbets",
+                    data: wsb_growth,
+                    borderColor: '#f1c40f',
+                    backgroundColor: 'transparent',
+                    tension: 0.1,
+                },
+                {
+                    label: "Stocks",
+                    data: stocks_growth,
+                    borderColor: '#c39889',
+                    backgroundColor: 'transparent',
+                    tension: 0.1,
+                },
+                {
+                    label: "StockMarket",
+                    data: StockMarket_growth,
+                    borderColor: 'rgb(38, 166, 154)',
+                    backgroundColor: 'transparent',
+                    tension: 0.1,
+                },
+                {
+                    label: "GME",
+                    data: gme_growth,
+                    borderColor: '#00b0ff',
+                    backgroundColor: 'transparent',
+                    tension: 0.1,
+                },
+                {
+                    label: "Superstonk",
+                    data: superstonk_growth,
+                    borderColor: 'grey',
+                    backgroundColor: 'transparent',
+                    tension: 0.1,
+                },
+                {
+                    label: "amcstock",
+                    data: amc_growth,
+                    borderColor: '#ad001d',
+                    backgroundColor: 'transparent',
+                    tension: 0.1,
+                }]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+            display: true
+         },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: false,
+                    maxTicksLimit: 6,
+                },
+                gridLines: {
+                    drawOnChartArea: false
+                }
+            }],
+            xAxes: [{
+                ticks: {
+                  maxTicksLimit: 10,
+                  maxRotation: 45,
+                  minRotation: 0,
+                },
+                gridLines: {
+                    drawOnChartArea: false
+                }
+            }]
+        },
+        // To remove the point of each label
+        elements: {
+            point: {
+                radius: 0
+            }
+        },
+        // To show value when hover on any part of the graph
+        tooltips: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+                label: (item) => `${item.yLabel}%`,
+            },
+        },
+        hover: {
+            mode: 'index',
+            intersect: false
+        },
+    }
+    });
+
+    var active_chart = document.getElementById('active_chart');
+    var active_chart = new Chart(active_chart, {
+        type: 'line',
+        data: {
+            labels: wsb_date,
+            datasets: [
+                {
+                    label: "Wallstreetbets",
+                    data: wsb_active,
+                    borderColor: '#f1c40f',
+                    backgroundColor: 'transparent',
+                    tension: 0.1,
+                },
+                {
+                    label: "Stocks",
+                    data: stocks_active,
+                    borderColor: '#c39889',
+                    backgroundColor: 'transparent',
+                    tension: 0.1,
+                },
+                {
+                    label: "StockMarket",
+                    data: StockMarket_active,
+                    borderColor: 'rgb(38, 166, 154)',
+                    backgroundColor: 'transparent',
+                    tension: 0.1,
+                },
+                {
+                    label: "GME",
+                    data: gme_active,
+                    borderColor: '#00b0ff',
+                    backgroundColor: 'transparent',
+                    tension: 0.1,
+                },
+                {
+                    label: "Superstonk",
+                    data: superstonk_active,
+                    borderColor: 'grey',
+                    backgroundColor: 'transparent',
+                    tension: 0.1,
+                },
+                {
+                    label: "amcstock",
+                    data: amc_active,
+                    borderColor: '#ad001d',
+                    backgroundColor: 'transparent',
+                    tension: 0.1,
+                }]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+            display: true
+         },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: false,
+                    maxTicksLimit: 6,
+                },
+                gridLines: {
+                    drawOnChartArea: false
+                }
+            }],
+            xAxes: [{
+                ticks: {
+                  maxTicksLimit: 10,
+                  maxRotation: 45,
+                  minRotation: 0,
+                },
+                gridLines: {
+                    drawOnChartArea: false
+                }
+            }]
+        },
+        // To remove the point of each label
+        elements: {
+            point: {
+                radius: 0
+            }
+        },
+        // To show value when hover on any part of the graph
+        tooltips: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+                label: (item) => `${item.yLabel}%`,
+            },
+        },
+        hover: {
+            mode: 'index',
+            intersect: false
+        },
+    }
+    });
+
+    function find_day_gain(list_name, id) {
+        list_length = list_name.length;
+        var diff = list_name[list_length-1] - list_name[list_length-2];
+        var percentage_diff = Math.round(diff / list_name[list_length-2] * 10000) / 100
+        document.getElementById(id).innerHTML = "+" + diff + "<br> +" + percentage_diff + "%";
+    }
+
+    find_day_gain(wsb_count, "wsb_diff")
+    find_day_gain(stocks_count, "stocks_diff")
+    find_day_gain(StockMarket_count, "stockmarket_diff")
+    find_day_gain(gme_count, "gamestop_diff")
+    find_day_gain(superstonk_count, "superstonk_diff")
+    find_day_gain(amc_count, "amc_diff")
+
+</script>
+{% endblock %}

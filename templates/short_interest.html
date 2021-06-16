@@ -1,0 +1,100 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Short Interest{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/short_interest.css' %}">
+<script src="{% static 'javascript/short_interest.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}restore_dark_mode();update_table(){% endblock %}
+
+{% block main_nav %}
+    <div class="ticker-wrap">
+        <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+            {
+            "symbols": [
+            {
+              "proName": "FOREXCOM:SPXUSD",
+              "title": "S&P 500"
+            },
+            {
+              "proName": "FOREXCOM:NSXUSD",
+              "title": "Nasdaq 100"
+            },
+            {
+              "description": "Apple",
+              "proName": "NASDAQ:AAPL"
+            },
+            {
+              "description": "Tesla, Inc",
+              "proName": "NASDAQ:TSLA"
+            },
+            {
+              "description": "Nvidia",
+              "proName": "NASDAQ:NVDA"
+            },
+            {
+              "description": "Microsoft",
+              "proName": "NASDAQ:MSFT"
+            },
+            {
+              "description": "GameStop",
+              "proName": "NYSE:GME"
+            },
+            {
+              "description": "AMC",
+              "proName": "NYSE:AMC"
+            },
+            {
+              "description": "Blackberry",
+              "proName": "NYSE:BB"
+            }
+            ],
+            "showSymbolLogo": true,
+            "colorTheme": "light",
+            "isTransparent": true,
+            "largeChartUrl": "http://stocksera.pythonanywhere.com",
+            "displayMode": "regular",
+            "locale": "en"
+            }
+            </script>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main_content %}
+    <div class="instructions">
+        <p>Short interest (SI) is the number of shares that have been sold short but have not yet been covered. The higher the SI, the higher probability of short squeezing as shortable shares reduce in number. Stocks with high SI are highly volatile.</p>
+    </div>
+    <div class="short_interest">
+        <h2>Short Interest</h2>
+        <div id="more_info_div">
+            <a class="more_info_btn" href="{% url 'top_movers' %}" onclick="clickAndDisable(this);">Top Movers</a>
+            <a class="more_info_btn" href="{% url 'low_float' %}" onclick="clickAndDisable(this);">Low Float</a>
+            <a class="more_info_btn" href="{% url 'ark_trades' %}" onclick="clickAndDisable(this);">ARK Fund</a>
+        </div>
+        <div class="table_div">
+            {{ df_high_short_interest|safe }}
+        </div>
+    </div>
+    <p>Data from: <a href="https://www.highshortinterest.com" target="_blank">highshortinterest.com</a>
+{% endblock %}
+
+{% block bottom_script %}
+<script>
+    var table = document.getElementsByTagName("table")[0];
+    var tr = table.querySelectorAll("tr");
+    for (row=1; row<tr.length; row++) {
+        var td = tr[row].querySelectorAll("td");
+        ticker = td[0].innerHTML;
+        td[0].innerHTML = `<a href="{% url 'ticker' %}?quote=${ticker}" target="_blank"><img src='${td[8].innerHTML}' onerror='this.src="/static/images/not_available.svg"'><b>${ticker}</b></a>`;
+        td[3].innerHTML = "$" + td[3].innerHTML;
+        td[8].style.display = "none";
+    }
+</script>
+{% endblock %}

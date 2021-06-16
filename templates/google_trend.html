@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>StocksEra | Google Trends</title>
+    <script src="{% static 'javascript/format.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'style/format.css' %}">
+    <link rel="stylesheet" href="{% static 'style/google_trend.css' %}">
+</head>
+<body onload="restore_dark_mode()">
+    <form action="" method="GET" autocomplete="off">
+        <select name="timing_selected" onchange="this.form.submit()">
+            <option>Selected: {{timing_selected}}</option>
+            <option value="now 1-H">Past hour</option>
+            <option value="now 4-H">Past 4 hours</option>
+            <option value="now 1-d">Past day</option>
+            <option value="now 7-d">Past 7 days</option>
+            <option value="today 1-m">Past 30 days</option>
+            <option value="today 3-m">Past 90 days</option>
+            <option value="today 12-m">Past 12 months</option>
+        </select>
+        <input style="display:none" value={{ticker_selected}} name="quote">
+    </form>
+
+    <h3>Interest of {{ticker_selected}} over time ({{timing_selected}})</h3>
+    <div class="chart-container">
+        <canvas id="trending"></canvas>
+    </div>
+
+    <h3>Interest of {{ticker_selected}} across region ({{timing_selected}})</h3>
+    <div class="chart-container">
+        <canvas id="region"></canvas>
+    </div>
+    <div style="display: none">
+        {{interest_over_time|safe}}
+    </div>
+    <div style="height:44px"></div>
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script type="text/javascript">
+    var tr = document.getElementsByTagName("table")[0].querySelectorAll("tr");
+    var date_list = [], score_list = []
+    for (i=1; i<tr.length; i++) {
+        var td = tr[i].querySelectorAll("td");
+        date_list.push(td[0].innerHTML);
+        score_list.push(td[1].innerHTML);
+    }
+
+    var trending = document.getElementById('trending');
+    var trending = new Chart(trending, {
+        type: 'line',
+        data: {
+            labels: date_list,
+            datasets: [{
+                label: 'Score',
+                lineTension: 0,  // straight line instead of curve
+                data: score_list,
+                borderColor: "wheat",
+                backgroundColor: 'transparent',
+                tension: 0.1,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                display: false
+             },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: false,
+                    },
+                    gridLines: {
+                        drawOnChartArea: false
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                      maxTicksLimit: 15,
+                      maxRotation: 45,
+                      minRotation: 0,
+                    },
+                    gridLines: {
+                        drawOnChartArea: false
+                    }
+                }]
+            },
+            // To remove the point of each label
+            elements: {
+                point: {
+                    radius: 0
+                }
+            },
+
+            // To show value when hover on any part of the graph
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+                callbacks: {
+                    label: (item) => `Score: ${item.yLabel}`,
+                },
+            },
+            hover: {
+                mode: 'index',
+                intersect: false
+            },
+        }
+    });
+
+    var region_list = {{region_list|safe}};
+    var region_count_list = {{region_count_list|safe}};
+
+    var region = document.getElementById('region');
+    var region = new Chart(region, {
+        type: 'bar',
+        data: {
+            labels: region_list,
+            datasets: [{
+                label: 'Score',
+                data: region_count_list,
+                borderColor: "wheat",
+                backgroundColor: 'wheat',
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                display: false
+             },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: false,
+                    },
+                    gridLines: {
+                        drawOnChartArea: false
+                    }
+                }],
+                xAxes: [{
+                    gridLines: {
+                        drawOnChartArea: false
+                    }
+                }]
+            },
+            // To show value when hover on any part of the graph
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+                callbacks: {
+                    label: (item) => `Score: ${item.yLabel}`,
+                },
+            },
+            hover: {
+                mode: 'index',
+                intersect: false
+            },
+        }
+    });
+</script>

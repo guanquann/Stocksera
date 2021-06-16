@@ -1,0 +1,280 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Options{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/options.css' %}">
+{% endblock %}
+
+{% block onload_properties%}restore_dark_mode();display_input();update_table();draw_open_interest_and_volume();draw_max_pain(){% endblock %}
+
+{% block main_nav %}
+<div class="top_nav">
+    <form action="" method="GET" autocomplete="off">
+    <div>
+        <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" autocomplete="off">
+        <button class="submit_btn" type="button" onclick="reset_dropdown();this.form.submit();this.disabled=true;">Search</button>
+    </div>
+</div>
+<div id="spinner_div"></div>
+{% endblock %}
+
+{% block main_content %}
+    <div class="instructions">
+        <p>View options chain of your favourite ticker and get the max pain price of the week! Data is updated real time. </p>
+    </div>
+
+    <div id="error_msg" style="display:none;" class="instructions {{error}}">
+        <p>There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).</p>
+    </div>
+
+    <div class="contents">
+        <div class="ticker_stats"></div>
+
+        <div id="more_info_div">
+            <a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Analysis</a>
+            <a class="more_info_btn" href="{% url 'financial' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Financials</a>
+            <a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Short Vol</a>
+            <a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">FTD</a>
+        </div>
+
+        <div class="navigation_menu">
+            <div id="date_dropdown">
+                <select name="date" onchange="this.form.submit();this.disabled=true;">
+                    <option value="{{date_selected}}">Expiry Date: {{date_selected}}</option>
+                    {% for date in options_dates %}
+                        <option value="{{date}}">{{date}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="options_summary">
+            <div class="header">{{date_selected}}</div>
+        </div>
+
+        <div id="graph_section">
+            <h2>Max Pain</h2>
+            <div class="chart-container">
+                <canvas id="max_pain_chart"></canvas>
+            </div>
+            <div class="max_pain_div">Max Pain: ${{max_pain}}</div>
+
+            <h2>Volume</h2>
+            <div class="chart-container">
+                <canvas id="volume_chart"></canvas>
+            </div>
+
+            <h2>Open Interest</h2>
+            <div class="chart-container">
+                <canvas id="oi_chart"></canvas>
+            </div>
+        </div>
+
+        <div id="options_choice">
+            <h2>Options Table</h2>
+            <div class="navigation_menu">
+                <div class="show_selection">Show: </div>
+                <div class="choices choice_selected" onclick="show_choice('list')">List</div>
+                <div class="delimiter">|</div>
+                <div class="choices" onclick="show_choice('straddle')">Straddle</div>
+            </div>
+        </div>
+
+        <div id="list_format">
+            <div class="itm_description calls">
+                <div class="itm_date_description">Calls for {{date_selected}}</div>
+                <div class="itm_description_right">
+                    <div class="itm_symbol calls_symbol_background"></div>
+                    <div class="itm">ITM</div>
+                </div>
+            </div>
+            <div id="calls_div">
+                {{calls|safe}}
+            </div>
+
+            <div class="itm_description puts">
+                <div class="itm_date_description">Puts for {{date_selected}}</div>
+                <div class="itm_description_right">
+                    <div class="itm_symbol puts_symbol_background"></div>
+                    <div class="itm">ITM</div>
+                </div>
+            </div>
+            <div id="puts_div">
+                {{puts|safe}}
+            </div>
+        </div>
+
+        <div id="straddle_format" style="display:none">
+            <div id="straddle_div">
+                <div id="straddle_header">
+                    Options for {{date_selected}}
+                </div>
+                {{merge|safe}}
+            </div>
+        </div>
+        <p>Data from: <a href="https://finance.yahoo.com/" target="_blank">finance.yahoo.com</a></p>
+    </div>
+</form>
+{% endblock %}
+
+{% block bottom_script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script src="{% static 'javascript/options.js' %}"></script>
+<script type="text/javascript">
+<!--Hack to convert python variables to javascript-->
+var None = "N/A", False = false; True = true;
+var information = {{information|safe}};
+
+<!--Code to show price change-->
+var latest_price = information["regularMarketPrice"];
+var mkt_close = information["previousClose"];
+<!--Code to show price change-->
+var price_change = Math.round((latest_price - mkt_close) * 100) / 100
+var price_percentage_change = Math.round(((latest_price - mkt_close) / mkt_close) * 10000) / 100
+if (price_change > 0) {
+    price_change = "+" + String(price_change)
+    price_percentage_change = "+" + String(price_percentage_change) + "%"
+}
+else {
+    price_percentage_change = String(price_percentage_change) + "%"
+}
+
+<!--Function to check that dictionary has a key-->
+function check_stats(property) {
+    if (information.hasOwnProperty(property) == true) {
+        property_name = information[property]
+    }
+    else {
+        property_name = "N/A"
+    }
+    return property_name
+}
+
+<!--If ticker does not have a website, bring users to Yahoo Finance-->
+if (information.hasOwnProperty("website") == true) {
+    var website = information["website"]
+}
+else {
+    var website = `https://finance.yahoo.com/quote/${information["symbol"]}`
+}
+
+<!--If ticker does not have an image, show a default image-->
+var img = information["logo_url"]
+if (img != "") {
+    var img_code = `<img src="${img}" onerror=this.src="{% static 'images/not_available.svg' %}">`
+}
+else {
+    var img_code = `<a href={{website}} target="_blank"><img src="{% static 'images/not_available.svg' %}">`
+}
+
+<!--Code to display image, full name, symbol, industry, sector, latest price-->
+var official_name = check_stats("longName")
+var sector = check_stats("sector")
+var industry = check_stats("industry")
+
+if (price_percentage_change.includes("-")) {
+    var price_code = `<div class="price_details negative_price">$${latest_price}<br>${price_change} (${price_percentage_change})</div>`
+}
+else {
+    var price_code = `<div class="price_details positive_price">$${latest_price}<br>${price_change} (${price_percentage_change})</div>`
+}
+
+var ticker_basic_stats_code = `
+    <div id="img_div">${img_code}</div>
+    <div id="ticker_intro">
+        <div>
+            <span>${official_name} (${information["symbol"]})</span>
+            <br>Sector: <b>${sector}</b><br>Industry: <b>${industry}</b>
+        </div>
+    </div>
+    ${price_code}`
+document.getElementsByClassName("ticker_stats")[0].innerHTML = ticker_basic_stats_code;
+
+var call_loss_list = {{ call_loss_list|safe }};
+var put_loss_list = {{ put_loss_list|safe }};
+var tr = document.getElementsByTagName("table")[2].querySelectorAll("tr");
+var strike_list = [];
+
+for (row=1; row<=call_loss_list.length; row++) {
+    var td = tr[row].querySelectorAll("td");
+    strike_price = td[5].innerHTML;
+    strike_list.push(strike_price);
+}
+
+function draw_max_pain() {      
+    var max_pain_chart = document.getElementById('max_pain_chart');
+    var max_pain_chart = new Chart(max_pain_chart, {
+        type: 'bar',
+        data: {
+            labels: strike_list,
+            datasets: [{
+                label: 'Calls',
+                data: call_loss_list,
+                borderColor: "green",
+                backgroundColor: 'green',
+            },
+            {
+                label: 'Puts',
+                data: put_loss_list,
+                borderColor: "red",
+                backgroundColor: 'red', 
+            }]
+        },
+
+        
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: false,
+                        callback: function(value, index, values) {
+                            return "$" + value + "M";
+                        }
+                    }, 
+                    gridLines: {
+                        drawOnChartArea: false
+                    }   
+                }],
+
+                xAxes: [{
+                    ticks: {
+                        maxTicksLimit: 20,
+                        maxRotation: 45,
+                        minRotation: 0,
+                        callback: function(value, index, values) {
+                            return "$" + value;
+                        }
+                    },
+                    gridLines: {
+                        drawOnChartArea: false
+                    }   
+                }]
+            },
+            // To show value when hover on any part of the graph
+            tooltips: {
+                enabled: true,
+                mode: 'index',
+                intersect: false,
+                callbacks: {
+                    // title: function(tooltipItems, data) { 
+                    //     return data.labels[tooltipItem[0].index] + ' USD';
+                    // },
+                    label: function(tooltipItems, data) { 
+                        return tooltipItems.yLabel + ' M';
+                    }
+                }
+            },
+            hover: {
+                mode: 'index',
+                intersect: false
+            },
+        },
+    });
+}
+</script>
+{% endblock %}

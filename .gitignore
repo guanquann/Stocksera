@@ -1,0 +1,10 @@
+.git
+.idea
+*.pyc
+__pycache__
+venv/
+test.py
+.vscode
+*.db
+scheduled_tasks/failure_to_deliver/csv
+db.sqlite3

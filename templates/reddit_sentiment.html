@@ -1,0 +1,208 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Reddit Sentiment{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/reddit_sentiment.css' %}">
+{% endblock %}
+
+{% block onload_properties%}restore_dark_mode();check_table();show_subreddit_img('{{subreddit_selected}}'){% endblock %}
+
+{% block main_nav %}
+    <div class="ticker-wrap">
+        <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+            {
+            "symbols": [
+            {
+              "proName": "FOREXCOM:SPXUSD",
+              "title": "S&P 500"
+            },
+            {
+              "proName": "FOREXCOM:NSXUSD",
+              "title": "Nasdaq 100"
+            },
+            {
+              "description": "Apple",
+              "proName": "NASDAQ:AAPL"
+            },
+            {
+              "description": "Tesla, Inc",
+              "proName": "NASDAQ:TSLA"
+            },
+            {
+              "description": "Nvidia",
+              "proName": "NASDAQ:NVDA"
+            },
+            {
+              "description": "Microsoft",
+              "proName": "NASDAQ:MSFT"
+            },
+            {
+              "description": "GameStop",
+              "proName": "NYSE:GME"
+            },
+            {
+              "description": "AMC",
+              "proName": "NYSE:AMC"
+            },
+            {
+              "description": "Blackberry",
+              "proName": "NYSE:BB"
+            }
+            ],
+            "showSymbolLogo": true,
+            "colorTheme": "light",
+            "isTransparent": true,
+            "largeChartUrl": "http://stocksera.pythonanywhere.com",
+            "displayMode": "regular",
+            "locale": "en"
+            }
+            </script>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main_content %} 
+    <div class="instructions">
+        <p>This page shows the top 25 trending tickers in Reddit in the last 48H. Number of posts (including deleted), comments and sentiment are taken into account. Data is refreshed daily.</p>
+    </div>
+
+    <div id="more_info_div">
+        <a class="more_info_btn" href="{% url 'reddit_etf' %}" onclick="clickAndDisable(this);">WSB ETF</a>
+        <a class="more_info_btn" href="{% url 'subreddit_count' %}" onclick="clickAndDisable(this);">Subreddit Stats</a>
+        <a class="more_info_btn" href="{% url 'due_diligence' %}" onclick="clickAndDisable(this);">Top DD</a>
+    </div>
+
+    <form action="" method="GET" autocomplete="off">
+        <div class="select_div">
+            <select name="subreddit" onchange="this.form.submit()">
+                <option>Selected: {{subreddit_selected}}</option>
+                <option value="wallstreetbets">Wall Street Bets</option>
+                <option value="stocks">Stocks</option>
+                <option value="stockmarket">Stock Market</option>
+            </select>
+            <select name="date_selected" onchange="this.form.submit()">
+                <option>Date: {{date_selected}}</option>
+                {% for date in all_dates %}
+                    <option value="{{date}}">{{date}}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </form>
+    
+    <div class="table_data">
+        <div class="subreddit_intro"></div>
+
+        <div id="filter_section">
+            <div class="toggle_settings" onclick="toggle_settings(this)">Collapse Toolkit</div>
+            <div class="filter_description">
+                To remove a column from the table, select the buttons below. To add back that column, select the same button again. Click reset to restore default.
+                <div>Last Updated: {{trending_tickers.0.26}} UTC</div>
+            </div>
+            <div id="2-filter" class="filter_contents" onclick="filter_table(this)">48H Score &#x2716;</div>
+            <div id="3-filter" class="filter_contents" onclick="filter_table(this)">24H Score &#x2716;</div>
+            <div id="4-filter" class="filter_contents" onclick="filter_table(this)">24H to 48H Score &#x2716;</div>
+            <div id="5-filter" class="filter_contents" onclick="filter_table(this)">% Score Change &#x2716;</div>
+            <div id="6-filter" class="filter_contents" onclick="filter_table(this)">Posts &#x2716;</div>
+            <div id="7-filter" class="filter_contents" onclick="filter_table(this)">Upvotes &#x2716;</div>
+            <div id="8-filter" class="filter_contents" onclick="filter_table(this)">Comments &#x2716;</div>
+            <div id="9-filter" class="filter_contents" onclick="filter_table(this)">Previous Close &#x2716;</div>
+            <div id="10-filter" class="filter_contents" onclick="filter_table(this)">Volume &#x2716;</div>
+            <div id="11-filter" class="filter_contents" onclick="filter_table(this)">Market Cap &#x2716;</div>
+            <div id="12-filter" class="filter_contents" onclick="filter_table(this)">1D % Price Change &#x2716;</div>
+            <div id="13-filter" class="filter_contents" onclick="filter_table(this)">50D % Price Change &#x2716;</div>
+            <div id="14-filter" class="filter_contents" onclick="filter_table(this)">Floating Shares &#x2716;</div>
+            <div id="15-filter" class="filter_contents" onclick="filter_table(this)">Beta &#x2716;</div>
+            <div id="16-filter" class="filter_contents" onclick="filter_table(this)">Shares/Float &#x2716;</div>
+            <div id="17-filter" class="filter_contents" onclick="filter_table(this)">Price Target &#x2716;</div>
+            <div id="18-filter" class="filter_contents" onclick="filter_table(this)">Recommend &#x2716;</div>
+            <div id="19-filter" class="filter_contents" onclick="filter_table(this)">Industry &#x2716;</div>
+            <div class="filter_contents" style="padding:5px" onclick="reset_table();searchTicker()">Reset</div>
+            <input type="text" placeholder="Ticker:" autocomplete="off" class="filter_ticker" id="search_ticker" onkeyup="searchTicker()">
+        </div>
+
+        <div id="reddit_table_section">
+            <div style="overflow-x:scroll;">
+                <table id="reddit_table">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable(0)" class="th-sort-desc" id='0'>Rank</th>
+                            <th onclick="sortTable(1)" class="th-sort-desc" id='1'>Ticker</th>
+                            <th onclick="sortTable(2)" class="th-sort-desc" id='2'>48H Score</th>
+                            <th onclick="sortTable(3)" class="th-sort-desc" id='3'>24H Score</th>
+                            <th onclick="sortTable(4)" class="th-sort-desc" id='4'>24H to 48H Score</th>
+                            <th onclick="sortTable(5)" class="th-sort-desc" id='5'>% Score Change</th>
+                            <th onclick="sortTable(6)" class="th-sort-desc" id='6'>Posts</th>
+                            <th onclick="sortTable(7)" class="th-sort-desc" id='7'>Upvotes</th>
+                            <th onclick="sortTable(8)" class="th-sort-desc" id='8'>Comments</th>
+                            <th onclick="sortTable(9)" class="th-sort-desc" id='9'>Previous Close</th>
+                            <th onclick="sortTable(10)" class="th-sort-desc" id='10'>Volume</th>
+                            <th onclick="sortTable(11)" class="th-sort-desc" id='11'>Mkt Cap</th>
+                            <th onclick="sortTable(12)" class="th-sort-desc" id='12'>1D % Price Change</th>
+                            <th onclick="sortTable(13)" class="th-sort-desc" id='13'>50D % Price Change</th>
+                            <th onclick="sortTable(14)" class="th-sort-desc" id='14'>Floating Shares</th>
+                            <th onclick="sortTable(15)" class="th-sort-desc" id='15'>Beta</th>
+                            <th onclick="sortTable(16)" class="th-sort-desc" id='16'>Shorts/Float</th>
+                            <th onclick="sortTable(17)" class="th-sort-desc" id='17'>Price Target</th>
+                            <th onclick="sortTable(18)" class="th-sort-desc" id='18'>Recommend</th>
+                            <th onclick="sortTable(19)" class="th-sort-desc" id='19'>Industry</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ticker in trending_tickers %}
+                        <tr>
+                            <td>{{ticker.0}}</td>
+                            <td><a href="{% url 'ticker' %}?quote={{ticker.1}}" target="_blank"><img src="{{ticker.19}}" onerror=this.src="{% static 'images/not_available.svg' %}"><b>{{ticker.1}}</b></a></td>
+                            <td>{{ticker.2}}</td>
+                            <td>{{ticker.3}}</td>
+                            <td>{{ticker.4}}</td>
+                            <td>{{ticker.5}}%</td>
+                            <td>{{ticker.7}}</td>
+                            <td>{{ticker.8}}</td>
+                            <td>{{ticker.9}}</td>
+                            <td>${{ticker.10}}</td>
+                            <td>{{ticker.13}}</td>
+                            <td>{{ticker.14}}</td>
+                            <td>{{ticker.11}}</td>
+                            <td>{{ticker.12}}</td>
+                            <td>{{ticker.15}}</td>
+                            <td>{{ticker.16}}</td>
+                            <td>{{ticker.17}}</td>
+                            <td>{{ticker.24}}</td>
+                            <td class="reformat_text">{{ticker.25}}</td>
+                            <td>{{ticker.18}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div onclick="open_modal()" class="banned_words">Click to view list of banned words</div>
+        <div class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h4>List of Banned Words</h4>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        Below contains a list of words which I have excluded to improve the filtering of the tickers. If by any chance that a popular ticker that emerge in Reddit in the future is inside the list of banned words, Stocksera will not be responsible for the sharing of inaccurate data.
+                        <ul>
+                            {% for word in banned_words %}
+                            <li>{{word}}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block bottom_script %}
+<script src="{% static 'javascript/reddit_sentiment.js' %}"></script>
+{% endblock %}

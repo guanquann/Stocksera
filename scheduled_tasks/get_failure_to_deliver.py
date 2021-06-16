@@ -8,7 +8,7 @@ def update_all_tickers(ftd_txt_file_name):
     df = pd.read_csv(ftd_txt_file_name, delimiter="|")
 
     if os.path.exists("./failure_to_deliver/csv"):
-        df.to_csv("failure_to_deliver/csv/" + ftd_txt_file_name.split("/")[1].replace("txt", "csv"), index=None)
+        df.to_csv("failure_to_deliver/csv/" + ftd_txt_file_name.split("\\")[-1].replace("txt", "csv"), index=None)
     else:
         os.mkdir("./failure_to_deliver/csv")
 
@@ -60,4 +60,5 @@ def add_new_ticker(ticker):
 
 
 if __name__ == '__main__':
-    add_new_ticker("CLNE")
+    add_new_ticker("WISH")
+    # update_all_tickers(r"C:\Users\Acer\PycharmProjects\StocksAnalysis\scheduled_tasks\failure_to_deliver\cnsfails202105b.txt")

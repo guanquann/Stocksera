@@ -9,12 +9,9 @@ db = conn.cursor()
 
 
 def get_high_short_interest():
-    """Returns a high short interest DataFrame
-    Returns
-    -------
-    DataFrame
-        High short interest Dataframe with the following columns:
-        Ticker, Company, Exchange, ShortInt, Float, Outstd, Industry
+    """
+    Returns a high short interest DataFrame.
+    Adapted from https://github.com/GamestonkTerminal/GamestonkTerminal/tree/main/gamestonk_terminal
     """
 
     url_high_short_interested_stocks = "https://www.highshortinterest.com"
@@ -56,12 +53,9 @@ def get_high_short_interest():
 
 
 def get_low_float():
-    """Returns low float DataFrame
-    Returns
-    -------
-    DataFrame
-        Low float DataFrame with the following columns:
-        Ticker, Company, Exchange, ShortInt, Float, Outstd, Industry
+    """
+    Returns low float DataFrame
+    Adapted from https://github.com/GamestonkTerminal/GamestonkTerminal/tree/main/gamestonk_terminal
     """
 
     url_high_short_interested_stocks = "https://www.lowfloat.com"

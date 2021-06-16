@@ -9,12 +9,12 @@ db = conn.cursor()
 yec = YahooEarningsCalendar(0)
 
 
-def get_new_earnings():
+def get_new_earnings(n_days):
     """
-    Get the earnings for the next 7 days
+    Get the earnings for the next n days
     """
     date_from = datetime.now()
-    date_to = datetime.now() + timedelta(days=7)
+    date_to = datetime.now() + timedelta(days=n_days)
     for i in yec.earnings_between(date_from, date_to):  # for i in yec.earnings_on(date_to):
         symbol = i["ticker"]
         ticker = yf.Ticker(symbol)
@@ -38,11 +38,11 @@ def get_new_earnings():
     print("Added new earnings successfully")
 
 
-def update_previous_earnings():
+def update_previous_earnings(n_days):
     """
-        Update the earnings (eps_actual) for the last 7 days
+    Update the earnings (eps_actual) for the last n days
     """
-    date_from = datetime.now() - timedelta(days=7)
+    date_from = datetime.now() - timedelta(days=n_days)
     date_to = datetime.now()
     for i in yec.earnings_between(date_from, date_to):
         symbol = i["ticker"]
@@ -52,6 +52,6 @@ def update_previous_earnings():
 
 
 if __name__ == '__main__':
-    get_new_earnings()
-    update_previous_earnings()
+    get_new_earnings(7)
+    update_previous_earnings(7)
     print("DONE")

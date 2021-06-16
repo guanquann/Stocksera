@@ -17,6 +17,9 @@ date_updated = str(datetime.now()).split()[0]
 
 
 def subreddit_count():
+    """
+    Get number of redditors, percentage of active redditors and growth in new redditors
+    """
     for subreddit_name in interested_subreddit:
         subreddit = reddit.subreddit(subreddit_name)
         print("Looking at {} now.".format(subreddit))

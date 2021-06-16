@@ -8,21 +8,24 @@
 - Proportion of stocks held by major holders and major institutions.
 - Google trending.
 - Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>
-<img src="/static/images/ticker_stats.png" alt="Ticker Stats">
+![Ticker Stats](./static/images/ticker_main.png)
 
 #### /ticker/options/
 - View options chain of your favourite ticker.
 - Find out the max-pain price, OTM & ITM options and Call/Put ratio of the next few weeks.
 - NOTE: Options chain and max-pain price are updated real time. Hence, there may be a slight delay in rendering this page. 
 - Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>
+![Options](./static/images/options.png)
 
 #### /ticker/short_volume/
 - View short volume and short percentage of some of the popular tickers.
 - Data is from <a href="http://shortvolumes.com/">shortvolumes.com</a>
+![Short Volume](./static/images/short_volume.png)
 
 #### /ticker/failure_to_deliver/
 - View failure to deliver data of some of the popular tickers.
 - Data is from <a href="https://www.sec.gov/data/foiadocsfailsdatahtm">SEC.gov</a>
+![Failure to Deliver](./static/images/ftd.png)
 
 #### /earnings_calendar/
 - View all tickers earnings report for the week ahead 
@@ -33,16 +36,19 @@
 #### /reddit_analysis/
 - Find the most mentioned tickers with their sentiment level on different subreddits such as r/wallstreetbets, r/stockmarket and r/stocks.
 - Data is updated daily, around 1 hour before market open.
+![Reddit Analysis](./static/images/reddit_trending.png)
 
 #### /reddit_etf/
 - Analyse the performance of trending tickers on r/wallstreetbets.
 - Top 10 most mentioned tickers with the highest sentiment will be added to the "Reddit ETF" when market opens.
 - Tickers that fall outside the Top 10 list will be sold.
+![Reddit ETF](./static/images/etf.png)
 
 #### /subreddit_count/
 - Look at the increase in number of redditors on popular sub-reddits such as r/wallstreetbets, r/Superstonk and r/amcstock.
 - Growth in number of new redditors and percentage of active redditors.
 - This page is currently very basic, open to new suggestions on how to improve this page.
+![Subreddit Stats](./static/images/subreddit_stats.png)
 
 #### /due_diligence/
 - A compilation of top due-diligence on Reddit. 
@@ -61,6 +67,7 @@
 - View holdings, trades and news of all companies in ARK Fund.
 - View trades and ownership of a ticker.
 - Data is from <a href="https://arkfunds.io/api/">arkfunds.io/api</a>
+![ARK Trades](./static/images/ark_trades.png)
 
 #### /latest_news/
 - View latest news of your favorite ticker

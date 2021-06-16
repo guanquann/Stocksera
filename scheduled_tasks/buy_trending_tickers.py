@@ -9,7 +9,6 @@ logging.basicConfig(filename='logging.log', level=logging.INFO)
 conn = sqlite3.connect("database.db", check_same_thread=False)
 db = conn.cursor()
 
-
 db.execute("SELECT * FROM reddit_etf WHERE status=?", ("Open", ))
 prev_bought = db.fetchall()
 prev_bought_ticker = []
@@ -19,6 +18,10 @@ new_bought_ticker = []
 
 
 def buy_new_ticker(date):
+    """
+    Buy ticker if ticker is inside the Top 10 popular tickers on r/wallstreetbets
+    Note: Run this function after running scheduled_tasks/main.py to get most trending tickers on Reddit
+    """
     raw_date = date
     latest_date = date
     if " " in latest_date:
@@ -49,6 +52,10 @@ def buy_new_ticker(date):
 
 
 def sell_ticker(date):
+    """
+    Sell ticker if ticker is outside the Top 10 popular tickers on r/wallstreetbets
+    Note: Run this function after running scheduled_tasks/main.py to get most trending tickers on Reddit
+    """
     raw_date = date
     latest_date = date
     if " " in latest_date:
@@ -87,6 +94,10 @@ def sell_ticker(date):
 
 
 def update_bought_ticker_price():
+    """
+    Update price of ticker inside the Top 10 popular tickers on r/wallstreetbets
+    Note: Run this function after running scheduled_tasks/main.py to get most trending tickers on Reddit
+    """
     print("Updating ticker price now...")
     db.execute("SELECT * FROM reddit_etf WHERE status='Open'")
     open_ticker_list = db.fetchall()

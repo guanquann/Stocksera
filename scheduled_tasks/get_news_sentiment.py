@@ -18,6 +18,9 @@ date_updated = str(datetime.now()).split()[0]
 
 
 def news_sentiment():
+    """
+    Get the news sentiment score of popular tickers from Finviz news
+    """
     for ticker_selected in interested_tickers:
         ticker_fin = finvizfinance(ticker_selected)
 

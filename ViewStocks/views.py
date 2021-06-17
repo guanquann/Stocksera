@@ -221,7 +221,9 @@ def latest_news(request):
                                                        "latest_date": latest_date,
                                                        "avg_score": avg_score})
     else:
+        included_list = ", ".join(sorted(full_ticker_list()))
         return render(request, 'news_sentiment.html', {"ticker_selected": ticker_selected,
+                                                       "included_list": included_list,
                                                        "error": "error_true"})
 
 

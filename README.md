@@ -1,5 +1,7 @@
 # StocksEra
 
+You can view the application in <a href="https://stocksera.pythonanywhere.com">https://stocksera.pythonanywhere.com </a>
+
 ### User Guide
 
 #### /ticker/
@@ -56,12 +58,15 @@
 
 #### /top_movers/
 - Identify top gainers and losers during market hours.
+![Top Movers](./static/images/top_movers.png)
 
 #### /short_interest/
 - Identify tickers with the highest short interest level.
+![Short Interest](./static/images/short_interest.png)
 
 #### /low_float/
 - Identify tickers with low float.
+![Low Float](./static/images/low_float.png)
 
 #### /ark_trades/
 - View holdings, trades and news of all companies in ARK Fund.
@@ -100,16 +105,19 @@ cd scheduled_tasks
 py create_database.py
 ```
 
+#### Run scheduled tasks
+- Please refer to [Scheduled Tasks Guide](https://github.com/spartan737/Stocksera/tree/master/scheduled_tasks) for more information on how to run scheduled tasks.
+
 #### Setting up news sentiment
-- Go to ViewStocks/urls.py and uncommment 'sub_news/' and 'latest_news/'.
-- Go to templates/format.html and uncomment line 33
-- Go to templates/ticker_price.html and uncomment line 92-95
+- Go to ViewStocks/urls.py and uncomment 'sub_news/' and 'latest_news/'.
+- Go to templates/format.html and uncomment line 33.
+- Go to templates/ticker_price.html and uncomment line 92-95.
+![News Sentiment](./static/images/news_sentiment.png)
 
 #### Running the application
 ```
 # Run application (view it in 127.0.0.1:8000)
 py manange.py runserver
-
 # And you're ready to explore!
 ```
 

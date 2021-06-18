@@ -53,5 +53,5 @@ def update_previous_earnings(n_days):
 
 if __name__ == '__main__':
     get_new_earnings(7)
-    update_previous_earnings(7)
+    # update_previous_earnings(7)
     print("DONE")

@@ -13,12 +13,56 @@
 
 {% block main_nav %}
     <div class="ticker-wrap">
-        <div class="ticker">
-            {% for name in popular_name_list|length|get_range %}
-            <div class="ticker_item">
-                <b>{{popular_name_list|index:name}} &#183 {{price_list|index:name|index:0}} <span> {{price_list|index:name|index:1}} ({{price_list|index:name|index:2}}%) </span></b>
-            </div>
-            {% endfor %}
+        <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+            {
+            "symbols": [
+            {
+              "proName": "FOREXCOM:SPXUSD",
+              "title": "S&P 500"
+            },
+            {
+              "proName": "FOREXCOM:NSXUSD",
+              "title": "Nasdaq 100"
+            },
+            {
+              "description": "Apple",
+              "proName": "NASDAQ:AAPL"
+            },
+            {
+              "description": "Tesla, Inc",
+              "proName": "NASDAQ:TSLA"
+            },
+            {
+              "description": "Nvidia",
+              "proName": "NASDAQ:NVDA"
+            },
+            {
+              "description": "Microsoft",
+              "proName": "NASDAQ:MSFT"
+            },
+            {
+              "description": "GameStop",
+              "proName": "NYSE:GME"
+            },
+            {
+              "description": "AMC",
+              "proName": "NYSE:AMC"
+            },
+            {
+              "description": "Blackberry",
+              "proName": "NYSE:BB"
+            }
+            ],
+            "showSymbolLogo": true,
+            "colorTheme": "light",
+            "isTransparent": true,
+            "largeChartUrl": "http://stocksera.pythonanywhere.com",
+            "displayMode": "regular",
+            "locale": "en"
+            }
+            </script>
         </div>
     </div>
 {% endblock %}
@@ -43,7 +87,27 @@
 {% endblock %}
 
 {% block bottom_script %}
+<script>
+    // When the user scrolls the page, execute myFunction
+    window.onscroll = function() {stick_menu()};
+
+    // Get the header
+    var menu = document.getElementsByClassName("menu")[0];
+
+    // Get the offset position of the navbar
+    var sticky = menu.offsetTop-50;
+
+    // Add the sticky class to the menu when you reach its scroll position. Remove "sticky" when you leave the scroll position
+    function stick_menu() {
+      if (window.pageYOffset > sticky) {
+        menu.classList.add("sticky");
+      } else {
+        menu.classList.remove("sticky");
+      }
+}
+</script>
 <script type="text/javascript">
+    var None = "N/A"
     var earnings_calendar = {{ earnings_calendar|safe }};
 
     current_date = ""

@@ -1,0 +1,52 @@
+@media only screen and (max-width: 900px) {
+    .top_dd {
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    .top_dd {
+        width: 98%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+.dd_individual_div {
+    display: flex;
+    padding-bottom: 25px;
+}
+
+.dd_individual_div img {
+    width:30vw;
+    border-radius: 5px;
+}
+
+.dd_individual_div p {
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.dd_text {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.dd_footer {
+    margin-top: 7px;
+}
+
+.explore {
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #f1c40f;
+    padding: 2.95px;
+    border-radius: 8px;
+    margin-left: 5px;
+}
+
+.dark_mode .explore, .dark_mode .explore a {
+    color: black;
+}

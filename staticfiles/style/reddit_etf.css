@@ -1,0 +1,105 @@
+@media only screen and (max-width: 900px) {
+    .reddit_etf {
+        width: 90%;
+        margin: auto;
+    }
+
+    td img {
+        width: 20px;
+    }
+
+    .table_title {
+        text-align: center;
+        font-size: 15px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    .reddit_etf {
+        width: 98%;
+        margin: auto;
+    }
+
+    td img {
+        width: 30px;
+    }
+
+    .table_title {
+        text-align: center;
+        font-size: large;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+}
+
+.refresh_td {
+    max-width:22px;
+}
+
+.refresh_td button {
+    background-color: transparent;
+    max-width: 20px;
+    border: 0;
+    padding: 0;
+}
+
+.dark_mode .refresh_td button:hover {
+    background-color: transparent;
+}
+
+.refresh_td img {
+    max-width: 19px;
+    border:0;
+}
+
+.previous_stats_div {
+    display: flex;
+    justify-content: space-around;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px
+}
+
+.previous_stats_div > :first-child {
+    color: green;
+}
+
+.previous_stats_div > :nth-child(2) {
+    color: red;
+}
+
+input {
+    border: 1px solid grey;
+    border-radius: 6px;
+    padding: 7px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    max-width: 130px;
+}
+
+.dark_mode input {
+    border: 1px solid wheat;
+    color: wheat;
+}
+  
+table th {
+    cursor: pointer;
+}
+
+table .th-sort-asc::after {
+    content: "\25b4";
+}
+
+table .th-sort-desc::after {
+    content: "\25be";
+}
+
+td img {
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+    background-color: white;
+    opacity: 1 !important;
+}

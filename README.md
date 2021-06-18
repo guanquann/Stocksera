@@ -13,7 +13,7 @@ You can view the application in <a href="https://stocksera.pythonanywhere.com">h
 ![Ticker Stats](./static/images/ticker_main.png)
 
 #### /ticker/options/
-- View options chain of your favourite ticker.
+- View options chain of your favourite ticker. Inspired from <a href="https://github.com/GamestonkTerminal/GamestonkTerminal/tree/main/gamestonk_terminal">Gamestonk Terminal</a>
 - Find out the max-pain price, OTM & ITM options and Call/Put ratio of the next few weeks.
 - NOTE: Options chain and max-pain price are updated real time. Hence, there may be a slight delay in rendering this page. 
 - Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>
@@ -34,9 +34,10 @@ You can view the application in <a href="https://stocksera.pythonanywhere.com">h
 - Market Cap, EPS Estimate and EPS Actual
 - Sortable by market cap and day
 - Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>
+![Earnings Calendar](./static/images/earnings_calendar.png)
 
 #### /reddit_analysis/
-- Find the most mentioned tickers with their sentiment level on different subreddits such as r/wallstreetbets, r/stockmarket and r/stocks.
+- Find the most mentioned tickers with their sentiment level on different subreddits such as r/wallstreetbets, r/stockmarket and r/stocks. Inspired from <a href="https://github.com/kaito1410/AutoDD_Rev2/blob/main/AutoDD.py">Auto DD</a>
 - Data is updated daily, around 1 hour before market open.
 ![Reddit Analysis](./static/images/reddit_trending.png)
 
@@ -80,8 +81,13 @@ You can view the application in <a href="https://stocksera.pythonanywhere.com">h
 - Compare the sentiment level with other popular tickers such as GME, AAPL, TSLA.
 - NOTE: This feature is not available on pythonanywhere. To use this feature, you have to host the application locally. Please refer to the Developers section for more details
 - Data is from <a href="https://finviz.com/">finviz</a>
+![News Sentiment](./static/images/news_sentiment.png)
 
 ### For developers:
+- Advantages of hosting it locally on your computer:
+    - Faster rendering time
+    - Customise your own ticker
+    - Access to news sentiment
 
 #### Setting up and installing dependencies
 ```
@@ -112,7 +118,6 @@ py create_database.py
 - Go to ViewStocks/urls.py and uncomment 'sub_news/' and 'latest_news/'.
 - Go to templates/format.html and uncomment line 33.
 - Go to templates/ticker_price.html and uncomment line 92-95.
-![News Sentiment](./static/images/news_sentiment.png)
 
 #### Running the application
 ```

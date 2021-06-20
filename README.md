@@ -54,6 +54,7 @@ You can view the application in <a href="https://stocksera.pythonanywhere.com">h
 ![Subreddit Stats](./static/images/subreddit_stats.png)
 
 #### /due_diligence/
+- Note: This page is still in development
 - A compilation of top due-diligence on Reddit. 
 - Data is manually sourced by Stocksera on a regular basis.
 
@@ -121,7 +122,10 @@ py create_database.py
 
 #### Running the application
 ```
-# Run application (view it in 127.0.0.1:8000)
+# Set up static file (you only need to run this the first time):
+py manage.py collectstatic
+
+# Run application (view it in 127.0.0.1:8000):
 py manange.py runserver
 # And you're ready to explore!
 ```

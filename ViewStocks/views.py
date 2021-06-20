@@ -664,10 +664,11 @@ def due_diligence(request):
     """
     Get a list of due diligence from different subreddits on Reddit. Data is sourced manually by me
     """
-    db.execute("SELECT * FROM top_DD")
-    dd = db.fetchall()
-    dd = list(map(list, dd))
-    return render(request, 'top_DD.html', {"due_diligence": dd})
+    return render(request, 'top_DD.html')
+    # db.execute("SELECT * FROM top_DD")
+    # dd = db.fetchall()
+    # dd = list(map(list, dd))
+    # return render(request, 'top_DD.html', {"due_diligence": dd})
 
 
 def opinion(request):

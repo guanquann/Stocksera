@@ -87,13 +87,7 @@ def get_submission_praw(n, sub):
 
 def get_submission_generators(n, sub):
     """
-    Returns four dictionaries:
-    1st dictionary: current result from n hours ago until now
-    2nd dictionary: prev result from 2n hours ago until n hours ago
-    The two dictionaries' keys are the requested subreddit: all subreddits if allsub is True, and just "sub" otherwise
-    The value paired with each subreddit key is a generator which traverses each submission
-    Note that the generator for each subreddit will only perform http requests when it is traversed, such that this
-    function itself does not retrieve any reddit data (merely the generators)
+    Returns dictionary of current scores, previous score, total score, upvote score and comment score
     """
 
     recent, prev = get_submission_praw(n, sub)
@@ -201,7 +195,7 @@ def populate_df(current_scores_dict, prev_scores_dict, interval):
     for sub, prev_sub_scores_dict in prev_scores_dict.items():
         for symbol, prev_score in prev_sub_scores_dict.items():
             if symbol in dict_result.keys():
-
+                # total, recent, prev, change
                 dict_result[symbol][0] += prev_score
                 dict_result[symbol][2] += prev_score
                 dict_result[symbol][3] = ((dict_result[symbol][1] - dict_result[symbol][2]) / dict_result[symbol][2]) * 100
@@ -381,6 +375,7 @@ def print_df(df, filename, writesql, writecsv, subreddit):
     for col in cols_to_change:
         df[col] = df[col].fillna(0).astype(float)
     df['change'] = df['change'].apply(lambda x: round(x, 2))
+    df['change'] = df['change'].replace(0, "N/A")
     df['industry'] = df['industry'].str.replace("—", "-")
     df['recommend'] = df['recommend'].str.replace("_", " ")
 

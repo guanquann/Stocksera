@@ -9,3 +9,4 @@ scheduled_tasks/failure_to_deliver/csv
 db.sqlite3
 logging.log
 staticfiles
+testing.py

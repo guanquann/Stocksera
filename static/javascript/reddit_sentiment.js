@@ -30,14 +30,19 @@ function check_table() {
     var table = document.getElementById("reddit_table");
     for (i = 0; i < (table.rows.length - 1); i++) {
         var score_change = table.getElementsByTagName('tbody')[0].rows[i].cells[5]
-        if (score_change.innerText.includes("-")) {
-            score_change.style.color = "red";
-        }
-        else if (score_change.innerText == "0%") {
-            score_change.style.color = "#9e9e9e";
-        }
-        else {
-            score_change.style.color = "green";
+        if (!score_change.innerHTML.includes("N/A")) {
+            if (score_change.innerText.includes("-")) {
+                score_change.style.color = "red";
+                score_change.innerText = score_change.innerText + "%";
+            }
+            else if (score_change.innerText == "0%") {
+                score_change.style.color = "#9e9e9e";
+                score_change.innerText = score_change.innerText + "%";
+            }
+            else {
+                score_change.style.color = "green";
+                score_change.innerText = score_change.innerText + "%";
+            }
         }
 
         var one_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[12];

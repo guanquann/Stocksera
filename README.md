@@ -1,6 +1,17 @@
 # StocksEra
 
-You can view the application in <a href="https://stocksera.pythonanywhere.com">https://stocksera.pythonanywhere.com </a>
+You can view the application in:
+- <a href="https://stocksera.pythonanywhere.com">https://stocksera.pythonanywhere.com </a>
+- <a href="https://stockserabeta.pythonanywhere.com">https://StockseraBeta.pythonanywhere.com </a>
+
+Both websites are exactly the same. But because I'm hosting it free on pythonanywhere, speed of website can be (very) slow when traffic is high. 
+
+![Web Traffic](./static/images/web_traffic.png)
+
+Please use the other website if the one you are using is slow. Alternatively, you can host it locally on your computer, where the speed is much faster.
+
+### Support:
+This website will be free forever! No subscription needed! But if you want to support me, please give me a star on Github or you can PayPal to <a href="https://www.paypal.me/stocksera">https://www.paypal.me/stocksera</a>
 
 ### User Guide
 
@@ -95,11 +106,17 @@ You can view the application in <a href="https://stocksera.pythonanywhere.com">h
 # Clone the project
 git clone https://github.com/spartan737/Stocksera.git
 
+# Create environment
+py -m venv venv
+
 # Navigate into project's folder
 cd Stockera
 
 # Install modules
 pip install -r requiresments.txt
+
+# Set up static file
+py manage.py collectstatic
 ```
 
 #### Sign up credentials for Reddit API
@@ -122,9 +139,6 @@ py create_database.py
 
 #### Running the application
 ```
-# Set up static file (you only need to run this the first time):
-py manage.py collectstatic
-
 # Run application (view it in 127.0.0.1:8000):
 py manange.py runserver
 # And you're ready to explore!

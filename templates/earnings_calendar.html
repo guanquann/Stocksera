@@ -58,7 +58,6 @@
             "showSymbolLogo": true,
             "colorTheme": "light",
             "isTransparent": true,
-            "largeChartUrl": "http://stocksera.pythonanywhere.com",
             "displayMode": "regular",
             "locale": "en"
             }
@@ -67,7 +66,7 @@
     </div>
 {% endblock %}
 
-{% block main_content %} 
+{% block main_content %}
 <div id="top"></div>
 <div class="instructions">
     <p>View earnings for the week. There is usually a run-up to earning date. Good earning report often cause price to jump higher. Nonetheless, any downward revisions to future sales, earnings, cash flow could cause a tank instead! </p>
@@ -134,7 +133,7 @@
         if (mkt_cap < 1000000000) {
             // to round to 2dp
             mkt_cap = String(Math.round(mkt_cap / 10000, 2)) / 100 + "M"
-        } 
+        }
         else if (mkt_cap >= 1000000000) {
             mkt_cap = String(Math.round(mkt_cap / 10000000, 2)) / 100 + "B"
         }
@@ -148,7 +147,7 @@
                 eps_est = "$" + eps_est
             }
         }
-            
+
         html_string += ` <span class="earnings_container">
                             <a href="{% url 'ticker' %}?quote=${earnings_calendar[earning][1]}" target="_blank"><img src="${earnings_calendar[earning][5]}" onerror=this.src="{% static 'images/not_available.svg' %}" class="company_img"></a>
                             <p><span>Name: </span>${earnings_calendar[earning][0]}</p>
@@ -156,7 +155,7 @@
                             <p><span>Mkt Cap: </span>${mkt_cap}</p>
                             <p><span>EPS Est: </span>${eps_est}</p>
                          </span>`
-    }   
+    }
     html_string += `</div></div>`
     document.getElementById("main").innerHTML += html_string;
 
@@ -164,9 +163,7 @@
     for (earning_date of earning_date_list) {
         earning_date_string += `<option><a href="#${earning_date}">${earning_date}</a></option>`
     }
-    earning_date_string += `</select><span id="to_top"><a href="#top"><div class="triangle-up"></div></a></span>`
+<!--    earning_date_string += `</select><span id="to_top"><a href="#top"><div class="triangle-up"></div></a></span>`-->
     document.getElementsByClassName("menu")[0].innerHTML += earning_date_string;
 </script>
 {% endblock %}
-
-

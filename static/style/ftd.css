@@ -79,3 +79,8 @@
     background-color: red;
     color: white;
 }
+
+.instructions a {
+    text-decoration: underline;
+    color: blue;
+}

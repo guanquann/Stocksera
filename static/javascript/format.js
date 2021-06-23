@@ -47,11 +47,11 @@ function hide_nav_bar() {
 
 function activate_dark_mode() {
     var iframe = document.getElementsByTagName("iframe");
-    console.log(iframe)
     if (document.getElementById("dark_mode").checked == true) {
         document.getElementsByTagName("body")[0].classList.add("dark_mode");
         if (iframe.length > 1) {
-            for (i=0; i<iframe.length; i++) {
+            var first_iframe_id = iframe[0]["id"]
+            for (i=1; i<iframe.length; i++) {
                 if (typeof(iframe[i].contentDocument != null)) {
                     iframe[i].contentDocument.getElementsByTagName("body")[0].classList.add("dark_mode")
                 }
@@ -62,7 +62,8 @@ function activate_dark_mode() {
     else {
         document.getElementsByTagName("body")[0].classList.remove("dark_mode");
         if (iframe.length > 1) {
-            for (i=0; i<iframe.length; i++) {
+            var first_iframe_id = iframe[0]["id"]
+            for (i=1; i<iframe.length; i++) {
                 if (typeof(iframe[i].contentDocument != null)) {
                     iframe[i].contentDocument.getElementsByTagName("body")[0].classList.remove("dark_mode")
                 }

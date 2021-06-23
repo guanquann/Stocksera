@@ -1,7 +1,8 @@
 # PRAW credentials
-# Register for an API in https://www.reddit.com/prefs/apps and enter credential
-API_REDDIT_CLIENT_ID = "YOUR_OWN_API"
-API_REDDIT_CLIENT_SECRET = "YOUR_OWN_API"
+# CSQ1yKKC3vDtrg JAIBQa13Pe2gjh7FO27ynZk7yLIjRA
+# 3RbFQX8O9UqDCA, NalOX_ZQqGWP4eYKZv6bPlAb2aWOcA
+API_REDDIT_CLIENT_ID = "3RbFQX8O9UqDCA"
+API_REDDIT_CLIENT_SECRET = "NalOX_ZQqGWP4eYKZv6bPlAb2aWOcA"
 API_REDDIT_USER_AGENT = "subreddit_scraper"
 
 # Time interval in hours to filter the results, default is 24 hours
@@ -27,4 +28,4 @@ save_to_sql = True
 
 # Saves to a csv file if it is true
 save_to_csv = False
-file_name = "test"
+file_name = "test1"

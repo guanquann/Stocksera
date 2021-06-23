@@ -58,6 +58,7 @@
             "showSymbolLogo": true,
             "colorTheme": "light",
             "isTransparent": true,
+            "largeChartUrl": "http://stocksera.pythonanywhere.com",
             "displayMode": "regular",
             "locale": "en"
             }
@@ -163,7 +164,7 @@
     for (earning_date of earning_date_list) {
         earning_date_string += `<option><a href="#${earning_date}">${earning_date}</a></option>`
     }
-<!--    earning_date_string += `</select><span id="to_top"><a href="#top"><div class="triangle-up"></div></a></span>`-->
+    earning_date_string += `</select><span id="to_top"><a href="#top"><div class="triangle-up"></div></a></span>`
     document.getElementsByClassName("menu")[0].innerHTML += earning_date_string;
 </script>
 {% endblock %}

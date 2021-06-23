@@ -51,12 +51,6 @@
             <canvas id="ftd_chart"></canvas>
         </div>
 
-        <div class="instructions">
-            <p>
-                What is T+35 Theory? It means to check for FTD surges (FTD more than 1 million) for stocks that are heavily shorted such as AMC and GME and count 34 trading days after the surge date. On that date, stocks might experience a surge in price action. You can refer to <a href="https://www.reddit.com/r/amcstock/comments/o21ejs/amc_ftds_will_spike_amc_price_21st_22nd_23rd_25th/" target="_blank">this post</a> on Reddit for more information.
-            </p>
-        </div>
-
         <div class="scrollable_div">
             {{ftd|safe}}
         </div>
@@ -135,5 +129,7 @@
         </div>
         ${price_code}`
     document.getElementById("ticker_basic_stats").innerHTML = ticker_basic_stats_code;
+
+
 </script>
 {% endblock %}

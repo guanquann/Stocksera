@@ -1,8 +1,8 @@
 # StocksEra
 
 You can view the application in:
-- <a href="https://stocksera.pythonanywhere.com">stocksera.pythonanywhere.com </a>
-- <a href="https://stockserabeta.pythonanywhere.com">StockseraBeta.pythonanywhere.com </a>
+- <a href="https://stocksera.pythonanywhere.com">https://stocksera.pythonanywhere.com </a>
+- <a href="https://stockserabeta.pythonanywhere.com">https://StockseraBeta.pythonanywhere.com </a>
 
 Both websites are exactly the same. But because I'm hosting it free on pythonanywhere, speed of website can be (very) slow when traffic is high. 
 
@@ -11,9 +11,9 @@ Both websites are exactly the same. But because I'm hosting it free on pythonany
 Please use the other website if the one you are using is slow. Alternatively, you can host it locally on your computer, where the speed is much faster.
 
 ### Support:
-This website will be free forever! No subscription needed! But if you want to support me, please give me a star on Github or you can PayPal to <a href="https://www.paypal.me/stocksera">paypal.me/stocksera</a>
+This website will be free forever! No subscription needed! But if you want to support me, please give me a star on Github or you can PayPal to <a href="https://www.paypal.me/stocksera">https://www.paypal.me/stocksera</a>
 
-### User Guide:
+### User Guide
 
 #### /ticker/
 - View graph/historical data of your favourite ticker.
@@ -119,12 +119,6 @@ pip install -r requiresments.txt
 py manage.py collectstatic
 ```
 
-Download nltk data for sentiment analysis. Type the following in console:
-```
->>> import ntlk
->>> nltk.download("vader_lexicon")
-```
-
 #### Sign up credentials for Reddit API
 - Register for an API in <a href="https://www.reddit.com/prefs/apps">https://www.reddit.com/prefs/apps </a> and enter credential in scheduled_tasks/config.py
 
@@ -149,17 +143,6 @@ py create_database.py
 py manange.py runserver
 # And you're ready to explore!
 ```
-
-### Future improvements:
-- [ ] Improve speed of website (although I feel that the major issue lies with pythonanywhere-the website I'm hosting instead)
-- [ ] Income Statement and Cash Flow for Financial data
-- [ ] Show theta, delta, gamma in Options data
-- [ ] Show performance of Reddit ETF vs SPY
-- [ ] Show hedge funds (Citadel, Melvin Capital etc) major holdings
-- [ ] Show T-35 date in FTD data
-
-### Review and Showcase:
-![Review and Showcase in r/options](./static/images/reddit_review.png)
 
 ### License:
 This project is under the <a href="https://github.com/spartan737/stocksera/blob/master/LICENSE">MIT</a> license.

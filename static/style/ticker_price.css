@@ -4,17 +4,19 @@
         margin:auto;
     }
 
+    .chart-container {
+        position: relative; 
+        height:55vh;
+        width:90%;
+        max-height:250px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
     #ticker_table, .ticker_news {
         margin-left: auto;
         margin-right: auto;
         width: 90vw;
-    }
-
-    #ticker_chart {
-        width: 90% !important;
-        margin: auto !important;
-        height: 500px;
-        padding: 0 !important;
     }
 
     #latest_price {
@@ -42,17 +44,6 @@
         margin-left: 8px;
         display: inline-block;
     }
-
-    .price_details {
-        display: inline-block;
-        font-size: 10px;
-        font-weight: bold;
-        border-radius: 6px;
-        padding-top: 4px;
-        padding-bottom: 3px;
-        padding-left: 5px;
-        padding-right: 5px
-    }
 }
 
 @media only screen and (min-width: 900px) {
@@ -61,17 +52,19 @@
         margin:auto;
     }
 
+    .chart-container {
+        position: relative; 
+        height:55vh;
+        width:98%;
+        max-height:250px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
     #ticker_table, .ticker_news {
         margin-left: auto;
         margin-right: auto;
         width: 98%;
-    }
-
-    #ticker_chart {
-        width: 96% !important;
-        margin: auto !important;
-        height: 500px;
-        padding: 0 !important;
     }
 
     #latest_price {
@@ -98,17 +91,6 @@
         width: 73%;
         margin-left: 8px;
         display: inline-block;
-    }
-
-    .price_details {
-        display: inline-block;
-        font-size: 15px;
-        font-weight: bold;
-        border-radius: 6px;
-        padding-top: 6px;
-        padding-bottom: 5px;
-        padding-left: 10px;
-        padding-right: 10px;
     }
 }
 
@@ -175,18 +157,4 @@
 iframe {
     border: 0;
     width: 100%;
-}
-
-.positive_price {
-    background-color: green;
-    color: white;
-}
-
-.negative_price {
-    background-color: red;
-    color: white;
-}
-
-.dark_mode #ticker_chart {
-    opacity: 0.8;
 }

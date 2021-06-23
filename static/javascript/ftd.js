@@ -6,12 +6,6 @@ function display_data() {
     }
 }
 
-Date.prototype.addDays = function(days) {
-    var date = new Date(this.valueOf());
-    date.setDate(date.getDate() + days);
-    return date;
-}
-
 function ftd_graph() {
     var ftd = document.getElementsByTagName("table")[0].querySelectorAll("tr");
 
@@ -19,8 +13,7 @@ function ftd_graph() {
         <th>Date</th>
         <th>Failure to Deliver</th>
         <th>Price</th>
-        <th>Amount (FTD x $)</th>
-        <th>T+35 Date</th>`
+        <th>Amount (FTD x $)</th>`
 
     var date_list = [], price_list = [], vol_list = []
     for (tr=ftd.length-1; tr>0; tr--) {
@@ -31,26 +24,12 @@ function ftd_graph() {
         total_td[0].innerHTML = new_date_string;
 
         vol_list.push(total_td[1].innerHTML)
-        if (Number(total_td[1].innerHTML) > 1000000) {
-            total_td[1].parentElement.style.color = "red";
-            total_td[1].parentElement.style.fontWeight = "bold";
-        }
         total_td[1].innerHTML = total_td[1].innerHTML.replace(".0", "")
 
         price_list.push(total_td[2].innerHTML);
         total_td[2].innerHTML = "$" + total_td[2].innerHTML
 
-        total_td[3].innerHTML = "$" + total_td[3].innerHTML
-
-        f35_date = new Date(new_date_string).addDays(50)
-        if (f35_date > new Date("2021/07/05")) {
-            f35_date = new Date(f35_date).addDays(1)
-        }
-        month = f35_date.getUTCMonth() + 1;
-        day = f35_date.getUTCDate();
-        year = f35_date.getUTCFullYear();
-        f35_date = year + "/" + month + "/" + day;
-        ftd[tr].innerHTML += `<td>${f35_date}</td>`
+        ftd[tr].innerHTML += `<td>$${Math.round(Number(total_td[1].innerHTML) * Number(total_td[2].innerHTML.replace("$", "")))}</td>`
     }
 
     var ftd_chart = document.getElementById('ftd_chart');

@@ -30,15 +30,46 @@ def main(request):
 
 def stock_price(request):
     """
-    Get price and key statistics of a ticker. Data from yahoo finance
+    Get price, graph and key statistics of a ticker. Data from yahoo finance
     """
     ticker_selected = default_ticker(request)
     try:
         ticker = yf.Ticker(ticker_selected)
+        # Display graph based on what user selects. Default is 1 day
+        if "five_day" in request.GET:
+            price_df = ticker.history(period="5d", interval="30m")
+            ticker_date_max = list(map(lambda x: x.split(" ")[0], price_df.index.astype(str).to_list()))
+            duration = "1"
+        elif "one_month" in request.GET:
+            price_df = ticker.history(period="1mo", interval="1d")
+            ticker_date_max = price_df.index.astype(str).to_list()
+            duration = "2"
+        elif "one_year" in request.GET:
+            price_df = ticker.history(period="1y", interval="1d")
+            ticker_date_max = price_df.index.astype(str).to_list()
+            duration = "3"
+        elif "five_year" in request.GET:
+            price_df = ticker.history(period="5y", interval="1wk").fillna(method="ffill")
+            ticker_date_max = price_df.index.astype(str).to_list()
+            duration = "4"
+        else:
+            price_df = ticker.history(period="1d", interval="2m")
+            ticker_date_max = list(map(lambda x: x.split()[1].split("-")[0].rsplit(":", 1)[0],
+                                   price_df.index.astype(str).to_list()))
+            duration = "0"
+
+        # If price < $1, round to 4sf, else 2sf
+        if price_df["Close"][0] <= 1:
+            ticker_price_max = list(map(lambda x: round(x, 4), price_df["Close"].to_list()))
+        else:
+            ticker_price_max = list(map(lambda x: round(x, 2), price_df["Close"].to_list()))
+
         information = ticker.info
 
-        return render(request, 'ticker_price.html', {
-                                                     "ticker_selected": ticker_selected,
+        return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
+                                                     "ticker_date_max": ticker_date_max,
+                                                     "ticker_price_max": ticker_price_max,
+                                                     "duration": duration,
                                                      "information": information,
                                                      })
     except (IndexError, KeyError, Exception):
@@ -479,7 +510,6 @@ def failure_to_deliver(request):
         information = ticker.info
         ftd = pd.read_csv(file_path)
         ftd = ftd[::-1]
-        ftd["Amount (FTD x $)"] = (ftd["QUANTITY (FAILS)"] * ftd["PRICE"]).astype(int)
         del ftd["CUSIP"]
         del ftd["SYMBOL"]
         del ftd["DESCRIPTION"]

@@ -73,6 +73,13 @@ p {
     display: none;
 }
 
+#more_info_div {
+    display: flex;
+    margin: auto;
+    overflow: auto;
+    justify-content: center;
+}
+
 .fund_type_parent {
     display: flex;
     width: min-content;

@@ -71,12 +71,13 @@
         <p>Top mover stocks moves by the largest proportion in price (in both ways) due to earnings, rumours, news, mergers and so on. If it's down, buy the dip!</p>
     </div>
     <div class="top_movers">
-        <h2>Top Movers 🚀</h2>
         <div id="more_info_div">
             <a class="more_info_btn" href="{% url 'short_interest' %}" onclick="clickAndDisable(this);">Short Interest</a>
             <a class="more_info_btn" href="{% url 'low_float' %}" onclick="clickAndDisable(this);">Low Float</a>
             <a class="more_info_btn" href="{% url 'ark_trades' %}" onclick="clickAndDisable(this);">ARK Fund</a>
+            <a class="more_info_btn" href="{% url 'hedge_funds' %}" onclick="clickAndDisable(this);">Hedge Fund</a>
         </div>
+        <h2>Top Movers 🚀</h2>
         <div class="table_div">
             {{ top_movers_combine|safe }}
         </div>

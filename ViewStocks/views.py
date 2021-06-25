@@ -1,4 +1,5 @@
 import os
+import json
 import sqlite3
 from datetime import datetime, timedelta
 
@@ -22,6 +23,8 @@ analyzer = SentimentIntensityAnalyzer()
 analyzer.lexicon.update(new_words)
 
 trends = TrendReq(hl='en-US', tz=360)
+
+pd.options.display.float_format = '{:.1f}'.format
 
 
 def main(request):
@@ -502,6 +505,40 @@ def earnings_calendar(request):
     calendar = list(map(list, calendar))
 
     return render(request, 'earnings_calendar.html', {"earnings_calendar": calendar})
+
+
+def hedge_funds(request):
+    """
+    Get holdings of top hedge funds in the world. Data is from whalewisdom
+    """
+    if request.GET.get("fund_name"):
+        fund_name = request.GET.get("fund_name").replace("Hedge Fund: ", "")
+    else:
+        fund_name = "CITADEL ADVISORS LLC"
+
+    if request.GET.get("sort_by"):
+        selected_sort = request.GET.get("sort_by").replace("Sort By: ", "")
+    else:
+        selected_sort = "Rank"
+
+    with open(r"scheduled_tasks/hedge_funds_holdings/hedge_funds_description.json") as r:
+        hedge_funds_holdings = json.load(r)["hedge funds"]
+
+    all_fund_names = []
+    for fund in hedge_funds_holdings:
+        all_fund_names.append(fund["name"])
+        if fund["name"] == fund_name:
+            df = pd.read_csv(r"scheduled_tasks/hedge_funds_holdings/{}".format(fund["file_name"]))[:100]
+            df = df.replace(np.nan, "N/A")
+            df = df.sort_values(by=[selected_sort])
+            description = fund
+            sort_by = df.columns
+
+    return render(request, 'hedge_funds.html', {"df": df.to_html(index=False),
+                                                "description": description,
+                                                "all_fund_names": all_fund_names,
+                                                "sort_by": sort_by,
+                                                "selected_sort": selected_sort})
 
 
 def reddit_analysis(request):

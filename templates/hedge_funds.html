@@ -2,11 +2,10 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | Low Float{% endblock %}
+{% block title %}StocksEra | Hedge Funds{% endblock %}
 
 {% block additional_script %}
-<link rel="stylesheet" href="{% static 'style/low_float.css' %}">
-<script src="{% static 'javascript/low_float.js' %}"></script>
+<link rel="stylesheet" href="{% static 'style/hedge_funds.css' %}">
 {% endblock %}
 
 {% block onload_properties%}restore_dark_mode();update_table(){% endblock %}
@@ -68,31 +67,71 @@
 
 {% block main_content %}
     <div class="instructions">
-        <p>Low float stocks are those with a low number of shares. Floating stock is calculated by subtracting closely-held shares and restricted stock from a firm’s total outstanding shares. A stock with a small float will generally be more volatile since it's harder to find a buyer/seller.</p>
+        <p>View 13F Fillings of some of the largest hedge funds in the world.</p>
     </div>
-    <div class="low_float">
+    <div class="hedge_funds">
         <div id="more_info_div">
             <a class="more_info_btn" href="{% url 'top_movers' %}" onclick="clickAndDisable(this)">Top Movers</a>
             <a class="more_info_btn" href="{% url 'short_interest' %}" onclick="clickAndDisable(this)">Short Interest</a>
+                <a class="more_info_btn" href="{% url 'low_float' %}" onclick="clickAndDisable(this);">Low Float</a>
             <a class="more_info_btn" href="{% url 'ark_trades' %}" onclick="clickAndDisable(this)">ARK Fund</a>
-            <a class="more_info_btn" href="{% url 'hedge_funds' %}" onclick="clickAndDisable(this);">Hedge Fund</a>
         </div>
-        <h2>Low Float</h2>
+
+        <h2>{{description.name}}</h2>
+        <form action="" method="GET">
+            <select name="fund_name" onchange="this.form.submit()">
+                <option>Hedge Fund: {{description.name}}</option>
+                {% for fund_name in all_fund_names %}
+                    <option>{{fund_name}}</option>
+                {% endfor %}
+            </select>
+            <select name="sort_by" onchange="this.form.submit()">
+                <option>Sort By: {{selected_sort}}</option>
+                {% for sort in sort_by %}
+                    <option>{{sort}}</option>
+                {% endfor %}
+            </select>
+        </form>
+        <div>{{description.description}}</div>
+        <a href="{{description.website}}" target="_blank" class="read_more"><i>View More (whalewisdom)</i></a>
         <div class="table_div">
-            {{ df_low_float|safe }}
+            {{ df|safe }}
         </div>
     </div>
-    <p>Data from: <a href="https://www.lowfloat.com" target="_blank">lowfloat.com</a>
+    <p>Data from: <a href="https://whalewisdom.com/" target="_blank">whalewisdom.com</a>
 {% endblock %}
 
 {% block bottom_script %}
 <script>
+function update_table() {
     var table = document.getElementsByTagName("table")[0];
     var tr = table.querySelectorAll("tr");
-    for (row=1; row<tr.length; row++) {
-        var td = tr[row].querySelector("td");
-        ticker = td.innerHTML;
-        td.innerHTML = `<a href="{% url 'ticker' %}?quote=${ticker}" target="_blank">${ticker}</a>`;
+    for (i=1; i<tr.length; i++) {
+        var td = tr[i].querySelectorAll("td");
+        td[1].innerHTML = `<a href="{% url 'ticker' %}?quote=${td[2].innerHTML}" target="_blank"><b>${td[1].innerHTML}</b></a>`
+        td[2].innerHTML = `<a href="{% url 'ticker' %}?quote=${td[2].innerHTML}" target="_blank"><b>${td[2].innerHTML}</b></a>`
+        td[5].innerHTML = "$" + td[5].innerHTML
+        td[6].innerHTML = td[6].innerHTML + "%"
+        td[7].innerHTML = td[7].innerHTML + "%"
+
+        var value_change = td[8].innerHTML
+        if (value_change.includes("-")) {
+            td[8].innerHTML = value_change.replace("-", "-$")
+        }
+        else {
+            td[8].innerHTML = "$" + value_change
+        }
+
+        td[9].innerHTML = td[9].innerHTML + "%"
+
+        if (td[11].innerHTML != "N/A" & td[11].innerHTML != "NO DATA") {
+            td[11].innerHTML = td[11].innerHTML + "%"
+        }
+
+        if (td[15].innerHTML != "N/A") {
+            td[15].innerHTML = "$" + td[15].innerHTML
+        }
     }
+}
 </script>
 {% endblock %}

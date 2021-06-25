@@ -5,11 +5,6 @@
         margin-right: auto;
     }
 
-    h2 {
-        margin-top: 22px;
-        margin-bottom: 5px;
-    }
-
     td img {
         width: 20px;
     }
@@ -22,14 +17,21 @@
         margin-right: auto;
     }
 
-    h2 {
-        margin-top: 30px;
-        margin-bottom: 5px;
-    }
-
     td img {
         width: 30px;
     }
+}
+
+h2 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#more_info_div {
+    display: flex;
+    margin: auto;
+    overflow: auto;
+    justify-content: center;
 }
 
 .table_div {

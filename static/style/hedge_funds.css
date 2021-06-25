@@ -1,5 +1,5 @@
 @media only screen and (max-width: 900px) {
-    .short_interest, p {
+    .hedge_funds, p {
         width: 90%;
         margin-left: auto;
         margin-right: auto;
@@ -11,7 +11,7 @@
 }
 
 @media only screen and (min-width: 900px) {
-    .short_interest, p {
+    .hedge_funds, p {
         width: 98%;
         margin-left: auto;
         margin-right: auto;
@@ -34,6 +34,17 @@ h2 {
     justify-content: center;
 }
 
+select, option {
+    border: 1px solid black;
+    border-radius: 3px;
+    padding: 0.4%;
+    margin-bottom: 1%;
+}
+
+.read_more {
+    color: grey;
+}
+
 .table_div {
     overflow-x: auto;
     overflow-y: auto;
@@ -46,17 +57,4 @@ td img {
     margin-right: 6px;
     vertical-align: middle;
     background-color: white;
-}
-
-th:hover {
-    cursor: pointer;
-}
-
-
-.th-sort-asc::after {
-    content: "\25b4";
-}
-
-.th-sort-desc::after {
-    content: "\25be";
 }

@@ -20,8 +20,8 @@ if __name__ == '__main__':
     get_news_sentiment.news_sentiment()
 
     # Uncomment this if you want to get short volume of tickers
-    for i in get_short_volume.full_ticker_list():
-        get_short_volume.short_volume(i)
+    # for i in get_short_volume.full_ticker_list():
+    #     get_short_volume.short_volume(i)
 
     # Uncomment this if you want to update price of Reddit ETF
     # buy_trending_tickers.update_bought_ticker_price()

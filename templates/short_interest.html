@@ -71,12 +71,13 @@
         <p>Short interest (SI) is the number of shares that have been sold short but have not yet been covered. The higher the SI, the higher probability of short squeezing as shortable shares reduce in number. Stocks with high SI are highly volatile.</p>
     </div>
     <div class="short_interest">
-        <h2>Short Interest</h2>
         <div id="more_info_div">
             <a class="more_info_btn" href="{% url 'top_movers' %}" onclick="clickAndDisable(this);">Top Movers</a>
             <a class="more_info_btn" href="{% url 'low_float' %}" onclick="clickAndDisable(this);">Low Float</a>
             <a class="more_info_btn" href="{% url 'ark_trades' %}" onclick="clickAndDisable(this);">ARK Fund</a>
+            <a class="more_info_btn" href="{% url 'hedge_funds' %}" onclick="clickAndDisable(this);">Hedge Fund</a>
         </div>
+        <h2>Short Interest</h2>
         <div class="table_div">
             {{ df_high_short_interest|safe }}
         </div>

@@ -22,6 +22,7 @@ urlpatterns = [
     path('recommendations/', views.ticker_recommendations, name='recommendations'),
     path('major_holders/', views.ticker_major_holders, name='major_holders'),
     path('institutional_holders/', views.ticker_institutional_holders, name='institutional_holders'),
+    path('hedge_funds/', views.hedge_funds, name='hedge_funds'),
     path('subreddit_count/', views.subreddit_count, name='subreddit_count'),
     path('reddit_etf/', views.reddit_etf, name='reddit_etf'),
     path('due_diligence/', views.due_diligence, name='due_diligence'),

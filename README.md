@@ -81,6 +81,10 @@ This website will be free forever! No subscription needed! But if you want to su
 - Identify tickers with low float.
 ![Low Float](./static/images/low_float.png)
 
+#### /hedge_funds/
+- Identify top holdings from some of the major hedge funds.
+![Hedge Funds](./static/images/hedge_funds.png)
+
 #### /ark_trades/
 - View holdings, trades and news of all companies in ARK Fund.
 - View trades and ownership of a ticker.
@@ -151,14 +155,15 @@ py manange.py runserver
 ```
 
 ### Future improvements:
+- [x] Show hedge funds (Citadel, Melvin Capital etc) major holdings
+- [x] Show T-35 date in FTD data
 - [ ] Improve speed of website (although I feel that the major issue lies with pythonanywhere-the website I'm hosting instead)
 - [ ] Income Statement and Cash Flow for Financial data
 - [ ] Show theta, delta, gamma in Options data
 - [ ] Show performance of Reddit ETF vs SPY
-- [ ] Show hedge funds (Citadel, Melvin Capital etc) major holdings
-- [ ] Show T-35 date in FTD data
 
 ### Review and Showcase:
+In 10 hours, there were more than 10 awards and 500 upvotes.
 ![Review and Showcase in r/options](./static/images/reddit_review.png)
 
 ### License:

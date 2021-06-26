@@ -41,3 +41,7 @@ Note: Ensure that you run scheduled_tasks/create_database.py first before contin
 - Get Failure to Deliver data from [SEC](https://www.sec.gov/data/foiadocsfailsdatahtm).
 - Download the txt file. You do not need to convert it to csv. The script automatically does it for you.
 - Run this script once every few weeks.
+
+#### scheduled_tasks/get_hedge_funds_holdings.py
+- Get holdings of major hedge funds
+- Download csv from [whalewisdom](https://whalewisdom.com/). You need to sign up a free account to access the csv files. Data is updated quarterly.

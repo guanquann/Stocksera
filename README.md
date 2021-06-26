@@ -1,5 +1,6 @@
 # StocksEra
 
+
 You can view the application in:
 - <a href="https://stocksera.pythonanywhere.com">stocksera.pythonanywhere.com </a>
 - <a href="https://stockserabeta.pythonanywhere.com">StockseraBeta.pythonanywhere.com </a>
@@ -71,18 +72,22 @@ This website will be free forever! No subscription needed! But if you want to su
 
 #### /top_movers/
 - Identify top gainers and losers during market hours.
+- Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>
 ![Top Movers](./static/images/top_movers.png)
 
 #### /short_interest/
 - Identify tickers with the highest short interest level.
+- Data is from <a href="https://www.highshortinterest.com">shortinterest.com</a>
 ![Short Interest](./static/images/short_interest.png)
 
 #### /low_float/
 - Identify tickers with low float.
+- Data is from <a href="https://www.lowfloat.com">lowfloat.com</a>
 ![Low Float](./static/images/low_float.png)
 
 #### /hedge_funds/
 - Identify top holdings from some of the major hedge funds.
+- Data is from <a href="https://whalewisdom.com/">whalewisdom</a>
 ![Hedge Funds](./static/images/hedge_funds.png)
 
 #### /ark_trades/

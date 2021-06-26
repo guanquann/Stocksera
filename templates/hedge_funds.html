@@ -6,9 +6,10 @@
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/hedge_funds.css' %}">
+<script src="{% static 'javascript/hedge_funds.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode();update_table(){% endblock %}
+{% block onload_properties%}restore_dark_mode();update_table();load_page_num(){% endblock %}
 
 {% block main_nav %}
     <div class="ticker-wrap">
@@ -78,7 +79,9 @@
         </div>
 
         <h2>{{description.name}}</h2>
-        <form action="" method="GET">
+        <form action="" method="GET" id="form">
+            <input id="page_num" name="page_num" style="display: none" value="{{page_num}}">
+            <input id="total_pages" style="display: none" value="{{num_pages}}">
             <select name="fund_name" onchange="this.form.submit()">
                 <option>Hedge Fund: {{description.name}}</option>
                 {% for fund_name in all_fund_names %}
@@ -91,12 +94,15 @@
                     <option>{{sort}}</option>
                 {% endfor %}
             </select>
+<!--            <input placeholder="TICKER: ">-->
+
+            <div>{{description.description}}</div>
+            <a href="{{description.website}}" target="_blank" class="read_more"><i>View More (whalewisdom)</i></a>
+            <div class="table_div">
+                {{ df|safe }}
+            </div>
+            <div class="page_section"></div>
         </form>
-        <div>{{description.description}}</div>
-        <a href="{{description.website}}" target="_blank" class="read_more"><i>View More (whalewisdom)</i></a>
-        <div class="table_div">
-            {{ df|safe }}
-        </div>
     </div>
     <p>Data from: <a href="https://whalewisdom.com/" target="_blank">whalewisdom.com</a>
 {% endblock %}

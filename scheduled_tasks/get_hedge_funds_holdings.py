@@ -13,16 +13,18 @@ def preprocess_hedge_funds(csv, fund_name):
     df = df.apply(lambda x: x.astype(str).str.upper())
     del df["Qtr first owned"]
     del df["Recent Price"]
+    del df["Ranking"]
     df = df[df["source_type"] == "13F"]
-    df["% Ownership"] = df["% Ownership"].round(2)
-    rank_col = df.pop("Ranking")
-    df = pd.concat((rank_col, df), axis=1)
+    # rank_col = df.pop("Ranking")
+    df.index = df.index + 1
+    df = df.reset_index()
+
+    # df = pd.concat((rank_col, df), axis=1)
     df.columns = ["Rank", "Stock", "Ticker", "Type", "Quantity", "Market Value", "% Portfolio", "Previous % Portfolio",
                   "Change", "% Change", "Change Type", "% Ownership", "Sector", "Source Type",
                   "Source Date", "Avg Price"]
-
     df.to_csv(os.path.join(os.getcwd(), "hedge_funds_holdings", "{}.csv".format(fund_name)), index=False)
 
 
 if __name__ == '__main__':
-    preprocess_hedge_funds(r"C:\Users\Acer\Desktop\melvin_capital_management_lp-current-2021-06-23_14_21_47.csv", "melvin_capital")
+    preprocess_hedge_funds(r"C:\Users\Acer\Desktop\citadel_advisors_llc-current-2021-06-23_14_17_24.csv", "citadel")

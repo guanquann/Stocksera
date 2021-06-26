@@ -1,4 +1,5 @@
 import os
+import math
 import json
 import sqlite3
 from datetime import datetime, timedelta
@@ -518,9 +519,12 @@ def hedge_funds(request):
 
     if request.GET.get("sort_by"):
         selected_sort = request.GET.get("sort_by").replace("Sort By: ", "")
+        page_num = int(request.GET.get("page_num"))
     else:
         selected_sort = "Rank"
+        page_num = 1
 
+    # hedge_funds_description.json remember to change the file name to the csv's file you have saved
     with open(r"scheduled_tasks/hedge_funds_holdings/hedge_funds_description.json") as r:
         hedge_funds_holdings = json.load(r)["hedge funds"]
 
@@ -528,7 +532,11 @@ def hedge_funds(request):
     for fund in hedge_funds_holdings:
         all_fund_names.append(fund["name"])
         if fund["name"] == fund_name:
-            df = pd.read_csv(r"scheduled_tasks/hedge_funds_holdings/{}".format(fund["file_name"]))[:100]
+            df = pd.read_csv(r"scheduled_tasks/hedge_funds_holdings/{}".format(fund["file_name"]))
+            num_pages = math.ceil(len(df) / 100)
+
+            if len(df) > 100:
+                df = df[page_num*100-100:page_num*100]
             df = df.replace(np.nan, "N/A")
             df = df.sort_values(by=[selected_sort])
             description = fund
@@ -538,7 +546,9 @@ def hedge_funds(request):
                                                 "description": description,
                                                 "all_fund_names": all_fund_names,
                                                 "sort_by": sort_by,
-                                                "selected_sort": selected_sort})
+                                                "selected_sort": selected_sort,
+                                                "page_num": page_num,
+                                                "num_pages": num_pages})
 
 
 def reddit_analysis(request):

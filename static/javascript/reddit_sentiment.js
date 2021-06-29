@@ -6,13 +6,18 @@ function show_subreddit_img(subreddit) {
     }
     else if (subreddit == "Stocks") {
         img_src = "/static/images/subreddit_icon/stocks.png"
-        subreddit_name = "Stocks - Investing and trading for all"
+        subreddit_name = "Stocks"
         subreddit_description = "r/stocks"
     }
     else if (subreddit == "Stock Market") {
         img_src = "/static/images/subreddit_icon/stockmarket.png"
-        subreddit_name = "r/StockMarket - Reddit's Front Page of the Stock Market"
+        subreddit_name = "r/StockMarket"
         subreddit_description = "r/StockMarket"
+    }
+    else if (subreddit == "Options") {
+        img_src = "/static/images/subreddit_icon/options.png"
+        subreddit_name = "/r/Options"
+        subreddit_description = "r/options"
     }
 
     subreddit_code = `
@@ -22,6 +27,9 @@ function show_subreddit_img(subreddit) {
                 <div class="lg">${subreddit_name}</div>
                 <div class="sm">${subreddit_description}</div>
             </div>
+        </div>
+        <div class="type_div">
+            <a href="/reddit_ticker_analysis?quote=GME&subreddit=${subreddit.replaceAll(' ', '')}" target="_blank" class="type">View Detailed</a>
         </div>`
     document.getElementsByClassName("subreddit_intro")[0].innerHTML = subreddit_code;
 }

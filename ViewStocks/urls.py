@@ -11,6 +11,7 @@ urlpatterns = [
     path('ticker/short_volume/', views.short_volume, name='short_volume'),
     path('ticker/failure_to_deliver/', views.failure_to_deliver, name='failure_to_deliver'),
     path('reddit_analysis/', views.reddit_analysis, name='reddit_analysis'),
+    path('reddit_ticker_analysis/', views.reddit_ticker_analysis, name='reddit_ticker_analysis'),
     path('top_movers/', views.top_movers, name='top_movers'),
     path('short_interest/', views.short_interest, name='short_interest'),
     path('low_float/', views.low_float, name='low_float'),

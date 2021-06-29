@@ -528,23 +528,32 @@ def hedge_funds(request):
     with open(r"scheduled_tasks/hedge_funds_holdings/hedge_funds_description.json") as r:
         hedge_funds_holdings = json.load(r)["hedge funds"]
 
+    ticker_selected = ""
+    if request.GET.get("quote"):
+        ticker_selected = request.GET.get("quote").upper()
+
     all_fund_names = []
     for fund in hedge_funds_holdings:
         all_fund_names.append(fund["name"])
         if fund["name"] == fund_name:
             df = pd.read_csv(r"scheduled_tasks/hedge_funds_holdings/{}".format(fund["file_name"]))
-            num_pages = math.ceil(len(df) / 100)
+            if ticker_selected != "":
+                num_pages = 1
+                df = df[df["Ticker"] == ticker_selected]
+            else:
+                num_pages = math.ceil(len(df) / 100)
+                if len(df) > 100:
+                    df = df[page_num*100-100:page_num*100]
 
-            if len(df) > 100:
-                df = df[page_num*100-100:page_num*100]
+            df = df.sort_values(by=[selected_sort], ascending=False)
             df = df.replace(np.nan, "N/A")
-            df = df.sort_values(by=[selected_sort])
             description = fund
             sort_by = df.columns
 
     return render(request, 'hedge_funds.html', {"df": df.to_html(index=False),
                                                 "description": description,
                                                 "all_fund_names": all_fund_names,
+                                                "ticker_selected": ticker_selected,
                                                 "sort_by": sort_by,
                                                 "selected_sort": selected_sort,
                                                 "page_num": page_num,
@@ -579,7 +588,8 @@ def reddit_analysis(request):
 
     database_mapping = {"wallstreetbets": "Wall Street Bets",
                         "stocks": "Stocks",
-                        "stockmarket": "Stock Market"}
+                        "stockmarket": "Stock Market",
+                        "options": "Options"}
     subreddit = database_mapping[subreddit]
 
     return render(request, 'reddit_sentiment.html', {"all_dates": all_dates,
@@ -587,6 +597,33 @@ def reddit_analysis(request):
                                                      "trending_tickers": trending_tickers,
                                                      "subreddit_selected": subreddit,
                                                      "banned_words": sorted(stopwords_list)})
+
+
+def reddit_ticker_analysis(request):
+    """
+    Get analysis of ranking of tickers in popular subreddits and compare it with its price
+    """
+    if request.GET.get("quote"):
+        ticker_selected = request.GET.get("quote").upper()
+    else:
+        ticker_selected = "GME"
+
+    if request.GET.get("subreddit"):
+        subreddit = request.GET.get("subreddit").replace("Subreddit: ", "")
+    else:
+        subreddit = "wallstreetbets"
+
+    ticker = yf.Ticker(ticker_selected)
+    information = ticker.info
+
+    db.execute("SELECT rank, total, price, date_updated from {} WHERE ticker=? and rank != 0".format(subreddit),
+               (ticker_selected,))
+    ranking = db.fetchall()
+
+    return render(request, 'reddit_ticker_analysis.html', {"ticker_selected": ticker_selected,
+                                                           "information": information,
+                                                           "ranking": ranking,
+                                                           "subreddit": subreddit})
 
 
 def reddit_etf(request):
@@ -639,17 +676,29 @@ def subreddit_count(request):
 
 def top_movers(request):
     """
-    Get top movers of ticker. Data is from yahoo finance
+    Get top movers of ticker. Data is from yahoo finance. Data is cached every 5 minutes to prevent excessive API usage.
     """
-    top_gainers = pd.read_html("https://finance.yahoo.com/screener/predefined/day_gainers")[0]
-    top_gainers["PE Ratio (TTM)"] = top_gainers["PE Ratio (TTM)"].replace(np.nan, "N/A")
+    with open(r"cache_yf_api.json") as r:
+        next_update_time = json.load(r)["top_movers"]
+    current_time = datetime.utcnow()
 
-    top_losers = pd.read_html("https://finance.yahoo.com/screener/predefined/day_losers")[0]
-    top_losers["PE Ratio (TTM)"] = top_gainers["PE Ratio (TTM)"].replace(np.nan, "N/A")
-    top_losers = top_losers.iloc[::-1]
+    if str(current_time) > next_update_time:
+        top_gainers = pd.read_html("https://finance.yahoo.com/screener/predefined/day_gainers")[0]
+        top_gainers["PE Ratio (TTM)"] = top_gainers["PE Ratio (TTM)"].replace(np.nan, "N/A")
 
-    top_movers_combine = top_gainers.append(top_losers, ignore_index=True)
-    del top_movers_combine["52 Week Range"]
+        top_losers = pd.read_html("https://finance.yahoo.com/screener/predefined/day_losers")[0]
+        top_losers["PE Ratio (TTM)"] = top_gainers["PE Ratio (TTM)"].replace(np.nan, "N/A")
+        top_losers = top_losers.iloc[::-1]
+
+        top_movers_combine = top_gainers.append(top_losers, ignore_index=True)
+        del top_movers_combine["52 Week Range"]
+        top_movers_combine.to_sql("top_movers", conn, if_exists='replace', index=False)
+
+        with open('cache_yf_api.json', 'w') as f:
+            current_time_dict = {"top_movers": str(current_time + timedelta(seconds=300))}
+            json.dump(current_time_dict, f, indent=4)
+    else:
+        top_movers_combine = pd.read_sql("SELECT * FROM top_movers", con=conn)
 
     return render(request, 'top_movers.html', {"top_movers_combine": top_movers_combine.to_html(index=False)})
 

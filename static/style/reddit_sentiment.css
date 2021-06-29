@@ -65,12 +65,11 @@
 }
 
 select, option {
-    border: 1px solid black;
+    border: 1px solid grey;
     border-radius: 3px;
-    padding: 0.4%;
+    padding: 4px;
     margin-bottom: 1%;
 }
-
 
 .subreddit_intro {
     display: flex;
@@ -81,6 +80,17 @@ select, option {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+.type_div {
+    margin-top: 25px;
+    margin-left: 25px;
+}
+
+.type {
+    padding: 5px;
+    border: 1px solid gray;
+    border-radius: 5px;
 }
 
 .subreddit_intro .sm {

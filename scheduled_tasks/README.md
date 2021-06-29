@@ -37,6 +37,8 @@ Note: Ensure that you run scheduled_tasks/create_database.py first before contin
 - Script to get total number of users and active users in popular subreddits on Reddit.
 - Shows the growth in new users over time and proportion active users.
 
+### Scheduled Tasks to run if required
+
 #### scheduled_tasks/get_failure_to_deliver.py
 - Get Failure to Deliver data from [SEC](https://www.sec.gov/data/foiadocsfailsdatahtm).
 - Download the txt file. You do not need to convert it to csv. The script automatically does it for you.
@@ -45,3 +47,4 @@ Note: Ensure that you run scheduled_tasks/create_database.py first before contin
 #### scheduled_tasks/get_hedge_funds_holdings.py
 - Get holdings of major hedge funds
 - Download csv from [whalewisdom](https://whalewisdom.com/). You need to sign up a free account to access the csv files. Data is updated quarterly.
+![Get hedge funds instructions](../static/images/get_hedge_funds_instructions.png)

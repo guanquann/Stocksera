@@ -14,7 +14,8 @@
     <div class="ticker-wrap">
         <div class="tradingview-widget-container">
             <div class="tradingview-widget-container__widget"></div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+        </div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
             {
             "symbols": [
             {
@@ -42,6 +43,22 @@
               "proName": "NASDAQ:MSFT"
             },
             {
+              "description": "Alphabet",
+              "proName": "NASDAQ:GOOGL"
+            },
+            {
+              "description": "Amazon",
+              "proName": "NASDAQ:AMZN"
+            },
+            {
+              "description": "JP Morgan",
+              "proName": "NYSE:JPM"
+            },
+            {
+              "description": "Paypal",
+              "proName": "NASDAQ:PYPL"
+            },
+            {
               "description": "GameStop",
               "proName": "NYSE:GME"
             },
@@ -61,7 +78,6 @@
             "locale": "en"
             }
             </script>
-        </div>
     </div>
 {% endblock %}
 
@@ -83,6 +99,7 @@
                 <option value="wallstreetbets">Wall Street Bets</option>
                 <option value="stocks">Stocks</option>
                 <option value="stockmarket">Stock Market</option>
+                <option value="options">Options</option>
             </select>
             <select name="date_selected" onchange="this.form.submit()">
                 <option>Date: {{date_selected}}</option>
@@ -189,7 +206,7 @@
                 </div>
                 <div class="modal-body">
                     <div>
-                        Below contains a list of words which I have excluded to improve the filtering of the tickers. If by any chance that a popular ticker that emerge in Reddit in the future is inside the list of banned words, Stocksera will not be responsible for the sharing of inaccurate data.
+                        Below contains a list of words which I have excluded to improve the filtering of the tickers. If by any chance that a popular ticker that emerges in Reddit in the future is inside the list of banned words, Stocksera will not be responsible for the sharing of inaccurate data.
                         <ul>
                             {% for word in banned_words %}
                             <li>{{word}}</li>

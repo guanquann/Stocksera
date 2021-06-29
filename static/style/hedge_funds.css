@@ -73,10 +73,10 @@ select, option {
     margin-bottom: 1%;
 }
 
-input {
+input, button {
     border: 1px solid grey;
     border-radius: 3px;
-    max-width: 70px;
+    max-width: 85px;
     text-transform: uppercase;
     padding: 4px;
 }

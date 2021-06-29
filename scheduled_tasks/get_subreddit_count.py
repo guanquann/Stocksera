@@ -12,7 +12,8 @@ reddit = praw.Reddit(client_id=CLIENT_ID, client_secret=CLIENT_SECRET, user_agen
 conn = sqlite3.connect("database.db", check_same_thread=False)
 db = conn.cursor()
 
-interested_subreddit = ["wallstreetbets", "stocks", "StockMarket", "GME", "Superstonk", "amcstock"]
+interested_subreddit = ["wallstreetbets", "stocks", "StockMarket", "GME", "Superstonk", "amcstock", "options",
+                        "cryptocurrency"]
 date_updated = str(datetime.now()).split()[0]
 
 
@@ -29,8 +30,12 @@ def subreddit_count():
 
         db.execute("SELECT subscribers FROM subreddit_count WHERE subreddit=? ORDER BY subscribers DESC LIMIT 1",
                    (subreddit_name, ))
-        prev_subscribers = db.fetchone()[0]
-        growth = round((subscribers / prev_subscribers) * 100 - 100, 2)
+        try:
+            prev_subscribers = db.fetchone()[0]
+            growth = round((subscribers / prev_subscribers) * 100 - 100, 2)
+        except TypeError:
+            growth = 0
+
         db.execute("INSERT INTO subreddit_count VALUES (?, ?, ?, ?, ?, ?)",
                    (subreddit_name, subscribers, active, date_updated, percentage_active, growth))
         conn.commit()

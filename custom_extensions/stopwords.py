@@ -27,7 +27,7 @@ stopwords_list = ['FDA', 'APE', 'MOON', 'HOLD', 'MERGE', 'ADS', 'FOMO', 'OTC', '
                   'ID', 'FLOW', 'COLD', 'OI', 'CUM', 'ASS', 'CAR', 'ROAD', 'SAVE', 'LAZY', 'SAFE', 'TRUE', 'DD', 'AGO',
                   'HI', 'MAR', 'BLUE', 'EYE', 'X', 'EAT', 'AIR', 'BIT', 'GOLD', 'EV', 'RUN', 'HES', 'RARE', 'SEVEN'
                   'ALEX', 'SAP', 'BC', 'LIVE', 'MET', 'MAIN', 'U', 'HOME', 'LOAN', 'SIX', 'FIVE', 'FOUR', 'EIGHT',
-                  'THREE', 'CARS', 'C', 'MC', 'VS', 'PS', 'JOBS', 'BIDEN', 'FUSE', 'DUDE', 'L', 'PAYS', 'HEAR', 'CO',
+                  'THREE', 'CARS', 'MC', 'VS', 'PS', 'JOBS', 'BIDEN', 'FUSE', 'DUDE', 'L', 'PAYS', 'HEAR', 'CO',
                   'LOOP', 'KEY', 'PDT', 'SITE', 'MIN', 'CAT', 'MAX', 'FDS', 'TEN', 'BILL', 'W', 'ONTO', 'FAST', 'TEN'
                   'FOLD', 'THO', 'POOL', 'WGO', 'PEAK', 'SHIP', 'LEG', 'RACE', 'LAWS', 'DASH', 'FAT', 'PUMP', 'DUMP',
                   'JOB', 'PPL', 'FT', 'AGE', 'GOGO', 'FROG', 'TD', 'CAKE', 'TEAM', 'RIG', 'FAM', 'EYES', 'TRIP',

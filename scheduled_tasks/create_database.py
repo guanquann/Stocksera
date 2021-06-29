@@ -3,7 +3,7 @@ import sqlite3
 conn = sqlite3.connect("database.db", check_same_thread=False)
 db = conn.cursor()
 
-subreddits = ["wallstreetbets", "stocks", "stockmarket"]
+subreddits = ["wallstreetbets", "stocks", "stockmarket", "options"]
 for subreddit in subreddits:
     db.execute("CREATE table IF NOT EXISTS {} ("
                "rank INTEGER NOT NULL, "
@@ -113,6 +113,17 @@ db.execute("CREATE table IF NOT EXISTS top_DD ("
            "date_text TEXT, "
            "img_url TEXT, "
            "UNIQUE('url', 'ticker', 'title', 'text_body','upvotes','comments','subreddit', 'date_text', 'img_url'))")
+
+db.execute("CREATE table IF NOT EXISTS top_movers ("
+           "ticker TEXT, "
+           "name TEXT, "
+           "price FLOAT, "
+           "change FLOAT, "
+           "percent_change FLOAT, "
+           "volume TEXT, "
+           "avg_volume TEXT, "
+           "market_cap TEXT, "
+           "p_e_ratio TEXT)")
 
 db.execute("CREATE table IF NOT EXISTS contact ("
            "name TEXT, "

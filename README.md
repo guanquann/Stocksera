@@ -162,7 +162,9 @@ py manange.py runserver
 ### Future improvements:
 - [x] Show hedge funds (Citadel, Melvin Capital etc) major holdings
 - [x] Show T-35 date in FTD data
-- [ ] Improve speed of website (although I feel that the major issue lies with pythonanywhere-the website I'm hosting instead)
+- [ ] Sort hedge funds holdings by industry
+- [ ] Add trending symbols on r/cryptocurrency
+- [ ] Improve speed of website (although I feel that the major issue lies with pythonanywhere-the website I'm hosting instead, since it runs smoothly locally)
 - [ ] Income Statement and Cash Flow for Financial data
 - [ ] Show theta, delta, gamma in Options data
 - [ ] Show performance of Reddit ETF vs SPY

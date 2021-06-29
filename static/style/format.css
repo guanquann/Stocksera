@@ -688,7 +688,7 @@ input:checked + .slider:before {
 
 .modal-body {
     padding: 2px 10px;
-    height: 80vh;
+    height: 77vh;
     overflow: scroll;
 }
 

@@ -165,6 +165,7 @@ function simplify_num(row) {
     var new_list=[];
     for (k=0; k<row.length; k++) {
         new_list.push(row[k]/1000)
+
     }
     return new_list
 }
@@ -369,52 +370,52 @@ var current_assets_table_html =  `
         </tr>
         <tr>
             <th>Cash & Cash Equivalent</th>
-            <td>${cash[0]}</td>
-            <td>${cash[1]}</td>
-            <td>${cash[2]}</td>
-            <td>${cash[3]}</td>
+            <td>${Number(cash[0]).toLocaleString()}</td>
+            <td>${Number(cash[1]).toLocaleString()}</td>
+            <td>${Number(cash[2]).toLocaleString()}</td>
+            <td>${Number(cash[3]).toLocaleString()}</td>
         </tr>
         <tr>
             <th>Other Short-Term Investments</th>
-            <td>${shortTermInvestments[0]}</td>
-            <td>${shortTermInvestments[1]}</td>
-            <td>${shortTermInvestments[2]}</td>
-            <td>${shortTermInvestments[3]}</td>
+            <td>${Number(shortTermInvestments[0]).toLocaleString()}</td>
+            <td>${Number(shortTermInvestments[1]).toLocaleString()}</td>
+            <td>${Number(shortTermInvestments[2]).toLocaleString()}</td>
+            <td>${Number(shortTermInvestments[3]).toLocaleString()}</td>
         </tr>
         <tr>
             <th>Net Receivables</th>
-            <td>${netReceivables[0]}</td>
-            <td>${netReceivables[1]}</td>
-            <td>${netReceivables[2]}</td>
-            <td>${netReceivables[3]}</td>
+            <td>${Number(netReceivables[0]).toLocaleString()}</td>
+            <td>${Number(netReceivables[1]).toLocaleString()}</td>
+            <td>${Number(netReceivables[2]).toLocaleString()}</td>
+            <td>${Number(netReceivables[3]).toLocaleString()}</td>
         </tr>
         <tr>
             <th>Inventory</th>
-            <td>${inventory[0]}</td>
-            <td>${inventory[1]}</td>
-            <td>${inventory[2]}</td>
-            <td>${inventory[3]}</td>
+            <td>${Number(inventory[0]).toLocaleString()}</td>
+            <td>${Number(inventory[1]).toLocaleString()}</td>
+            <td>${Number(inventory[2]).toLocaleString()}</td>
+            <td>${Number(inventory[3]).toLocaleString()}</td>
         </tr>
         <tr>
             <th>Other Current Assets</th>
-            <td>${otherCurrentAssets[0]}</td>
-            <td>${otherCurrentAssets[1]}</td>
-            <td>${otherCurrentAssets[2]}</td>
-            <td>${otherCurrentAssets[3]}</td>
+            <td>${Number(otherCurrentAssets[0]).toLocaleString()}</td>
+            <td>${Number(otherCurrentAssets[1]).toLocaleString()}</td>
+            <td>${Number(otherCurrentAssets[2]).toLocaleString()}</td>
+            <td>${Number(otherCurrentAssets[3]).toLocaleString()}</td>
         </tr>
         <tr>
             <th>Total Cash</th>
-            <td>${totalcash[0]}</td>
-            <td>${totalcash[1]}</td>
-            <td>${totalcash[2]}</td>
-            <td>${totalcash[3]}</td>
+            <td>${Number(totalcash[0]).toLocaleString()}</td>
+            <td>${Number(totalcash[1]).toLocaleString()}</td>
+            <td>${Number(totalcash[2]).toLocaleString()}</td>
+            <td>${Number(totalcash[3]).toLocaleString()}</td>
         </tr>
         <tr>
             <th>Total Current Assets</th>
-            <td>${totalCurrentAssets[0]}</td>
-            <td>${totalCurrentAssets[1]}</td>
-            <td>${totalCurrentAssets[2]}</td>
-            <td>${totalCurrentAssets[3]}</td>
+            <td>${Number(totalCurrentAssets[0]).toLocaleString()}</td>
+            <td>${Number(totalCurrentAssets[1]).toLocaleString()}</td>
+            <td>${Number(totalCurrentAssets[2]).toLocaleString()}</td>
+            <td>${Number(totalCurrentAssets[3]).toLocaleString()}</td>
         </tr>
     </table>`
 current_assets_table.innerHTML = current_assets_table_html
@@ -476,31 +477,31 @@ var non_current_assets_table_html =  `
         </tr>
         <tr>
             <th>Net Property, Plant & Equipment</th>
-            <td>${propertyPlantEquipment[0]}</td>
-            <td>${propertyPlantEquipment[1]}</td>
-            <td>${propertyPlantEquipment[2]}</td>
-            <td>${propertyPlantEquipment[3]}</td>
+            <td>${Number(propertyPlantEquipment[0]).toLocaleString()}</td>
+            <td>${Number(propertyPlantEquipment[1]).toLocaleString()}</td>
+            <td>${Number(propertyPlantEquipment[2]).toLocaleString()}</td>
+            <td>${Number(propertyPlantEquipment[3]).toLocaleString()}</td>
         </tr>
         <tr>
             <th>Equity & Other Investments</th>
-            <td>${longTermInvestments[0]}</td>
-            <td>${longTermInvestments[1]}</td>
-            <td>${longTermInvestments[2]}</td>
-            <td>${longTermInvestments[3]}</td>
+            <td>${Number(longTermInvestments[0]).toLocaleString()}</td>
+            <td>${Number(longTermInvestments[1]).toLocaleString()}</td>
+            <td>${Number(longTermInvestments[2]).toLocaleString()}</td>
+            <td>${Number(longTermInvestments[3]).toLocaleString()}</td>
         </tr>
         <tr>
             <th>Other Long-Term Assets</th>
-            <td>${otherAssets[0]}</td>
-            <td>${otherAssets[1]}</td>
-            <td>${otherAssets[2]}</td>
-            <td>${otherAssets[3]}</td>
+            <td>${Number(otherAssets[0]).toLocaleString()}</td>
+            <td>${Number(otherAssets[1]).toLocaleString()}</td>
+            <td>${Number(otherAssets[2]).toLocaleString()}</td>
+            <td>${Number(otherAssets[3]).toLocaleString()}</td>
         </tr>
         <tr>
             <th>Total Non-Current Assets</th>
-            <td>${totalNonCurrentAssets[0]}</td>
-            <td>${totalNonCurrentAssets[1]}</td>
-            <td>${totalNonCurrentAssets[2]}</td>
-            <td>${totalNonCurrentAssets[3]}</td>
+            <td>${Number(totalNonCurrentAssets[0]).toLocaleString()}</td>
+            <td>${Number(totalNonCurrentAssets[1]).toLocaleString()}</td>
+            <td>${Number(totalNonCurrentAssets[2]).toLocaleString()}</td>
+            <td>${Number(totalNonCurrentAssets[3]).toLocaleString()}</td>
         </tr>
     </table>`
 non_current_assets_table.innerHTML = non_current_assets_table_html
@@ -577,45 +578,45 @@ var liabilities_table_html =  `
         </tr>
         <tr>
             <th>Accounts Payable</th>
-            <td>${accountsPayable[0]}</td>
-            <td>${accountsPayable[1]}</td>
-            <td>${accountsPayable[2]}</td>
-            <td>${accountsPayable[3]}</td>
+            <td>${Number(accountsPayable[0]).toLocaleString()}</td>
+            <td>${Number(accountsPayable[1]).toLocaleString()}</td>
+            <td>${Number(accountsPayable[2]).toLocaleString()}</td>
+            <td>${Number(accountsPayable[3]).toLocaleString()}</td>
         </tr>
         <tr>
             <th>Debt</th>
-            <td>${shortTermDebt[0]}</td>
-            <td>${shortTermDebt[1]}</td>
-            <td>${shortTermDebt[2]}</td>
-            <td>${shortTermDebt[3]}</td>
+            <td>${Number(shortTermDebt[0]).toLocaleString()}</td>
+            <td>${Number(shortTermDebt[1]).toLocaleString()}</td>
+            <td>${Number(shortTermDebt[2]).toLocaleString()}</td>
+            <td>${Number(shortTermDebt[3]).toLocaleString()}</td>
         </tr>
         <tr>
             <th>Long Term Debt</th>
-            <td>${longTermDebt[0]}</td>
-            <td>${longTermDebt[1]}</td>
-            <td>${longTermDebt[2]}</td>
-            <td>${longTermDebt[3]}</td>
+            <td>${Number(longTermDebt[0]).toLocaleString()}</td>
+            <td>${Number(longTermDebt[1]).toLocaleString()}</td>
+            <td>${Number(longTermDebt[2]).toLocaleString()}</td>
+            <td>${Number(longTermDebt[3]).toLocaleString()}</td>
         </tr>
         <tr>
             <th>Other Current Liab</th>
-            <td>${otherCurrentLiab[0]}</td>
-            <td>${otherCurrentLiab[1]}</td>
-            <td>${otherCurrentLiab[2]}</td>
-            <td>${otherCurrentLiab[3]}</td>
+            <td>${Number(otherCurrentLiab[0]).toLocaleString()}</td>
+            <td>${Number(otherCurrentLiab[1]).toLocaleString()}</td>
+            <td>${Number(otherCurrentLiab[2]).toLocaleString()}</td>
+            <td>${Number(otherCurrentLiab[3]).toLocaleString()}</td>
         </tr>
         <tr>
             <th>Total Current Liab</th>
-            <td>${totalCurrentLiab[0]}</td>
+            <td>${Number(accountsPayable[3]).toLocaleString()}</td>
             <td>${totalCurrentLiab[1]}</td>
             <td>${totalCurrentLiab[2]}</td>
             <td>${totalCurrentLiab[3]}</td>
         </tr>
         <tr>
             <th>Total Liab</th>
-            <td>${totalLiab[0]}</td>
-            <td>${totalLiab[1]}</td>
-            <td>${totalLiab[2]}</td>
-            <td>${totalLiab[3]}</td>
+            <td>${Number(totalLiab[0]).toLocaleString()}</td>
+            <td>${Number(totalLiab[1]).toLocaleString()}</td>
+            <td>${Number(totalLiab[2]).toLocaleString()}</td>
+            <td>${Number(totalLiab[3]).toLocaleString()}</td>
         </tr>
     </table>`
 liabilities_table.innerHTML = liabilities_table_html
@@ -661,12 +662,11 @@ var stockholders_equity = new Chart(stockholders_equity, {
         },        
         ],
     },
-
     options: options_dict,
 });
 
 
-var liabilities_tastockholders_equity_tableble = document.getElementById("stockholders_equity_table");
+var stockholders_equity_table = document.getElementById("stockholders_equity_table");
 var stockholders_equity_table_html =  `
     <table>
         <tr>
@@ -678,31 +678,31 @@ var stockholders_equity_table_html =  `
         </tr>
         <tr>
             <th>Common Stock</th>
-            <td>${commonStock[0]}</td>
-            <td>${commonStock[1]}</td>
-            <td>${commonStock[2]}</td>
-            <td>${commonStock[3]}</td>
+            <td>${Number(commonStock[0]).toLocaleString()}</td>
+            <td>${Number(commonStock[1]).toLocaleString()}</td>
+            <td>${Number(commonStock[2]).toLocaleString()}</td>
+            <td>${Number(commonStock[3]).toLocaleString()}</td>
         </tr>
         <tr>
             <th>Retained Earnings</th>
-            <td>${retainedEarnings[0]}</td>
-            <td>${retainedEarnings[1]}</td>
-            <td>${retainedEarnings[2]}</td>
-            <td>${retainedEarnings[3]}</td>
+            <td>${Number(retainedEarnings[0]).toLocaleString()}</td>
+            <td>${Number(retainedEarnings[1]).toLocaleString()}</td>
+            <td>${Number(retainedEarnings[2]).toLocaleString()}</td>
+            <td>${Number(retainedEarnings[3]).toLocaleString()}</td>
         </tr>
         <tr>
             <th>Treasury</th>
-            <td>${treasury[0]}</td>
-            <td>${treasury[1]}</td>
-            <td>${treasury[2]}</td>
-            <td>${treasury[3]}</td>
+            <td>${Number(treasury[0]).toLocaleString()}</td>
+            <td>${Number(treasury[1]).toLocaleString()}</td>
+            <td>${Number(treasury[2]).toLocaleString()}</td>
+            <td>${Number(treasury[3]).toLocaleString()}</td>
         </tr>
         <tr>
             <th>Total StockHolders' Equity</th>
-            <td>${totalStockholderEquity[0]}</td>
-            <td>${totalStockholderEquity[1]}</td>
-            <td>${totalStockholderEquity[2]}</td>
-            <td>${totalStockholderEquity[3]}</td>
+            <td>${Number(totalStockholderEquity[0]).toLocaleString()}</td>
+            <td>${Number(totalStockholderEquity[1]).toLocaleString()}</td>
+            <td>${Number(totalStockholderEquity[2]).toLocaleString()}</td>
+            <td>${Number(totalStockholderEquity[3]).toLocaleString()}</td>
         </tr>
     </table>`
 stockholders_equity_table.innerHTML = stockholders_equity_table_html

@@ -5,7 +5,7 @@ import numpy as np
 
 def default_ticker(request):
     if request.GET.get("quote"):
-        ticker_selected = request.GET['quote'].upper()
+        ticker_selected = request.GET['quote'].upper().replace(" ", "")
     else:
         ticker_selected = "AAPL"
     return ticker_selected

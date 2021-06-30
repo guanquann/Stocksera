@@ -14,10 +14,10 @@ if __name__ == '__main__':
     scrape_reddit.main()
 
     # Uncomment this if you want to get subreddit subscribers stats
-    get_subreddit_count.subreddit_count()
+    # get_subreddit_count.subreddit_count()
 
     # Uncomment this if you want to get news sentiment from Finviz
-    get_news_sentiment.news_sentiment()
+    # get_news_sentiment.news_sentiment()
 
     # Uncomment this if you want to get short volume of tickers
     # for i in get_short_volume.full_ticker_list():

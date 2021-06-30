@@ -17,6 +17,8 @@ from finvizfinance.quote import finvizfinance
 from django.shortcuts import render
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
+REAL_TIME = True
+
 conn = sqlite3.connect(r"scheduled_tasks/database.db", check_same_thread=False)
 db = conn.cursor()
 
@@ -300,45 +302,57 @@ def financial(request):
 
     # To check if input is a valid ticker
     if "symbol" in information:
-        balance_sheet = ticker.quarterly_balance_sheet.replace(np.nan, 0)
+        earnings_list, financial_quarter_list, date_list, balance_col_list = [], [], [], []
+        if REAL_TIME:
+            balance_sheet = ticker.quarterly_balance_sheet.replace(np.nan, 0)
 
-        date_list = balance_sheet.columns.astype("str").to_list()
-        balance_col_list = balance_sheet.index.tolist()
+            date_list = balance_sheet.columns.astype("str").to_list()
+            balance_col_list = balance_sheet.index.tolist()
 
-        for i in range(len(balance_sheet)):
-            values = balance_sheet.iloc[i].tolist()
-            balance_list.append(values)
+            for i in range(len(balance_sheet)):
+                values = balance_sheet.iloc[i].tolist()
+                balance_list.append(values)
 
-        # Get Actual vs Est EPS of ticker
-        yec = YahooEarningsCalendar(0)
-        earnings = yec.get_earnings_of(ticker_selected)
-        earnings_list, financial_quarter_list = [], []
-        # [[1, 0.56, 0.64], [2, 0.51, 0.65], [3, 0.7, 0.73], [4, 1.41, 1.68], [5, 0.98]]
-        count = 5
-        for earning in earnings:
-            if len(earnings_list) != 5:
-                if earning["epsestimate"] is not None:
-                    if earning["epsactual"] is not None:
-                        earnings_list.append([count, earning["epsestimate"], earning["epsactual"]])
-                    else:
-                        earnings_list.append([count, earning["epsestimate"]])
+            # Get Actual vs Est EPS of ticker
+            yec = YahooEarningsCalendar(0)
+            earnings = yec.get_earnings_of(ticker_selected)
+            # [[1, 0.56, 0.64], [2, 0.51, 0.65], [3, 0.7, 0.73], [4, 1.41, 1.68], [5, 0.98]]
+            count = 5
+            for earning in earnings:
+                if len(earnings_list) != 5:
+                    if earning["epsestimate"] is not None:
+                        if earning["epsactual"] is not None:
+                            earnings_list.append([count, earning["epsestimate"], earning["epsactual"]])
+                        else:
+                            earnings_list.append([count, earning["epsestimate"]])
 
-                    # Deduce financial quarter based on date of report
-                    year_num = earning["startdatetime"].split("T")[0].split("-")[0]
-                    month_num = int(earning["startdatetime"].split("T")[0].split("-")[1])
-                    if month_num in [1, 2, 3]:
-                        year_num = int(year_num) - 1
-                        quarter = "Q4"
-                    elif month_num in [4, 5, 6]:
-                        quarter = "Q1"
-                    elif month_num in [7, 8, 9]:
-                        quarter = "Q2"
-                    else:
-                        quarter = "Q3"
-                    financial_quarter_list.append("{} {}".format(year_num, quarter))
-                count -= 1
-            else:
-                break
+                        # Deduce financial quarter based on date of report
+                        year_num = earning["startdatetime"].split("T")[0].split("-")[0]
+                        month_num = int(earning["startdatetime"].split("T")[0].split("-")[1])
+                        if month_num in [1, 2, 3]:
+                            year_num = int(year_num) - 1
+                            quarter = "Q4"
+                        elif month_num in [4, 5, 6]:
+                            quarter = "Q1"
+                        elif month_num in [7, 8, 9]:
+                            quarter = "Q2"
+                        else:
+                            quarter = "Q3"
+                        financial_quarter_list.append("{} {}".format(year_num, quarter))
+                    count -= 1
+                else:
+                    break
+        else:
+            with open(r"scheduled_tasks/financials.json", "r+") as r:
+                data = json.load(r)
+                if ticker_selected in data:
+                    data = data[ticker_selected]
+                    date_list = data["date_list"]
+                    balance_list = data["balance_list"]
+                    balance_col_list = data["balance_col_list"]
+                    earnings_list = data["earnings_list"]
+                    financial_quarter_list = data["financial_quarter_list"]
+
         return render(request, 'financial.html', {"ticker_selected": ticker_selected,
                                                   "information": information,
                                                   "date_list": date_list,

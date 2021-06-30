@@ -1,10 +1,13 @@
 import sys
+import shutil
 import os
 import re
 import locale
 import praw
 from collections import Counter
 from datetime import datetime, timedelta
+import matplotlib.pyplot as plt
+import yfinance.ticker as yf
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import sqlite3
 
@@ -42,6 +45,10 @@ rocket = '🚀'
 # Python regex pattern for stocks codes
 pattern = "(?<=\$)?\\b[A-Z]{2,5}\\b(?:\.[A-Z]{1,2})?"
 
+# Remove old graphs in directory
+# shutil.rmtree('../static/graph_chart')
+# os.mkdir("../static/graph_chart")
+
 
 def get_sentiment(text, increment):
     vs = analyzer.polarity_scores(text)
@@ -61,7 +68,6 @@ def get_submission_praw(n, sub):
     1st list: current result from n hours ago until now
     2nd list: prev result from 2n hours ago until n hours ago
     """
-
     mid_interval = datetime.today() - timedelta(hours=n)
     timestamp_mid = int(mid_interval.timestamp())
     timestamp_start = int((mid_interval - timedelta(hours=n)).timestamp())
@@ -378,6 +384,32 @@ def print_df(df, filename, writesql, writecsv, subreddit):
     df['change'] = df['change'].replace(0, "N/A")
     df['industry'] = df['industry'].str.replace("—", "-")
     df['recommend'] = df['recommend'].str.replace("_", " ")
+
+    # Create past 1 month chart
+    print("Saving last 1 month chart now...")
+    top_25 = df[:25]
+    for index, i in top_25.iterrows():
+        trending_ticker = i[1]
+        ticker = yf.Ticker(trending_ticker)
+        price_df = ticker.history(interval="1d", period="1mo")["Close"]
+
+        price_list = price_df.to_list()
+        start_price = price_list[0]
+        end_price = price_list[-1]
+        if start_price > end_price:
+            color = "red"
+        else:
+            color = "green"
+        days_list = [i for i in range(len(price_list))]
+
+        plt.figure(figsize=(1, 0.5))
+        plt.axis("off")
+        plt.xticks([])
+        plt.yticks([])
+
+        plt.plot(days_list, price_list, color=color)
+        plt.savefig("../static/graph_chart/{}.svg".format(trending_ticker), transparent=True)
+        plt.close()
 
     # Save to sql database
     if writesql:

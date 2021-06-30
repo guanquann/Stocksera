@@ -37,7 +37,8 @@ function show_subreddit_img(subreddit) {
 function check_table() {
     var table = document.getElementById("reddit_table");
     for (i = 0; i < (table.rows.length - 1); i++) {
-        var score_change = table.getElementsByTagName('tbody')[0].rows[i].cells[5]
+        row = table.getElementsByTagName('tbody')[0].rows[i]
+        var score_change = row.cells[5]
         if (!score_change.innerHTML.includes("N/A")) {
             if (score_change.innerText.includes("-")) {
                 score_change.style.color = "red";
@@ -53,7 +54,10 @@ function check_table() {
             }
         }
 
-        var one_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[12];
+        var price_chart = row.cells[6]
+        price_chart.innerHTML = `<img class="price_chart" src="/static/graph_chart/${row.cells[1].querySelector('b').innerHTML}.svg" onerror=this.src="/static/graph_chart/EMPTY_IMG.svg">`
+
+        var one_day_price = row.cells[13];
         if (one_day_price.innerText.includes("-")) {
             one_day_price.innerText = one_day_price.innerText + "%";
             one_day_price.style.color = "red";
@@ -63,7 +67,7 @@ function check_table() {
             one_day_price.style.color = "green";
         }
 
-        var fifty_day_price = table.getElementsByTagName('tbody')[0].rows[i].cells[13];
+        var fifty_day_price = row.cells[14];
         if (fifty_day_price.innerText.includes("-")) {
             fifty_day_price.innerText = fifty_day_price.innerText + "%";
             fifty_day_price.style.color = "red";
@@ -73,7 +77,7 @@ function check_table() {
             fifty_day_price.style.color = "green";
         }
 
-        var price_target = table.getElementsByTagName('tbody')[0].rows[i].cells[17];
+        var price_target = row.cells[18];
         if (price_target.innerText != "N/A") {
             price_target.innerText = "$" + price_target.innerText;
         }
@@ -118,7 +122,7 @@ function reset_table() {
     }
 
     for (i = 0; i < tr.length; i++) {
-        for (col_name=1; col_name <= 19; col_name ++) {
+        for (col_name=1; col_name <= 20; col_name ++) {
             tr[i].children[col_name].style.removeProperty("display");
         }
     }
@@ -195,8 +199,8 @@ function sortTable(n) {
             x = rows[i].getElementsByTagName("TD")[n].innerHTML.replace("$", "").replace("%", "");
             y = rows[i + 1].getElementsByTagName("TD")[n].innerHTML.replace("$", "").replace("%", "");
 
-            // If column is volume/floating shares
-            if (n == 10 || n == 11 || n == 14) {
+            // If column is volume/market cap/floating shares
+            if (n == 11 || n == 12 || n == 15) {
                 x = rows[i].getElementsByTagName("TD")[n].innerHTML
                 y = rows[i + 1].getElementsByTagName("TD")[n].innerHTML
 

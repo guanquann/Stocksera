@@ -137,7 +137,7 @@ def get_ticker_scores_praw(sub_gen_dict):
             increment = base_points
 
             # search the title for the ticker/tickers
-            title = ' ' + submission[0] + ' '
+            title = ' ' + submission[0].upper() + ' '
             title_extracted = set(re.findall(pattern, title))
             print(submission[5], title, title_extracted)
             # flair is worth bonus points
@@ -394,22 +394,23 @@ def print_df(df, filename, writesql, writecsv, subreddit):
         price_df = ticker.history(interval="1d", period="1mo")["Close"]
 
         price_list = price_df.to_list()
-        start_price = price_list[0]
-        end_price = price_list[-1]
-        if start_price > end_price:
-            color = "red"
-        else:
-            color = "green"
-        days_list = [i for i in range(len(price_list))]
+        if price_list:
+            start_price = price_list[0]
+            end_price = price_list[-1]
+            if start_price > end_price:
+                color = "red"
+            else:
+                color = "green"
+            days_list = [i for i in range(len(price_list))]
 
-        plt.figure(figsize=(1, 0.5))
-        plt.axis("off")
-        plt.xticks([])
-        plt.yticks([])
+            plt.figure(figsize=(1, 0.5))
+            plt.axis("off")
+            plt.xticks([])
+            plt.yticks([])
 
-        plt.plot(days_list, price_list, color=color)
-        plt.savefig("../static/graph_chart/{}.svg".format(trending_ticker), transparent=True)
-        plt.close()
+            plt.plot(days_list, price_list, color=color)
+            plt.savefig("../static/graph_chart/{}.svg".format(trending_ticker), transparent=True)
+            plt.close()
 
     # Save to sql database
     if writesql:

@@ -19,7 +19,7 @@
     <div id="nav_bar_div">
         <div>
             <ul>
-                <li ><img class="main_logo" src="{% static 'images/logo.svg' %}"></li>
+                <li ><img class="main_logo" src="{% static 'images/logo.png' %}"></li>
 
                 <a href="{% url 'main' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/home.svg' %}">Home</li></a>
 
@@ -44,7 +44,7 @@
 
                 <div onclick="expand_nav(this)">
                     <li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/discover.svg' %}">Discover</li>
-                    <a href="{% url 'top_movers' %}"><li class="sub_nav_bar" style="display:none">Top Movers</li></a>
+                    <a href="{% url 'market_overview' %}"><li class="sub_nav_bar" style="display:none">Market Overview</li></a>
                     <a href="{% url 'short_interest' %}"><li class="sub_nav_bar" style="display: none;">Short Interest</li></a>
                     <a href="{% url 'low_float' %}"><li class="sub_nav_bar" style="display: none;">Low Float</li></a>
                     <a href="{% url 'hedge_funds' %}"><li class="sub_nav_bar" style="display: none;">Hedge Funds</li></a>

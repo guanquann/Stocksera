@@ -38,7 +38,7 @@
 	}
 
 	ul {
-        margin-top: 52px;
+        margin-top: 40px;
 	}
 
     .switch {
@@ -354,7 +354,7 @@ input:focus, select:focus, button:focus, textarea:focus {
 }
 
 .main_logo {
-	width: 80%;
+	width: 90%;
 	border-radius: 0;
 	border: 0;
     margin: 0 auto;
@@ -703,7 +703,7 @@ input:checked + .slider:before {
     background: transparent;  /* Optional: just make scrollbar invisible */
 }
 
-/* Optional: show position iicator in red */
+/* Optional: show position indicator */
 ::-webkit-scrollbar-thumb {
-    background: grey;
+    background: gray;
 }

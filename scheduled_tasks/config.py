@@ -32,8 +32,8 @@ minimum_mkt_cap = [1000000000, 1000000000, 1000000000, 500000000]
 allow_threading = True
 
 # Saves to SQL database if it is true
-save_to_sql = True
+save_to_sql = False
 
 # Saves to a csv file if it is true
-save_to_csv = False
+save_to_csv = True
 file_name = "test"

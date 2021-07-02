@@ -88,9 +88,9 @@
         </div>
 
         <div id="more_info_div">
-            <a class="more_info_btn" href="{% url 'top_movers' %}" onclick="show_spinner()">Top Movers</a>
-            <a class="more_info_btn" href="{% url 'short_interest' %}" onclick="show_spinner()">Short Interest</a>
-            <a class="more_info_btn" href="{% url 'low_float' %}" onclick="show_spinner()">Low Float</a>
+            <a class="more_info_btn" href="{% url 'market_overview' %}" onclick="clickAndDisable(this);">Market Overview</a>
+            <a class="more_info_btn" href="{% url 'short_interest' %}" onclick="clickAndDisable(this);">Short Interest</a>
+            <a class="more_info_btn" href="{% url 'low_float' %}" onclick="clickAndDisable(this);">Low Float</a>
             <a class="more_info_btn" href="{% url 'hedge_funds' %}" onclick="clickAndDisable(this);">Hedge Fund</a>
         </div>
 

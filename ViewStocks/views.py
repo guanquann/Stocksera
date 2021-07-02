@@ -17,7 +17,7 @@ from finvizfinance.quote import finvizfinance
 from django.shortcuts import render
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-REAL_TIME = True
+REAL_TIME = False
 
 conn = sqlite3.connect(r"scheduled_tasks/database.db", check_same_thread=False)
 db = conn.cursor()
@@ -559,7 +559,7 @@ def hedge_funds(request):
                 if len(df) > 100:
                     df = df[page_num*100-100:page_num*100]
 
-            df = df.sort_values(by=[selected_sort], ascending=False)
+            df = df.sort_values(by=[selected_sort])  # ascending=False
             df = df.replace(np.nan, "N/A")
             description = fund
             sort_by = df.columns
@@ -688,33 +688,11 @@ def subreddit_count(request):
     return render(request, 'subreddit_count.html', {"subscribers": subscribers})
 
 
-def top_movers(request):
+def market_overview(request):
     """
     Get top movers of ticker. Data is from yahoo finance. Data is cached every 5 minutes to prevent excessive API usage.
     """
-    with open(r"cache_yf_api.json") as r:
-        next_update_time = json.load(r)["top_movers"]
-    current_time = datetime.utcnow()
-
-    if str(current_time) > next_update_time:
-        top_gainers = pd.read_html("https://finance.yahoo.com/screener/predefined/day_gainers")[0]
-        top_gainers["PE Ratio (TTM)"] = top_gainers["PE Ratio (TTM)"].replace(np.nan, "N/A")
-
-        top_losers = pd.read_html("https://finance.yahoo.com/screener/predefined/day_losers")[0]
-        top_losers["PE Ratio (TTM)"] = top_gainers["PE Ratio (TTM)"].replace(np.nan, "N/A")
-        top_losers = top_losers.iloc[::-1]
-
-        top_movers_combine = top_gainers.append(top_losers, ignore_index=True)
-        del top_movers_combine["52 Week Range"]
-        top_movers_combine.to_sql("top_movers", conn, if_exists='replace', index=False)
-
-        with open('cache_yf_api.json', 'w') as f:
-            current_time_dict = {"top_movers": str(current_time + timedelta(seconds=300))}
-            json.dump(current_time_dict, f, indent=4)
-    else:
-        top_movers_combine = pd.read_sql("SELECT * FROM top_movers", con=conn)
-
-    return render(request, 'top_movers.html', {"top_movers_combine": top_movers_combine.to_html(index=False)})
+    return render(request, 'market_overview.html')
 
 
 def short_interest(request):

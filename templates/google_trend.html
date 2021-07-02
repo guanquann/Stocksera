@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'style/google_trend.css' %}">
 </head>
 <body onload="restore_dark_mode()">
+    <div><i>An increase in interest of a ticker may indicate an increase in retail investment.</i></div>
     <form action="" method="GET" autocomplete="off">
         <select name="timing_selected" onchange="this.form.submit()">
             <option>Selected: {{timing_selected}}</option>

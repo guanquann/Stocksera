@@ -88,7 +88,7 @@
     </div>
     <div class="hedge_funds">
         <div id="more_info_div">
-            <a class="more_info_btn" href="{% url 'top_movers' %}" onclick="clickAndDisable(this)">Top Movers</a>
+            <a class="more_info_btn" href="{% url 'market_overview' %}" onclick="clickAndDisable(this)">Market Overview</a>
             <a class="more_info_btn" href="{% url 'short_interest' %}" onclick="clickAndDisable(this)">Short Interest</a>
                 <a class="more_info_btn" href="{% url 'low_float' %}" onclick="clickAndDisable(this);">Low Float</a>
             <a class="more_info_btn" href="{% url 'ark_trades' %}" onclick="clickAndDisable(this)">ARK Fund</a>
@@ -110,7 +110,7 @@
                     <option>{{sort}}</option>
                 {% endfor %}
             </select>
-            <input placeholder="TICKER: " name="quote" autocomplete="off" value="{{ticker_selected}}" type="search">
+            <input placeholder="TICKER: " name="quote" autocomplete="off" value="{{ticker_selected}}">
             <button type="submit">Search</button>
 
             <div>{{description.description}}</div>

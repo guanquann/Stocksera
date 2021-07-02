@@ -25,6 +25,10 @@
         margin-left: 8px;
         display: inline-block;
     }
+
+    .theory {
+        margin-top: 20px;
+    }
 }
 
 @media only screen and (min-width: 900px) {

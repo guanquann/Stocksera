@@ -68,5 +68,5 @@ def add_new_ticker(ticker):
 
 
 if __name__ == '__main__':
-    update_all_tickers(r"C:\Users\Acer\PycharmProjects\StocksAnalysis\scheduled_tasks\failure_to_deliver\cnsfails202105b.txt")
-    # add_new_ticker("WISH")
+    update_all_tickers(r"C:\Users\Acer\PycharmProjects\StocksAnalysis\scheduled_tasks\failure_to_deliver\cnsfails202106a.txt")
+    # add_new_ticker("MU")

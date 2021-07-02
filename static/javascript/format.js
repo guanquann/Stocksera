@@ -46,30 +46,29 @@ function hide_nav_bar() {
 }
 
 function activate_dark_mode() {
+    console.log("this is activated")
     var iframe = document.getElementsByTagName("iframe");
     if (document.getElementById("dark_mode").checked == true) {
         document.getElementsByTagName("body")[0].classList.add("dark_mode");
+        localStorage.setItem("mode", "dark");
         if (iframe.length > 1) {
-            var first_iframe_id = iframe[0]["id"]
             for (i=1; i<iframe.length; i++) {
-                if (typeof(iframe[i].contentDocument != null)) {
+                if (typeof(iframe[i].contentDocument) != null) {
                     iframe[i].contentDocument.getElementsByTagName("body")[0].classList.add("dark_mode")
                 }
             }
         }
-        localStorage.setItem("mode", "dark");
     }
     else {
         document.getElementsByTagName("body")[0].classList.remove("dark_mode");
+        localStorage.setItem("mode", "light");
         if (iframe.length > 1) {
-            var first_iframe_id = iframe[0]["id"]
             for (i=1; i<iframe.length; i++) {
-                if (typeof(iframe[i].contentDocument != null)) {
+                if (typeof(iframe[i].contentDocument) != null) {
                     iframe[i].contentDocument.getElementsByTagName("body")[0].classList.remove("dark_mode")
                 }
             }
         }
-        localStorage.setItem("mode", "light");
     }
 }
 

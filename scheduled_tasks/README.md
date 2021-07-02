@@ -4,6 +4,10 @@
 
 Note: Ensure that you run scheduled_tasks/create_database.py first before continuing and register for an API in <a href="https://www.reddit.com/prefs/apps">https://www.reddit.com/prefs/apps </a> and enter credential in scheduled_tasks/config.py
 
+You can view a sample of the database in <a href="https://drive.google.com/drive/folders/1qR7ssxnNzOUuvYCWR-kEajyoRoGKjbcT?usp=sharing">this</a> Google Drive link.
+- Transfer graph_chart folder to static directory
+- Transfer database.db and financials.json to scheduled_tasks directory
+
 #### scheduled_tasks/main.py
 - Compilation of tasks that are needed to be completed before market open.
 - Get trending tickers in Reddit, subreddit subscribers statistics, stocks with low float and high short interest.

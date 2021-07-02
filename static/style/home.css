@@ -64,6 +64,13 @@
         border-radius: 25px;
         margin: 10px;
     }
+
+    .section_1 .main_div {
+        text-align: center;
+        width: 70%;
+        margin: auto;
+        transform: translateY(10%);
+    }
 }
 
 @media only screen and (min-width: 900px) {
@@ -133,18 +140,18 @@
         border-radius: 25px;
         margin: 10px;
     }
+
+    .section_1 .main_div {
+        text-align: center;
+        width: 55%;
+        margin: auto;
+        transform: translateY(10%);
+    }
 }
 
 .section_1 {
     width: 100%;
     height: 100%;
-}
-
-.section_1 .main_div {
-    text-align: center;
-    width: 70%;
-    margin: auto;
-    transform: translateY(10%);
 }
 
 .section_1 img {

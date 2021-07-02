@@ -70,10 +70,10 @@ This website will be free forever! No subscription needed! But if you want to su
 - A compilation of top due-diligence on Reddit. 
 - Data is manually sourced by Stocksera on a regular basis.
 
-#### /top_movers/
-- Identify top gainers and losers during market hours.
-- Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>
-![Top Movers](./static/images/top_movers.png)
+#### /market_overview/
+- Overview of the performance of the entire market.
+- Data is from <a href="https://tradingview.com/">Trading View</a>
+![Market Overview](./static/images/market_overview.png)
 
 #### /short_interest/
 - Identify tickers with the highest short interest level.

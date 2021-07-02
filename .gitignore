@@ -6,6 +6,9 @@ venv/
 .vscode
 *.db
 scheduled_tasks/failure_to_deliver/csv
+scheduled_tasks/financials.json
+static/graph_chart
+*.zip
 db.sqlite3
 logging.log
 staticfiles

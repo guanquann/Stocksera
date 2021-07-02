@@ -27,7 +27,7 @@
 <div>
     <div class="instructions">
         <p>
-            Enter a ticker symbol you are interested to view or click any of the buttons below!
+            Enter a ticker symbol you are interested to view!
         </p>
     </div>
 
@@ -72,10 +72,10 @@
             "toolbar_bg": "#f1f3f6",
             "enable_publishing": false,
             "allow_symbol_change": true,
-            "save_image": false,
             "studies": [
                 "MASimple@tv-basicstudies",
                 "RSI@tv-basicstudies",
+                "OBV@tv-basicstudies"
             ],
             "container_id": "ticker_chart"
         }
@@ -90,32 +90,32 @@
         <div style="display:none" class="ticker_summary"></div>
 
         <form action="/historical_data" method="GET" autocomplete="off" target="historical_data">
-            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();this.disabled=true;">Historical Data <span>&#x25BA;</span></button>
+            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Historical Data <span>&#x25BA;</span></button>
         </form>
         <iframe name="historical_data" scrolling="no" onload="expand_iframe(this)"></iframe>
 
         <form action="/major_holders" method="GET" autocomplete="off" target="major_holders">
-            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();this.disabled=true;">Major Holders <span>&#x25BA;</span></button>
+            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Major Holders <span>&#x25BA;</span></button>
         </form>
         <iframe name="major_holders" scrolling="no" onload="expand_iframe(this)"></iframe>
 
         <form action="/institutional_holders" method="GET" autocomplete="off" target="institutional_holders">
-            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();this.disabled=true;">Institutional Holders <span>&#x25BA;</span></button>
+            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Institutional Holders <span>&#x25BA;</span></button>
         </form>
         <iframe name="institutional_holders" scrolling="no" onload="expand_iframe(this)"></iframe>
 
         <form action="/recommendations" method="GET" autocomplete="off" target="recommendations">
-            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();this.disabled=true;">Upgrades & Downgrades <span>&#x25BA;</span></button>
+            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Upgrades & Downgrades <span>&#x25BA;</span></button>
         </form>
         <iframe name="recommendations" scrolling="no" onload="expand_iframe(this)"></iframe>
 
         <form action="/google_trends" method="GET" autocomplete="off" target="google_trends">
-            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();this.disabled=true;">Google Trending <span>&#x25BA;</span></button>
+            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Google Trending <span>&#x25BA;</span></button>
         </form>
         <iframe name="google_trends" scrolling="no" onload="expand_iframe(this)"></iframe>
 
 <!--        <form action="/sub_news" method="GET" autocomplete="off" target="news_article">-->
-<!--            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();this.disabled=true;">Recent News Articles <span>&#x25BA;</span></button>-->
+<!--            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Recent News Articles <span>&#x25BA;</span></button>-->
 <!--        </form>-->
 <!--        <iframe name="news_article" scrolling="no" onload="expand_iframe(this)"></iframe>-->
 

@@ -35,12 +35,13 @@ function ftd_graph() {
             total_td[1].parentElement.style.color = "red";
             total_td[1].parentElement.style.fontWeight = "bold";
         }
-        total_td[1].innerHTML = total_td[1].innerHTML.replace(".0", "")
+        total_td[1].innerHTML = Number(total_td[1].innerHTML).toLocaleString()
 
         price_list.push(total_td[2].innerHTML);
         total_td[2].innerHTML = "$" + total_td[2].innerHTML
 
-        total_td[3].innerHTML = "$" + total_td[3].innerHTML
+//        total_td[3].innerHTML = "$" + total_td[3].innerHTML
+        total_td[3].innerHTML = "$" + Number(total_td[3].innerHTML).toLocaleString()
 
         f35_date = new Date(new_date_string).addDays(50)
         if (f35_date > new Date("2021/07/05")) {

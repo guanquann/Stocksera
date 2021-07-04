@@ -7,6 +7,7 @@ Note: Ensure that you run scheduled_tasks/create_database.py first before contin
 You can view a sample of the database in <a href="https://drive.google.com/drive/folders/1qR7ssxnNzOUuvYCWR-kEajyoRoGKjbcT?usp=sharing">this</a> Google Drive link.
 - Transfer graph_chart folder to static directory
 - Transfer database.db and financials.json to scheduled_tasks directory
+- Transfer yf_cached_api.json to the main parent directory
 
 #### scheduled_tasks/main.py
 - Compilation of tasks that are needed to be completed before market open.

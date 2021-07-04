@@ -102,7 +102,6 @@
                     <table id="current_trade">
                         <thead>
                             <tr>
-                                <th></th>
                                 <th>Ticker</th>
                                 <th>Buy Date</th>
                                 <th>Buy Price</th>
@@ -115,7 +114,6 @@
                         <tbody>
                             {% for ticker in open_trade %}
                                 <tr>
-                                    <td class="refresh_td"><button onclick="this.form.submit()" name="refresh_btn" value="{{ticker.0}}"><img src="{% static 'images/refresh.svg' %}"></button></td>
                                     <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank"><img src="{{ticker.1}}" onerror=this.src="{% static 'images/not_available.svg' %}">{{ticker.0}}</a></td>
                                     <td>{{ticker.2}}</td>
                                     <td>${{ticker.3}}</td>

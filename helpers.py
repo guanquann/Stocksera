@@ -1,6 +1,13 @@
 import yfinance.ticker as yf
 import pandas as pd
 import numpy as np
+import os
+import json
+from datetime import datetime
+
+# Time Format: HHMMSS
+market_open_time = "133000"
+market_close_time = "200000"
 
 
 def default_ticker(request):
@@ -11,7 +18,34 @@ def default_ticker(request):
     return ticker_selected
 
 
+def check_market_hours(ticker, ticker_selected):
+    current_datetime = datetime.utcnow()
+    current_utc_time = str(current_datetime).split()[1].split(".")[0].replace(":", "")
+    if current_utc_time > market_close_time or current_utc_time < market_open_time or current_datetime.today().weekday() >= 5:
+        # os.remove(r"yf_cached_api.json")
+        with open(r"yf_cached_api.json", "r+") as r:
+            data = json.load(r)
+            if ticker_selected in data:
+                information = data[ticker_selected]
+            else:
+                information = ticker.info
+                data[ticker_selected] = information
+                r.seek(0)
+                json.dump(data, r, indent=4)
+        print("Using Cached data")
+    else:
+        os.remove(r"yf_cached_api.json")
+        with open(r"yf_cached_api.json", "w") as r:
+            json.dump({}, r, indent=4)
+        information = ticker.info
+        print("Scraping data")
+    return information
+
+
 def ticker_bar():
+    """
+    Custom ticker bar in HTML page. I did not use this anymore, since I replaced it with the ticker bar provided by Trading View
+    """
     popular_ticker_list = ["SPY", "QQQ", "DIA", "AAPL", "GME", "AMC", "TSLA", "NIO", "PLTR", "NVDA"]
     popular_name_list = ["S&P500 ETF", "NASDAQ-100", "Dow ETF", "Apple", "GameStop", "AMC", "Tesla", "Nio",
                          "Palantir", "NVIDIA"]

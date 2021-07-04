@@ -86,3 +86,19 @@ for (var i = 2; i < tr.length; i++){
         }
     }
 }
+
+function stats() {
+    var historical_data = document.getElementsByTagName("table")[0].querySelectorAll("tr");
+
+    var total_count = 0;
+    var green_days = 0
+    for (i=2; i<historical_data.length; i++) {
+        total_count += 1;
+        var percent_change = historical_data[i].querySelectorAll("td")[6].innerHTML;
+        if (! percent_change.includes("-")) {
+            green_days += 1
+        }
+    }
+    var percent_green = Math.round(10000 * green_days / total_count) / 100
+    document.getElementById("general_stats").innerHTML = `Green Days: ${green_days}/${total_count} (${percent_green}%)`
+}

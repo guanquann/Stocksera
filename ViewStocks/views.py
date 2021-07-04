@@ -1,8 +1,6 @@
-import os
 import math
-import json
 import sqlite3
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from custom_extensions.custom_words import *
 from custom_extensions.stopwords import *
@@ -41,10 +39,9 @@ def stock_price(request):
     ticker_selected = default_ticker(request)
     try:
         ticker = yf.Ticker(ticker_selected)
-        information = ticker.info
+        information = check_market_hours(ticker, ticker_selected)
 
-        return render(request, 'ticker_price.html', {
-                                                     "ticker_selected": ticker_selected,
+        return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
                                                      "information": information,
                                                      })
     except (IndexError, KeyError, Exception):
@@ -73,8 +70,11 @@ def ticker_major_holders(request):
     """
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
-    major_holders = ticker.major_holders
-    major_holders = major_holders.to_html(index=False, header=False)
+    try:
+        major_holders = ticker.major_holders
+        major_holders = major_holders.to_html(index=False, header=False)
+    except (TypeError, AttributeError):
+        major_holders = "N/A"
     return render(request, 'iframe_format.html', {"title": "Major Holders", "table": major_holders})
 
 
@@ -133,7 +133,7 @@ def latest_news(request):
     """
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
-    information = ticker.info
+    information = check_market_hours(ticker, ticker_selected)
 
     # To check if input is a valid ticker
     if "symbol" in information:
@@ -298,7 +298,8 @@ def financial(request):
     ticker_selected = default_ticker(request)
     balance_list = []
     ticker = yf.Ticker(ticker_selected)
-    information = ticker.info
+
+    information = check_market_hours(ticker, ticker_selected)
 
     # To check if input is a valid ticker
     if "symbol" in information:
@@ -372,7 +373,8 @@ def options(request):
     ticker_selected = default_ticker(request)
     try:
         ticker = yf.Ticker(ticker_selected)
-        information = ticker.info
+
+        information = check_market_hours(ticker, ticker_selected)
 
         options_dates = ticker.options
         if request.GET.get("date") not in ["", None]:
@@ -387,7 +389,7 @@ def options(request):
         calls.columns = ["Contract Name", "Last Trade Date", "Strike", "Last Price", "Bid", "Ask", "Change",
                          "% Change", "Volume", "Open Interest", "Implied Volatility", "ITM"]
 
-        last_adj_close_price = float(ticker.info['previousClose'])
+        last_adj_close_price = float(information['previousClose'])
         df_calls = calls.pivot_table(
             index="Strike", values=["Volume", "Open Interest"], aggfunc="sum"
         ).reindex()
@@ -473,7 +475,7 @@ def short_volume(request):
     short_volume_data = db.fetchall()
     if short_volume_data:
         ticker = yf.Ticker(ticker_selected)
-        information = ticker.info
+        information = check_market_hours(ticker, ticker_selected)
         short_volume_data = list(map(list, short_volume_data))
         return render(request, 'short_volume.html', {"ticker_selected": ticker_selected,
                                                      "information": information,
@@ -494,7 +496,7 @@ def failure_to_deliver(request):
     ticker = yf.Ticker(ticker_selected)
     file_path = r"scheduled_tasks/failure_to_deliver/ticker/{}.csv".format(ticker_selected)
     if os.path.isfile(file_path):
-        information = ticker.info
+        information = check_market_hours(ticker, ticker_selected)
         ftd = pd.read_csv(file_path)
         ftd = ftd[::-1]
         ftd["Amount (FTD x $)"] = (ftd["QUANTITY (FAILS)"] * ftd["PRICE"]).astype(int)
@@ -628,7 +630,7 @@ def reddit_ticker_analysis(request):
         subreddit = "wallstreetbets"
 
     ticker = yf.Ticker(ticker_selected)
-    information = ticker.info
+    information = check_market_hours(ticker, ticker_selected)
 
     db.execute("SELECT rank, total, price, date_updated from {} WHERE ticker=? and rank != 0".format(subreddit),
                (ticker_selected,))
@@ -645,20 +647,20 @@ def reddit_etf(request):
     Get ETF of r/wallstreetbets
     Top 10 tickers before market open will be purchased daily
     """
-    if request.POST:
-        to_refresh = request.POST.get("refresh_btn")
-        db.execute("SELECT * FROM reddit_etf WHERE status='Open' AND ticker=?", (to_refresh, ))
-        ticker = db.fetchone()
-
-        ticker_stats = yf.Ticker(to_refresh)
-        buy_price = ticker[3]
-        today_price = round(ticker_stats.info["regularMarketPrice"], 2)
-        difference = today_price - buy_price
-        PnL = round(difference * ticker[4], 2)
-        percentage_diff = round((difference / ticker[3]) * 100, 2)
-        db.execute("UPDATE reddit_etf SET close_price=?, PnL=?, percentage=? "
-                   "WHERE ticker=? AND status='Open'", (today_price, PnL, percentage_diff, ticker[0]))
-        conn.commit()
+    # if request.POST:
+    #     to_refresh = request.POST.get("refresh_btn")
+    #     db.execute("SELECT * FROM reddit_etf WHERE status='Open' AND ticker=?", (to_refresh, ))
+    #     ticker = db.fetchone()
+    #
+    #     ticker_stats = yf.Ticker(to_refresh)
+    #     buy_price = ticker[3]
+    #     today_price = round(ticker_stats.info["regularMarketPrice"], 2)
+    #     difference = today_price - buy_price
+    #     PnL = round(difference * ticker[4], 2)
+    #     percentage_diff = round((difference / ticker[3]) * 100, 2)
+    #     db.execute("UPDATE reddit_etf SET close_price=?, PnL=?, percentage=? "
+    #                "WHERE ticker=? AND status='Open'", (today_price, PnL, percentage_diff, ticker[0]))
+    #     conn.commit()
 
     db.execute("SELECT * FROM reddit_etf WHERE status='Open' ORDER BY open_date DESC")
     open_trade = db.fetchall()
@@ -727,10 +729,6 @@ def due_diligence(request):
     # dd = db.fetchall()
     # dd = list(map(list, dd))
     # return render(request, 'top_DD.html', {"due_diligence": dd})
-
-
-def opinion(request):
-    return render(request, 'opinion.html')
 
 
 def about(request):

@@ -21,6 +21,10 @@ def buy_new_ticker(date):
     """
     Buy ticker if ticker is inside the Top 10 popular tickers on r/wallstreetbets
     Note: Run this function after running scheduled_tasks/main.py to get most trending tickers on Reddit
+    Parameters
+    ----------
+    date: str
+        Format: DD/MM/YYYY HH:MM:SS
     """
     raw_date = date
     latest_date = date
@@ -55,6 +59,10 @@ def sell_ticker(date):
     """
     Sell ticker if ticker is outside the Top 10 popular tickers on r/wallstreetbets
     Note: Run this function after running scheduled_tasks/main.py to get most trending tickers on Reddit
+    Parameters
+    ----------
+    date: str
+        Format: DD/MM/YYYY HH:MM:SS
     """
     raw_date = date
     latest_date = date

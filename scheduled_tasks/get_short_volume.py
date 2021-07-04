@@ -1,4 +1,3 @@
-from datetime import datetime
 import sqlite3
 
 from helpers import *
@@ -21,6 +20,13 @@ def full_ticker_list():
 
 
 def short_volume(symbol):
+    """
+    Get short volume data from http://shortvolumes.com
+    Parameters
+    ----------
+    symbol: str
+        ticker symbol (e.g: AAPL)
+    """
     url = "http://shortvolumes.com/?t={}".format(symbol)
     table = pd.read_html(url)
     try:

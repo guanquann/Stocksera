@@ -10,7 +10,7 @@
     <script src="{% static 'javascript/format.js' %}"></script>
     <script src="{% static 'javascript/historical.js' %}"></script>
 </head>
-<body onload="display_data();restore_dark_mode()">
+<body onload="stats();display_data();restore_dark_mode()">
     <script>restore_dark_mode()</script>
     <form action="" method="GET" autocomplete="off">
         <select name="sort" onchange="this.form.submit()">
@@ -33,6 +33,7 @@
         <input name="quote" value="{{ticker_selected}}" style="display:none">
     </form>
     <div>
+        <div id="general_stats"></div>
         <div class="scrollable_div" style="max-height:450px">
             {{price_df|safe}}
         </div>

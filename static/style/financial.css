@@ -112,6 +112,11 @@ h2 button {
     color: green;
 }
 
+.dark_mode .selected_btn {
+    border-bottom: 2px solid wheat;
+    color: wheat;
+}
+
 .earnings-container {
     width: 70%;
     min-width: 150px;

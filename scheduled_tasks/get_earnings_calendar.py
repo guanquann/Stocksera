@@ -12,6 +12,10 @@ yec = YahooEarningsCalendar(0)
 def get_new_earnings(n_days):
     """
     Get the earnings for the next n days
+    Parameters
+    ----------
+    n_days: int
+        Number of days from today
     """
     date_from = datetime.now()
     date_to = datetime.now() + timedelta(days=n_days)
@@ -41,6 +45,10 @@ def get_new_earnings(n_days):
 def update_previous_earnings(n_days):
     """
     Update the earnings (eps_actual) for the last n days
+    Parameters
+    ----------
+    n_days: int
+        Number of days from today
     """
     date_from = datetime.now() - timedelta(days=n_days)
     date_to = datetime.now()

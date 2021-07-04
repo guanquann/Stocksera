@@ -66,14 +66,14 @@
     font-weight: bold;
 }
 
-#contact_title, #support_title, #acknowledgement_title {
+#contact_title, #support_title, #acknowledgement_title, #releases_title {
     text-align: center;
     font-size: 20px;
     font-weight: bold;
     margin-top: 50px;
 }
 
-.about, .support_div, .contact_div, .acknowledgement_div {
+.about, .support_div, .contact_div, .acknowledgement_div, .releases_div {
     line-height: 1.5;
 }
 

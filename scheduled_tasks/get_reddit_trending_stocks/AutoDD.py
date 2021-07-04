@@ -385,6 +385,24 @@ def print_df(df, filename, writesql, writecsv, subreddit):
     df['industry'] = df['industry'].str.replace("—", "-")
     df['recommend'] = df['recommend'].str.replace("_", " ")
 
+    # Save to sql database
+    if writesql:
+        for row_num in range(len(df)):
+            db.execute(
+                "INSERT INTO {} VALUES "
+                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)".format(subreddit),
+                tuple(df.loc[row_num].tolist()))
+            conn.commit()
+        print("Saved to {} SQL Database successfully.".format(subreddit))
+
+    # Write to csv
+    if writecsv:
+        completeName = os.path.join(sys.path[0], filename)
+        completeName += '.csv'
+        df.to_csv(completeName, index=False, float_format='%.2f', mode='a', encoding=locale.getpreferredencoding())
+        print(file=open(completeName, "a"))
+        print("Wrote to file successfully {}".format(completeName))
+
     # Create past 1 month chart
     print("Saving last 1 month chart now...")
     top_25 = df[:25]
@@ -411,21 +429,3 @@ def print_df(df, filename, writesql, writecsv, subreddit):
             plt.plot(days_list, price_list, color=color)
             plt.savefig("../static/graph_chart/{}.svg".format(trending_ticker), transparent=True)
             plt.close()
-
-    # Save to sql database
-    if writesql:
-        for row_num in range(len(df)):
-            db.execute(
-                "INSERT INTO {} VALUES "
-                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)".format(subreddit),
-                tuple(df.loc[row_num].tolist()))
-            conn.commit()
-        print("Saved to {} SQL Database successfully.".format(subreddit))
-
-    # Write to csv
-    if writecsv:
-        completeName = os.path.join(sys.path[0], filename)
-        completeName += '.csv'
-        df.to_csv(completeName, index=False, float_format='%.2f', mode='a', encoding=locale.getpreferredencoding())
-        print(file=open(completeName, "a"))
-        print("Wrote to file successfully {}".format(completeName))

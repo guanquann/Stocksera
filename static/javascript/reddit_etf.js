@@ -100,16 +100,16 @@ function check_table() {
     var current_trade_tr = document.getElementById("current_trade").querySelectorAll("tr");
     for (i=1; i<current_trade_tr.length; i++) {
         var td = current_trade_tr[i].querySelectorAll("td");
-        if (td[6].innerHTML.includes("-")) {
-            td[6].innerHTML = td[6].innerHTML.replace("-", "-$");
+        if (td[5].innerHTML.includes("-")) {
+            td[5].innerHTML = td[5].innerHTML.replace("-", "-$");
+            td[5].style.color = "red";
             td[6].style.color = "red";
-            td[7].style.color = "red";
         }
         else {
-            td[6].innerHTML = "$" + td[6].innerHTML;
-            td[7].innerHTML = "+" + td[7].innerHTML;
+            td[5].innerHTML = "$" + td[5].innerHTML;
+            td[6].innerHTML = "+" + td[6].innerHTML;
+            td[5].style.color = "green";
             td[6].style.color = "green";
-            td[7].style.color = "green";
         }
     }
 

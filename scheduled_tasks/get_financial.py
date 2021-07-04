@@ -8,10 +8,12 @@ from scheduled_tasks.get_short_volume import full_ticker_list
 
 def financial(ticker_symbol):
     """
-    Get balance sheet of company. Data is from yahoo finance
+    Get balance sheet of company and save it to json file. Data is from yahoo finance
+    Parameters
+    ----------
+    ticker_symbol: str
+        ticker symbol (e.g: AAPL)
     """
-    if not ticker_symbol:
-        ticker_symbol = "AAPL"
     balance_list = []
     ticker = yf.Ticker(ticker_symbol)
     information = ticker.info
@@ -57,14 +59,6 @@ def financial(ticker_symbol):
                 count -= 1
             else:
                 break
-        # print(date_list)
-        # print()
-        # print(balance_list)
-        # print()
-        # print(balance_col_list)
-        # print()
-        # print(earnings_list)
-        # print(financial_quarter_list)
 
         with open(r"financials.json", "r+") as r:
             data = json.load(r)

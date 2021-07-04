@@ -7,7 +7,7 @@ stopwords_list = ['FDA', 'APE', 'MOON', 'HOLD', 'MERGE', 'ADS', 'FOMO', 'OTC', '
                   'DAY', 'MONTH', 'SET', 'WEEKS', 'DAYS', 'SET', 'LOT', 'GAINS', 'HEDGE', 'FUND', 'FUNDS', 'POST',
                   'ROOF', 'CLOSE', 'RED', 'DATA', 'LEVEL', 'BASED', 'COST', 'FEEL', 'TAKES', 'FLOAT', 'TOTAL', 'TIMES',
                   'HAT', 'CHAIN', 'ITM', 'WAIT', 'RISE', 'SOLID', 'FUN', 'HEARD', 'LOTS', 'FUCK', 'FUD', 'SUB',
-                  'RSI', 'DM',
+                  'RSI', 'DM', 'ING',
                   'WITH', 'WON', 'ARE', 'DID', 'HERS', 'ON', 'ISNT', 'HE', 'YOUD', 'AM', 'WHICH', 'THESE', 'UNDER',
                   'HAS', 'OTHER', 'LL', 'YOULL', 'DOES', 'RE', 'WHEN', 'ABOUT', 'YOUVE', 'THEY', 'FEW', 'YOU', 'Y',
                   'THEM', 'BUT', 'MA', 'WILL', 'WHILE', 'HOW', 'HAD', 'WHERE', 'NOR', 'WERE', 'HASN', 'OURS', 'SHE',

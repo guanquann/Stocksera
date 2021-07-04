@@ -43,6 +43,10 @@ You can view a sample of the database in <a href="https://drive.google.com/drive
 
 ### Scheduled Tasks to run if required
 
+#### scheduled_tasks/get_financial.py
+- Get financial data for companies.
+- Best to run this weekly.
+
 #### scheduled_tasks/get_failure_to_deliver.py
 - Get Failure to Deliver data from [SEC](https://www.sec.gov/data/foiadocsfailsdatahtm).
 - Download the txt file. You do not need to convert it to csv. The script automatically does it for you.

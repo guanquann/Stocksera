@@ -37,14 +37,13 @@ def stock_price(request):
     Get price and key statistics of a ticker. Data from yahoo finance
     """
     ticker_selected = default_ticker(request)
-    try:
-        ticker = yf.Ticker(ticker_selected)
-        information = check_market_hours(ticker, ticker_selected)
-
+    ticker = yf.Ticker(ticker_selected)
+    information = check_market_hours(ticker, ticker_selected)
+    if "symbol" in information:
         return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
                                                      "information": information,
                                                      })
-    except (IndexError, KeyError, Exception):
+    else:
         return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected, "error": "error_true"})
 
 

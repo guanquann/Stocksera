@@ -22,7 +22,6 @@ def check_market_hours(ticker, ticker_selected):
     current_datetime = datetime.utcnow()
     current_utc_time = str(current_datetime).split()[1].split(".")[0].replace(":", "")
     if current_utc_time > market_close_time or current_utc_time < market_open_time or current_datetime.today().weekday() >= 5:
-        # os.remove(r"yf_cached_api.json")
         with open(r"yf_cached_api.json", "r+") as r:
             data = json.load(r)
             if ticker_selected in data:

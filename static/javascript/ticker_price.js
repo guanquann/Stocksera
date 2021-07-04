@@ -6,6 +6,7 @@ function display_data() {
 
     else {
         document.getElementsByClassName("ticker_summary")[0].style.removeProperty("display");
+        document.getElementsByClassName("tradingview-widget-container")[0].style.removeProperty("display");
 
         document.getElementById("img_div").style.removeProperty("display");
         document.getElementById("ticker_intro").style = "display:inline-block;";

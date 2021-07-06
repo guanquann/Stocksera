@@ -13,19 +13,19 @@ import scheduled_tasks.get_earnings_calendar as get_earnings_calendar
 import scheduled_tasks.miscellaneous as miscellaneous
 
 # Best to run 1 hour before market opens daily to get trending tickers and subreddit count
-SCRAPE_REDDIT = False
+SCRAPE_REDDIT = True
 
 # Update latest price of Reddit ETF. Run this WHEN MARKET OPENS to get latest price
-UPDATE_REDDIT_ETF = False
+UPDATE_REDDIT_ETF = True
 
 # If you want to get news sentiment from Finviz
-NEWS_SENTIMENT = False
+NEWS_SENTIMENT = True
 
 # If you want to get short volume of individual tickers
 SHORT_VOL = False
 
 # If you want to update the cached ticker info for faster processing time
-TICKER_INFO = True
+TICKER_INFO = False
 
 # If you want to get tickers with low float
 LOW_FLOAT = False

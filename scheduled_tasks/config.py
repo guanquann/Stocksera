@@ -2,8 +2,8 @@
 # REDDIT PRAW CREDENTIALS
 # Register for an API in https://www.reddit.com/prefs/apps and enter credential
 ###############################################################################
-API_REDDIT_CLIENT_ID = "3RbFQX8O9UqDCA"
-API_REDDIT_CLIENT_SECRET = "NalOX_ZQqGWP4eYKZv6bPlAb2aWOcA"
+API_REDDIT_CLIENT_ID = "YOUR_OWN_API"
+API_REDDIT_CLIENT_SECRET = "YOUR_OWN_API"
 API_REDDIT_USER_AGENT = "subreddit_scraper"
 
 ################################################

@@ -130,7 +130,7 @@ py manage.py collectstatic
 
 Download nltk data for sentiment analysis. Type the following in console:
 ```
->>> import ntlk
+>>> import nltk
 >>> nltk.download("vader_lexicon")
 ```
 

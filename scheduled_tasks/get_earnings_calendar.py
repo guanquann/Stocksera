@@ -3,7 +3,7 @@ import sqlite3
 import yfinance.ticker as yf
 from yahoo_earnings_calendar import YahooEarningsCalendar
 
-conn = sqlite3.connect("database.db", check_same_thread=False)
+conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
 
 yec = YahooEarningsCalendar(0)

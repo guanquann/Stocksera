@@ -27,7 +27,7 @@ def preprocess_hedge_funds(csv, fund_name):
     df.columns = ["Rank", "Stock", "Ticker", "Type", "Quantity", "Market Value", "% Portfolio", "Previous % Portfolio",
                   "Change", "% Change", "Change Type", "% Ownership", "Sector", "Source Type",
                   "Source Date", "Avg Price"]
-    df.to_csv(os.path.join(os.getcwd(), "hedge_funds_holdings", "{}.csv".format(fund_name)), index=False)
+    df.to_csv(os.path.join(os.getcwd(), "database", "hedge_funds_holdings", "{}.csv".format(fund_name)), index=False)
 
 
 if __name__ == '__main__':

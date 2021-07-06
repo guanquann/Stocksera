@@ -1,9 +1,7 @@
 import yfinance.ticker as yf
-import pandas as pd
 import numpy as np
-import os
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Time Format: HHMMSS
 market_open_time = "133000"
@@ -19,25 +17,64 @@ def default_ticker(request):
 
 
 def check_market_hours(ticker, ticker_selected):
+    """
+    Cache ticker information into a json file to speed up rendering time
+    Criteria for update:
+        1. When market is open (data is updated every 15 minutes to prevent excessive API call)
+        2. When a new ticker is mentioned
+    Parameters
+    ----------
+    ticker:
+    ticker_selected: str
+        ticker symbol (e.g: AAPL)
+    """
     current_datetime = datetime.utcnow()
+
+    next_update_time = str(current_datetime + timedelta(seconds=600))
+    current_utc_date = str(current_datetime).split()[0]
+
     current_utc_time = str(current_datetime).split()[1].split(".")[0].replace(":", "")
+
+    # If market is closed
     if current_utc_time > market_close_time or current_utc_time < market_open_time or current_datetime.today().weekday() >= 5:
-        with open(r"yf_cached_api.json", "r+") as r:
+        with open(r"database/yf_cached_api.json", "r+") as r:
             data = json.load(r)
             if ticker_selected in data:
-                information = data[ticker_selected]
+                # Last updated time is before market close and after open, update information
+                last_updated_date = data[ticker_selected]["next_update"].split()[0]
+                last_updated_time = data[ticker_selected]["next_update"].split()[1].split(".")[0].replace(":", "")
+                print(last_updated_date, current_utc_date, last_updated_time)
+                if (market_close_time > last_updated_time > market_open_time) or last_updated_date != current_utc_date:
+                    information = ticker.info
+                    data[ticker_selected] = information
+                    data[ticker_selected]["next_update"] = next_update_time
+                    r.seek(0)
+                    json.dump(data, r, indent=4)
+                    print("Market Close. Updating data")
+                else:
+                    information = data[ticker_selected]
+                    print("Market Close. Using cached data")
             else:
                 information = ticker.info
                 data[ticker_selected] = information
+                data[ticker_selected]["next_update"] = next_update_time
                 r.seek(0)
                 json.dump(data, r, indent=4)
-        print("Using Cached data")
+                print("Market Close. Scraping data")
+    # If market is opened
     else:
-        os.remove(r"yf_cached_api.json")
-        with open(r"yf_cached_api.json", "w") as r:
-            json.dump({}, r, indent=4)
-        information = ticker.info
-        print("Scraping data")
+        with open(r"database/yf_cached_api.json", "r+") as r:
+            data = json.load(r)
+            if ticker_selected in data and str(current_datetime) < data[ticker_selected]["next_update"]:
+                information = data[ticker_selected]
+                print("Market Open. Using cached data")
+            else:
+                information = ticker.info
+                data[ticker_selected] = information
+                data[ticker_selected]["next_update"] = next_update_time
+                r.seek(0)
+                json.dump(data, r, indent=4)
+                print("Market Open. Scraping data")
     return information
 
 
@@ -98,7 +135,7 @@ def get_loss_at_strike(strike, chain):
     return loss, call_loss, put_loss
 
 
-def get_max_pain(chain: pd.DataFrame):
+def get_max_pain(chain):
     """
     Returns the max pain for a given call/put dataframe
     Parameters
@@ -109,6 +146,10 @@ def get_max_pain(chain: pd.DataFrame):
     -------
     max_pain :
         Max pain value
+    call_loss_list:
+        Total money value of the call options at the particular strike
+    put_loss_list:
+        Total money value of the put options at the particular strike
     """
 
     strikes = np.array(chain.index)
@@ -124,5 +165,4 @@ def get_max_pain(chain: pd.DataFrame):
         put_loss_list.append(put_loss)
     chain["loss"] = loss_list
     max_pain = chain["loss"].idxmin()
-
     return max_pain, call_loss_list, put_loss_list

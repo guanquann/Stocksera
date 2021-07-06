@@ -5,7 +5,7 @@ import praw
 
 import scheduled_tasks.config as cfg
 
-conn = sqlite3.connect("database.db", check_same_thread=False)
+conn = sqlite3.connect("database/database.db", check_same_thread=False)
 db = conn.cursor()
 
 

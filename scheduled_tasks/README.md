@@ -2,19 +2,21 @@
 
 ### Scheduled Tasks to run daily
 
+<b>You should run all commands from the main parent directory</b>
+```
+# Example of how you should run all the scheduled tasks
+example: (venv) C:\Users\Acer\Stocksera>py tasks_to_run.py
+example: (venv) C:\Users\Acer\Stocksera>py scheduled_tasks/get_financial.py
+```
+
 Note: Ensure that you run scheduled_tasks/create_database.py first before continuing and register for an API in <a href="https://www.reddit.com/prefs/apps">https://www.reddit.com/prefs/apps </a> and enter credential in scheduled_tasks/config.py
 
 You can view a sample of the database in <a href="https://drive.google.com/drive/folders/1qR7ssxnNzOUuvYCWR-kEajyoRoGKjbcT?usp=sharing">this</a> Google Drive link.
 - Transfer graph_chart folder to static directory
-- Transfer database.db and financials.json to scheduled_tasks directory
-- Transfer yf_cached_api.json to the main parent directory
-
-#### scheduled_tasks/main.py
-- Compilation of tasks that are needed to be completed before market open.
-- Get trending tickers in Reddit, subreddit subscribers statistics, stocks with low float and high short interest.
+- Transfer database folder to the main parent directory
 
 #### scheduled_tasks/get_reddit_trending_stocks/scrape_reddit.py
-- Script to scrape trending tickers in Reddit (r/wallstreetbets, r/StockMarket, r/stocks).
+- Script to scrape trending tickers in Reddit (r/wallstreetbets, r/StockMarket, r/stocks, r/options).
 - Additional information (beta, volume, industry, recommendation etc) of the ticker will be extracted from yahoo finance too.
 - Edit your config in scheduled_tasks/config.py. Make sure you have you PRAW API key first.
 - Extension of [https://github.com/kaito1410/AutoDD_Rev2](https://github.com/kaito1410/AutoDD_Rev2)
@@ -23,10 +25,12 @@ You can view a sample of the database in <a href="https://drive.google.com/drive
 - Get stocks with low float and high short interest.
 - Do not need to run this script daily since information is updated once every few weeks.
 
+#### scheduled_tasks/get_popular_tickers.py
+- To add a new ticker, add it to list_of_tickers list in full_ticker_list().
+
 #### scheduled_tasks/get_short_volume.py
 - Get short volume of tickers you are interested in.
 - Best to run this daily to identify the trending of short volume over time.
-- To add a new ticker, add it to list_of_tickers list in full_ticker_list().
 
 #### scheduled_tasks/get_news_sentiment.py
 - Get news sentiment of ticker you are interested in.

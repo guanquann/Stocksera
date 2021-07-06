@@ -4,9 +4,9 @@ from datetime import datetime
 
 import yfinance.ticker as yf
 
-logging.basicConfig(filename='logging.log', level=logging.INFO)
+logging.basicConfig(filename=r'database/logging.log', level=logging.INFO)
 
-conn = sqlite3.connect("database.db", check_same_thread=False)
+conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
 
 db.execute("SELECT * FROM reddit_etf WHERE status=?", ("Open", ))
@@ -119,6 +119,7 @@ def update_bought_ticker_price():
         db.execute("UPDATE reddit_etf SET close_price=?, PnL=?, percentage=? "
                    "WHERE ticker=? AND status='Open'", (today_price, PnL, percentage_diff, ticker[0]))
         conn.commit()
+        print("Update {} Successful!".format(ticker))
 
 
 if __name__ == '__main__':

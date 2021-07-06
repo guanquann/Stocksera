@@ -1,22 +1,15 @@
+import os
+import sys
 import sqlite3
+import pandas as pd
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from scheduled_tasks.get_popular_tickers import full_ticker_list
 from helpers import *
 
-conn = sqlite3.connect("database.db", check_same_thread=False)
+conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
-
-
-def full_ticker_list():
-    """
-    List of all the popular tickers identified. Add more to the list if you wish to
-    """
-    list_of_tickers = ["GME", "AMC", "BB", "CLOV", "UWMC", "NIO", "TSLA", "AAPL", "SPY", "NOK", "AMD", "NVDA", "MSFT",
-                       "RBLX", "F", "PLTR", "COIN", "RKT", "MVIS", "FUBO", "DISCA", "VIAC", "SNDL", "SPCE", "FB", "SNAP",
-                       "OCGN", "QQQ", "TQQQ", "ROKU", "TWTR", "ARKK", "ARKF", "ARKG", "ARKQ", "SQQQ", "INTC", "BABA",
-                       "IWM", "ROOT", "BA", "SQ", "SHOP", "SE", "VOO", "PYPL", "EXPR", "KOSS", "SOFI", "WKHS", "DIA", "GM",
-                       "TLRY", "CLNE", "WISH", "CLF", "GOEV", "DKNG", "RIDE", "AMZN", "GOOG", "RIOT", "NFLX", "XPEV",
-                       "CRSP", "JPM", "LI", "MU"]
-    return list_of_tickers
 
 
 def short_volume(symbol):

@@ -16,7 +16,7 @@ import scheduled_tasks.config as cfg
 from custom_extensions.stopwords import stopwords_list
 from custom_extensions.custom_words import new_words
 
-conn = sqlite3.connect("database.db", check_same_thread=False)
+conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
 
 analyzer = SentimentIntensityAnalyzer()
@@ -427,5 +427,5 @@ def print_df(df, filename, writesql, writecsv, subreddit):
             plt.yticks([])
 
             plt.plot(days_list, price_list, color=color)
-            plt.savefig("../static/graph_chart/{}.svg".format(trending_ticker), transparent=True)
+            plt.savefig(r"static/graph_chart/{}.svg".format(trending_ticker), transparent=True)
             plt.close()

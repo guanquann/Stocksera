@@ -160,6 +160,10 @@
         border-radius: 8px;
         border: 1.5px solid gray;
     }
+
+    #img_div img {
+        max-height: 50px !important;
+    }
 }	
 
 @media only screen and (min-width: 900px) {
@@ -431,6 +435,7 @@ a {
     border-radius: 50%;
     width: 100%;
     min-height: 45px;
+    max-height: 65px;
     border: 0.8px solid black;
 }
 

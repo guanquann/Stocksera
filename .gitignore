@@ -5,12 +5,10 @@ __pycache__
 venv/
 .vscode
 *.db
-scheduled_tasks/failure_to_deliver/csv
-scheduled_tasks/financials.json
+database
 static/graph_chart
 *.zip
 db.sqlite3
 logging.log
 staticfiles
-testing.py
-yf_cached_api.json
+yfinance.cache

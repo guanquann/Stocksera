@@ -137,12 +137,9 @@ Download nltk data for sentiment analysis. Type the following in console:
 #### Sign up credentials for Reddit API
 - Register for an API in <a href="https://www.reddit.com/prefs/apps">https://www.reddit.com/prefs/apps </a> and enter credential in scheduled_tasks/config.py
 
-
-#### Setting up SQLite database (file found in scheduled_tasks folder)
-```
-cd scheduled_tasks
-py create_database.py
-```
+#### tasks_to_run.py
+- Compilation of tasks that are needed to be completed.
+- Get trending tickers in Reddit, subreddit subscribers statistics, stocks with low float and high short interest.
 
 #### Run scheduled tasks
 - Please refer to [Scheduled Tasks Guide](https://github.com/spartan737/Stocksera/tree/master/scheduled_tasks) for more information on how to run scheduled tasks.

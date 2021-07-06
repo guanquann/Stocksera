@@ -6,7 +6,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 from custom_extensions.custom_words import *
 
-conn = sqlite3.connect("database.db", check_same_thread=False)
+conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
 
 analyzer = SentimentIntensityAnalyzer()

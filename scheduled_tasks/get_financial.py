@@ -1,9 +1,17 @@
 import json
 import numpy as np
+import requests_cache
 import yfinance.ticker as yf
 from yahoo_earnings_calendar import YahooEarningsCalendar
 
-from scheduled_tasks.get_short_volume import full_ticker_list
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from scheduled_tasks.get_popular_tickers import full_ticker_list
+
+session = requests_cache.CachedSession('yfinance.cache')
+session.headers['User-agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
 
 
 def financial(ticker_symbol):
@@ -15,16 +23,18 @@ def financial(ticker_symbol):
         ticker symbol (e.g: AAPL)
     """
     balance_list = []
-    ticker = yf.Ticker(ticker_symbol)
+    ticker = yf.Ticker(ticker_symbol, session=session)
     information = ticker.info
 
     # To check if input is a valid ticker
     if "symbol" in information:
         balance_sheet = ticker.quarterly_balance_sheet.replace(np.nan, 0)
+        print(balance_sheet)
 
         date_list = balance_sheet.columns.astype("str").to_list()
         balance_col_list = balance_sheet.index.tolist()
-
+        print(date_list)
+        print(balance_col_list)
         for i in range(len(balance_sheet)):
             values = balance_sheet.iloc[i].tolist()
             balance_list.append(values)
@@ -60,7 +70,7 @@ def financial(ticker_symbol):
             else:
                 break
 
-        with open(r"financials.json", "r+") as r:
+        with open(r"database/financials.json", "r+") as r:
             data = json.load(r)
             data[ticker_symbol] = {
                 "date_list": date_list,

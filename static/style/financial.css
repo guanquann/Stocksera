@@ -108,8 +108,8 @@ h2 button {
 }
 
 .selected_btn {
-    border-bottom: 2px solid green;
-    color: green;
+    border-bottom: 2px solid rgb(38, 166, 154);
+    color: rgb(38, 166, 154);
 }
 
 .dark_mode .selected_btn {

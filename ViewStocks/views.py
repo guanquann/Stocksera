@@ -1,12 +1,13 @@
+import os
 import math
 import sqlite3
-from datetime import timedelta
 
 from custom_extensions.custom_words import *
 from custom_extensions.stopwords import *
-from scheduled_tasks.get_short_volume import full_ticker_list
+from scheduled_tasks.get_popular_tickers import full_ticker_list
 from helpers import *
 
+import requests_cache
 import pandas as pd
 from pytrends.request import TrendReq
 from yahoo_earnings_calendar import YahooEarningsCalendar
@@ -17,7 +18,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 REAL_TIME = False
 
-conn = sqlite3.connect(r"scheduled_tasks/database.db", check_same_thread=False)
+conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
 
 analyzer = SentimentIntensityAnalyzer()
@@ -26,6 +27,9 @@ analyzer.lexicon.update(new_words)
 trends = TrendReq(hl='en-US', tz=360)
 
 pd.options.display.float_format = '{:.1f}'.format
+
+session = requests_cache.CachedSession('yfinance.cache')
+session.headers['User-agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
 
 
 def main(request):
@@ -44,7 +48,8 @@ def stock_price(request):
                                                      "information": information,
                                                      })
     else:
-        return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected, "error": "error_true"})
+        return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
+                                                     "error": "error_true"})
 
 
 def ticker_recommendations(request):
@@ -52,7 +57,7 @@ def ticker_recommendations(request):
     Show upgrades/downgrades of ticker. Data from yahoo finance
     """
     ticker_selected = default_ticker(request)
-    ticker = yf.Ticker(ticker_selected)
+    ticker = yf.Ticker(ticker_selected, session=session)
     try:
         recommendations = ticker.recommendations
         recommendations["Action"] = recommendations["Action"].str.replace("main", "Maintain").replace("up", "Upgrade").replace("down", "Downgrade").replace("init", "Initialised").replace("reit", "Reiterate")
@@ -68,7 +73,7 @@ def ticker_major_holders(request):
     Show major holders of ticker. Data from yahoo finance
     """
     ticker_selected = default_ticker(request)
-    ticker = yf.Ticker(ticker_selected)
+    ticker = yf.Ticker(ticker_selected, session=session)
     try:
         major_holders = ticker.major_holders
         major_holders = major_holders.to_html(index=False, header=False)
@@ -82,7 +87,7 @@ def ticker_institutional_holders(request):
     Show institutional holders of ticker. Data from yahoo finance
     """
     ticker_selected = default_ticker(request)
-    ticker = yf.Ticker(ticker_selected)
+    ticker = yf.Ticker(ticker_selected, session=session)
     institutional_holders = ticker.institutional_holders
     if institutional_holders is not None:
         institutional_holders = institutional_holders.to_html(index=False)
@@ -343,7 +348,7 @@ def financial(request):
                 else:
                     break
         else:
-            with open(r"scheduled_tasks/financials.json", "r+") as r:
+            with open(r"database/financials.json", "r+") as r:
                 data = json.load(r)
                 if ticker_selected in data:
                     data = data[ticker_selected]
@@ -493,7 +498,7 @@ def failure_to_deliver(request):
     """
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
-    file_path = r"scheduled_tasks/failure_to_deliver/ticker/{}.csv".format(ticker_selected)
+    file_path = r"database/failure_to_deliver/ticker/{}.csv".format(ticker_selected)
     if os.path.isfile(file_path):
         information = check_market_hours(ticker, ticker_selected)
         ftd = pd.read_csv(file_path)
@@ -540,7 +545,7 @@ def hedge_funds(request):
         page_num = 1
 
     # hedge_funds_description.json remember to change the file name to the csv's file you have saved
-    with open(r"scheduled_tasks/hedge_funds_holdings/hedge_funds_description.json") as r:
+    with open(r"database/hedge_funds_holdings/hedge_funds_description.json") as r:
         hedge_funds_holdings = json.load(r)["hedge funds"]
 
     ticker_selected = ""
@@ -551,7 +556,7 @@ def hedge_funds(request):
     for fund in hedge_funds_holdings:
         all_fund_names.append(fund["name"])
         if fund["name"] == fund_name:
-            df = pd.read_csv(r"scheduled_tasks/hedge_funds_holdings/{}".format(fund["file_name"]))
+            df = pd.read_csv(r"database/hedge_funds_holdings/{}".format(fund["file_name"]))
             if ticker_selected != "":
                 num_pages = 1
                 df = df[df["Ticker"] == ticker_selected]

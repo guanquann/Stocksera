@@ -9,7 +9,7 @@ CLIENT_SECRET = API_REDDIT_CLIENT_SECRET
 USER_AGENT = API_REDDIT_USER_AGENT
 reddit = praw.Reddit(client_id=CLIENT_ID, client_secret=CLIENT_SECRET, user_agent=USER_AGENT)
 
-conn = sqlite3.connect("database.db", check_same_thread=False)
+conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
 
 interested_subreddit = ["wallstreetbets", "stocks", "StockMarket", "GME", "Superstonk", "amcstock", "options",

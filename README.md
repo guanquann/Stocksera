@@ -146,11 +146,16 @@ Download nltk data for sentiment analysis. Type the following in console:
 - Go to templates/ticker_price.html and uncomment line 92-95.
 
 #### Running the application
+You can run run_app.bat.
+
+Alternatively, you can run using your terminal:
 ```
-# Run application (view it in 127.0.0.1:8000):
+cd venv/Scripts
+activate
+cd ../..
 py manange.py runserver
-# And you're ready to explore!
 ```
+You can view the application in 127.0.0.1:8000 and you are ready to explore!
 
 ### Future improvements:
 - [x] Show hedge funds (Citadel, Melvin Capital etc) major holdings
@@ -158,8 +163,9 @@ py manange.py runserver
 - [x] Sort hedge funds holdings
 - [x] Add 30 days graph for trending reddit tickers
 - [x] Show ranking of tickers in reddit and compare it with its price
+- [x] Improve speed of website (although I feel that the major issue lies with pythonanywhere-the website I'm hosting instead, since it runs smoothly locally)
+    - Solved by caching tickers' information when market is closed and caching financial data
 - [ ] Add trending symbols on r/cryptocurrency
-- [ ] Improve speed of website (although I feel that the major issue lies with pythonanywhere-the website I'm hosting instead, since it runs smoothly locally)
 - [ ] Income Statement and Cash Flow for Financial data
 - [ ] Show theta, delta, gamma in Options data
 - [ ] Show performance of Reddit ETF vs SPY

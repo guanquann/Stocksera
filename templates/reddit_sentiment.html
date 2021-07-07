@@ -83,13 +83,12 @@
 
 {% block main_content %} 
     <div class="instructions">
-        <p>This page shows the top 25 trending tickers in Reddit in the last 48H. Number of posts (including deleted), comments and sentiment are taken into account. Data is refreshed daily.</p>
+        <p>This page shows the top 35 trending tickers with a minimum of 10 score in Reddit in the last 48H. Number of posts (including deleted), comments and sentiment are taken into account. Data is refreshed daily.</p>
     </div>
 
     <div id="more_info_div">
         <a class="more_info_btn" href="{% url 'reddit_etf' %}" onclick="clickAndDisable(this);">WSB ETF</a>
         <a class="more_info_btn" href="{% url 'subreddit_count' %}" onclick="clickAndDisable(this);">Subreddit Stats</a>
-        <a class="more_info_btn" href="{% url 'due_diligence' %}" onclick="clickAndDisable(this);">Top DD</a>
     </div>
 
     <form action="" method="GET" autocomplete="off">

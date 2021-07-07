@@ -8,8 +8,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from scheduled_tasks.get_popular_tickers import full_ticker_list
 
-# import os
-# print(os.path.basename(os.getcwd()))
 
 # Time Format: HHMMSS
 market_open_time = "133000"

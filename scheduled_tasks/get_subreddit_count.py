@@ -21,6 +21,8 @@ def subreddit_count():
     """
     Get number of redditors, percentage of active redditors and growth in new redditors
     """
+    print("-" * 100)
+    print("Getting Subreddit Stats now ...")
     for subreddit_name in interested_subreddit:
         subreddit = reddit.subreddit(subreddit_name)
         print("Looking at {} now.".format(subreddit))

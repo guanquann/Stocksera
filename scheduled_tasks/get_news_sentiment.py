@@ -14,6 +14,7 @@ analyzer.lexicon.update(new_words)
 
 interested_tickers = ["TSLA", "GME", "AMC", "SPY", "NIO", "BB", "PLTR", "AAPL", "AMD", "VIAC", "NOK", "MVIS",
                       "OCGN", "CLOV"]
+
 date_updated = str(datetime.now()).split()[0]
 
 
@@ -21,6 +22,8 @@ def news_sentiment():
     """
     Get the news sentiment score of popular tickers from Finviz news
     """
+    print("-" * 100)
+    print("Getting News Sentiment From Finviz ...")
     for ticker_selected in interested_tickers:
         ticker_fin = finvizfinance(ticker_selected)
 
@@ -46,7 +49,7 @@ def news_sentiment():
 
         db.execute("INSERT INTO news_sentiment VALUES (?, ?, ?)", (ticker_selected, avg_score, date_updated))
         conn.commit()
-        print("INSERT {} INTO NEWS SENTIMENT DATABASE SUCCESSFULLY!".format(ticker_selected))
+        print("News sentiment of {} completed!".format(ticker_selected))
 
 
 if __name__ == '__main__':

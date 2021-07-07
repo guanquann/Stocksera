@@ -3,13 +3,14 @@
 
 You can view the application in:
 - <a href="https://stocksera.pythonanywhere.com">stocksera.pythonanywhere.com </a>
-- <a href="https://stockserabeta.pythonanywhere.com">StockseraBeta.pythonanywhere.com </a>
 
-Both websites are exactly the same. But because I'm hosting it free on pythonanywhere, speed of website can be (very) slow when traffic is high. 
+Alternatively, you can look at https://youtu.be/SEYXEcVKt38 for a live demo.
+
+But because I'm hosting it free on pythonanywhere, speed of website can be (very) slow when traffic is high. 
 
 ![Web Traffic](./static/images/web_traffic.png)
 
-Please use the other website if the one you are using is slow. Alternatively, you can host it locally on your computer, where the speed is much faster.
+You are encouraged to host it locally on your computer, where the speed is much faster.
 
 ### Support:
 This website will be free forever! No subscription needed! But if you want to support me, please give me a star on Github or you can PayPal to <a href="https://www.paypal.me/stocksera">paypal.me/stocksera</a>
@@ -64,11 +65,6 @@ This website will be free forever! No subscription needed! But if you want to su
 - Growth in number of new redditors and percentage of active redditors.
 - This page is currently very basic, open to new suggestions on how to improve this page.
 ![Subreddit Stats](./static/images/subreddit_stats.png)
-
-#### /due_diligence/
-- Note: This page is still in development
-- A compilation of top due-diligence on Reddit. 
-- Data is manually sourced by Stocksera on a regular basis.
 
 #### /market_overview/
 - Overview of the performance of the entire market.

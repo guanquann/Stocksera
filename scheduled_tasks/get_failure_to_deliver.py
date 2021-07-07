@@ -9,11 +9,18 @@ from scheduled_tasks.get_popular_tickers import full_ticker_list
 
 def update_all_tickers(ftd_txt_file_name):
     """
-    If new FTD data is available from SEC, run this function
+    If new FTD data is available from SEC, run this function.
+    NOTE: This will only ADD ON the new FTD data to the existing database/failure_to_deliver/ticker/${ticker}.csv,
+          where ${ticker} is your ticker name.
+    NOTE: If you do not have an existing database/failure_to_deliver/ticker/${ticker}.csv, run add_new_ticker(ticker) FIRST.
     Parameters
     ----------
     ftd_txt_file_name: str
         file name in .txt format (e.g: cnsfails202006a.txt)
+    Returns
+    -------
+    ftd_txt_file_name will be converted to .csv
+
     """
     df = pd.read_csv(ftd_txt_file_name, delimiter="|")
 

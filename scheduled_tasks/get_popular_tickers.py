@@ -7,7 +7,7 @@ def full_ticker_list():
                        "OCGN", "QQQ", "TQQQ", "ROKU", "TWTR", "ARKK", "ARKF", "ARKG", "ARKQ", "SQQQ", "INTC", "BABA",
                        "IWM", "ROOT", "BA", "SQ", "SHOP", "SE", "VOO", "PYPL", "EXPR", "KOSS", "SOFI", "WKHS", "DIA", "GM",
                        "TLRY", "CLNE", "WISH", "CLF", "GOEV", "DKNG", "RIDE", "AMZN", "GOOG", "RIOT", "NFLX", "XPEV",
-                       "CRSP", "JPM", "LI", "C", "ORCL", "BYND", "NKLA", "CHWY", "CLVS",
-                       "MU", "SKLZ", "AI", "MS", "BAC", "CRSR", "AAL", "CRWD", "NKE", "NAKD",
+                       "CRSP", "JPM", "LI", "C", "ORCL", "BYND", "NKLA", "CHWY", "CLVS", "SNOW", "BNGO", "VBR", "VTI",
+                       "MU", "SKLZ", "AI", "MS", "BAC", "CRSR", "AAL", "CRWD", "NKE", "NAKD", "ICLN", "ZM", "UBS", "NET",
                        "UBER", "TSM", "DIS", "V", "BIDU", "JNJ", "DIS", "TDOC"]
     return list_of_tickers

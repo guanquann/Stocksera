@@ -602,7 +602,7 @@ def reddit_analysis(request):
     else:
         date_selected = all_dates[0]
 
-    db.execute("SELECT * FROM {} WHERE date_updated LIKE '{}' ORDER BY total DESC LIMIT 25".format(subreddit, "%" + date_selected + "%"))
+    db.execute("SELECT * FROM {} WHERE date_updated LIKE '{}' ORDER BY total DESC LIMIT 35".format(subreddit, "%" + date_selected + "%"))
     trending_tickers = db.fetchall()
     trending_tickers = list(map(list, trending_tickers))
 
@@ -724,15 +724,11 @@ def ark_trades(request):
     return render(request, 'ark_trade.html')
 
 
-def due_diligence(request):
-    """
-    Get a list of due diligence from different subreddits on Reddit. Data is sourced manually by me
-    """
-    return render(request, 'top_DD.html')
-    # db.execute("SELECT * FROM top_DD")
-    # dd = db.fetchall()
-    # dd = list(map(list, dd))
-    # return render(request, 'top_DD.html', {"due_diligence": dd})
+# def due_diligence(request):
+#     """
+#     Get a list of due diligence from different subreddits on Reddit. Data is sourced manually by me
+#     """
+#     return render(request, 'top_DD.html')
 
 
 def about(request):

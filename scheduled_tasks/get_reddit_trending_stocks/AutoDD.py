@@ -405,8 +405,8 @@ def print_df(df, filename, writesql, writecsv, subreddit):
 
     # Create past 1 month chart
     print("Saving last 1 month chart now...")
-    top_25 = df[:25]
-    for index, i in top_25.iterrows():
+    top_35 = df[:35]
+    for index, i in top_35.iterrows():
         trending_ticker = i[1]
         ticker = yf.Ticker(trending_ticker)
         price_df = ticker.history(interval="1d", period="1mo")["Close"]

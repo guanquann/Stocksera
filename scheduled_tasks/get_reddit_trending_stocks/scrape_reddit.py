@@ -3,7 +3,8 @@ from scheduled_tasks.config import *
 
 
 def main():
-    print("Getting submissions...")
+    print("-" * 100)
+    print("Getting submissions from Reddit...")
     for index, subreddit in enumerate(subreddits):
         current_scores, prev_scores, total_rocket_score, total_posts_score, \
             total_upvotes_score, total_comments_score = get_submission_generators(interval, subreddit)

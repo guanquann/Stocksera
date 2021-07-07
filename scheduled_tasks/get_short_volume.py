@@ -22,6 +22,8 @@ def short_volume(symbol):
     """
     url = "http://shortvolumes.com/?t={}".format(symbol)
     table = pd.read_html(url)
+    print("-" * 100)
+    print("Getting short volume data now ...")
     try:
         shorted_vol_daily = table[3].iloc[2:]
 
@@ -34,9 +36,9 @@ def short_volume(symbol):
             db.execute("INSERT OR IGNORE INTO short_volume VALUES (?, ?, ?, ?, ?, ?)",
                        (symbol, row[0], close_price, row[1], row[2], row[3]))
             conn.commit()
-        print("{} INSERTED INTO SHORT-VOLUME DATABASE SUCCESSFULLY".format(symbol))
+        print("Short volume data for {} collected successfully!".format(symbol))
     except IndexError:
-        print("{} NOT FOUND!".format(symbol))
+        print("Short volume data for {} not found!".format(symbol))
 
 
 if __name__ == '__main__':

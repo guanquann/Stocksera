@@ -49,6 +49,7 @@ def check_market_hours(ticker, ticker_selected):
                     data[ticker_selected] = information
                     data[ticker_selected]["next_update"] = next_update_time
                     r.seek(0)
+                    r.truncate()
                     json.dump(data, r, indent=4)
                     print("Market Close. Updating data")
                 else:
@@ -59,6 +60,7 @@ def check_market_hours(ticker, ticker_selected):
                 data[ticker_selected] = information
                 data[ticker_selected]["next_update"] = next_update_time
                 r.seek(0)
+                r.truncate()
                 json.dump(data, r, indent=4)
                 print("Market Close. Scraping data")
     # If market is opened
@@ -73,6 +75,7 @@ def check_market_hours(ticker, ticker_selected):
                 data[ticker_selected] = information
                 data[ticker_selected]["next_update"] = next_update_time
                 r.seek(0)
+                r.truncate()
                 json.dump(data, r, indent=4)
                 print("Market Open. Scraping data")
     return information

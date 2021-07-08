@@ -16,6 +16,15 @@ def default_ticker(request):
     return ticker_selected
 
 
+def check_img(ticker_selected, information):
+    if ticker_selected == "TSLA":
+        return "https://logo.clearbit.com/tesla.cn"
+    elif ticker_selected == "BABA":
+        return "https://logo.clearbit.com/alibaba.com"
+    else:
+        return information["logo_url"]
+
+
 def check_market_hours(ticker, ticker_selected):
     """
     Cache ticker information into a json file to speed up rendering time
@@ -43,9 +52,10 @@ def check_market_hours(ticker, ticker_selected):
                 # Last updated time is before market close and after open, update information
                 last_updated_date = data[ticker_selected]["next_update"].split()[0]
                 last_updated_time = data[ticker_selected]["next_update"].split()[1].split(".")[0].replace(":", "")
-                print(last_updated_date, current_utc_date, last_updated_time)
+                # print(last_updated_date, current_utc_date, last_updated_time)
                 if (market_close_time > last_updated_time > market_open_time) or last_updated_date != current_utc_date:
                     information = ticker.info
+                    information["logo_url"] = check_img(ticker_selected, information)
                     data[ticker_selected] = information
                     data[ticker_selected]["next_update"] = next_update_time
                     r.seek(0)
@@ -57,6 +67,7 @@ def check_market_hours(ticker, ticker_selected):
                     print("Market Close. Using cached data")
             else:
                 information = ticker.info
+                information["logo_url"] = check_img(ticker_selected, information)
                 data[ticker_selected] = information
                 data[ticker_selected]["next_update"] = next_update_time
                 r.seek(0)
@@ -72,6 +83,7 @@ def check_market_hours(ticker, ticker_selected):
                 print("Market Open. Using cached data")
             else:
                 information = ticker.info
+                information["logo_url"] = check_img(ticker_selected, information)
                 data[ticker_selected] = information
                 data[ticker_selected]["next_update"] = next_update_time
                 r.seek(0)

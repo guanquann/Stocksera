@@ -17,7 +17,7 @@ import scheduled_tasks.get_failure_to_deliver as get_failure_to_deliver
 import scheduled_tasks.miscellaneous as miscellaneous
 
 # Best to run 1 hour before market opens daily to get trending tickers and subreddit count
-SCRAPE_REDDIT = False
+SCRAPE_REDDIT = True
 
 # Update latest price of Reddit ETF. Run this WHEN MARKET OPENS to get latest price
 UPDATE_REDDIT_ETF = False
@@ -32,7 +32,7 @@ TICKER_FINANCIAL = False
 SHORT_VOL = False
 
 # If you want to get news sentiment from Finviz
-NEWS_SENTIMENT = False
+NEWS_SENTIMENT = True
 
 # If you want to get tickers with low float
 LOW_FLOAT = False

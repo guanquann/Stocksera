@@ -66,7 +66,8 @@ def database():
                "eps_act TEXT, "
                "img_url TEXT, "
                "earning_date TEXT, "
-               "earning_time TEXT )")
+               "earning_time TEXT, "
+               "UNIQUE(name, symbol) )")
 
     db.execute("CREATE table IF NOT EXISTS subreddit_count ("
                "subreddit TEXT, "
@@ -106,18 +107,6 @@ def database():
                "total_vol INTEGER, "
                "percent TEXT, "
                "UNIQUE('ticker', 'reported_date','short_vol','total_vol','percent'))")
-
-    # db.execute("CREATE table IF NOT EXISTS top_DD ("
-    #            "url TEXT, "
-    #            "ticker TEXT, "
-    #            "title TEXT, "
-    #            "text_body TEXT, "
-    #            "upvotes INTEGER, "
-    #            "comments INTEGER, "
-    #            "subreddit TEXT, "
-    #            "date_text TEXT, "
-    #            "img_url TEXT, "
-    #            "UNIQUE('url', 'ticker', 'title', 'text_body','upvotes','comments','subreddit', 'date_text', 'img_url'))")
 
     db.execute("CREATE table IF NOT EXISTS contact ("
                "name TEXT, "

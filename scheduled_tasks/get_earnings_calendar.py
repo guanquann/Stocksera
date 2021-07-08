@@ -19,6 +19,8 @@ def get_new_earnings(n_days):
     """
     date_from = datetime.now()
     date_to = datetime.now() + timedelta(days=n_days)
+    print(date_from)
+    print(date_to)
     for i in yec.earnings_between(date_from, date_to):  # for i in yec.earnings_on(date_to):
         symbol = i["ticker"]
         ticker = yf.Ticker(symbol)
@@ -31,12 +33,15 @@ def get_new_earnings(n_days):
 
         information = ticker.info
         mkt_cap = information["marketCap"]
+
         img = information["logo_url"]
 
-        db.execute("""INSERT INTO earnings_calendar 
-                      (name, symbol, mkt_cap, eps_est, eps_act, img_url, earning_date, earning_time) 
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
-                   (name, symbol, mkt_cap, epsestimate, epsactual, img, date, time))
+        db.execute("""INSERT INTO earnings_calendar
+                      (name, symbol, mkt_cap, eps_est, eps_act, img_url, earning_date, earning_time)
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (name, symbol) DO UPDATE SET 
+                      mkt_cap=?, eps_est=?, eps_act=?, img_url=?, earning_date=?, earning_time=? """,
+                   (name, symbol, mkt_cap, epsestimate, epsactual, img, date, time,
+                    mkt_cap, epsestimate, epsactual, img, date, time))
         conn.commit()
         print(ticker, date, time)
     print("Added new earnings successfully")

@@ -17,6 +17,15 @@ for bought in prev_bought:
 new_bought_ticker = []
 
 
+def check_img(ticker_selected, information):
+    if ticker_selected == "TSLA":
+        return "https://logo.clearbit.com/tesla.cn"
+    elif ticker_selected == "BABA":
+        return "https://logo.clearbit.com/alibaba.com"
+    else:
+        return information["logo_url"]
+
+
 def buy_new_ticker(date):
     """
     Buy ticker if ticker is inside the Top 10 popular tickers on r/wallstreetbets
@@ -37,7 +46,7 @@ def buy_new_ticker(date):
         symbol = y[1]
         if symbol not in prev_bought_ticker:
             ticker = yf.Ticker(symbol)
-            logo_url = ticker.info["logo_url"]
+            logo_url = check_img(symbol, ticker.info)
             history = ticker.history(period="1mo", interval="1d")
             try:
                 info = history.loc[latest_date]

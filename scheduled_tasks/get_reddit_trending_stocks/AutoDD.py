@@ -139,7 +139,7 @@ def get_ticker_scores_praw(sub_gen_dict):
             # search the title for the ticker/tickers
             title = ' ' + submission[0].upper() + ' '
             title_extracted = set(re.findall(pattern, title))
-            print(submission[5], title, title_extracted)
+            # print(submission[5], title, title_extracted)
             # flair is worth bonus points
             if submission[1] is not None:
                 flair = submission[1].lower()
@@ -384,6 +384,7 @@ def print_df(df, filename, writesql, writecsv, subreddit):
     df['change'] = df['change'].replace(0, "N/A")
     df['industry'] = df['industry'].str.replace("—", "-")
     df['recommend'] = df['recommend'].str.replace("_", " ")
+    df['website'] = df['website'].str.replace("alibabagroup.com", "alibaba.com").replace("tesla.com", "tesla.cn")
 
     # Save to sql database
     if writesql:
@@ -400,7 +401,6 @@ def print_df(df, filename, writesql, writecsv, subreddit):
         completeName = os.path.join(sys.path[0], filename)
         completeName += '.csv'
         df.to_csv(completeName, index=False, float_format='%.2f', mode='a', encoding=locale.getpreferredencoding())
-        print(file=open(completeName, "a"))
         print("Wrote to file successfully {}".format(completeName))
 
     # Create past 1 month chart

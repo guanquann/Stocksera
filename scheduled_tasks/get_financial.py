@@ -80,6 +80,7 @@ def financial(ticker_symbol):
                 "financial_quarter_list": financial_quarter_list,
             }
             r.seek(0)  # reset file position to the beginning.
+            r.truncate()
             json.dump(data, r, indent=4)
             print("Financial Data for {} completed".format(ticker_symbol))
 

@@ -20,7 +20,7 @@ import scheduled_tasks.miscellaneous as miscellaneous
 SCRAPE_REDDIT = True
 
 # Update latest price of Reddit ETF. Run this WHEN MARKET OPENS to get latest price
-UPDATE_REDDIT_ETF = False
+UPDATE_REDDIT_ETF = True
 
 # If you want to update the cached ticker info for faster processing time
 TICKER_INFO = False

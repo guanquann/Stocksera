@@ -23,7 +23,7 @@ def short_volume(symbol):
     url = "http://shortvolumes.com/?t={}".format(symbol)
     table = pd.read_html(url)
     print("-" * 100)
-    print("Getting short volume data now ...")
+    print(f"Getting short volume data for {symbol} now ...")
     try:
         shorted_vol_daily = table[3].iloc[2:]
 

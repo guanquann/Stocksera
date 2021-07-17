@@ -143,7 +143,7 @@ Download nltk data for sentiment analysis. Type the following in console:
 #### Setting up news sentiment
 - Go to ViewStocks/urls.py and uncomment 'sub_news/' and 'latest_news/'.
 - Go to templates/format.html and uncomment line 33.
-- Go to templates/ticker_price.html and uncomment line 92-95.
+- Go to templates/ticker_price.html and uncomment line 122-125.
 
 #### Running the application
 You can run run_app.bat.

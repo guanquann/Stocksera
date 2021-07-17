@@ -104,6 +104,11 @@
         </form>
         <iframe name="institutional_holders" scrolling="no" onload="expand_iframe(this)"></iframe>
 
+        <form action="/mutual_fund_holders" method="GET" autocomplete="off" target="mutual_fund_holders">
+            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">MutualFund Holders <span>&#x25BA;</span></button>
+        </form>
+        <iframe name="mutual_fund_holders" scrolling="no" onload="expand_iframe(this)"></iframe>
+
         <form action="/recommendations" method="GET" autocomplete="off" target="recommendations">
             <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Upgrades & Downgrades <span>&#x25BA;</span></button>
         </form>

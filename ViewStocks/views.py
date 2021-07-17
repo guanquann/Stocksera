@@ -90,10 +90,30 @@ def ticker_institutional_holders(request):
     ticker = yf.Ticker(ticker_selected, session=session)
     institutional_holders = ticker.institutional_holders
     if institutional_holders is not None:
+        institutional_holders.columns = (institutional_holders.columns.str.replace("% Out", "Stake"))
+        institutional_holders["Stake"] = institutional_holders["Stake"].apply(lambda x: str(f"{100 * x:.2f}") + "%")
+        institutional_holders["Value"] = institutional_holders["Value"].apply(lambda x: "$" + str(x))
         institutional_holders = institutional_holders.to_html(index=False)
     else:
         institutional_holders = "N/A"
     return render(request, 'iframe_format.html', {"title": "Institutional Holders", "table": institutional_holders})
+
+
+def ticker_mutual_fund_holders(request):
+    """
+        Show institutional holders of ticker. Data from yahoo finance
+    """
+    ticker_selected = default_ticker(request)
+    ticker = yf.Ticker(ticker_selected, session=session)
+    mutual_fund_holders = ticker.mutualfund_holders
+    if mutual_fund_holders is not None:
+        mutual_fund_holders.columns = (mutual_fund_holders.columns.str.replace("% Out", "Stake"))
+        mutual_fund_holders["Stake"] = mutual_fund_holders["Stake"].apply(lambda x: str(f"{100 * x:.2f}") + "%")
+        mutual_fund_holders["Value"] = mutual_fund_holders["Value"].apply(lambda x: "$" + str(x))
+        mutual_fund_holders = mutual_fund_holders.to_html(index=False)
+    else:
+        mutual_fund_holders = "N/A"
+    return render(request, 'iframe_format.html', {"title": "MutualFund Holders", "table": mutual_fund_holders})
 
 
 def sub_news(request):

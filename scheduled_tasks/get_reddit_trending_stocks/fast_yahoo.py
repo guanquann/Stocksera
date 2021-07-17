@@ -6,6 +6,9 @@ import time
 import math
 import pandas as pd
 
+headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) '
+                         'Chrome/50.0.2661.102 Safari/537.36'}
+
 
 def download_advanced_stats(symbol_list, module_name_map, threads=True):
     """
@@ -163,7 +166,7 @@ def get_ticker_stats(symbol, module_name_map):
     params = {
         'modules': ','.join(module_list),
     }
-    result = requests.get(url, params=params)
+    result = requests.get(url, params=params, headers=headers)
     if result.status_code != 200 and result.status_code != 404:
         result.raise_for_status()
 
@@ -192,7 +195,7 @@ def quick_stats_request(request_symbol_list, field_list):
         'symbols': ','.join(request_symbol_list),
         'fields': ','.join(field_list),
     }
-    result = requests.get("https://query1.finance.yahoo.com/v7/finance/quote", params=params)
+    result = requests.get("https://query1.finance.yahoo.com/v7/finance/quote", params=params, headers=headers)
     if result.status_code != 200 and result.status_code != 404:
         result.raise_for_status()
 

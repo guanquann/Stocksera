@@ -101,7 +101,7 @@ def ticker_institutional_holders(request):
 
 def ticker_mutual_fund_holders(request):
     """
-        Show institutional holders of ticker. Data from yahoo finance
+        Show mutual funds holders of ticker. Data from yahoo finance
     """
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected, session=session)

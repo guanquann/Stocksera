@@ -384,7 +384,8 @@ def print_df(df, filename, writesql, writecsv, subreddit):
     df['change'] = df['change'].replace(0, "N/A")
     df['industry'] = df['industry'].str.replace("—", "-")
     df['recommend'] = df['recommend'].str.replace("_", " ")
-    df['website'] = df['website'].str.replace("alibabagroup.com", "alibaba.com").replace("tesla.com", "tesla.cn")
+    df['website'] = df['website'].str.replace("alibabagroup.com", "alibaba.com")
+    df['website'] = df['website'].str.replace("tesla.com", "tesla.cn")
 
     # Save to sql database
     if writesql:

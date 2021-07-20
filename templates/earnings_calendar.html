@@ -131,7 +131,7 @@
     html_string = "<div>"
 
     for (earning=0; earning<earnings_calendar.length; earning++) {
-        earning_date = earnings_calendar[earning][6];
+        earning_date = earnings_calendar[earning][7];
 
         if (earning_date != current_date) {
             current_date = earning_date;
@@ -164,12 +164,29 @@
             }
         }
 
+        eps_act = earnings_calendar[earning][4]
+        if (! eps_act.includes("N/A")) {
+            if (eps_act.includes("-")) {
+                eps_act = eps_act.replace("-", "-$")
+            }
+            else {
+                eps_act = "$" + eps_act
+            }
+        }
+
+        surprise = earnings_calendar[earning][5]
+        if (! surprise.includes("N/A")) {
+            surprise = surprise + "%"
+        }
+
         html_string += ` <span class="earnings_container">
-                            <a href="{% url 'ticker' %}?quote=${earnings_calendar[earning][1]}" target="_blank"><img src="${earnings_calendar[earning][5]}" onerror=this.src="{% static 'images/not_available.svg' %}" class="company_img"></a>
+                            <a href="{% url 'ticker' %}?quote=${earnings_calendar[earning][1]}" target="_blank"><img src="${earnings_calendar[earning][6]}" onerror=this.src="{% static 'images/not_available.svg' %}" class="company_img"></a>
                             <p><span>Name: </span>${earnings_calendar[earning][0]}</p>
                             <p><span>Ticker: </span>${earnings_calendar[earning][1]}</p>
                             <p><span>Mkt Cap: </span>${mkt_cap}</p>
                             <p><span>EPS Est: </span>${eps_est}</p>
+                            <p><span>EPS Act: </span>${eps_act}</p>
+                            <p><span>Surprise: </span>${surprise}</p>
                          </span>`
     }
     html_string += `</div></div>`

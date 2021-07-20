@@ -92,7 +92,7 @@ if __name__ == '__main__':
         miscellaneous.get_high_short_interest()
 
     if EARNINGS_CALENDAR:
-        get_earnings_calendar.get_new_earnings(n_days=7)
+        get_earnings_calendar.insert_earnings_into_db(get_earnings_calendar.get_earnings(7, forward=True))
 
     if FTD:
         # Uncomment this if there is not new FTD txt file from SEC

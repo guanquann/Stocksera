@@ -41,6 +41,7 @@ def financial(ticker_symbol):
 
         # Get Actual vs Est EPS of ticker
         yec = YahooEarningsCalendar(0)
+        print(ticker_symbol, "@@@@")
         earnings = yec.get_earnings_of(ticker_symbol)
         earnings_list, financial_quarter_list = [], []
         # [[1, 0.56, 0.64], [2, 0.51, 0.65], [3, 0.7, 0.73], [4, 1.41, 1.68], [5, 0.98]]

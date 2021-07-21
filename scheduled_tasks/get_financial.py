@@ -1,8 +1,9 @@
 import json
+import requests
 import numpy as np
 import requests_cache
 import yfinance.ticker as yf
-from yahoo_earnings_calendar import YahooEarningsCalendar
+from bs4 import BeautifulSoup
 
 import os
 import sys
@@ -11,7 +12,27 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from scheduled_tasks.get_popular_tickers import full_ticker_list
 
 session = requests_cache.CachedSession('yfinance.cache')
-session.headers['User-agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+session.headers['User-agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) ' \
+                                'Chrome/91.0.4472.124 Safari/537.36'
+
+
+def get_earnings_html(url_ratings: str) -> str:
+    """
+    Parameters
+    ----------
+    url_ratings : str
+        Ratings URL
+
+    Returns
+    -------
+    str
+        HTML page of earnings
+    """
+    ratings_html = requests.get(
+        url_ratings, headers={"User-Agent": session.headers['User-agent']}
+    ).text
+
+    return ratings_html
 
 
 def financial(ticker_symbol):
@@ -29,45 +50,50 @@ def financial(ticker_symbol):
     # To check if input is a valid ticker
     if "symbol" in information:
         balance_sheet = ticker.quarterly_balance_sheet.replace(np.nan, 0)
-        print(balance_sheet)
+        # print(balance_sheet)
 
         date_list = balance_sheet.columns.astype("str").to_list()
         balance_col_list = balance_sheet.index.tolist()
-        print(date_list)
-        print(balance_col_list)
+        # print(date_list)
+        # print(balance_col_list)
+
         for i in range(len(balance_sheet)):
             values = balance_sheet.iloc[i].tolist()
             balance_list.append(values)
 
-        # Get Actual vs Est EPS of ticker
-        yec = YahooEarningsCalendar(0)
-        print(ticker_symbol, "@@@@")
-        earnings = yec.get_earnings_of(ticker_symbol)
+        url_ratings = "https://finance.yahoo.com/calendar/earnings?symbol={}".format(ticker_symbol)
+        text_soup_ratings = BeautifulSoup(get_earnings_html(url_ratings), "lxml")
+
         earnings_list, financial_quarter_list = [], []
         # [[1, 0.56, 0.64], [2, 0.51, 0.65], [3, 0.7, 0.73], [4, 1.41, 1.68], [5, 0.98]]
         count = 5
-        for earning in earnings:
+        for earning in text_soup_ratings.findAll("tr"):
             if len(earnings_list) != 5:
-                if earning["epsestimate"] is not None:
-                    if earning["epsactual"] is not None:
-                        earnings_list.append([count, earning["epsestimate"], earning["epsactual"]])
+                tds = earning.findAll("td")
+                if len(tds) > 0:
+                    earning_date = tds[2].text.rsplit(",", 1)[0]
+                    eps_est = tds[3].text
+                    eps_act = tds[4].text
+
+                    if eps_act != "-":
+                        earnings_list.append([count, eps_est, eps_act])
                     else:
-                        earnings_list.append([count, earning["epsestimate"]])
+                        earnings_list.append([count, eps_est])
 
                     # Deduce financial quarter based on date of report
-                    year_num = earning["startdatetime"].split("T")[0].split("-")[0]
-                    month_num = int(earning["startdatetime"].split("T")[0].split("-")[1])
-                    if month_num in [1, 2, 3]:
+                    year_num = earning_date.split()[-1]
+                    month_num = earning_date.split()[0]
+                    if month_num in ["Jan", "Feb", "Mar"]:
                         year_num = int(year_num) - 1
                         quarter = "Q4"
-                    elif month_num in [4, 5, 6]:
+                    elif month_num in ["Apr", "May", "Jun"]:
                         quarter = "Q1"
-                    elif month_num in [7, 8, 9]:
+                    elif month_num in ["Jul", "Aug", "Sep"]:
                         quarter = "Q2"
                     else:
                         quarter = "Q3"
                     financial_quarter_list.append("{} {}".format(year_num, quarter))
-                count -= 1
+                    count -= 1
             else:
                 break
 

@@ -66,8 +66,7 @@ websocket-client==0.58.0
 Werkzeug==1.0.1
 whitenoise==5.2.0
 wrapt==1.12.1
-yahoo-earnings-calendar==0.6.0
 yahoofinancials==1.6
+yfinance==0.1.62
 zipp==3.4.1
 zope.interface==5.4.0
-yfinance~=0.1.60

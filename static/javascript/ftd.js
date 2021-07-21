@@ -14,6 +14,7 @@ Date.prototype.addDays = function(days) {
 
 function ftd_graph() {
     var ftd = document.getElementsByTagName("table")[0].querySelectorAll("tr");
+    var threshold = document.getElementById("90th_percentile").innerHTML
 
     ftd[0].innerHTML = `
         <th>Date</th>
@@ -31,7 +32,7 @@ function ftd_graph() {
         total_td[0].innerHTML = new_date_string;
 
         vol_list.push(total_td[1].innerHTML)
-        if (Number(total_td[1].innerHTML) > 1000000) {
+        if ((Number(total_td[1].innerHTML) > 1000000 | Number(total_td[1].innerHTML) > threshold) & Number(total_td[1].innerHTML) > 100000) {
             total_td[1].parentElement.style.color = "red";
             total_td[1].parentElement.style.fontWeight = "bold";
         }
@@ -40,7 +41,6 @@ function ftd_graph() {
         price_list.push(total_td[2].innerHTML);
         total_td[2].innerHTML = "$" + total_td[2].innerHTML
 
-//        total_td[3].innerHTML = "$" + total_td[3].innerHTML
         total_td[3].innerHTML = "$" + Number(total_td[3].innerHTML).toLocaleString()
 
         f35_date = new Date(new_date_string).addDays(50)

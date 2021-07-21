@@ -60,6 +60,10 @@ This website will be free forever! No subscription needed! But if you want to su
 - Tickers that fall outside the Top 10 list will be sold.
 ![Reddit ETF](./static/images/etf.png)
 
+#### /reddit_ticker_analysis/
+- View ranking of popular tickers in Reddit over time and compare it with its price.
+![Reddit Ranking](./static/images/reddit_ranking.png)
+
 #### /subreddit_count/
 - Look at the increase in number of redditors on popular sub-reddits such as r/wallstreetbets, r/Superstonk and r/amcstock.
 - Growth in number of new redditors and percentage of active redditors.
@@ -114,8 +118,10 @@ git clone https://github.com/spartan737/Stocksera.git
 # Create environment
 py -m venv venv
 
-# Navigate into project's folder
-cd Stockera
+# Navigate into project's folder and activate venv
+cd Stockera/venv/Scripts
+activate
+cd .. / ..
 
 # Install modules
 pip install -r requiresments.txt

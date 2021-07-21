@@ -30,6 +30,13 @@
             <option value="Ascending">Ascending</option>
             <option value="Descending">Descending</option>
         </select>
+
+        <select name="timeframe" onchange="this.form.submit()">
+            <option>Timeframe: {{timeframe}}</option>
+            <option value="1Y">1Y</option>
+            <option value="5Y">5Y</option>
+            <option value="Max">Max</option>
+        </select>
         <input name="quote" value="{{ticker_selected}}" style="display:none">
     </form>
     <div>

@@ -1,5 +1,4 @@
 import sys
-import shutil
 import os
 import re
 import locale
@@ -45,9 +44,9 @@ rocket = '🚀'
 # Python regex pattern for stocks codes
 pattern = "(?<=\$)?\\b[A-Z]{2,5}\\b(?:\.[A-Z]{1,2})?"
 
-# Remove old graphs in directory
-# shutil.rmtree('../static/graph_chart')
-# os.mkdir("../static/graph_chart")
+# Create folder to store price chart
+if not os.path.exists("static/graph_chart"):
+    os.mkdir("static/graph_chart")
 
 
 def get_sentiment(text, increment):

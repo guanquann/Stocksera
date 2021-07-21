@@ -92,10 +92,13 @@ def ticker_institutional_holders(request):
     ticker = yf.Ticker(ticker_selected, session=session)
     institutional_holders = ticker.institutional_holders
     if institutional_holders is not None:
-        institutional_holders.columns = (institutional_holders.columns.str.replace("% Out", "Stake"))
-        institutional_holders["Stake"] = institutional_holders["Stake"].apply(lambda x: str(f"{100 * x:.2f}") + "%")
-        institutional_holders["Value"] = institutional_holders["Value"].apply(lambda x: "$" + str(x))
-        institutional_holders = institutional_holders.to_html(index=False)
+        try:
+            institutional_holders.columns = (institutional_holders.columns.str.replace("% Out", "Stake"))
+            institutional_holders["Stake"] = institutional_holders["Stake"].apply(lambda x: str(f"{100 * x:.2f}") + "%")
+            institutional_holders["Value"] = institutional_holders["Value"].apply(lambda x: "$" + str(x))
+            institutional_holders = institutional_holders.to_html(index=False)
+        except AttributeError:
+            institutional_holders = "N/A"
     else:
         institutional_holders = "N/A"
     return render(request, 'iframe_format.html', {"title": "Institutional Holders", "table": institutional_holders})
@@ -239,8 +242,13 @@ def historical_data(request):
     else:
         sort_by = "Date"
 
+    if request.GET.get("timeframe"):
+        timeframe = request.GET['timeframe'].replace("Timeframe: ", "")
+    else:
+        timeframe = "1Y"
+
     ticker = yf.Ticker(ticker_selected)
-    price_df = ticker.history(period="1y", interval="1d").reset_index().iloc[::-1]
+    price_df = ticker.history(period=timeframe.lower(), interval="1d").reset_index().iloc[::-1]
 
     del price_df["Dividends"]
     del price_df["Stock Splits"]
@@ -271,6 +279,7 @@ def historical_data(request):
     return render(request, 'historical_data.html', {"ticker_selected": ticker_selected,
                                                     "sort_by": sort_by,
                                                     "order": order,
+                                                    "timeframe": timeframe,
                                                     "price_df": price_df})
 
 
@@ -539,6 +548,7 @@ def failure_to_deliver(request):
         del ftd["DESCRIPTION"]
         return render(request, 'ftd.html', {"ticker_selected": ticker_selected,
                                             "information": information,
+                                            "90th_percentile": ftd["QUANTITY (FAILS)"].quantile(0.90),
                                             "ftd": ftd.to_html(index=False)})
     else:
         included_list = ", ".join(sorted(full_ticker_list()))

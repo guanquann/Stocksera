@@ -121,6 +121,92 @@ def ticker_mutual_fund_holders(request):
     return render(request, 'iframe_format.html', {"title": "MutualFund Holders", "table": mutual_fund_holders})
 
 
+def dividend_and_split(request):
+    """
+        Show dividend and split of ticker. Data from yahoo finance
+    """
+    ticker_selected = default_ticker(request)
+    ticker = yf.Ticker(ticker_selected, session=session)
+    df = ticker.actions
+    if df is not None:
+        df["Dividends"] = "$" + df["Dividends"].astype(str)
+        df.sort_values(by=["Date"], ascending=False, inplace=True)
+        df = df.reset_index().to_html(index=False)
+    else:
+        df = "N/A"
+    return render(request, 'iframe_format.html', {"title": "Dividend & Split", "table": df})
+
+
+def ticker_calendar(request):
+    """
+    Show calendar & last earnings of ticker. Data from yahoo finance
+    """
+    ticker_selected = default_ticker(request)
+    ticker = yf.Ticker(ticker_selected, session=session)
+    df = ticker.calendar
+    df.iloc[0, 0] = df.iloc[0, 0].date().strftime("%d/%m/%Y")
+    df.iloc[:, 0] = df.iloc[:, 0].apply(lambda x: long_number_format(x))
+    if df is not None or not df.empty:
+        df = pd.DataFrame(df.iloc[:, 0]).reset_index().to_html(header=False, index=False)
+    else:
+        df = "N/A"
+    return render(request, 'iframe_format.html', {"title": "Calendar", "table": df})
+
+
+def ticker_earnings(request):
+    """
+    Show earnings of ticker. Data from yahoo finance
+    """
+    ticker_selected = default_ticker(request)
+    ticker = yf.Ticker(ticker_selected, session=session)
+    df = ticker.earnings
+    if df is not None or not df.empty:
+        df["Revenue"] = df["Revenue"].apply(lambda x: long_number_format(x))
+        df["Earnings"] = df["Earnings"].apply(lambda x: long_number_format(x))
+        df.reset_index(inplace=True)
+        df.sort_values(by=["Year"], ascending=False, inplace=True)
+        df = df.to_html(index=False)
+    else:
+        df = "N/A"
+    return render(request, 'iframe_format.html', {"title": "Calendar", "table": df})
+
+
+def sustainability(request):
+    """
+    Show sustainability of ticker. Data from yahoo finance
+    """
+    ticker_selected = default_ticker(request)
+    ticker = yf.Ticker(ticker_selected, session=session)
+    df = ticker.sustainability
+    if df is not None:
+        df = df.rename(
+            index={
+                "controversialWeapons": "Controversial Weapons",
+                "socialPercentile": "Social Percentile",
+                "peerCount": "Peer Count",
+                "governanceScore": "Governance Score",
+                "environmentPercentile": "Environment Percentile",
+                "animalTesting": "Animal Testing",
+                "highestControversy": "Highest Controversy",
+                "environmentScore": "Environment Score",
+                "governancePercentile": "Governance Percentile",
+                "militaryContract": "Military Contract",
+                "palmOil": "Palm Oil",
+                "socialScore": "Social Score",
+                "esgPerformance": "Esg Performance",
+                "peerGroup": "Peer Group",
+                "totalEsg": "Total Esg",
+                "furLeather": "Fur Leather"
+            }
+        )
+        df.reset_index(inplace=True)
+        df.iloc[:, 0] = df.iloc[:, 0].str.title()
+        df = df.to_html(index=False)
+    else:
+        df = "N/A"
+    return render(request, 'iframe_format.html', {"title": "Sustainability", "table": df})
+
+
 def sub_news(request):
     """
     Show news and sentiment of ticker in /ticker?quote={TICKER}. Data from Finviz

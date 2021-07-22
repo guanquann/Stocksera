@@ -1,3 +1,9 @@
+@media only screen and (max-width: 380px) {
+    #ticker_intro {
+        width: 51% !important;
+    }
+}
+
 @media only screen and (max-width: 900px) {
     body, button, input, select, textarea {
         font-size: 10px;
@@ -436,6 +442,7 @@ a {
     width: 100%;
     min-height: 45px;
     max-height: 65px;
+    object-fit: contain;
     border: 0.8px solid black;
 }
 

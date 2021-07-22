@@ -181,3 +181,25 @@ def get_max_pain(chain):
     chain["loss"] = loss_list
     max_pain = chain["loss"].idxmin()
     return max_pain, call_loss_list, put_loss_list
+
+
+def long_number_format(num):
+    if isinstance(num, float):
+        magnitude = 0
+        while abs(num) >= 1000:
+            magnitude += 1
+            num /= 1000.0
+        num_str = int(num) if num.is_integer() else f"{num:.3f}"
+        return f"{num_str}{' KMBTP'[magnitude]}".strip()
+    if isinstance(num, int):
+        num = str(num)
+    if num.lstrip("-").isdigit():
+        num = int(num)
+        num /= 1.0
+        magnitude = 0
+        while abs(num) >= 1000:
+            magnitude += 1
+            num /= 1000.0
+        num_str = int(num) if num.is_integer() else f"{num:.3f}"
+        return f"{num_str}{' KMBTP'[magnitude]}".strip()
+    return num

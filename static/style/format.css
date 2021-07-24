@@ -486,6 +486,10 @@ td {
     width:50vw;
 }
 
+td img {
+    object-fit: contain;
+}
+
 td, th {
     border: 1px solid #ddd;
     padding: 5px;

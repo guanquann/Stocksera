@@ -22,6 +22,8 @@ def check_img(ticker_selected, information):
         return "https://logo.clearbit.com/tesla.cn"
     elif ticker_selected == "BABA":
         return "https://logo.clearbit.com/alibaba.com"
+    elif ticker_selected == "MRNA":
+        return "https://g.foolcdn.com/art/companylogos/mark/mrna.png"
     else:
         return information["logo_url"]
 

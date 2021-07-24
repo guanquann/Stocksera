@@ -32,7 +32,7 @@ function ftd_graph() {
         total_td[0].innerHTML = new_date_string;
 
         vol_list.push(total_td[1].innerHTML)
-        if ((Number(total_td[1].innerHTML) > 1000000 | Number(total_td[1].innerHTML) > threshold) & Number(total_td[1].innerHTML) > 100000) {
+        if ((Number(total_td[1].innerHTML) > 1000000 | Number(total_td[3].innerHTML) > threshold) & Number(total_td[1].innerHTML) > 100000) {
             total_td[1].parentElement.style.color = "red";
             total_td[1].parentElement.style.fontWeight = "bold";
         }

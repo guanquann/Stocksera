@@ -13,7 +13,7 @@ conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
 
 interested_subreddit = ["wallstreetbets", "stocks", "StockMarket", "GME", "Superstonk", "amcstock", "options",
-                        "cryptocurrency"]
+                        "cryptocurrency", "pennystocks", "investing"]
 date_updated = str(datetime.now()).split()[0]
 
 

@@ -27,7 +27,7 @@
 
     .ticker_logo {
         width: 20px;
-        max-height: 20px;
+        height: 20px;
     }
 }
 
@@ -60,7 +60,7 @@
 
     .ticker_logo {
         width: 30px;
-        max-height: 30px;
+        height: 30px;
     }
 }
 

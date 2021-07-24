@@ -360,12 +360,14 @@ def historical_data(request):
 
     price_df = price_df.round(2)
     price_df = price_df.fillna(0)
+    latest_date = price_df["Date"].astype(str).max()
     price_df = price_df.to_html(index=False)
 
     return render(request, 'historical_data.html', {"ticker_selected": ticker_selected,
                                                     "sort_by": sort_by,
                                                     "order": order,
                                                     "timeframe": timeframe,
+                                                    "latest_date": latest_date,
                                                     "price_df": price_df})
 
 
@@ -634,7 +636,7 @@ def failure_to_deliver(request):
         del ftd["DESCRIPTION"]
         return render(request, 'ftd.html', {"ticker_selected": ticker_selected,
                                             "information": information,
-                                            "90th_percentile": ftd["QUANTITY (FAILS)"].quantile(0.90),
+                                            "90th_percentile": ftd["Amount (FTD x $)"].quantile(0.90),
                                             "ftd": ftd.to_html(index=False)})
     else:
         included_list = ", ".join(sorted(full_ticker_list()))
@@ -735,7 +737,9 @@ def reddit_analysis(request):
     database_mapping = {"wallstreetbets": "Wall Street Bets",
                         "stocks": "Stocks",
                         "stockmarket": "Stock Market",
-                        "options": "Options"}
+                        "options": "Options",
+                        "investing": "Investing",
+                        "pennystocks": "Pennystocks"}
     subreddit = database_mapping[subreddit]
 
     return render(request, 'reddit_sentiment.html', {"all_dates": all_dates,

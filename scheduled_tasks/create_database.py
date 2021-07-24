@@ -8,7 +8,7 @@ db = conn.cursor()
 
 
 def database():
-    subreddits = ["wallstreetbets", "stocks", "stockmarket", "options"]
+    subreddits = ["wallstreetbets", "stocks", "stockmarket", "options", "pennystocks", "investing"]
     for subreddit in subreddits:
         db.execute("CREATE table IF NOT EXISTS {} ("
                    "rank INTEGER NOT NULL, "

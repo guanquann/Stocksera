@@ -2,7 +2,8 @@ function display_data() {
     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     var historical_data = document.getElementsByTagName("table")[0]
-
+    var latest_date = document.getElementById("latest_date").value
+    console.log(latest_date, "!!!!!!!!!!!!!!!!")
     var input_row = historical_data.insertRow(1);
     var input_day = input_row.insertCell(0);
     var input_date = input_row.insertCell(1);
@@ -39,9 +40,13 @@ function display_data() {
         <th>% Vol Change</th>`
 
     historical_data = historical_data.querySelectorAll("tr");
-
     for (i=2; i<historical_data.length; i++) {
         var td = historical_data[i].querySelectorAll("td");
+
+        if (td[0].innerHTML == latest_date) {
+            historical_data[i].style.fontWeight = "bold";
+            historical_data[i].style.backgroundColor = "gray";
+        }
 
         var d = new Date(td[0].innerHTML);
         var dayName = days[d.getDay()];

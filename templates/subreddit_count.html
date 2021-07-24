@@ -219,7 +219,7 @@
             <img src="{% static 'images/subreddit_icon/options.png' %}">
             <div class="main_div">
                 <div>
-                    <div class="lg">/r/Options</div>
+                    <div class="lg">Options</div>
                     <div class="sm">r/Options
                         <div class="explore"><a href="https://www.reddit.com/r/options" target="_blank">Explore ></a></div>
                     </div>
@@ -232,13 +232,49 @@
         <div class="chart-container">
             <canvas id="options_chart"></canvas>
         </div>
+
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/pennystocks.png' %}">
+            <div class="main_div">
+                <div>
+                    <div class="lg">Pennystocks</div>
+                    <div class="sm">r/pennystocks
+                        <div class="explore"><a href="https://www.reddit.com/r/pennystocks" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="pennystocks_diff"></div>
+                </div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="pennystocks_chart"></canvas>
+        </div>
+
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/investing.png' %}">
+            <div class="main_div">
+                <div>
+                    <div class="lg">Investing - Lose money with friends!</div>
+                    <div class="sm">r/investing
+                        <div class="explore"><a href="https://www.reddit.com/r/investing" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="investing_diff"></div>
+                </div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="investing_chart"></canvas>
+        </div>
     </div>
 {% endblock %}
 
 {% block bottom_script %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script type="text/javascript">
-    var wsb_date = [], wsb_count = [], wsb_active = [] , wsb_growth = [], stocks_date = [], stocks_active = [] , stocks_count = [], stocks_growth = [],  StockMarket_date = [], StockMarket_count = [], StockMarket_active = [], StockMarket_growth = [], gme_date = [], gme_count = [], gme_active = [], gme_growth = [], superstonk_date = [], superstonk_count = [], superstonk_active = [], superstonk_growth = [], amc_date = [], amc_count = [], amc_active = [], amc_growth = [], options_date = [], options_count = [], options_active = [], options_growth = []
+    var wsb_date = [], wsb_count = [], wsb_active = [] , wsb_growth = [], stocks_date = [], stocks_active = [] , stocks_count = [], stocks_growth = [],  StockMarket_date = [], StockMarket_count = [], StockMarket_active = [], StockMarket_growth = [], gme_date = [], gme_count = [], gme_active = [], gme_growth = [], superstonk_date = [], superstonk_count = [], superstonk_active = [], superstonk_growth = [], amc_date = [], amc_count = [], amc_active = [], amc_growth = [], options_date = [], options_count = [], options_active = [], options_growth = [], pennystocks_date = [], pennystocks_count = [], pennystocks_active = [], pennystocks_growth = [], investing_date = [], investing_count = [], investing_active = [], investing_growth = []
     var subscribers_list = {{subscribers|safe}}
     for (subscribers of subscribers_list) {
         if (subscribers[0] == "wallstreetbets") {
@@ -282,6 +318,18 @@
             gme_active.push(subscribers[4])
             gme_growth.push(subscribers[5])
             gme_date.push(subscribers[3])
+        }
+        else if (subscribers[0] == "pennystocks") {
+            pennystocks_count.push(subscribers[1])
+            pennystocks_active.push(subscribers[4])
+            pennystocks_growth.push(subscribers[5])
+            pennystocks_date.push(subscribers[3])
+        }
+        else if (subscribers[0] == "investing") {
+            investing_count.push(subscribers[1])
+            investing_active.push(subscribers[4])
+            investing_growth.push(subscribers[5])
+            investing_date.push(subscribers[3])
         }
     }
 
@@ -429,6 +477,36 @@
             labels: amc_date,
             datasets: [{
                 data: amc_count,
+                borderColor: '#ad001d',
+                backgroundColor: 'transparent',
+                tension: 0.1,
+            }]
+        },
+        options: options_dict
+    });
+
+    var pennystocks_chart = document.getElementById('pennystocks_chart');
+    var pennystocks = new Chart(pennystocks_chart, {
+        type: 'line',
+        data: {
+            labels: pennystocks_date,
+            datasets: [{
+                data: pennystocks_count,
+                borderColor: '#ad001d',
+                backgroundColor: 'transparent',
+                tension: 0.1,
+            }]
+        },
+        options: options_dict
+    });
+
+    var investing_chart = document.getElementById('investing_chart');
+    var investing_chart = new Chart(investing_chart, {
+        type: 'line',
+        data: {
+            labels: investing_date,
+            datasets: [{
+                data: investing_count,
                 borderColor: '#ad001d',
                 backgroundColor: 'transparent',
                 tension: 0.1,
@@ -654,6 +732,8 @@
     find_day_gain(gme_count, "gamestop_diff")
     find_day_gain(superstonk_count, "superstonk_diff")
     find_day_gain(amc_count, "amc_diff")
+    find_day_gain(pennystocks_count, "pennystocks_diff")
+    find_day_gain(investing_count, "investing_diff")
 
 </script>
 {% endblock %}

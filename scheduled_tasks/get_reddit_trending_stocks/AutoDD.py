@@ -385,6 +385,8 @@ def print_df(df, filename, writesql, writecsv, subreddit):
     df['recommend'] = df['recommend'].str.replace("_", " ")
     df['website'] = df['website'].str.replace("alibabagroup.com", "alibaba.com")
     df['website'] = df['website'].str.replace("tesla.com", "tesla.cn")
+    df['website'] = df['website'].str.replace("https://logo.clearbit.com/modernatx.com",
+                                              "https://g.foolcdn.com/art/companylogos/mark/mrna.png")
 
     # Save to sql database
     if writesql:

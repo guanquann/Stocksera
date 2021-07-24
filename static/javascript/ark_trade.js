@@ -1,3 +1,13 @@
+//function check_img(img_url) {
+//    if (img_url.includes("tesla")) {
+//        return "https://logo.clearbit.com/tesla.cn"
+//    }
+//    else if (img_url.includes("docusign")) {
+//        return "https://g.foolcdn.com/art/companylogos/mark/DOCU.png"
+//    }
+//    else return img_url
+//}
+
 var holdings_clicks= 0;
 var trades_clicks = 0;
 var news_clicks = 0;
@@ -104,7 +114,9 @@ function load_holdings(elem) {
                         ticker = ""
                     }
                     var company = stats["company"]
-                    img_url = `https://logo.clearbit.com/${company.split(" ")[0].toLowerCase()}.com`
+//                    img_url = `https://logo.clearbit.com/${company.split(" ")[0].toLowerCase()}.com`
+                    img_url = `https://g.foolcdn.com/art/companylogos/mark/${ticker}.png`
+//                    img_url = check_img(img_url)
                     table_code += `
                         <tr onclick="load_individual_profile(this);">
                             <td style="width: min-content;">${stats["weight_rank"]}</td>
@@ -155,7 +167,9 @@ function load_trades(elem) {
                             ticker = ""
                         }
                         var company = stats["company"]
-                        img_url = `https://logo.clearbit.com/${company.split(" ")[0].toLowerCase()}.com`
+//                        img_url = `https://logo.clearbit.com/${company.split(" ")[0].toLowerCase()}.com`
+//                        img_url = check_img(img_url)
+                        img_url = `https://g.foolcdn.com/art/companylogos/mark/${ticker}.png`
                         table_code += `
                         <tr onclick="load_individual_profile(this);">
                            <td>${stats["date"]}</td>
@@ -233,7 +247,9 @@ function load_individual_profile(elem) {
                 .then(res => res.json())
                 .then((out) => {
                     var company_name = out["name"].replace(",", "");
-                    img_url = `https://logo.clearbit.com/${company_name.split(" ")[0].toLowerCase()}.com`
+                    img_url = `https://g.foolcdn.com/art/companylogos/mark/${ticker_selected}.png`
+//                    img_url = `https://logo.clearbit.com/${ticker_selected}.com`
+//                    img_url = check_img(img_url)
                     profile_code = `
                         <div id="img_div">
                             <a href="{% url 'ticker' %}?quote=${out["ticker"]}" target="_blank"><img src="${img_url}" onerror=this.src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl4idYt_TOF1TPtJ1rF8OOLgALA0WDd00shg&usqp=CAU"></a>

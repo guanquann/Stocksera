@@ -11,13 +11,23 @@ function show_subreddit_img(subreddit) {
     }
     else if (subreddit == "Stock Market") {
         img_src = "/static/images/subreddit_icon/stockmarket.png"
-        subreddit_name = "r/StockMarket"
+        subreddit_name = "StockMarket"
         subreddit_description = "r/StockMarket"
     }
     else if (subreddit == "Options") {
         img_src = "/static/images/subreddit_icon/options.png"
-        subreddit_name = "/r/Options"
+        subreddit_name = "Options"
         subreddit_description = "r/options"
+    }
+    else if (subreddit == "Investing") {
+        img_src = "/static/images/subreddit_icon/investing.png"
+        subreddit_name = "Investing"
+        subreddit_description = "r/investing"
+    }
+    else if (subreddit == "Pennystocks") {
+        img_src = "/static/images/subreddit_icon/pennystocks.png"
+        subreddit_name = "Pennystocks"
+        subreddit_description = "r/pennystocks"
     }
 
     subreddit_code = `

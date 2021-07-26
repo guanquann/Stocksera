@@ -81,7 +81,7 @@
     text-align: center;
 }
 
-.support_div a, .acknowledgement_div a {
+.support_div a, .acknowledgement_div a, .releases_div a {
     text-decoration: underline;
     color: rgb(38, 166, 154);
 }
@@ -121,4 +121,8 @@ button:hover {
 
 .dark_mode button:hover {
     background-color: #ffba39;
+}
+
+td, th {
+    width: auto;
 }

@@ -26,12 +26,12 @@
 {% block main_content %}
 <div>
     <div class="instructions">
+        <h2>Short Volume</h2>
         <p>Short Volume measures the number of shares that have been shorted,  while Short Interest represents the number of shorted shares that have yet to be closed out or covered.</p>
     </div>
 
     <div id="error_msg" style="display:none;" class="instructions {{error}}">
-        <p>Currently, only popular tickers like {{included_list|safe}} have short volume data. If you like to see more tickers, drop me a message in the
-            About section.
+        <p>Currently, only popular tickers like {{included_list|safe}} have short volume data. If you like to see more tickers, drop me a message in the About section.
         </p>
     </div>
 
@@ -45,7 +45,7 @@
             <a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">FTD</a>
         </div>
 
-        <div id="summary" class="instructions"></div>
+        <div id="summary"></div>
 
         <div class="chart-container">
             <canvas id="vol_chart"></canvas>
@@ -127,7 +127,7 @@
     }
 
     <!--If ticker does not have an image, show a default image-->
-    var img = information["logo_url"]
+    var img = `https://g.foolcdn.com/art/companylogos/mark/${information["symbol"]}.png`
     if (img != "") {
         var img_code = `<img src="${img}" onerror=this.src="{% static 'images/not_available.svg' %}">`
     }

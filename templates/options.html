@@ -23,6 +23,7 @@
 
 {% block main_content %}
     <div class="instructions">
+        <h2>Options</h2>
         <p>View options chain of your favourite ticker and get the max pain price of the week! Data is updated real time. </p>
     </div>
 
@@ -162,7 +163,7 @@ else {
 }
 
 <!--If ticker does not have an image, show a default image-->
-var img = information["logo_url"]
+var img = `https://g.foolcdn.com/art/companylogos/mark/${information["symbol"]}.png`
 if (img != "") {
     var img_code = `<img src="${img}" onerror=this.src="{% static 'images/not_available.svg' %}">`
 }

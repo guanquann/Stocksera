@@ -82,11 +82,12 @@
 {% endblock %}
 
 {% block main_content %}
-   <div class="top_section">
-        <div class="instructions">
-            <p>These are the positions, trades, and weight of all companies in ARK Fund. Data is updated daily.</p>
-        </div>
+    <div class="instructions">
+        <h2>ARK Statistics</h2>
+        <p>These are the positions, trades, and weight of all companies in ARK Fund. Data is updated daily.</p>
+    </div>
 
+    <div class="top_section">
         <div id="more_info_div">
             <a class="more_info_btn" href="{% url 'market_overview' %}" onclick="clickAndDisable(this);">Market Overview</a>
             <a class="more_info_btn" href="{% url 'short_interest' %}" onclick="clickAndDisable(this);">Short Interest</a>

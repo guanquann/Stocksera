@@ -81,8 +81,9 @@
     </div>
 {% endblock %}
 
-{% block main_content %} 
+{% block main_content %}
     <div class="instructions">
+        <h2>Reddit Sentiment</h2>
         <p>This page shows the top 35 trending tickers with a minimum of 10 score in Reddit in the last 48H. Number of posts (including deleted), comments and sentiment are taken into account. Data is refreshed daily.</p>
     </div>
 
@@ -110,7 +111,7 @@
             </select>
         </div>
     </form>
-    
+
     <div class="table_data">
         <div class="subreddit_intro"></div>
 
@@ -175,7 +176,7 @@
                         {% for ticker in trending_tickers %}
                         <tr>
                             <td>{{ticker.0}}</td>
-                            <td><a href="{% url 'ticker' %}?quote={{ticker.1}}" target="_blank"><img class="ticker_logo" src="{{ticker.19}}" onerror=this.src="{% static 'images/not_available.svg' %}"><b>{{ticker.1}}</b></a></td>
+                            <td><a href="{% url 'ticker' %}?quote={{ticker.1}}" target="_blank"><img class="ticker_logo" src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.1}}.png" onerror=this.src="{% static 'images/not_available.svg' %}"><b>{{ticker.1}}</b></a></td>
                             <td>{{ticker.2}}</td>
                             <td>{{ticker.3}}</td>
                             <td>{{ticker.4}}</td>

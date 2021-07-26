@@ -831,6 +831,16 @@ def market_overview(request):
     return render(request, 'market_overview.html')
 
 
+def reverse_repo(request):
+    """
+    Get reverse repo. Data is from https://apps.newyorkfed.org/markets/autorates/tomo-results-display?SHOWMORE=TRUE&startDate=01/01/2000&enddate=01/01/2000
+    """
+    db.execute("SELECT * FROM reverse_repo")
+    reverse_repo_stats = db.fetchall()
+    reverse_repo_stats = reversed(list(map(list, reverse_repo_stats)))
+    return render(request, 'reverse_repo.html', {"reverse_repo_stats": reverse_repo_stats})
+
+
 def short_interest(request):
     """
     Get short interest of ticker. Data if from highshortinterest.com
@@ -852,13 +862,6 @@ def ark_trades(request):
     Get trades/positions of ARK Funds. Data from https://arkfunds.io/api
     """
     return render(request, 'ark_trade.html')
-
-
-# def due_diligence(request):
-#     """
-#     Get a list of due diligence from different subreddits on Reddit. Data is sourced manually by me
-#     """
-#     return render(request, 'top_DD.html')
 
 
 def about(request):

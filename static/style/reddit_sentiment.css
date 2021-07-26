@@ -116,7 +116,7 @@ select, option {
 .filter_ticker {
     float:left;
     white-space: nowrap;
-    margin: 2.8px;
+    margin: 3px;
     height: 15px;
     border: 1px solid black;
     border-radius: 3px;
@@ -170,6 +170,10 @@ select, option {
 
 .price_chart_cell {
     padding: 0;
+}
+
+.price_chart_cell img {
+    border: 0;
 }
 
 .price_chart {

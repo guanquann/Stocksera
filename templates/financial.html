@@ -23,10 +23,11 @@
 <div id="spinner_div"></div>
 {% endblock %}
 
-{% block main_content %} 
+{% block main_content %}
     <div class="instructions">
+        <h2>Financials</h2>
         <p>This page is still in beta. Currently, only the Balance Sheet of the company is available. Income Statement and Cash Flow will be added in the next update.</p>
-    </div> 
+    </div>
 
     <div id="error_msg" style="display:none;" class="instructions {{error}}">
             <p>There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).</p>
@@ -127,7 +128,7 @@ else {
 }
 
 <!--If ticker does not have an image, show a default image-->
-var img = information["logo_url"]
+var img = `https://g.foolcdn.com/art/companylogos/mark/${information["symbol"]}.png`
 if (img != "") {
     var img_code = `<img src="${img}" onerror=this.src="{% static 'images/not_available.svg' %}">`
 }

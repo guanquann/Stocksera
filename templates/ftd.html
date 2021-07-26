@@ -27,8 +27,10 @@
 {% block main_content %}
 <div>
     <div class="instructions">
+        <h2>Failure to Deliver</h2>
         <p>
             Failure to Deliver (FTD) data is retrieved from the US Securities and Exchange Commission (SEC). It occurs when a broker-dealer fails to deliver securities to the party on the other side of the transaction on the settlement date.
+            What is T+35 Theory? It means to check for FTD surges (example: FTD Quantity more than 1 million/more than 90th percentile of FTD Amount and at least 100k FTD) for stocks that are heavily shorted such as AMC and GME and count 34 trading days after the surge date. On that date, stocks might experience a surge in price action. You can refer to <a href="https://www.reddit.com/r/amcstock/comments/o21ejs/amc_ftds_will_spike_amc_price_21st_22nd_23rd_25th/" target="_blank">this post</a> on Reddit for more information.
         </p>
     </div>
 
@@ -50,12 +52,6 @@
 
         <div class="chart-container">
             <canvas id="ftd_chart"></canvas>
-        </div>
-
-        <div class="instructions theory">
-            <p>
-                What is T+35 Theory? It means to check for FTD surges (example: FTD Quantity more than 1 million/more than 90th percentile of FTD Amount and at least 100k FTD) for stocks that are heavily shorted such as AMC and GME and count 34 trading days after the surge date. On that date, stocks might experience a surge in price action. You can refer to <a href="https://www.reddit.com/r/amcstock/comments/o21ejs/amc_ftds_will_spike_amc_price_21st_22nd_23rd_25th/" target="_blank">this post</a> on Reddit for more information.
-            </p>
         </div>
 
         <div id="90th_percentile" style="display: none">{{90th_percentile}}</div>
@@ -109,7 +105,7 @@
     }
 
     <!--If ticker does not have an image, show a default image-->
-    var img = information["logo_url"]
+    var img = `https://g.foolcdn.com/art/companylogos/mark/${information["symbol"]}.png`
     if (img != "") {
         var img_code = `<img src="${img}" onerror=this.src="{% static 'images/not_available.svg' %}">`
     }

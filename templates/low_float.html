@@ -84,8 +84,10 @@
 
 {% block main_content %}
     <div class="instructions">
+        <h2>Low Float</h2>
         <p>Low float stocks are those with a low number of shares. Floating stock is calculated by subtracting closely-held shares and restricted stock from a firm’s total outstanding shares. A stock with a small float will generally be more volatile since it's harder to find a buyer/seller.</p>
     </div>
+
     <div class="low_float">
         <div id="more_info_div">
             <a class="more_info_btn" href="{% url 'market_overview' %}" onclick="clickAndDisable(this)">Market Oveview</a>
@@ -93,12 +95,12 @@
             <a class="more_info_btn" href="{% url 'ark_trades' %}" onclick="clickAndDisable(this)">ARK Fund</a>
             <a class="more_info_btn" href="{% url 'hedge_funds' %}" onclick="clickAndDisable(this);">Hedge Fund</a>
         </div>
-        <h2>Low Float</h2>
+
         <div class="table_div">
             {{ df_low_float|safe }}
         </div>
+        <p>Data from: <a href="https://www.lowfloat.com" target="_blank">lowfloat.com</a>
     </div>
-    <p>Data from: <a href="https://www.lowfloat.com" target="_blank">lowfloat.com</a>
 {% endblock %}
 
 {% block bottom_script %}

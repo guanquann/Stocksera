@@ -29,7 +29,7 @@
         background-color: black;
     }
 
-    h2 {
+    .subreddit_count h2 {
         margin-top: 22px;
         margin-bottom: 5px;
         text-align:center;
@@ -67,7 +67,7 @@
         background-color: black;
     }
 
-    h2 {
+    .subreddit_count h2 {
         margin-top: 30px;
         margin-bottom: 5px;
         text-align:center;

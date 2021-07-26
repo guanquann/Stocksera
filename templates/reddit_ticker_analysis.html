@@ -68,8 +68,10 @@
 
 {% block main_content %}
     <div class="instructions">
+        <h2>Reddit Ticker Analysis</h2>
         <p>View ranking of popular tickers in Reddit over time and compare it with its price.</p>
     </div>
+
     <div class="reddit_ticker_analysis">
         <form action="" method="GET" autocomplete="off">
             <select name="subreddit" onchange="this.form.submit()">
@@ -158,7 +160,7 @@ function check_if_num(property) {
 }
 
 <!--If ticker does not have an image, show a default image-->
-var img = information["logo_url"]
+var img = `https://g.foolcdn.com/art/companylogos/mark/${information["symbol"]}.png`
 var img_code = `<img src="${img}" onerror=this.src="{% static 'images/not_available.svg' %}">`
 
 <!--Code to show price change-->

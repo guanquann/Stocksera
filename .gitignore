@@ -13,3 +13,4 @@ logging.log
 staticfiles
 yfinance.cache
 custom_extensions/crypto.py
+scheduled_tasks/test.py

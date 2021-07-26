@@ -145,11 +145,18 @@
         margin-right: auto;
         margin-top: 50px;
         margin-bottom: 10px;
-        text-align: center;
         padding: 3px;
         background-color: #E9EAEA;
         border-radius: 10px;
-        width: 70%;
+        width: 90%;
+    }
+
+    .instructions h2 {
+        margin-bottom: 0;
+    }
+
+    .instructions p {
+        margin-top: 5px;
     }
 
     .modal-content {
@@ -293,6 +300,24 @@
     }
 
     .instructions {
+        margin-left: auto;
+        margin-right: auto;
+        width: 98%;
+        margin-bottom: 10px;
+        padding: 4px;
+        background-color: #E9EAEA;
+        border-radius: 10px;
+    }
+
+    .instructions h2 {
+        margin-bottom: 0;
+    }
+
+    .instructions p {
+        margin-top: 5px;
+    }
+
+    #error_msg {
         margin-left: auto;
         margin-right: auto;
         margin-bottom: 10px;
@@ -488,6 +513,7 @@ td {
 
 td img {
     object-fit: contain;
+    border: 0.1px solid #eae9e9;
 }
 
 td, th {

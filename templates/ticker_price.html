@@ -26,6 +26,7 @@
 {% block main_content %}
 <div>
     <div class="instructions">
+        <h2>Ticker Analysis</h2>
         <p>
             Enter a ticker symbol you are interested to view!
         </p>
@@ -191,7 +192,7 @@ else {
 }
 
 <!--If ticker does not have an image, show a default image-->
-var img = information["logo_url"]
+var img = `https://g.foolcdn.com/art/companylogos/mark/${information["symbol"]}.png`
 var img_code = `<img src="${img}" onerror=this.src="{% static 'images/not_available.svg' %}">`
 
 <!--Check if input is an ETF/Crypto/Stock and display information to user accordingly-->

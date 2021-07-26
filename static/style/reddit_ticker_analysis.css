@@ -26,7 +26,7 @@
         padding-right: 5px
     }
 
-    h2 {
+    .reddit_ticker_analysis h2 {
         margin-top: 22px;
         margin-bottom: 5px;
         text-align: center;
@@ -61,7 +61,7 @@
         padding-right: 10px;
     }
 
-    h2 {
+    .reddit_ticker_analysis h2 {
         margin-top: 30px;
         margin-bottom: 5px;
         text-align: center;

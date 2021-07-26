@@ -13,6 +13,7 @@ urlpatterns = [
     path('reddit_analysis/', views.reddit_analysis, name='reddit_analysis'),
     path('reddit_ticker_analysis/', views.reddit_ticker_analysis, name='reddit_ticker_analysis'),
     path('market_overview/', views.market_overview, name='market_overview'),
+    path('reverse_repo/', views.reverse_repo, name='reverse_repo'),
     path('short_interest/', views.short_interest, name='short_interest'),
     path('low_float/', views.low_float, name='low_float'),
     path('ark_trades/', views.ark_trades, name='ark_trades'),

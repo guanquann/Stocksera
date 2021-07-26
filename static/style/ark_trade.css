@@ -59,11 +59,6 @@ input {
     text-transform: uppercase;
 }
 
-p {
-    margin-bottom: 5px;
-    margin-top: 5px;
-}
-
 .dark_mode .fund_type, .dark_mode button {
     background-color: wheat;
     color: black;

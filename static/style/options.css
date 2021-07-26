@@ -27,7 +27,7 @@
         padding-right: 5px
     }
 
-    h2 {
+    .contents h2 {
         margin-top: 22px;
         margin-bottom: 5px;
     }
@@ -80,7 +80,7 @@
         padding-right: 10px;
     }
 
-    h2 {
+    .contents h2 {
         margin-top: 30px;
         margin-bottom: 5px;
     }

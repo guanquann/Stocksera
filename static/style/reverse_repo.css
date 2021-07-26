@@ -1,0 +1,23 @@
+@media only screen and (max-width: 900px) {
+    .reverse_repo {
+        width: 90%;
+        margin:auto;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    .reverse_repo {
+        width: 98%;
+        margin:auto;
+    }
+}
+
+.chart-container {
+    position: relative;
+    height:55vh;
+    width:98%;
+    max-width: 900px;
+    max-height:250px;
+    margin-left: auto;
+    margin-right: auto;
+}

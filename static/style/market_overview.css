@@ -1,5 +1,5 @@
 @media only screen and (max-width: 900px) {
-    .market_overview, p {
+    .market_overview {
         width: 90%;
         margin-left: auto;
         margin-right: auto;
@@ -14,7 +14,7 @@
 }
 
 @media only screen and (min-width: 900px) {
-    .market_overview, p {
+    .market_overview {
         width: 98%;
         margin-left: auto;
         margin-right: auto;
@@ -26,11 +26,6 @@
         margin-bottom: 8px;
         font-size: larger;
     }
-}
-
-h2 {
-    margin-top: 5px;
-    margin-bottom: 5px;
 }
 
 #more_info_div {

@@ -81,8 +81,19 @@
 }
 
 #summary {
-    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
     margin-bottom: 10px;
+    text-align: center;
+    padding: 4px;
+    background-color: #E9EAEA;
+    border-radius: 10px;
+    width: 60%;
+    max-width: 520px;
+}
+
+.dark_mode #summary {
+    background-color: #505050;
 }
 
 .table_header {

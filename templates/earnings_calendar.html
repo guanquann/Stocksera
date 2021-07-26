@@ -85,10 +85,8 @@
 {% block main_content %}
 <div id="top"></div>
 <div class="instructions">
+    <h2>Earnings Calendar</h2>
     <p>View earnings for the week. There is usually a run-up to earning date. Good earning report often cause price to jump higher. Nonetheless, any downward revisions to future sales, earnings, cash flow could cause a tank instead! </p>
-</div>
-
-<div class="earnings_calendar">
     <div class="menu">
         <button onclick="sortTicker(this, 0)" class="selected_btn">ALL</button>
         <button onclick="sortTicker(this, 10000000000)">>$10B</button>
@@ -97,6 +95,17 @@
         <input type="text" placeholder="Ticker:" autocomplete="off" class="filter_ticker" id="search_ticker" onkeyup="searchTicker()">
         <span>Date: </span>
     </div>
+</div>
+
+<div class="earnings_calendar">
+<!--    <div class="menu">-->
+<!--        <button onclick="sortTicker(this, 0)" class="selected_btn">ALL</button>-->
+<!--        <button onclick="sortTicker(this, 10000000000)">>$10B</button>-->
+<!--        <button onclick="sortTicker(this, 20000000000)">>$20B</button>-->
+<!--        <button onclick="sortTicker(this, 50000000000)">>$50B</button>-->
+<!--        <input type="text" placeholder="Ticker:" autocomplete="off" class="filter_ticker" id="search_ticker" onkeyup="searchTicker()">-->
+<!--        <span>Date: </span>-->
+<!--    </div>-->
     <div id="main"></div>
 </div>
 {% endblock %}

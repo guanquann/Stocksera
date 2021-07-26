@@ -15,12 +15,13 @@
 {% endblock %}
 
 {% block main_content %}
+    <div class="instructions">
+        <h2>About</h2>
+        <p>Welcome to StocksEra! Do contact us if you have any feedbacks or suggestions. We will get to you as soon as possible!</p>
+    </div>
     <div class="top_section">
-        <div class="instructions">
-            <p>Welcome to StocksEra! Do contact us if you have any feedbacks or suggestions. We will get to you as soon as possible!</p>
-        </div>
         <div class="about_div">
-            <div id="about_title">About</div>
+            <div id="about_title">Myself</div>
             <div class="about">
                 Hello World! I'm a self-taught programmer.
                 This is my first time deploying such as large scale website.
@@ -59,11 +60,20 @@
 
         <div class="releases_div">
             <div id="releases_title">Updates & Releases</div>
-            <div>
+            <div class="scrollable_div">
                 <table>
                     <tr>
                         <th>Date</th>
                         <th>Major Updates</th>
+                    </tr>
+                    <tr>
+                        <td>25 Jul 2021</td>
+                        <td>
+                            <li>Improve speed of website by caching data</li>
+                            <li>Include trending tickers for r/pennystocks and r/investing</li>
+                            <li>Add reverse-repo data</li>
+                            <li>Youtube channel at <a href="https://www.youtube.com/channel/UC-5zHYhBj3TmeAWBTDgesaQ" target="_blank">https://www.youtube.com/channel/UC-5zHYhBj3TmeAWBTDgesaQ</a></li>
+                        </td>
                     </tr>
                     <tr>
                         <td>1 Jul 2021</td>

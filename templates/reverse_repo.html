@@ -1,0 +1,121 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Reverse Repo{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/reverse_repo.css' %}">
+<script src="{% static 'javascript/reverse_repo.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}restore_dark_mode();reverse_repo(){% endblock %}
+
+{% block main_nav %}
+    <div class="ticker-wrap">
+        <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+            {
+            "symbols": [
+            {
+              "proName": "FOREXCOM:SPXUSD",
+              "title": "S&P 500"
+            },
+            {
+              "proName": "FOREXCOM:NSXUSD",
+              "title": "Nasdaq 100"
+            },
+            {
+              "description": "Apple",
+              "proName": "NASDAQ:AAPL"
+            },
+            {
+              "description": "Tesla, Inc",
+              "proName": "NASDAQ:TSLA"
+            },
+            {
+              "description": "Nvidia",
+              "proName": "NASDAQ:NVDA"
+            },
+            {
+              "description": "Microsoft",
+              "proName": "NASDAQ:MSFT"
+            },
+            {
+              "description": "GameStop",
+              "proName": "NYSE:GME"
+            },
+            {
+              "description": "AMC",
+              "proName": "NYSE:AMC"
+            },
+            {
+              "description": "Blackberry",
+              "proName": "NYSE:BB"
+            }
+            ],
+            "showSymbolLogo": true,
+            "colorTheme": "light",
+            "isTransparent": true,
+            "displayMode": "regular",
+            "locale": "en"
+            }
+            </script>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main_content %}
+    <div class="instructions">
+        <h2>Reverse Repo</h2>
+        <p> In a repo transaction, the Fed purchases Treasury, agency debt, or agency mortgage-backed securities (MBS)
+            from a counterparty subject to an agreement to resell the securities at a later date. It is economically
+            similar to a loan collateralized by securities having a value higher than the loan to protect the Fed
+            against market and credit risk. Repo transactions temporarily increase the quantity of reserve balances
+            in the banking system.
+            <br><br>
+            In a reverse repo transaction, the opposite occurs: the Fed sells securities to a counterparty subject to
+            an agreement to repurchase the securities at a later date at a higher repurchase price. Reverse repo
+            transactions temporarily reduce the quantity of reserve balances in the banking system.
+        </p>
+    </div>
+
+    <div class="reverse_repo">
+        <div id="more_info_div">
+            <a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Analysis</a>
+            <a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Options</a>
+            <a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Short Vol</a>
+            <a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">FTD</a>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="reverse_repo_chart"></canvas>
+        </div>
+
+        <table id="reverse_repo_table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Num Parties</th>
+                    <th>Average</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for repo in reverse_repo_stats %}
+                    <tr>
+                        <td>{{repo.0}}</td>
+                        <td>{{repo.1}}</td>
+                        <td>{{repo.2}}</td>
+                        <td>{{repo.3}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block bottom_script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+{% endblock %}

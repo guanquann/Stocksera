@@ -1,11 +1,20 @@
 @media only screen and (max-width: 900px) {
-    .chart-container {
-        position: relative; 
-        height:55vh;
-        width:60vw;
-        max-height:200px;
-        margin-left: auto;
-        margin-right: auto;
+    .top_nav div {
+        margin: auto;
+    }
+
+    .top_nav .top_logo {
+        width: 120px;
+        margin-top: 2px;
+    }
+
+    .section_1 img {
+        width: 90%;
+        max-width: 500px;
+    }
+
+    .logo {
+        width: 70% !important;
     }
 
     .href_btn {
@@ -32,6 +41,7 @@
         border-radius: 15px;
         padding: 4px;
         margin: calc((100vw - 200px) / 60);
+        margin-top: 0;
         text-align:center;
         display:inline-block;
         animation: 2s ease-out 0s 1 slideInFromRight;
@@ -71,16 +81,32 @@
         margin: auto;
         transform: translateY(10%);
     }
+
+    .main_div div {
+        margin-bottom: 20px;
+    }
 }
 
 @media only screen and (min-width: 900px) {
-    .chart-container {
-        position: relative; 
-        height:55vh;
-        width:45vw;
-        max-height:250px;
-        margin-left: auto;
-        margin-right: auto;
+    .top_nav div {
+        margin: auto;
+    }
+
+    .top_nav .top_logo {
+        width: 150px;
+        margin-top: 6px;
+    }
+
+    .section_1 img {
+        width: 80%;
+        min-width: 400px;
+        max-width: 600px;
+    }
+
+    .logo {
+        width: 60% !important;
+        min-width: 200px !important;
+        max-width: 400px !important;
     }
 
     .href_btn {
@@ -108,6 +134,7 @@
         border-radius: 15px;
         padding: 4px;
         margin: calc((100vw - 200px) / 60);
+        margin-top: 0;
         text-align:center;
         display:inline-block;
         animation: 2s ease-out 0s 1 slideInFromRight;
@@ -147,6 +174,10 @@
         margin: auto;
         transform: translateY(10%);
     }
+
+    .main_div div {
+        padding-bottom: 30px;
+    }
 }
 
 .section_1 {
@@ -154,15 +185,17 @@
     height: 100%;
 }
 
-.section_1 img {
-    width: 70%;
-    max-width: 550px;
+.main_div a {
+    color: rgb(38, 166, 154);
+    text-decoration: underline;
 }
 
-.typewriter {
-    width: fit-content;
-    margin: auto;
-    min-height: 55px;
+.dark_mode .main_div img {
+    opacity: 1
+}
+
+.dark_mode .main_div a {
+    color: wheat;
 }
 
 @keyframes slideInFromLeft {
@@ -186,8 +219,6 @@
 #contents_title, #experience_title {
     margin-top: 50px;
     text-align: center;
-    font-size: 20px;
-    font-weight: bold;
     animation: 2s ease-out 0s 1 slideInFromLeft;
 }
 
@@ -215,6 +246,11 @@
 
 .experience_div {
     text-align:center;
+}
+
+.experience_div p {
+    max-width: 85%;
+    margin: auto;
 }
 
 .experience_div img {

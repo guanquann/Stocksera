@@ -49,15 +49,15 @@ window.onclick = function(event) {
 }
 
 function loadWriter() {
-    var i = 0;
-    var txt = 'We track trending tickers on Reddit and provide Due-Diligence at no cost.';
-    var speed = 30;
-    typeWriter()
-    function typeWriter() {
-        if (i < txt.length) {
-        document.getElementsByClassName("typewriter")[0].innerHTML += txt.charAt(i);
-        i++;
-        setTimeout(typeWriter, speed);
-        }
-    }
+//    var i = 0;
+//    var txt = 'We track trending tickers on Reddit and provide Due-Diligence at no cost.';
+//    var speed = 30;
+//    typeWriter()
+//    function typeWriter() {
+//        if (i < txt.length) {
+//        document.getElementsByClassName("typewriter")[0].innerHTML += txt.charAt(i);
+//        i++;
+//        setTimeout(typeWriter, speed);
+//        }
+//    }
 }

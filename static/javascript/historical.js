@@ -3,7 +3,6 @@ function display_data() {
 
     var historical_data = document.getElementsByTagName("table")[0]
     var latest_date = document.getElementById("latest_date").value
-    console.log(latest_date, "!!!!!!!!!!!!!!!!")
     var input_row = historical_data.insertRow(1);
     var input_day = input_row.insertCell(0);
     var input_date = input_row.insertCell(1);

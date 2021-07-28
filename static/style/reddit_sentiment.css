@@ -102,6 +102,7 @@ select, option {
     display:inline-block;
     padding: 7px;
     background-color:#e9eaea;
+    border-radius: 10px;
 }
 
 .toggle_settings {
@@ -122,6 +123,11 @@ select, option {
     border-radius: 3px;
     max-width: 70px;
     text-transform: uppercase;
+    color: black !important;
+}
+
+.dark_mode .filter_ticker {
+    background-color: wheat;
 }
 
 .filter_contents {
@@ -147,6 +153,10 @@ select, option {
 .filter_contents_removed {
     border: 1px dashed;
     color: grey;
+}
+
+#reddit_table {
+    margin-top: 10px;
 }
 
 #reddit_table th {
@@ -202,4 +212,6 @@ select, option {
 .modal-body {
     padding-left: 25px;
     padding-top: 20px;
+    height: 70vh;
+    overflow: scroll;
 }

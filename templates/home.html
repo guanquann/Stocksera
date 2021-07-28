@@ -13,6 +13,9 @@
 
 {% block main_nav %}
 <div class="top_nav">
+    <div style="display: none" id="small_logo">
+        <img class="top_logo" src="{% static 'images/logo.png' %}">
+    </div>
 </div>
 {% endblock %}
 
@@ -20,16 +23,28 @@
 <div>
     <div class="section_1">
         <div class="main_div">
-            <img src="{% static 'images/logo.png' %}">
+            <img class="logo" src="{% static 'images/logo.png' %}">
+            <span id="cut_off"></span>
             <h2>StocksEra</h2>
-            <p class="typewriter"></p>
-            <div class="chart-container">
-                <canvas id="price_chart"></canvas>
+            <div>
+                <p>We track trending tickers on Reddit and provide Due-Diligence at no cost.</p>
+            </div>
+
+            <div>
+                <h2>Video Tutorial</h2>
+                <a href="https://www.youtube.com/watch?v=SEYXEcVKt38" target="_blank"><img src="{% static 'images/youtube.png' %}"></a>
+            </div>
+
+            <div>
+                <h2>Source Code</h2>
+                <div><a href="https://github.com/spartan737/Stocksera" target="_blank">https://github.com/spartan737/Stocksera</a></div>
             </div>
         </div>
     </div>
 
-    <div id="contents_title">What we provide</div>
+    <div id="contents_title">
+        <h2>What we provide</h2>
+    </div>
     <div id="contents_section">
         <div class="contents_div">
             <div><img src="{% static 'images/ticker_main.png' %}"></div>
@@ -94,13 +109,6 @@
             <div class="href_btn"><a href="subreddit_count">VIEW MORE</a></div>
         </div>
 
-<!--        <div class="contents_div">-->
-<!--            <div><img src="{% static 'images/reddit_trending.png' %}"></div>-->
-<!--            <h2>Top Due-Diligence</h2>-->
-<!--            <div class="contents_description">A compilation of top due-diligence on Reddit. Data is manually sourced by Stocksera on a regular basis.</div>-->
-<!--            <div class="href_btn"><a href="due_diligence">VIEW MORE</a></div>-->
-<!--        </div>-->
-
         <div class="contents_div">
             <div><img src="{% static 'images/hedge_funds.png' %}"></div>
             <h2>Hedge Funds</h2>
@@ -123,10 +131,12 @@
         </div>
     </div>
 
-    <div id="experience_title">Your experience matters</div>
+    <div id="experience_title">
+        <h2>Your experience matters</h2>
+    </div>
     <div>
         <div class="experience_div">
-            <div>Responsive web design, dark mode available and most importantly, no annoying advertisements - because we care about your experience.</div>
+            <p>Responsive web design, dark mode available and most importantly, no annoying advertisements - because we care about your experience.</p>
             <div><img src="{% static 'images/responsive.png' %}"></div>
         </div>
     </div>
@@ -180,65 +190,26 @@
 
 {% block bottom_script %}
 <script src="{% static 'javascript/home.js' %}"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script>
-var graphDate = ['09:30', '09:32', '09:34', '09:36', '09:38', '09:40', '09:42', '09:44', '09:46', '09:48', '09:50', '09:52', '09:54', '09:56', '09:58', '10:00', '10:02', '10:04', '10:06', '10:08', '10:10', '10:12', '10:14', '10:16', '10:18', '10:20', '10:22', '10:24', '10:26', '10:28', '10:30', '10:32', '10:34', '10:36', '10:38', '10:40', '10:42', '10:44', '10:46', '10:48', '10:50', '10:52', '10:54', '10:56', '10:58', '11:00', '11:02', '11:04', '11:06', '11:08', '11:10', '11:12', '11:14', '11:16', '11:18', '11:20', '11:22', '11:24', '11:26', '11:28', '11:30', '11:32', '11:34', '11:36', '11:38', '11:40', '11:42', '11:44', '11:46', '11:48', '11:50', '11:52', '11:54', '11:56', '11:58', '12:00', '12:02', '12:04', '12:06', '12:08', '12:10', '12:12', '12:14', '12:16', '12:18', '12:20', '12:22', '12:24', '12:26', '12:28', '12:30', '12:32', '12:34', '12:36', '12:38', '12:40', '12:42', '12:44', '12:46', '12:48', '12:50', '12:52', '12:54', '12:56', '12:58', '13:00', '13:02', '13:04', '13:06', '13:08', '13:10', '13:12', '13:14', '13:16', '13:18', '13:20', '13:22', '13:24', '13:26', '13:28', '13:30', '13:32', '13:34', '13:36', '13:38', '13:40', '13:42', '13:44', '13:46', '13:48', '13:50', '13:52', '13:54', '13:56', '13:58', '14:00', '14:02', '14:04', '14:06', '14:08', '14:10', '14:12', '14:14', '14:16', '14:18', '14:20', '14:22', '14:24', '14:26', '14:28', '14:30', '14:32', '14:34', '14:36', '14:38', '14:40', '14:42', '14:44', '14:46', '14:48', '14:50', '14:52', '14:54', '14:56', '14:58', '15:00', '15:02', '15:04', '15:06', '15:08', '15:10', '15:12', '15:14', '15:16', '15:18', '15:20', '15:22', '15:24', '15:26', '15:28', '15:30', '15:32', '15:34', '15:36', '15:38', '15:40', '15:42', '15:44', '15:46', '15:48', '15:50', '15:52', '15:54', '15:56', '15:58'];
-var tickerPrice = [8.16, 8.13, 8.11, 8.07, 8.09, 8.11, 8.08, 8.06, 8.08, 8.14, 8.11, 8.14, 8.15, 8.13, 8.17, 8.25, 8.27, 8.31, 8.28, 8.31, 8.33, 8.35, 8.37, 8.3, 8.37, 8.35, 8.42, 8.43, 8.4, 8.39, 8.4, 8.39, 8.43, 8.41, 8.4, 8.43, 8.43, 8.45, 8.45, 8.45, 8.43, 8.43, 8.41, 8.41, 8.38, 8.39, 8.4, 8.38, 8.38, 8.36, 8.36, 8.36, 8.38, 8.38, 8.39, 8.4, 8.4, 8.4, 8.37, 8.35, 8.36, 8.36, 8.36, 8.36, 8.36, 8.38, 8.38, 8.38, 8.38, 8.4, 8.41, 8.41, 8.41, 8.43, 8.43, 8.47, 8.47, 8.49, 8.54, 8.52, 8.52, 8.52, 8.52, 8.52, 8.51, 8.51, 8.52, 8.52, 8.51, 8.52, 8.51, 8.52, 8.56, 8.56, 8.57, 8.55, 8.56, 8.55, 8.52, 8.52, 8.53, 8.52, 8.51, 8.5, 8.51, 8.51, 8.5, 8.49, 8.51, 8.52, 8.51, 8.52, 8.51, 8.51, 8.52, 8.53, 8.55, 8.53, 8.53, 8.52, 8.52, 8.53, 8.54, 8.53, 8.57, 8.57, 8.56, 8.57, 8.56, 8.57, 8.57, 8.57, 8.58, 8.58, 8.59, 8.58, 8.59, 8.6, 8.58, 8.58, 8.56, 8.56, 8.54, 8.53, 8.54, 8.55, 8.54, 8.55, 8.55, 8.57, 8.57, 8.57, 8.57, 8.58, 8.57, 8.56, 8.56, 8.56, 8.56, 8.57, 8.58, 8.56, 8.58, 8.59, 8.6, 8.59, 8.59, 8.58, 8.58, 8.58, 8.6, 8.6, 8.6, 8.6, 8.58, 8.58, 8.58, 8.6, 8.59, 8.59, 8.59, 8.6, 8.6, 8.6, 8.6, 8.6, 8.6, 8.62, 8.61, 8.63, 8.63, 8.65, 8.66, 8.66, 8.65];
-var price_chart = document.getElementById('price_chart');
-var myChart = new Chart(price_chart, {
-    type: 'line',
-    data: {
-        labels: graphDate,
-        datasets: [{
-            label: 'Price',
-            lineTension: 0,  // straight line instead of curve
-            data: tickerPrice,
-            borderColor: "grey",
-            backgroundColor: 'transparent',
-            tension: 0.1,
-        }]
-    },
+    // When the user scrolls the page, execute myFunction
+    window.onscroll = function() {stick_menu()};
 
-    options: {
-        animation: {
-            duration: 4000,
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-        legend: {
-            display: false
-         },
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: false,
-                    display: false,
-                },
-                gridLines: {
-                    display: false
-                }
-            }],
+    // Get the header
+    var cut_off = document.getElementById("cut_off");
 
-            xAxes: [{
-                ticks: {
-                    beginAtZero: false,
-                    display: false,
-                },
-                gridLines: {
+    var small_logo = document.getElementById("small_logo");
 
-                    display: false,
-                    display: false,
-                }
-            }]
-        },
+    // Get the offset position of the navbar
+    var cut_off_pos = cut_off.offsetTop + 120;
 
-        // To remove the point of each label
-        elements: {
-            point: {
-                radius: 0
-            }
-        },
-    },
-});
+    // Add the sticky class to the menu when you reach its scroll position. Remove "sticky" when you leave the scroll position
+    function stick_menu() {
+        if (window.pageYOffset > cut_off_pos) {
+            small_logo.style.removeProperty("display");
+        }
+        else {
+            small_logo.style.display = "none";
+        }
+}
 </script>
 {% endblock %}

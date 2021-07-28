@@ -108,6 +108,12 @@ def database():
                "percent TEXT, "
                "UNIQUE('ticker', 'reported_date','short_vol','total_vol','percent'))")
 
+    db.execute("CREATE table IF NOT EXISTS reverse_repo ("
+               "date_updated TEXT, "
+               "amount FLOAT, "
+               "parties INTEGER, "
+               "average FLOAT)")
+
     db.execute("CREATE table IF NOT EXISTS contact ("
                "name TEXT, "
                "email TEXT, "

@@ -91,22 +91,15 @@
     margin-top: 10px;
 }
 
-.github_div img {
-    width:30px;
-    background-color: white;
-    border-radius: 50%;
-    border: 2px solid white;
-}
-
 button {
     padding: 10px;
-        border-radius: 50px;
-        border: 1px solid;
-        margin: auto;
-        width: 170px;
-        font-weight: bold;
-        text-align: center;
-        background-color: white;
+    border-radius: 50px;
+    border: 1px solid;
+    margin: auto;
+    width: 170px;
+    font-weight: bold;
+    text-align: center;
+    background-color: white;
 }
 
 .dark_mode button {

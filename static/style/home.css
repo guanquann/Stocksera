@@ -44,7 +44,7 @@
         margin-top: 0;
         text-align:center;
         display:inline-block;
-        animation: 2s ease-out 0s 1 slideInFromRight;
+        /*animation: 2s ease-out 0s 1 slideInFromRight;*/
         box-shadow: 0 2px 6px 0 rgba(0,0,0,1),0 4px 7px 0 ;
     }
 
@@ -137,7 +137,7 @@
         margin-top: 0;
         text-align:center;
         display:inline-block;
-        animation: 2s ease-out 0s 1 slideInFromRight;
+        /*animation: 2s ease-out 0s 1 slideInFromRight;*/
         box-shadow: 0 2px 6px 0 rgba(0,0,0,1),0 4px 7px 0 ;
     }
 
@@ -198,6 +198,10 @@
     color: wheat;
 }
 
+.github_div {
+    padding-bottom: 0 !important;
+}
+
 @keyframes slideInFromLeft {
   0% {
     transform: translateX(-100%);
@@ -219,7 +223,7 @@
 #contents_title, #experience_title {
     margin-top: 50px;
     text-align: center;
-    animation: 2s ease-out 0s 1 slideInFromLeft;
+    /*animation: 2s ease-out 0s 1 slideInFromLeft;*/
 }
 
 #contents_section {
@@ -256,27 +260,4 @@
 .experience_div img {
     width: 60%;
     border-radius: 7px;
-}
-
-.footer {
-    width: 100%;
-}
-
-.footer ul {
-    display: flex;
-    margin: 0;
-    padding: 0;
-}
-
-.footer li {
-    list-style-type: none;
-    padding-left: 1.5%;
-    padding-right: 1.5%;
-    font-weight: bold;
-    margin-top: 13px;
-}
-
-.footer li:hover {
-    color: #9e9e9e;
-    cursor: pointer;
 }

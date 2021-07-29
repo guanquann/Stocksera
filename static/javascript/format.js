@@ -46,7 +46,6 @@ function hide_nav_bar() {
 }
 
 function activate_dark_mode() {
-    console.log("this is activated")
     var iframe = document.getElementsByTagName("iframe");
     if (document.getElementById("dark_mode").checked == true) {
         document.getElementsByTagName("body")[0].classList.add("dark_mode");
@@ -79,16 +78,9 @@ function restore_dark_mode() {
     }
 }
 
-function show_spinner() {
-    var add_to_div = `<div class="spinner_container">
-                          <img src="/static/images/spinner.gif" class="spinner">`
-
-    document.getElementById("spinner_div").innerHTML = add_to_div
-}
-
 function clickAndDisable(link) {
- // disable subsequent clicks
- link.onclick = function(event) {
-    event.preventDefault();
- }
+    // disable subsequent clicks
+    link.onclick = function(event) {
+        event.preventDefault();
+    }
 }

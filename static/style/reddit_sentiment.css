@@ -197,7 +197,7 @@ select, option {
 }
 
 ::-webkit-scrollbar {
-    height: 5px; /* for horizontal scrollbar */
+    height: 4px; /* for horizontal scrollbar */
 }
 
 .banned_words {
@@ -209,7 +209,7 @@ select, option {
     cursor: pointer;
 }
 
-.modal-body {
+.banned-words-modal-body {
     padding-left: 25px;
     padding-top: 20px;
     height: 70vh;

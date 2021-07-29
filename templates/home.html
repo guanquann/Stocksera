@@ -9,7 +9,7 @@
 <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
 {% endblock %}
 
-{% block onload_properties%}loadWriter();restore_dark_mode(){% endblock %}
+{% block onload_properties%}restore_dark_mode(){% endblock %}
 
 {% block main_nav %}
 <div class="top_nav">
@@ -37,7 +37,12 @@
 
             <div>
                 <h2>Source Code</h2>
-                <div><a href="https://github.com/spartan737/Stocksera" target="_blank">https://github.com/spartan737/Stocksera</a></div>
+                <div>
+                    <a href="https://github.com/spartan737/Stocksera" target="_blank">https://github.com/spartan737/Stocksera</a>
+                    <div class="github_div">
+                        <a href="https://github.com/spartan737/Stocksera" target="_blank"><img src="{% static 'images/github.svg' %}"></a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -127,7 +132,7 @@
             <div><img src="{% static 'images/short_interest.png' %}"></div>
             <h2>Others</h2>
             <div class="contents_description">View overall market performance, stocks with low float and high short interest.</div>
-            <div class="href_btn"><a href="market_overviwe">VIEW MORE</a></div>
+            <div class="href_btn"><a href="market_overview">VIEW MORE</a></div>
         </div>
     </div>
 
@@ -140,56 +145,10 @@
             <div><img src="{% static 'images/responsive.png' %}"></div>
         </div>
     </div>
-
-        <div class="footer">
-        <ul>
-            <li id="disclaimer">Disclaimer</li>
-            <li id="contact">Contact</li>
-            <li id="privacy">Privacy</li>
-        </ul>
-    </div>
-
-    <div id="disclaimer_model" class="modal" style="padding-top: 150px">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close">&times;</span>
-                <h4 style="margin: 7px;">Disclaimer</h4>
-            </div>
-            <div class="modal-body" style="height: 15vh">
-                <p>Before deciding to trade, you should be fully informed of the risks and costs associated with trading. You are encouraged to conduct your own Due-Diligence (DD) and seek professional advice when necessary. StocksEra will not be responsible for any losses or damages incurred as a result of your trading.
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <div id="contact_model" class="modal" style="padding-top: 150px">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close">&times;</span>
-                <h4 style="margin: 7px;">Contact</h4>
-            </div>
-            <div class="modal-body" style="height: 15vh">
-                <p>If you have any questions or suggestions regarding Stockera, please drop me a message in the About section or email me at stocksera.pythonanywhere.com</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="privacy_model" class="modal" style="padding-top: 150px">
-        <div class="modal-content">
-        <div class="modal-header">
-            <span class="close">&times;</span>
-            <h4 style="margin: 7px;">Privacy</h4>
-        </div>
-        <div class="modal-body" style="height: 15vh">
-            <p>We value your privacy. No personal information, Internet Protocol (IP) address, location, device name would be collected without permission. To enable better user experience, do note that Cookies are used. Cookies are stored in your device's internal memory and Stockera would not use these Cookies for other purposes.</p>
-        </div>
-        </div>
-    </div>
 </div>
 {% endblock %}
 
 {% block bottom_script %}
-<script src="{% static 'javascript/home.js' %}"></script>
 <script>
     // When the user scrolls the page, execute myFunction
     window.onscroll = function() {stick_menu()};
@@ -210,6 +169,6 @@
         else {
             small_logo.style.display = "none";
         }
-}
+    }
 </script>
 {% endblock %}

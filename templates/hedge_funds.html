@@ -132,7 +132,7 @@ function update_table() {
     var tr = table.querySelectorAll("tr");
     for (i=1; i<tr.length; i++) {
         var td = tr[i].querySelectorAll("td");
-        td[1].innerHTML = `<a href="{% url 'ticker' %}?quote=${td[2].innerHTML}" target="_blank"><b>${td[1].innerHTML}</b></a>`
+        td[1].innerHTML = `<a href="{% url 'ticker' %}?quote=${td[2].innerHTML}" target="_blank"><img src="https://g.foolcdn.com/art/companylogos/mark/${td[2].innerHTML}.png" onerror=this.src="{% static 'images/not_available.svg' %}"><b>${td[1].innerHTML}</b></a>`
         td[2].innerHTML = `<a href="{% url 'ticker' %}?quote=${td[2].innerHTML}" target="_blank"><b>${td[2].innerHTML}</b></a>`
         td[5].innerHTML = "$" + td[5].innerHTML
         td[6].innerHTML = td[6].innerHTML + "%"

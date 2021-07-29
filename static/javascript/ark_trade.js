@@ -84,7 +84,7 @@ function load_holdings(elem) {
         table_code = `
             <table>
                 <tr>
-                    <th>Weight Rank</th>
+                    <th>Rank</th>
                     <th>Company</th>
                     <th>Ticker</th>
                     <th>Weight</th>
@@ -300,7 +300,7 @@ function load_individual_profile(elem) {
                 <tr>
                     <th>Fund</th>
                     <th>Weight</th>
-                    <th>Weight Rank</th>
+                    <th>Rank</th>
                     <th>Shares</th>
                     <th>Market Value</th>
                     <th>Date</th>

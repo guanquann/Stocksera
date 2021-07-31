@@ -18,18 +18,19 @@ function reverse_repo() {
             datasets: [
                 {
                     label: 'Amount',
-                    type: 'line',
+                    type: 'bar',
                     data: amount_list,
-                    borderColor: 'wheat',
-                    backgroundColor: 'transparent',
+                    borderColor: 'rgb(38, 166, 154)',
+                    backgroundColor: 'rgb(38, 166, 154)',
                     yAxisID: 'A',
                 },
                 {
                     label: 'Num Parties',
-                    type: 'bar',
+                    type: 'line',
                     data: parties_list,
-                    borderColor: 'rgb(38, 166, 154)',
-                    backgroundColor: 'rgb(38, 166, 154)',
+                    pointRadius: 0,
+                    borderColor: 'wheat',
+                    backgroundColor: 'wheat',
                     yAxisID: 'B',
                 }
                 ]

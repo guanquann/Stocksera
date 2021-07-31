@@ -37,9 +37,6 @@ function show_subreddit_img(subreddit) {
                 <div class="lg">${subreddit_name}</div>
                 <div class="sm">${subreddit_description}</div>
             </div>
-        </div>
-        <div class="type_div">
-            <a href="/reddit_ticker_analysis?quote=GME&subreddit=${subreddit.replaceAll(' ', '')}" target="_blank" class="type">View Detailed</a>
         </div>`
     document.getElementsByClassName("subreddit_intro")[0].innerHTML = subreddit_code;
 }

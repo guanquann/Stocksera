@@ -236,10 +236,10 @@ function load_individual_profile(elem) {
                     img_url = `https://g.foolcdn.com/art/companylogos/mark/${ticker_selected}.png`
                     profile_code = `
                         <div id="img_div">
-                            <a href="{% url 'ticker' %}?quote=${out["ticker"]}" target="_blank"><img src="${img_url}" onerror=this.src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl4idYt_TOF1TPtJ1rF8OOLgALA0WDd00shg&usqp=CAU"></a>
+                            <a href="/ticker/?quote=${out["ticker"]}" target="_blank"><img src="${img_url}" onerror=this.src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl4idYt_TOF1TPtJ1rF8OOLgALA0WDd00shg&usqp=CAU"></a>
                         </div>
                         <div id="ticker_intro">
-                            <div><span>${company_name} (${out["ticker"]})</span><div class="explore_more"><a href="/ticker?quote=${ticker_selected}" target="_blank">Explore More!</a></div></div>
+                            <div><span><a href="/ticker/?quote=${out["ticker"]}" target="_blank">${company_name} (${out["ticker"]})</a></span></div>
                             Sector: <b>${out["sector"]}</b><br>Industry: <b>${out["industry"]}</b>
                         </div>
                         <div class="ticker_summary">

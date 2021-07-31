@@ -17,7 +17,7 @@ from finvizfinance.quote import finvizfinance
 from django.shortcuts import render
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-REAL_TIME = False
+REAL_TIME = True
 
 conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
@@ -429,7 +429,7 @@ def financial(request):
         earnings_list, financial_quarter_list, date_list, balance_col_list = [], [], [], []
         if REAL_TIME:
             balance_sheet = ticker.quarterly_balance_sheet.replace(np.nan, 0)
-
+            print(balance_sheet)
             date_list = balance_sheet.columns.astype("str").to_list()
             balance_col_list = balance_sheet.index.tolist()
 
@@ -437,42 +437,42 @@ def financial(request):
                 values = balance_sheet.iloc[i].tolist()
                 balance_list.append(values)
 
-            # Get Actual vs Est EPS of ticker
-            url_ratings = "https://finance.yahoo.com/calendar/earnings?symbol={}".format(ticker_selected)
-            text_soup_ratings = BeautifulSoup(get_earnings_html(url_ratings), "lxml")
-
-            earnings_list, financial_quarter_list = [], []
-            # [[1, 0.56, 0.64], [2, 0.51, 0.65], [3, 0.7, 0.73], [4, 1.41, 1.68], [5, 0.98]]
-            count = 5
-            for earning in text_soup_ratings.findAll("tr"):
-                if len(earnings_list) != 5:
-                    tds = earning.findAll("td")
-                    if len(tds) > 0:
-                        earning_date = tds[2].text.rsplit(",", 1)[0]
-                        eps_est = tds[3].text
-                        eps_act = tds[4].text
-
-                        if eps_act != "-":
-                            earnings_list.append([count, eps_est, eps_act])
-                        else:
-                            earnings_list.append([count, eps_est])
-
-                        # Deduce financial quarter based on date of report
-                        year_num = earning_date.split()[-1]
-                        month_num = earning_date.split()[0]
-                        if month_num in ["Jan", "Feb", "Mar"]:
-                            year_num = int(year_num) - 1
-                            quarter = "Q4"
-                        elif month_num in ["Apr", "May", "Jun"]:
-                            quarter = "Q1"
-                        elif month_num in ["Jul", "Aug", "Sep"]:
-                            quarter = "Q2"
-                        else:
-                            quarter = "Q3"
-                        financial_quarter_list.append("{} {}".format(year_num, quarter))
-                        count -= 1
-                else:
-                    break
+            # # Get Actual vs Est EPS of ticker
+            # url_ratings = "https://finance.yahoo.com/calendar/earnings?symbol={}".format(ticker_selected)
+            # text_soup_ratings = BeautifulSoup(get_earnings_html(url_ratings), "lxml")
+            #
+            # earnings_list, financial_quarter_list = [], []
+            # # [[1, 0.56, 0.64], [2, 0.51, 0.65], [3, 0.7, 0.73], [4, 1.41, 1.68], [5, 0.98]]
+            # count = 5
+            # for earning in text_soup_ratings.findAll("tr"):
+            #     if len(earnings_list) != 5:
+            #         tds = earning.findAll("td")
+            #         if len(tds) > 0:
+            #             earning_date = tds[2].text.rsplit(",", 1)[0]
+            #             eps_est = tds[3].text
+            #             eps_act = tds[4].text
+            #
+            #             if eps_act != "-":
+            #                 earnings_list.append([count, eps_est, eps_act])
+            #             else:
+            #                 earnings_list.append([count, eps_est])
+            #
+            #             # Deduce financial quarter based on date of report
+            #             year_num = earning_date.split()[-1]
+            #             month_num = earning_date.split()[0]
+            #             if month_num in ["Jan", "Feb", "Mar"]:
+            #                 year_num = int(year_num) - 1
+            #                 quarter = "Q4"
+            #             elif month_num in ["Apr", "May", "Jun"]:
+            #                 quarter = "Q1"
+            #             elif month_num in ["Jul", "Aug", "Sep"]:
+            #                 quarter = "Q2"
+            #             else:
+            #                 quarter = "Q3"
+            #             financial_quarter_list.append("{} {}".format(year_num, quarter))
+            #             count -= 1
+            #     else:
+            #         break
 
         else:
             with open(r"database/financials.json", "r+") as r:
@@ -757,9 +757,8 @@ def reddit_ticker_analysis(request):
         ticker_selected = request.GET.get("quote").upper()
     else:
         ticker_selected = "GME"
-
     if request.GET.get("subreddit"):
-        subreddit = request.GET.get("subreddit").replace("Subreddit: ", "")
+        subreddit = request.GET.get("subreddit").replace("Subreddit: ", "").replace(" ", "").lower()
     else:
         subreddit = "wallstreetbets"
 
@@ -781,21 +780,6 @@ def reddit_etf(request):
     Get ETF of r/wallstreetbets
     Top 10 tickers before market open will be purchased daily
     """
-    # if request.POST:
-    #     to_refresh = request.POST.get("refresh_btn")
-    #     db.execute("SELECT * FROM reddit_etf WHERE status='Open' AND ticker=?", (to_refresh, ))
-    #     ticker = db.fetchone()
-    #
-    #     ticker_stats = yf.Ticker(to_refresh)
-    #     buy_price = ticker[3]
-    #     today_price = round(ticker_stats.info["regularMarketPrice"], 2)
-    #     difference = today_price - buy_price
-    #     PnL = round(difference * ticker[4], 2)
-    #     percentage_diff = round((difference / ticker[3]) * 100, 2)
-    #     db.execute("UPDATE reddit_etf SET close_price=?, PnL=?, percentage=? "
-    #                "WHERE ticker=? AND status='Open'", (today_price, PnL, percentage_diff, ticker[0]))
-    #     conn.commit()
-
     db.execute("SELECT * FROM reddit_etf WHERE status='Open' ORDER BY open_date DESC")
     open_trade = db.fetchall()
 

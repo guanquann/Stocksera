@@ -171,20 +171,17 @@ td div:hover {
     display: inline-block;
 }
 
+#ticker_intro a {
+    color: black;
+    text-decoration: none;
+}
+
+.dark_mode #ticker_intro a {
+    color: wheat;
+}
+
 .ticker_summary {
     line-height: 1.5;
-}
-
-.explore_more {
-    display: inline-block;
-    background-color: #9e9e9e;
-    padding: 3px;
-    border-radius: 3px;
-    margin-left: 5px;
-}
-
-.explore_more:hover {
-    cursor: pointer;
 }
 
 .read_more {

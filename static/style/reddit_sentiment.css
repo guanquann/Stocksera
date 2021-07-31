@@ -82,17 +82,6 @@ select, option {
     justify-content: space-between;
 }
 
-.type_div {
-    margin-top: 25px;
-    margin-left: 25px;
-}
-
-.type {
-    padding: 5px;
-    border: 1px solid gray;
-    border-radius: 5px;
-}
-
 .subreddit_intro .sm {
     color: #7c7c7c;
     display: flex;

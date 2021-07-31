@@ -7,6 +7,7 @@
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/home.css' %}">
 <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
+<script src="{% static 'javascript/home.js' %}"></script>
 {% endblock %}
 
 {% block onload_properties%}restore_dark_mode(){% endblock %}
@@ -47,93 +48,74 @@
         </div>
     </div>
 
+
     <div id="contents_title">
         <h2>What we provide</h2>
     </div>
-    <div id="contents_section">
-        <div class="contents_div">
-            <div><img src="{% static 'images/ticker_main.png' %}"></div>
-            <h2>Ticker Analysis</h2>
-            <div class="contents_description">View latest price, key statistics, major holders, institutional holders, recommendations and sort historical data.</div>
-            <div class="href_btn"><a href="ticker">VIEW MORE</a></div>
-        </div>
+    <div class="section_div">
+        <div class="section_div_left">
+            <h1>Conduct Due-Diligence Easily</h1>
+            <div class="dd_btn">
+                <button onclick="show_dd('analysis', this)" class="selected">Analysis</button>
+                <button onclick="show_dd('financials', this)">Financials</button>
+                <button onclick="show_dd('options', this)">Options</button>
+                <button onclick="show_dd('short_volume', this)">Short Volume</button>
+                <button onclick="show_dd('ftd', this)">FTD</button>
+            </div>
 
-        <div class="contents_div">
-            <div><img src="{% static 'images/financial.png' %}"></div>
-            <h2>Financials</h2>
-            <div class="contents_description">Get Balance Sheet of a company. Income Statement and Cash Flow will be added in the next update.</div>
-            <div class="href_btn"><a href="ticker/financial/">VIEW MORE</a></div>
+            <div class="section_div_description" id="dd_description">
+                <div class="section_div_text">
+                    View latest price, key statistics, major holders, institutional holders, recommendations and sort
+                    historical data.
+                </div>
+                <div class="href_btn"><a href="/ticker/">VIEW MORE</a></div>
+            </div>
         </div>
+        <div class="section_div_right"><img src="{% static 'images/homepage/dd.png' %}"></div>
+    </div>
 
-        <div class="contents_div">
-            <div><img src="{% static 'images/options.png' %}"></div>
-            <h2>Options Data</h2>
-            <div class="contents_description">View max pain for the week, C/P Ratio and option chain of a ticker.</div>
-            <div class="href_btn"><a href="ticker/options/">VIEW MORE</a></div>
-        </div>
 
-        <div class="contents_div">
-            <div><img src="{% static 'images/short_volume.png' %}"></div>
-            <h2>Short Volume</h2>
-            <div class="contents_description">Get short volume of some of the popular tickers. Data is from shortvolumes.com.</div>
-            <div class="href_btn"><a href="ticker/short_volume/">VIEW MORE</a></div>
-        </div>
+    <div class="section_div">
+        <div class="section_div_left">
+            <h1>Identify Reddit Trending Tickers</h1>
+            <div class="reddit_btn">
+                <button onclick="show_reddit('reddit_trending', this)" class="selected">Trending</button>
+                <button onclick="show_reddit('reddit_etf', this)">WSB ETF</button>
+                <button onclick="show_reddit('subreddit', this)">Subreddit</button>
+            </div>
 
-        <div class="contents_div">
-            <div><img src="{% static 'images/ftd.png' %}"></div>
-            <h2>Failure to Deliver</h2>
-            <div class="contents_description">View Failure to Deliver (FTD) data of some of the popular tickers. Data is updated whenever latest information from SEC is available.</div>
-            <div class="href_btn"><a href="ticker/failure_to_deliver/">VIEW MORE</a></div>
+            <div class="section_div_description" id="reddit_description">
+                <div class="section_div_text">
+                    Get trending tickers on Reddit based on indicators such as sentiment, number of posts,
+                    comments and upvotes.
+                </div>
+                <div class="href_btn"><a href="/reddit_analysis/">VIEW MORE</a></div>
+            </div>
         </div>
+        <div class="section_div_right"><img src="{% static 'images/homepage/reddit.png' %}"></div>
+    </div>
 
-        <div class="contents_div">
-            <div><img src="{% static 'images/earnings_calendar.png' %}"></div>
-            <h2>Earnings Calendar</h2>
-            <div class="contents_description">View upcoming earning report of tickers in the coming week ahead!</div>
-            <div class="href_btn"><a href="earnings_calendar">VIEW MORE</a></div>
-        </div>
+    <div class="section_div">
+        <div class="section_div_left">
+            <h1>Discover</h1>
+            <div class="discover_btn">
+                <button onclick="show_discover('overview', this)" class="selected">Market Overview</button>
+                <button onclick="show_discover('short_int', this)">Short Interest</button>
+                <button onclick="show_discover('low_float', this)">Low Float</button>
+                <button onclick="show_discover('hedge', this)">Hedge Funds</button>
+                <button onclick="show_discover('ark', this)">ARK Trades</button>
+                <button onclick="show_discover('rrp', this)">Reverse Repo</button>
+            </div>
 
-        <div class="contents_div">
-            <div><img src="{% static 'images/reddit_trending.png' %}"></div>
-            <h2>Reddit Trending Tickers 🚀</h2>
-            <div class="contents_description">Get trending tickers on Reddit based on indicators such as sentiment, number of posts, comments and upvotes.</div>
-            <div class="href_btn"><a href="reddit_analysis">VIEW MORE</a></div>
+            <div class="section_div_description" id="discover_description">
+                <div class="section_div_text">
+                    Get trending tickers on Reddit based on indicators such as sentiment, number of posts,
+                    comments and upvotes.
+                </div>
+                <div class="href_btn"><a href="/market_overview/">VIEW MORE</a></div>
+            </div>
         </div>
-
-        <div class="contents_div">
-            <div><img src="{% static 'images/etf.png' %}"></div>
-            <h2>WSB ETF</h2>
-            <div class="contents_description">WSB ETF contains the top 10 trending tickers on r/wallstreetbets. Past performance included as well.</div>
-            <div class="href_btn"><a href="reddit_etf">VIEW MORE</a></div>
-        </div>
-
-        <div class="contents_div">
-            <div><img src="{% static 'images/subreddit_stats.png' %}"></div>
-            <h2>Subreddit Count</h2>
-            <div class="contents_description">View percentage of growth in users and active users in popular subreddits such as r/Superstonk and r/amcstock.</div>
-            <div class="href_btn"><a href="subreddit_count">VIEW MORE</a></div>
-        </div>
-
-        <div class="contents_div">
-            <div><img src="{% static 'images/hedge_funds.png' %}"></div>
-            <h2>Hedge Funds</h2>
-            <div class="contents_description">View 13F fillings of some of the largest hedge funds such as Citadel.</div>
-            <div class="href_btn"><a href="hedge_funds">VIEW MORE</a></div>
-        </div>
-
-        <div class="contents_div">
-            <div><img src="{% static 'images/ark_trades.png' %}"></div>
-            <h2>Cathie's ARK Fund</h2>
-            <div class="contents_description">Get holdings, daily trades and news of ARK Fund.</div>
-            <div class="href_btn"><a href="ark_trades">VIEW MORE</a></div>
-        </div>
-
-        <div class="contents_div">
-            <div><img src="{% static 'images/short_interest.png' %}"></div>
-            <h2>Others</h2>
-            <div class="contents_description">View overall market performance, stocks with low float and high short interest.</div>
-            <div class="href_btn"><a href="market_overview">VIEW MORE</a></div>
-        </div>
+        <div class="section_div_right"><img src="{% static 'images/homepage/discover.png' %}"></div>
     </div>
 
     <div id="experience_title">

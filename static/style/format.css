@@ -71,7 +71,7 @@
     }
 
 	#main_content {
-		width: 99vw;
+		/*width: 99vw;*/
 		min-height: 100vh;
 		border: 0px;
 		overflow-y: scroll;
@@ -773,6 +773,28 @@ input:checked + .slider:before {
     text-align: center;
     margin-top: 4px;
     padding-bottom: 13px;
+}
+
+#disclaimer_model, #privacy_model, #contact_model, #support_model, #share_model {
+    padding-top: 30vh !important;
+}
+
+#disclaimer_model .modal-body, #privacy_model .modal-body, #contact_model .modal-body, #support_model .modal-body, #share_model .modal-body {
+    height: 18vh;
+}
+
+#support_model p {
+    margin-top: 0;
+}
+
+#support_model p:first-child {
+    text-align: center;
+    margin: 0;
+}
+
+#share_model .modal-body {
+    width: fit-content;
+    margin: auto;
 }
 
 .github_div img {

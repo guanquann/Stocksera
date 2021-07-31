@@ -17,15 +17,35 @@
         width: 70% !important;
     }
 
-    .href_btn {
-        padding: 7px;
-        border-radius: 50px;
-        border: 1px solid;
+    .section_div {
+        text-align: center;
         margin: auto;
+        background-color: #eae9e9;
+        width: 80vw;
+        min-width: 250px;
+        border-radius: 10px;
+        margin: auto;
+        margin-bottom: 15px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .section_div_left {
+        padding: 12px;
+    }
+
+    .section_div_text {
+        height: 35px;
+    }
+
+    .href_btn {
+        padding: 6px;
+        border-radius: 50px;
+        border: 1.5px solid gray;
         width: 110px;
         font-weight: bold;
         text-align: center;
-        background-color: white;
+        margin: auto;
     }
 
     .href_btn a {
@@ -35,32 +55,12 @@
         padding-right: 18px;
     }
 
-    .contents_div {
-        width: 215px;
-        border: 1.4px solid;
-        border-radius: 15px;
-        padding: 4px;
-        margin: calc((100vw - 200px) / 60);
-        margin-top: 0;
-        text-align:center;
-        display:inline-block;
-        /*animation: 2s ease-out 0s 1 slideInFromRight;*/
-        box-shadow: 0 2px 6px 0 rgba(0,0,0,1),0 4px 7px 0 ;
+    .section_div_right {
+        padding: 12px;
+        text-align: center;
+        margin: auto;
     }
 
-    .contents_div img {
-        width: 211px;
-        height: 150px;
-        border: 1px solid;
-        border-radius: 15px;
-    }
-
-    .contents_description {
-        text-align: left;
-        padding-left: 3px;
-        padding-right: 3px;
-        height: 50px;
-    }
 
     h2 {
         padding: 0;
@@ -109,50 +109,49 @@
         max-width: 400px !important;
     }
 
-    .href_btn {
-        padding: 10px;
-        border-radius: 50px;
-        border: 1px solid;
+    .section_div {
+        background-color: #eae9e9;
+        width: 94%;
+        height: 60vh;
+        max-height: 350px;
+        border-radius: 10px;
+        display: flex;
         margin: auto;
-        margin-top: 15px;
-        width: 170px;
+        margin-bottom: 15px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .section_div_left {
+        width: 52%;
+        height: 94%;
+        padding: 12px;
+    }
+
+    .section_div_text {
+        height: 50px;
+    }
+
+    .href_btn {
+        padding: 8px;
+        border-radius: 50px;
+        border: 1.5px solid gray;
+        width: 130px;
         font-weight: bold;
         text-align: center;
-        background-color: white;
     }
 
     .href_btn a {
         width: fit-content;
         padding: 10px;
-        padding-left: 38px;
-        padding-right: 38px;
+        padding-left: 27px;
+        padding-right: 27px;
     }
 
-    .contents_div {
-        width: 290px;
-        border: 1.4px solid;
-        border-radius: 15px;
-        padding: 4px;
-        margin: calc((100vw - 200px) / 60);
-        margin-top: 0;
-        text-align:center;
-        display:inline-block;
-        /*animation: 2s ease-out 0s 1 slideInFromRight;*/
-        box-shadow: 0 2px 6px 0 rgba(0,0,0,1),0 4px 7px 0 ;
-    }
-
-    .contents_div img {
-        width: 282px;
-        height: 200px;
-        border: 1px solid;
-        border-radius: 15px;
-    }
-
-    .contents_description {
-        text-align: left;
-        padding-left: 5px;
-        padding-right: 5px;
-        height: 50px;
+    .section_div_right {
+        width: 42%;
+        padding: 12px;
+        text-align: center;
     }
 
     h2 {
@@ -226,10 +225,6 @@
     /*animation: 2s ease-out 0s 1 slideInFromLeft;*/
 }
 
-#contents_section {
-    text-align: center;
-}
-
 .dark_mode .href_btn {
     background-color: wheat;
 }
@@ -260,4 +255,40 @@
 .experience_div img {
     width: 60%;
     border-radius: 7px;
+}
+
+h1 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.dark_mode .section_div {
+    background-color: #505050;
+}
+
+.section_div_left button {
+    border: 1.5px solid gray;
+    border-radius: 50px;
+    padding: 5px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.section_div_left button:hover, .selected {
+    background-color: gray;
+    color: white;
+}
+
+.dark_mode .section_div_left button:hover {
+    background-color: #ffba39;
+}
+
+.section_div_description {
+    margin-top: 15px;
+}
+
+.section_div_right img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 10px;
 }

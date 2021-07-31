@@ -176,7 +176,7 @@
                         {% for ticker in trending_tickers %}
                         <tr>
                             <td>{{ticker.0}}</td>
-                            <td><a href="{% url 'ticker' %}?quote={{ticker.1}}" target="_blank"><img class="ticker_logo" src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.1}}.png" onerror=this.src="{% static 'images/not_available.svg' %}"><b>{{ticker.1}}</b></a></td>
+                            <td><a href="{% url 'reddit_ticker_analysis' %}?quote={{ticker.1}}&subreddit={{subreddit_selected}}" target="_blank"><img class="ticker_logo" src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.1}}.png" onerror=this.src="{% static 'images/not_available.svg' %}"><b>{{ticker.1}}</b></a></td>
                             <td>{{ticker.2}}</td>
                             <td>{{ticker.3}}</td>
                             <td>{{ticker.4}}</td>
@@ -205,6 +205,7 @@
         <div onclick="open_modal()" class="banned_words">Click to view list of banned words</div>
         <div class="modal">
             <div class="modal-content">
+                <div class="modal-header">
                 <div class="modal-header">
                     <span class="close">&times;</span>
                     <h4>List of Banned Words</h4>

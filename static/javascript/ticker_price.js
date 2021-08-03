@@ -24,5 +24,6 @@ function display_data() {
 }
 
 function expand_iframe(elem) {
-    elem.style.height = elem.contentWindow.document.body.scrollHeight + 'px';
+    height = elem.contentWindow.document.body.scrollHeight
+    elem.style.height = height + 'px';
 }

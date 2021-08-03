@@ -1,46 +1,3 @@
-function show_subreddit_img(subreddit) {
-    if (subreddit == "Wall Street Bets") {
-        img_src = "/static/images/subreddit_icon/wallstreetbets.png"
-        subreddit_name = "wallstreetbets"
-        subreddit_description = "r/wallstreetbets"
-    }
-    else if (subreddit == "Stocks") {
-        img_src = "/static/images/subreddit_icon/stocks.png"
-        subreddit_name = "Stocks"
-        subreddit_description = "r/stocks"
-    }
-    else if (subreddit == "Stock Market") {
-        img_src = "/static/images/subreddit_icon/stockmarket.png"
-        subreddit_name = "StockMarket"
-        subreddit_description = "r/StockMarket"
-    }
-    else if (subreddit == "Options") {
-        img_src = "/static/images/subreddit_icon/options.png"
-        subreddit_name = "Options"
-        subreddit_description = "r/options"
-    }
-    else if (subreddit == "Investing") {
-        img_src = "/static/images/subreddit_icon/investing.png"
-        subreddit_name = "Investing"
-        subreddit_description = "r/investing"
-    }
-    else if (subreddit == "Pennystocks") {
-        img_src = "/static/images/subreddit_icon/pennystocks.png"
-        subreddit_name = "Pennystocks"
-        subreddit_description = "r/pennystocks"
-    }
-
-    subreddit_code = `
-        <div><img src=${img_src}></div>
-        <div class="main_div">
-            <div>
-                <div class="lg">${subreddit_name}</div>
-                <div class="sm">${subreddit_description}</div>
-            </div>
-        </div>`
-    document.getElementsByClassName("subreddit_intro")[0].innerHTML = subreddit_code;
-}
-
 function check_table() {
     var table = document.getElementById("reddit_table");
     for (i = 0; i < (table.rows.length - 1); i++) {
@@ -61,15 +18,20 @@ function check_table() {
             }
         }
 
-        var price_chart = row.cells[6]
-        price_chart.innerHTML = `<img class="price_chart" src="/static/graph_chart/stocks/${row.cells[1].querySelector('b').innerHTML}.svg" onerror=this.src="/static/graph_chart/EMPTY_IMG.svg">`
+//        var price_chart = row.cells[6]
+//        price_chart.innerHTML = `<img class="price_chart" src="/static/graph_chart/${row.cells[1].querySelector('b').innerHTML}.svg" onerror=this.src="/static/graph_chart/EMPTY_IMG.svg">`
+
+        var prev_close = row.cells[10];
+        if (prev_close.innerText != "N/A") {
+            prev_close.innerText = "$" + prev_close.innerText;
+        }
 
         var one_day_price = row.cells[13];
         if (one_day_price.innerText.includes("-")) {
             one_day_price.innerText = one_day_price.innerText + "%";
             one_day_price.style.color = "red";
         }
-        else {
+        else if (one_day_price.innerText != "N/A") {
             one_day_price.innerText = one_day_price.innerText + "%";
             one_day_price.style.color = "green";
         }
@@ -79,14 +41,9 @@ function check_table() {
             fifty_day_price.innerText = fifty_day_price.innerText + "%";
             fifty_day_price.style.color = "red";
         }
-        else {
+        else if (fifty_day_price.innerText != "N/A") {
             fifty_day_price.innerText = fifty_day_price.innerText + "%";
             fifty_day_price.style.color = "green";
-        }
-
-        var price_target = row.cells[18];
-        if (price_target.innerText != "N/A") {
-            price_target.innerText = "$" + price_target.innerText;
         }
     }
 }
@@ -129,7 +86,7 @@ function reset_table() {
     }
 
     for (i = 0; i < tr.length; i++) {
-        for (col_name=1; col_name <= 20; col_name ++) {
+        for (col_name=1; col_name <= 14; col_name ++) {
             tr[i].children[col_name].style.removeProperty("display");
         }
     }
@@ -206,7 +163,7 @@ function sortTable(n) {
             x = rows[i].getElementsByTagName("TD")[n].innerHTML.replace("$", "").replace("%", "");
             y = rows[i + 1].getElementsByTagName("TD")[n].innerHTML.replace("$", "").replace("%", "");
 
-            // If column is volume/market cap/floating shares
+            // If column is volume/market cap/supply
             if (n == 11 || n == 12 || n == 15) {
                 x = rows[i].getElementsByTagName("TD")[n].innerHTML
                 y = rows[i + 1].getElementsByTagName("TD")[n].innerHTML
@@ -290,23 +247,4 @@ function sortTable(n) {
             }
         }
     }
-}
-
-function open_modal() {
-    document.getElementsByClassName("modal")[0].style.display = "block";
-}
-
-var modal = document.getElementsByClassName("modal")[0];
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-    modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
 }

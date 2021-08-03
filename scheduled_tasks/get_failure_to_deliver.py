@@ -1,18 +1,10 @@
 import os
-import sys
 import pandas as pd
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from scheduled_tasks.get_popular_tickers import full_ticker_list
-
-
-def update_all_tickers(ftd_txt_file_name):
+def convert_to_csv(ftd_txt_file_name):
     """
     If new FTD data is available from SEC, run this function.
-    NOTE: This will only ADD ON the new FTD data to the existing database/failure_to_deliver/ticker/${ticker}.csv,
-          where ${ticker} is your ticker name.
-    NOTE: If you do not have an existing database/failure_to_deliver/ticker/${ticker}.csv, run add_new_ticker(ticker) FIRST.
     Parameters
     ----------
     ftd_txt_file_name: str
@@ -20,71 +12,28 @@ def update_all_tickers(ftd_txt_file_name):
     Returns
     -------
     ftd_txt_file_name will be converted to .csv
-
     """
     df = pd.read_csv(ftd_txt_file_name, delimiter="|")
 
     if os.path.exists("database/failure_to_deliver/csv"):
-        df.to_csv("database/failure_to_deliver/csv/" + ftd_txt_file_name.split("\\")[-1].replace("txt", "csv"), index=None)
+        df.to_csv("database/failure_to_deliver/csv/" + ftd_txt_file_name.split("\\")[-1].replace("txt", "csv"),
+                  index=None)
     else:
         os.mkdir("database/failure_to_deliver/csv")
-
-    for ticker in full_ticker_list():
-        ticker_df = df[df["SYMBOL"] == ticker]
-        folder_path = "database/failure_to_deliver/ticker"
-        file_path = os.path.join(folder_path, "{}.csv".format(ticker))
-
-        if os.path.isfile(file_path):
-            original_df = pd.read_csv(file_path)
-            original_df = original_df.append(ticker_df)
-            original_df.to_csv(file_path, index=False)
-            print(file_path, "updated!")
-
-        else:
-            if not os.path.exists(folder_path):
-                os.mkdir(folder_path)
-                print(folder_path, "created!")
-            ticker_df.to_csv(file_path, index=False)
-            print(file_path, "created!")
     os.remove(ftd_txt_file_name)
 
 
-def add_new_ticker(ticker):
-    """
-    If you need to get FTD for a new ticker
-    Parameters
-    ----------
-    ticker: str
-        ticker symbol (e.g: AAPL)
-    """
-    ticker = ticker.upper()
-    folder_path = "database/failure_to_deliver/ticker"
-    file_path = os.path.join(folder_path, "{}.csv".format(ticker))
-
-    if os.path.exists(file_path):
-        os.remove(file_path)
-
-    all_csv_path = "database/failure_to_deliver/csv"
-    for csv in os.listdir(all_csv_path):
-        df = pd.read_csv(os.path.join(all_csv_path, csv))
-
-        ticker_df = df[df["SYMBOL"] == ticker]
-        if os.path.isfile(file_path):
-            original_df = pd.read_csv(file_path)
-            original_df = original_df.append(ticker_df)
-            original_df.to_csv(file_path, index=False)
-            print(file_path, "updated!")
-
-        else:
-            if not os.path.exists(folder_path):
-                os.mkdir(folder_path)
-                print(folder_path, "created!")
-            ticker_df.to_csv(file_path, index=False)
-            print(file_path, "created!")
+def combine_df(folder_path):
+    combined_df = pd.DataFrame(columns=["SETTLEMENT DATE", "SYMBOL", "QUANTITY (FAILS)", "PRICE"])
+    for file in os.listdir(folder_path):
+        print("Processing: ", file)
+        df = pd.read_csv(os.path.join(folder_path, file))
+        del df["CUSIP"]
+        del df["DESCRIPTION"]
+        combined_df = combined_df.append(df).drop_duplicates()
+    combined_df.to_csv("database/failure_to_deliver/ftd.csv", index=False)
 
 
 if __name__ == '__main__':
-    update_all_tickers(r"C:\Users\Acer\PycharmProjects\StocksAnalysis\database\cnsfails202106b.txt")
-    # add_new_ticker("MU")
-    # for ticker in full_ticker_list():
-    #     add_new_ticker(ticker)
+    FOLDER_PATH = r"C:\Users\Acer\PycharmProjects\StocksAnalysis\database\failure_to_deliver\csv"
+    combine_df(folder_path=FOLDER_PATH)

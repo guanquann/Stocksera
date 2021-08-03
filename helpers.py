@@ -121,6 +121,28 @@ def ticker_bar():
     return popular_ticker_list, popular_name_list, price_list
 
 
+def check_financial_data(ticker_selected, ticker, data, r):
+    balance_sheet = ticker.quarterly_balance_sheet
+    balance_sheet = balance_sheet.replace(np.nan, 0)[balance_sheet.columns[::-1]]
+    date_list = balance_sheet.columns.astype("str").to_list()
+    balance_col_list = balance_sheet.index.tolist()
+    balance_list = []
+
+    for i in range(len(balance_sheet)):
+        values = balance_sheet.iloc[i].tolist()
+        balance_list.append(values)
+    data[ticker_selected] = {
+        "date_list": date_list,
+        "balance_list": balance_list,
+        "balance_col_list": balance_col_list,
+        "next_update": str(datetime.now().date() + timedelta(days=7))
+    }
+    r.seek(0)
+    r.truncate()
+    json.dump(data, r, indent=4)
+    return date_list, balance_list, balance_col_list
+
+
 def convert_date(date):
     return date[0].split()[0]
 
@@ -195,7 +217,7 @@ def long_number_format(num):
         return f"{num_str}{' KMBTP'[magnitude]}".strip()
     if isinstance(num, int):
         num = str(num)
-    if num.lstrip("-").isdigit():
+    if num is not None and num.lstrip("-").isdigit():
         num = int(num)
         num /= 1.0
         magnitude = 0

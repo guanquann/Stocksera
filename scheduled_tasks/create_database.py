@@ -41,6 +41,27 @@ def database():
                    "subreddit VARCHAR (25),"
                    "ID INTEGER PRIMARY KEY AUTOINCREMENT)".format(subreddit))
 
+    db.execute("CREATE table IF NOT EXISTS cryptocurrency ("
+               "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+               "rank INTEGER NOT NULL, "
+               "symbol VARCHAR (10), "
+               "total INTEGER NOT NULL DEFAULT 0, "
+               "recent INTEGER NOT NULL DEFAULT 0, "
+               "previous INTEGER NOT NULL DEFAULT 0, "
+               "change FLOAT, "
+               "rockets INTEGER NOT NULL DEFAULT 0, "
+               "posts INTEGER NOT NULL DEFAULT 0, "
+               "upvotes INTEGER NOT NULL DEFAULT 0, "
+               "comments INTEGER NOT NULL DEFAULT 0, "
+               "price FLOAT, "
+               "one_day_change_percent FLOAT, "
+               "thirty_day_change_percent FLOAT, "
+               "volume VARCHAR (10), "
+               "mkt_cap VARCHAR (25), "
+               "circulating_supply VARCHAR (20),"
+               "max_supply VARCHAR (20),"
+               "date_updated VARCHAR(20) )")
+
     db.execute("CREATE table IF NOT EXISTS news_sentiment ("
                "ticker TEXT, "
                "sentiment FLOAT, "
@@ -112,7 +133,8 @@ def database():
                "date_updated TEXT, "
                "amount FLOAT, "
                "parties INTEGER, "
-               "average FLOAT)")
+               "average FLOAT, "
+               "UNIQUE ('date_updated') )")
 
     db.execute("CREATE table IF NOT EXISTS contact ("
                "name TEXT, "

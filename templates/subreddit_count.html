@@ -269,13 +269,42 @@
         <div class="chart-container">
             <canvas id="investing_chart"></canvas>
         </div>
+
+
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/crypto_currency.png' %}">
+            <div class="main_div">
+                <div>
+                    <div class="lg">Cryptocurrency News & Discussion</div>
+                    <div class="sm">r/CryptoCurrency
+                        <div class="explore"><a href="https://www.reddit.com/r/CryptoCurrency" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="crypto_diff"></div>
+                </div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="crypto_chart"></canvas>
+        </div>
     </div>
 {% endblock %}
 
 {% block bottom_script %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script type="text/javascript">
-    var wsb_date = [], wsb_count = [], wsb_active = [] , wsb_growth = [], stocks_date = [], stocks_active = [] , stocks_count = [], stocks_growth = [],  StockMarket_date = [], StockMarket_count = [], StockMarket_active = [], StockMarket_growth = [], gme_date = [], gme_count = [], gme_active = [], gme_growth = [], superstonk_date = [], superstonk_count = [], superstonk_active = [], superstonk_growth = [], amc_date = [], amc_count = [], amc_active = [], amc_growth = [], options_date = [], options_count = [], options_active = [], options_growth = [], pennystocks_date = [], pennystocks_count = [], pennystocks_active = [], pennystocks_growth = [], investing_date = [], investing_count = [], investing_active = [], investing_growth = []
+    var wsb_date = [], wsb_count = [], wsb_active = [] , wsb_growth = []
+    stocks_date = [], stocks_active = [] , stocks_count = [], stocks_growth = []
+    StockMarket_date = [], StockMarket_count = [], StockMarket_active = [], StockMarket_growth = []
+    gme_date = [], gme_count = [], gme_active = [], gme_growth = []
+    superstonk_date = [], superstonk_count = [], superstonk_active = [], superstonk_growth = []
+    amc_date = [], amc_count = [], amc_active = [], amc_growth = []
+    options_date = [], options_count = [], options_active = [], options_growth = []
+    pennystocks_date = [], pennystocks_count = [], pennystocks_active = [], pennystocks_growth = []
+    investing_date = [], investing_count = [], investing_active = [], investing_growth = []
+    crypto_date = [], crypto_count = [], crypto_active = [], crypto_growth = []
+
     var subscribers_list = {{subscribers|safe}}
     for (subscribers of subscribers_list) {
         if (subscribers[0] == "wallstreetbets") {
@@ -331,6 +360,12 @@
             investing_active.push(subscribers[4])
             investing_growth.push(subscribers[5])
             investing_date.push(subscribers[3])
+        }
+        else if (subscribers[0] == "cryptocurrency") {
+            crypto_count.push(subscribers[1])
+            crypto_active.push(subscribers[4])
+            crypto_growth.push(subscribers[5])
+            crypto_date.push(subscribers[3])
         }
     }
 
@@ -509,6 +544,21 @@
             datasets: [{
                 data: investing_count,
                 borderColor: '#64a913',
+                backgroundColor: 'transparent',
+                tension: 0.1,
+            }]
+        },
+        options: options_dict
+    });
+
+    var crypto_chart = document.getElementById('crypto_chart');
+    var crypto_chart = new Chart(crypto_chart, {
+        type: 'line',
+        data: {
+            labels: crypto_date,
+            datasets: [{
+                data: crypto_count,
+                borderColor: '#d73d08',
                 backgroundColor: 'transparent',
                 tension: 0.1,
             }]
@@ -735,6 +785,7 @@
     find_day_gain(amc_count, "amc_diff")
     find_day_gain(pennystocks_count, "pennystocks_diff")
     find_day_gain(investing_count, "investing_diff")
+    find_day_gain(crypto_count, "crypto_diff")
 
 </script>
 {% endblock %}

@@ -1,0 +1,9 @@
+.chart-container {
+    position: relative;
+    height:55vh;
+    width:90%;
+    max-width: 600px;
+    max-height:250px;
+    margin-left: auto;
+    margin-right: auto;
+}

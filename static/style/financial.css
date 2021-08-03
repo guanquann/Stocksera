@@ -116,21 +116,3 @@ h2 button {
     border-bottom: 2px solid wheat;
     color: wheat;
 }
-
-.earnings-container {
-    width: 70%;
-    min-width: 150px;
-    margin:auto;
-}
-  
-#eps_surprise {
-    display: flex;
-    justify-content: space-between;
-    font-size: 90%;
-}
-
-.eps_label{
-    padding-left:8px;
-    text-align:center;
-    color:grey;
-}

@@ -6,7 +6,7 @@ function show_dd(type, elem) {
     elem.classList.add("selected");
 
     if (type == "analysis") {
-        text = "View latest price, key statistics, major holders, institutional holders, recommendations and sort historical data."
+        text = "View latest price, key statistics, major holders, institutional holders, earnings, recommendations and sort historical data."
         url = "/ticker/"
     }
     else if (type == "financials") {
@@ -14,7 +14,7 @@ function show_dd(type, elem) {
         url = "/ticker/financial/"
     }
     else if (type == "options") {
-        text = "View max pain for the week, C/P Ratio and option chain of a ticker."
+        text = "View max pain for the week, Call & Put Ratio and option chain of a ticker."
         url = "/ticker/options/"
     }
     else if (type == "short_volume") {
@@ -37,7 +37,7 @@ function show_reddit(type, elem) {
     elem.classList.add("selected");
 
     if (type == "reddit_trending") {
-        text = "Get trending tickers on Reddit based on indicators such as sentiment, number of posts, comments and upvotes."
+        text = "Get trending tickers on stocks & crypto-related subreddits based on indicators such as sentiment, number of posts, comments and upvotes."
         url = "/reddit_analysis/"
     }
     else if (type == "reddit_etf") {
@@ -45,7 +45,7 @@ function show_reddit(type, elem) {
         url = "/reddit_etf/"
     }
     else if (type == "subreddit") {
-        text = "View percentage of growth in users and active users in popular subreddits such as r/Superstonk and r/amcstock."
+        text = "View percentage of growth in users and active users in popular subreddits."
         url = "/subreddit_count/"
     }
     document.getElementById("reddit_description").innerHTML = `
@@ -85,4 +85,28 @@ function show_discover(type, elem) {
     }
     document.getElementById("discover_description").innerHTML = `
         <div class="section_div_text">${text}</div><div class="href_btn"><a href="${url}">VIEW MORE</a></div>`
+}
+
+function show_op(type, elem) {
+    var op_btn = document.getElementsByClassName("op_btn")[0].querySelectorAll("button")
+    var img = elem.parentElement.parentElement.parentElement.querySelector(".section_div_right")
+    for (i=0; i<op_btn.length; i++) {
+        op_btn[i].classList.remove("selected")
+    }
+    elem.classList.add("selected");
+
+    if (type == "video") {
+        text = "Watch out for new videos in our YouTube Channel for new updates in the future!"
+        url = "https://www.youtube.com/watch?v=SEYXEcVKt38"
+        img = "/static/images/youtube.png"
+    }
+    else if (type == "code") {
+        text = "You can view the code in GitHub. Do give a star if you like it!"
+        url = "https://github.com/spartan737/Stocksera"
+        img = "/static/images/github.svg"
+    }
+    document.getElementById("op_description").innerHTML = `
+        <div class="section_div_text">${text}</div><div class="href_btn"><a href="${url}" target="_blank">VIEW MORE</a></div>`
+
+
 }

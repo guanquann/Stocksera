@@ -11,6 +11,7 @@
     .section_1 img {
         width: 90%;
         max-width: 500px;
+        border-radius: 10px;
     }
 
     .logo {
@@ -77,9 +78,9 @@
 
     .section_1 .main_div {
         text-align: center;
-        width: 70%;
+        width: 80vw;
         margin: auto;
-        transform: translateY(10%);
+        margin-top: 50px
     }
 
     .main_div div {
@@ -101,6 +102,7 @@
         width: 80%;
         min-width: 400px;
         max-width: 600px;
+        border-radius: 10px;
     }
 
     .logo {
@@ -130,6 +132,10 @@
 
     .section_div_text {
         height: 50px;
+    }
+
+    .experience_text {
+        margin-top: 40px;
     }
 
     .href_btn {
@@ -169,9 +175,8 @@
 
     .section_1 .main_div {
         text-align: center;
-        width: 55%;
+        width: 94%;
         margin: auto;
-        transform: translateY(10%);
     }
 
     .main_div div {
@@ -201,28 +206,9 @@
     padding-bottom: 0 !important;
 }
 
-@keyframes slideInFromLeft {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideInFromRight {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-#contents_title, #experience_title {
-    margin-top: 50px;
+#contents_title {
+    margin-top: 15px;
     text-align: center;
-    /*animation: 2s ease-out 0s 1 slideInFromLeft;*/
 }
 
 .dark_mode .href_btn {
@@ -241,20 +227,6 @@
 
 .dark_mode a {
     color: black;
-}
-
-.experience_div {
-    text-align:center;
-}
-
-.experience_div p {
-    max-width: 85%;
-    margin: auto;
-}
-
-.experience_div img {
-    width: 60%;
-    border-radius: 7px;
 }
 
 h1 {

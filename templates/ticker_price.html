@@ -115,12 +115,12 @@
         <iframe name="dividend_and_split" scrolling="no" onload="expand_iframe(this)"></iframe>
 
         <form action="/ticker_calendar" method="GET" autocomplete="off" target="ticker_calendar">
-            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Calendar <span>&#x25BA;</span></button>
+            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Next Earnings <span>&#x25BA;</span></button>
         </form>
         <iframe name="ticker_calendar" scrolling="no" onload="expand_iframe(this)"></iframe>
 
         <form action="/ticker_earnings" method="GET" autocomplete="off" target="ticker_earnings">
-            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Earnings <span>&#x25BA;</span></button>
+            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Past Earnings <span>&#x25BA;</span></button>
         </form>
         <iframe name="ticker_earnings" scrolling="no" onload="expand_iframe(this)"></iframe>
 

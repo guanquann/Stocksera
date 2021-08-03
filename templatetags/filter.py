@@ -9,5 +9,10 @@ def index(indexable, i):
 
 
 @register.filter
+def to_replace(value):
+    return value.replace("1", "")
+
+
+@register.filter
 def get_range(value):
     return range(value)

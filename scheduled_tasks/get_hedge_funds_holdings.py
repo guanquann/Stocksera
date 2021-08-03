@@ -27,8 +27,9 @@ def preprocess_hedge_funds(csv, fund_name):
     df.columns = ["Rank", "Stock", "Ticker", "Type", "Quantity", "Market Value", "% Portfolio", "Previous % Portfolio",
                   "Change", "% Change", "Change Type", "% Ownership", "Sector", "Source Type",
                   "Source Date", "Avg Price"]
-    df.to_csv(os.path.join(os.getcwd(), "database", "hedge_funds_holdings", "{}.csv".format(fund_name)), index=False)
+
+    df.to_csv(os.path.join("../database", "hedge_funds_holdings", "{}.csv".format(fund_name)), index=False)
 
 
 if __name__ == '__main__':
-    preprocess_hedge_funds(r"C:\Users\Acer\Desktop\citadel_advisors_llc-current-2021-06-23_14_17_24.csv", "citadel")
+    preprocess_hedge_funds(r"C:\Users\Acer\Desktop\melvin_capital_management_lp-current-2021-08-02_06_17_47.csv", "melvin_captial")

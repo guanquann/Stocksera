@@ -429,6 +429,5 @@ def print_df(df, filename, writesql, writecsv, subreddit):
             plt.yticks([])
 
             plt.plot(days_list, price_list, color=color)
-            plt.fill_between(price_list)
-            plt.savefig(r"static/graph_chart/{}.svg".format(trending_ticker), transparent=True)
+            plt.savefig(r"static/graph_chart/stocks/{}.svg".format(trending_ticker), transparent=True)
             plt.close()

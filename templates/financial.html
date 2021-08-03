@@ -75,12 +75,6 @@
             </div>
             <div id="stockholders_equity_table" class="table_div scrollable_div" style="display: none;"></div>
         </div>
-
-        <h2>Earnings</h2>
-        <div class="earnings-container">
-            <canvas id="earning_chart"></canvas>
-            <div id="eps_surprise"></div>
-        </div>
         <p>Data from: <a href="https://finance.yahoo.com/" target="_blank">finance.yahoo.com</a></p>
     </div>
 
@@ -260,14 +254,14 @@ var options_dict = {
         },
         scales: {
             xAxes: [{
-                categoryPercentage: 0.7,
+                categoryPercentage: 0.5,
                 barPercentage: 1.0,
                 ticks: {
                     beginAtZero: false
                 }, 
                 gridLines: {
                     drawOnChartArea: false
-                }   
+                },
             }],
             yAxes: [{
                 ticks: {
@@ -708,116 +702,5 @@ var stockholders_equity_table_html =  `
         </tr>
     </table>`
 stockholders_equity_table.innerHTML = stockholders_equity_table_html
-
-
-var earnings_list = {{earnings_list|safe}}
-
-var earning_est=[]
-var earning_act=[]
-var axes = []
-
-for (i=0; i<earnings_list.length; i++) {
-    var dict_est = {}
-    dict_est['x'] = earnings_list[i][0]
-    dict_est['y'] = earnings_list[i][1]
-    earning_est.push(dict_est)
-
-    var dict_act = {}
-    dict_act['x'] = earnings_list[i][0]
-    dict_act['y'] = earnings_list[i][2]
-    earning_act.push(dict_act)
-}
-
-var earning_chart = document.getElementById('earning_chart');
-var myChart = new Chart(earning_chart, {
-    type: 'scatter',
-    data: {
-        datasets: [
-        {
-            label: 'Est EPS',
-            data: earning_est,
-            backgroundColor: 'rgb(158, 158, 158, 0.5)',
-            borderColor: 'rgb(158, 158, 158)',
-        }, 
-        {
-            label: 'Act EPS',
-            data: earning_act,
-            backgroundColor: 'rgb(0, 0, 255, 0.5)',
-            borderColor: 'rgb(0, 0, 255)'
-        },
-        
-        ],
-    },
-
-    options: {
-        responsive:true,
-        maintainAspectRatio: false,
-        layout: {
-            padding: 10
-        },
-        scales: {
-            xAxes: [{
-                display: false,
-                ticks: {
-                  minTicksLimit: 5,
-                },
-                ticks: {
-                    beginAtZero: false
-                }, 
-                gridLines: {
-                    drawOnChartArea: false
-                }   
-            }],
-            yAxes: [{
-                ticks: {
-                    beginAtZero: false
-                }, 
-            }],
-        },
-
-        elements: {
-            point: {
-                radius: 7
-            }
-        },
-
-        tooltips: {
-            mode: 'index',
-            intersect: false,
-            callbacks: {
-                label: (item) => `${item.yLabel} USD`,
-            },
-        },
-        hover: {
-            mode: 'index',
-            intersect: false
-        },
-   }
-});
-
-var eps_surprise = document.getElementById("eps_surprise");
-var full_eps_code = ""
-var financial_quarter_list = {{financial_quarter_list|safe}};
-for (i=earning_act.length-1; i>=0; i--) {
-
-    percentage_diff = (Number(earning_act[i].y) - Number(earning_est[i].y)) / Math.abs((earning_est[i].y)) * 100
-    percentage_diff = Math.round(percentage_diff * 100) / 100
-    percentage_diff =  String(percentage_diff) + "%"
-
-    if (percentage_diff.includes("-")) {
-        full_eps_code += `<div class="eps_label">${financial_quarter_list[i]}<br><span style="color:red">Surprise:<br>${percentage_diff}</span></div>`
-    }
-
-    else if (percentage_diff == "NaN%") {
-        full_eps_code += `<div class="eps_label">${financial_quarter_list[i]}</div>`
-    }
-
-    else {
-        full_eps_code += `<div class="eps_label">${financial_quarter_list[i]}<br><span style="color:green">Surprise:<br>+${percentage_diff}</span></div>`
-    }    
-}
-
-eps_surprise.innerHTML = full_eps_code;
-
 </script>
 {% endblock %}

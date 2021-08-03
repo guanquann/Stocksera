@@ -12,4 +12,3 @@ db.sqlite3
 logging.log
 staticfiles
 yfinance.cache
-scheduled_tasks/get_reddit_trending_crypto

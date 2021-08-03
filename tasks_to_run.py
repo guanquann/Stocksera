@@ -4,7 +4,8 @@ Compilation of scheduled tasks to run
 
 import sqlite3
 import scheduled_tasks.create_database as create_database
-import scheduled_tasks.get_reddit_trending_stocks.scrape_reddit as scrape_reddit
+import scheduled_tasks.get_reddit_trending_stocks.scrape_reddit as scrape_reddit_stocks
+import scheduled_tasks.get_reddit_trending_crypto as scrape_reddit_crypto
 import scheduled_tasks.get_news_sentiment as get_news_sentiment
 import scheduled_tasks.get_subreddit_count as get_subreddit_count
 import scheduled_tasks.get_short_volume as get_short_volume
@@ -17,7 +18,9 @@ import scheduled_tasks.get_failure_to_deliver as get_failure_to_deliver
 import scheduled_tasks.miscellaneous as miscellaneous
 
 # Best to run 1 hour before market opens daily to get trending tickers and subreddit count
-SCRAPE_REDDIT = True
+SCRAPE_REDDIT_STOCKS = True
+SCRAPE_REDDIT_CRYPTO = False
+SCRAPE_SUBREDDIT_STATS = True
 
 # Update latest price of Reddit ETF. Run this WHEN MARKET OPENS to get latest price
 UPDATE_REDDIT_ETF = True
@@ -54,11 +57,13 @@ if __name__ == '__main__':
     # Data will not be over-written.
     create_database.database()
 
-    if SCRAPE_REDDIT:
-        # Uncomment this if you want to get trending tickers on Reddit
-        scrape_reddit.main()
+    if SCRAPE_REDDIT_STOCKS:
+        scrape_reddit_stocks.main()
 
-        # Uncomment this if you want to get subreddit subscribers stats
+    if SCRAPE_REDDIT_CRYPTO:
+        scrape_reddit_crypto.main()
+
+    if SCRAPE_SUBREDDIT_STATS:
         get_subreddit_count.subreddit_count()
 
     if UPDATE_REDDIT_ETF:

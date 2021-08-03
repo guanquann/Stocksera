@@ -146,7 +146,7 @@
         margin-right: auto;
         margin-top: 50px;
         margin-bottom: 10px;
-        padding: 3px;
+        padding: 5px 5px 5px 10px;
         background-color: #E9EAEA;
         border-radius: 10px;
         width: 90%;
@@ -306,7 +306,7 @@
         margin-right: auto;
         width: 98%;
         margin-bottom: 10px;
-        padding: 4px;
+        padding: 5px 0px 5px 10px;
         background-color: #E9EAEA;
         border-radius: 10px;
     }
@@ -801,7 +801,7 @@ input:checked + .slider:before {
     width: 30px !important;
     min-width: 30px !important;
     background-color: white;
-    border-radius: 50%;
+    border-radius: 50% !important;
     border: 2px solid white;
 }
 

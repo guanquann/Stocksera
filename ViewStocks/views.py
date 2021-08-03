@@ -17,8 +17,6 @@ from finvizfinance.quote import finvizfinance
 from django.shortcuts import render
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-REAL_TIME = True
-
 conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
 
@@ -63,7 +61,10 @@ def ticker_recommendations(request):
     try:
         recommendations = ticker.recommendations
         recommendations["Action"] = recommendations["Action"].str.replace("main", "Maintain").replace("up", "Upgrade").replace("down", "Downgrade").replace("init", "Initialised").replace("reit", "Reiterate")
-        recommendations = recommendations.to_html(index=False)
+        recommendations.reset_index(inplace=True)
+        recommendations["Date"] = recommendations["Date"].dt.date
+        recommendations.sort_values(by=["Date"], ascending=False, inplace=True)
+        recommendations = recommendations[:100].to_html(index=False)
     except TypeError:
         recommendations = "N/A"
     return render(request, 'iframe_format.html', {"title": "Recommendations",
@@ -161,14 +162,13 @@ def ticker_earnings(request):
     ticker = yf.Ticker(ticker_selected, session=session)
     df = ticker.earnings
     if df is not None or not df.empty:
-        df["Revenue"] = df["Revenue"].apply(lambda x: long_number_format(x))
-        df["Earnings"] = df["Earnings"].apply(lambda x: long_number_format(x))
         df.reset_index(inplace=True)
         df.sort_values(by=["Year"], ascending=False, inplace=True)
         df = df.to_html(index=False)
     else:
         df = "N/A"
-    return render(request, 'iframe_format.html', {"title": "Calendar", "table": df})
+    return render(request, 'ticker_earnings.html', {"ticker_selected": ticker_selected,
+                                                    "ticker_earnings": df})
 
 
 def sustainability(request):
@@ -419,79 +419,31 @@ def financial(request):
     Get balance sheet of company. Data is from yahoo finance
     """
     ticker_selected = default_ticker(request)
-    balance_list = []
     ticker = yf.Ticker(ticker_selected)
 
     information = check_market_hours(ticker, ticker_selected)
 
     # To check if input is a valid ticker
     if "symbol" in information:
-        earnings_list, financial_quarter_list, date_list, balance_col_list = [], [], [], []
-        if REAL_TIME:
-            balance_sheet = ticker.quarterly_balance_sheet.replace(np.nan, 0)
-            print(balance_sheet)
-            date_list = balance_sheet.columns.astype("str").to_list()
-            balance_col_list = balance_sheet.index.tolist()
-
-            for i in range(len(balance_sheet)):
-                values = balance_sheet.iloc[i].tolist()
-                balance_list.append(values)
-
-            # # Get Actual vs Est EPS of ticker
-            # url_ratings = "https://finance.yahoo.com/calendar/earnings?symbol={}".format(ticker_selected)
-            # text_soup_ratings = BeautifulSoup(get_earnings_html(url_ratings), "lxml")
-            #
-            # earnings_list, financial_quarter_list = [], []
-            # # [[1, 0.56, 0.64], [2, 0.51, 0.65], [3, 0.7, 0.73], [4, 1.41, 1.68], [5, 0.98]]
-            # count = 5
-            # for earning in text_soup_ratings.findAll("tr"):
-            #     if len(earnings_list) != 5:
-            #         tds = earning.findAll("td")
-            #         if len(tds) > 0:
-            #             earning_date = tds[2].text.rsplit(",", 1)[0]
-            #             eps_est = tds[3].text
-            #             eps_act = tds[4].text
-            #
-            #             if eps_act != "-":
-            #                 earnings_list.append([count, eps_est, eps_act])
-            #             else:
-            #                 earnings_list.append([count, eps_est])
-            #
-            #             # Deduce financial quarter based on date of report
-            #             year_num = earning_date.split()[-1]
-            #             month_num = earning_date.split()[0]
-            #             if month_num in ["Jan", "Feb", "Mar"]:
-            #                 year_num = int(year_num) - 1
-            #                 quarter = "Q4"
-            #             elif month_num in ["Apr", "May", "Jun"]:
-            #                 quarter = "Q1"
-            #             elif month_num in ["Jul", "Aug", "Sep"]:
-            #                 quarter = "Q2"
-            #             else:
-            #                 quarter = "Q3"
-            #             financial_quarter_list.append("{} {}".format(year_num, quarter))
-            #             count -= 1
-            #     else:
-            #         break
-
-        else:
-            with open(r"database/financials.json", "r+") as r:
-                data = json.load(r)
-                if ticker_selected in data:
-                    data = data[ticker_selected]
-                    date_list = data["date_list"]
-                    balance_list = data["balance_list"]
-                    balance_col_list = data["balance_col_list"]
-                    earnings_list = data["earnings_list"]
-                    financial_quarter_list = data["financial_quarter_list"]
+        current_datetime = str(datetime.utcnow().date())
+        with open(r"database/financials.json", "r+") as r:
+            data = json.load(r)
+            if ticker_selected in data:
+                to_update_date = data[ticker_selected]["next_update"]
+                if current_datetime > to_update_date:
+                    date_list, balance_list, balance_col_list = check_financial_data(ticker_selected, ticker, data, r)
+                else:
+                    date_list = data[ticker_selected]["date_list"]
+                    balance_list = data[ticker_selected]["balance_list"]
+                    balance_col_list = data[ticker_selected]["balance_col_list"]
+            else:
+                date_list, balance_list, balance_col_list = check_financial_data(ticker_selected, ticker, data, r)
 
         return render(request, 'financial.html', {"ticker_selected": ticker_selected,
                                                   "information": information,
                                                   "date_list": date_list,
                                                   "balance_list": balance_list,
-                                                  "balance_col_list": balance_col_list,
-                                                  "earnings_list": earnings_list,
-                                                  "financial_quarter_list": financial_quarter_list})
+                                                  "balance_col_list": balance_col_list})
     else:
         return render(request, 'financial.html', {"ticker_selected": ticker_selected,
                                                   "error": "error_true"})
@@ -625,15 +577,14 @@ def failure_to_deliver(request):
     """
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
-    file_path = r"database/failure_to_deliver/ticker/{}.csv".format(ticker_selected)
+    file_path = r"database/failure_to_deliver/ftd.csv"
     if os.path.isfile(file_path):
         information = check_market_hours(ticker, ticker_selected)
         ftd = pd.read_csv(file_path)
+        ftd = ftd[ftd["SYMBOL"] == ticker_selected]
         ftd = ftd[::-1]
-        ftd["Amount (FTD x $)"] = (ftd["QUANTITY (FAILS)"] * ftd["PRICE"]).astype(int)
-        del ftd["CUSIP"]
+        ftd["Amount (FTD x $)"] = (ftd["QUANTITY (FAILS)"].astype(int) * ftd["PRICE"].astype(float)).astype(int)
         del ftd["SYMBOL"]
-        del ftd["DESCRIPTION"]
         return render(request, 'ftd.html', {"ticker_selected": ticker_selected,
                                             "information": information,
                                             "90th_percentile": ftd["Amount (FTD x $)"].quantile(0.90),
@@ -733,6 +684,11 @@ def reddit_analysis(request):
     db.execute("SELECT * FROM {} WHERE date_updated LIKE '{}' ORDER BY total DESC LIMIT 35".format(subreddit, "%" + date_selected + "%"))
     trending_tickers = db.fetchall()
     trending_tickers = list(map(list, trending_tickers))
+
+    if subreddit == "cryptocurrency":
+        return render(request, 'cryptocurrency.html', {"date_selected": date_selected,
+                                                       "all_dates": all_dates,
+                                                       "trending_tickers": trending_tickers})
 
     database_mapping = {"wallstreetbets": "Wall Street Bets",
                         "stocks": "Stocks",

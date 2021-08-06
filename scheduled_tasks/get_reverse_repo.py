@@ -27,7 +27,7 @@ def reverse_repo(start_date="01022014", end_date=None):
     df = pd.read_excel(url)
     df = df[df["Op Type"] == "RRP"]
     df["Deal Date"] = df["Deal Date"].str.replace("/", "-")
-    # df.fillna(0, inplace=True)
+
     df["Total-Submit"] = df["Total-Submit"].astype(str).str.replace(",", "").astype(float)
     df["Average"] = df["Total-Submit"] / df["Participating Counterparties"].astype(float)
     df["Average"] = df["Average"].round(2)

@@ -12,6 +12,12 @@ Date.prototype.addDays = function(days) {
     return date;
 }
 
+Date.prototype.removeDays = function(days) {
+    var date = new Date(this.valueOf());
+    date.setDate(date.getDate() - days);
+    return date;
+}
+
 function ftd_graph() {
     var ftd = document.getElementsByTagName("table")[0].querySelectorAll("tr");
     var threshold = document.getElementById("90th_percentile").innerHTML
@@ -44,9 +50,15 @@ function ftd_graph() {
         total_td[3].innerHTML = "$" + Number(total_td[3].innerHTML).toLocaleString()
 
         f35_date = new Date(new_date_string).addDays(50)
-        if (f35_date > new Date("2021/07/05")) {
-            f35_date = new Date(f35_date).addDays(1)
+//        if (f35_date > new Date("2021/07/05")) {
+//            f35_date = new Date(f35_date).addDays(1)
+//        }
+
+        // because of US Independence Day
+        if (f35_date >= new Date("2021/08/23")) {
+            f35_date = new Date(f35_date).removeDays(1)
         }
+
         month = f35_date.getUTCMonth() + 1;
         day = f35_date.getUTCDate();
         year = f35_date.getUTCFullYear();

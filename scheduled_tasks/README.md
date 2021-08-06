@@ -88,7 +88,7 @@ py scheduled_tasks/buy_failure_to_deliver.py
 #### scheduled_tasks/get_hedge_funds_holdings.py
 - Get holdings of major hedge funds
 - Download csv from [whalewisdom](https://whalewisdom.com/). You need to sign up a free account to access the csv files. Data is updated quarterly.
-![Get hedge funds instructions](../static/images/get_hedge_funds_instructions.png)
+![Get hedge funds instructions](../static/images/github/get_hedge_funds_instructions.png)
 ```
 py scheduled_tasks/get_hedge_funds_holdings.py
 ```

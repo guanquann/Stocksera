@@ -8,7 +8,7 @@ Alternatively, you can look at https://youtu.be/SEYXEcVKt38 for a live demo.
 
 But because I'm hosting it free on pythonanywhere, speed of website can be (very) slow when traffic is high. 
 
-![Web Traffic](./static/images/web_traffic.png)
+![Web Traffic](./static/images/github/web_traffic.png)
 
 You are encouraged to host it locally on your computer, where the speed is much faster.
 
@@ -23,78 +23,78 @@ This website will be free forever! No subscription needed! But if you want to su
 - Proportion of stocks held by major holders and major institutions.
 - Google trending.
 - Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>
-![Ticker Stats](./static/images/ticker_main.png)
+![Ticker Stats](./static/images/github/ticker_main.png)
 
 #### /ticker/options/
 - View options chain of your favourite ticker. Inspired from <a href="https://github.com/GamestonkTerminal/GamestonkTerminal/tree/main/gamestonk_terminal">Gamestonk Terminal</a>
 - Find out the max-pain price, OTM & ITM options and Call/Put ratio of the next few weeks.
 - NOTE: Options chain and max-pain price are updated real time. Hence, there may be a slight delay in rendering this page. 
 - Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>
-![Options](./static/images/options.png)
+![Options](./static/images/github/options.png)
 
 #### /ticker/short_volume/
 - View short volume and short percentage of some of the popular tickers.
 - Data is from <a href="http://shortvolumes.com/">shortvolumes.com</a>
-![Short Volume](./static/images/short_volume.png)
+![Short Volume](./static/images/github/short_volume.png)
 
 #### /ticker/failure_to_deliver/
 - View failure to deliver data of some of the popular tickers.
 - Data is from <a href="https://www.sec.gov/data/foiadocsfailsdatahtm">SEC.gov</a>
-![Failure to Deliver](./static/images/ftd.png)
+![Failure to Deliver](./static/images/github/ftd.png)
 
 #### /earnings_calendar/
 - View all tickers earnings report for the week ahead 
 - Market Cap, EPS Estimate and EPS Actual
 - Sortable by market cap and day
 - Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>
-![Earnings Calendar](./static/images/earnings_calendar.png)
+![Earnings Calendar](./static/images/github/earnings_calendar.png)
 
 #### /reddit_analysis/
 - Find the most mentioned tickers with their sentiment level on different subreddits such as r/wallstreetbets, r/stockmarket and r/stocks. Inspired from <a href="https://github.com/kaito1410/AutoDD_Rev2/blob/main/AutoDD.py">Auto DD</a>
 - Data is updated daily, around 1 hour before market open.
-![Reddit Analysis](./static/images/reddit_trending.png)
+![Reddit Analysis](./static/images/github/reddit_trending.png)
 
 #### /reddit_etf/
 - Analyse the performance of trending tickers on r/wallstreetbets.
 - Top 10 most mentioned tickers with the highest sentiment will be added to the "Reddit ETF" when market opens.
 - Tickers that fall outside the Top 10 list will be sold.
-![Reddit ETF](./static/images/etf.png)
+![Reddit ETF](./static/images/github/etf.png)
 
 #### /reddit_ticker_analysis/
 - View ranking of popular tickers in Reddit over time and compare it with its price.
-![Reddit Ranking](./static/images/reddit_ranking.png)
+![Reddit Ranking](./static/images/github/reddit_ranking.png)
 
 #### /subreddit_count/
 - Look at the increase in number of redditors on popular sub-reddits such as r/wallstreetbets, r/Superstonk and r/amcstock.
 - Growth in number of new redditors and percentage of active redditors.
 - This page is currently very basic, open to new suggestions on how to improve this page.
-![Subreddit Stats](./static/images/subreddit_stats.png)
+![Subreddit Stats](./static/images/github/subreddit_stats.png)
 
 #### /market_overview/
 - Overview of the performance of the entire market.
 - Data is from <a href="https://tradingview.com/">Trading View</a>
-![Market Overview](./static/images/market_overview.png)
+![Market Overview](./static/images/github/market_overview.png)
 
 #### /short_interest/
 - Identify tickers with the highest short interest level.
 - Data is from <a href="https://www.highshortinterest.com">shortinterest.com</a>
-![Short Interest](./static/images/short_interest.png)
+![Short Interest](./static/images/github/short_interest.png)
 
 #### /low_float/
 - Identify tickers with low float.
 - Data is from <a href="https://www.lowfloat.com">lowfloat.com</a>
-![Low Float](./static/images/low_float.png)
+![Low Float](./static/images/github/low_float.png)
 
 #### /hedge_funds/
 - Identify top holdings from some of the major hedge funds.
 - Data is from <a href="https://whalewisdom.com/">whalewisdom</a>
-![Hedge Funds](./static/images/hedge_funds.png)
+![Hedge Funds](./static/images/github/hedge_funds.png)
 
 #### /ark_trades/
 - View holdings, trades and news of all companies in ARK Fund.
 - View trades and ownership of a ticker.
 - Data is from <a href="https://arkfunds.io/api/">arkfunds.io/api</a>
-![ARK Trades](./static/images/ark_trades.png)
+![ARK Trades](./static/images/github/ark_trades.png)
 
 #### /latest_news/
 - View latest news of your favorite ticker
@@ -102,7 +102,7 @@ This website will be free forever! No subscription needed! But if you want to su
 - Compare the sentiment level with other popular tickers such as GME, AAPL, TSLA.
 - NOTE: This feature is not available on pythonanywhere. To use this feature, you have to host the application locally. Please refer to the Developers section for more details
 - Data is from <a href="https://finviz.com/">finviz</a>
-![News Sentiment](./static/images/news_sentiment.png)
+![News Sentiment](./static/images/github/news_sentiment.png)
 
 ### For developers:
 - Advantages of hosting it locally on your computer:
@@ -178,7 +178,7 @@ You can view the application in 127.0.0.1:8000 and you are ready to explore!
 
 ### Review and Showcase:
 In 10 hours, there were more than 10 awards and 500 upvotes.
-![Review and Showcase in r/options](./static/images/reddit_review.png)
+![Review and Showcase in r/options](./static/images/github/reddit_review.png)
 
 ### License:
 This project is under the <a href="https://github.com/spartan737/stocksera/blob/master/LICENSE">MIT</a> license.

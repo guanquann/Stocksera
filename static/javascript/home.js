@@ -37,7 +37,7 @@ function show_reddit(type, elem) {
     elem.classList.add("selected");
 
     if (type == "reddit_trending") {
-        text = "Get trending tickers on stocks & crypto-related subreddits based on indicators such as sentiment, number of posts, comments and upvotes."
+        text = "Get trending tickers on stocks & crypto-related subreddits based on sentiment, number of posts, comments and upvotes."
         url = "/reddit_analysis/"
     }
     else if (type == "reddit_etf") {
@@ -83,6 +83,10 @@ function show_discover(type, elem) {
         text = "View reverse-repo transactions over the years."
         url = "/reverse_repo/"
     }
+    else if (type == "amd_xlnx_ratio") {
+        text = "View current AMD-XLNX Share Price Ratio and percentage upside for XLNX when the merger is complete"
+        url = "/amd_xlnx_ratio/"
+    }
     document.getElementById("discover_description").innerHTML = `
         <div class="section_div_text">${text}</div><div class="href_btn"><a href="${url}">VIEW MORE</a></div>`
 }
@@ -107,6 +111,4 @@ function show_op(type, elem) {
     }
     document.getElementById("op_description").innerHTML = `
         <div class="section_div_text">${text}</div><div class="href_btn"><a href="${url}" target="_blank">VIEW MORE</a></div>`
-
-
 }

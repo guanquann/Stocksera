@@ -34,6 +34,21 @@ def combine_df(folder_path):
     combined_df.to_csv("database/failure_to_deliver/ftd.csv", index=False)
 
 
+def get_all_tickers_csv(folder_path):
+    """
+    Save all ticker name and symbol into database/all_tickers.csv
+    """
+    df = pd.read_csv(folder_path)
+    df.dropna(inplace=True)
+
+    new_df = pd.DataFrame()
+    new_df["SYMBOL"] = df["SYMBOL"]
+    new_df["DESCRIPTION"] = df["DESCRIPTION"]
+    new_df.drop_duplicates(inplace=True)
+    new_df.sort_values(by=["SYMBOL"], inplace=True)
+    new_df.to_csv("database/all_tickers.csv", index=False)
+
+
 if __name__ == '__main__':
     FOLDER_PATH = r"C:\Users\Acer\PycharmProjects\StocksAnalysis\database\failure_to_deliver\csv"
     combine_df(folder_path=FOLDER_PATH)

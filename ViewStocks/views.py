@@ -5,13 +5,12 @@ import sqlite3
 from custom_extensions.custom_words import *
 from custom_extensions.stopwords import *
 from scheduled_tasks.get_popular_tickers import full_ticker_list
-from scheduled_tasks.get_financial import get_earnings_html
 from helpers import *
 
 import requests_cache
 import pandas as pd
+import yfinance as yf
 from pytrends.request import TrendReq
-from bs4 import BeautifulSoup
 from finvizfinance.quote import finvizfinance
 
 from django.shortcuts import render
@@ -43,9 +42,12 @@ def stock_price(request):
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
     information = check_market_hours(ticker, ticker_selected)
+    symbol_list, description = get_all_tickers()
     if "symbol" in information:
         return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
                                                      "information": information,
+                                                     "symbol_list": symbol_list,
+                                                     "description": description
                                                      })
     else:
         return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
@@ -140,28 +142,33 @@ def dividend_and_split(request):
 
 def ticker_calendar(request):
     """
-    Show calendar & last earnings of ticker. Data from yahoo finance
+    Show calendar of earnings of ticker. Data from yahoo finance
     """
+    pd.options.display.float_format = '{:.3f}'.format
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected, session=session)
     df = ticker.calendar
-    df.iloc[0, 0] = df.iloc[0, 0].date().strftime("%d/%m/%Y")
-    df.iloc[:, 0] = df.iloc[:, 0].apply(lambda x: long_number_format(x))
-    if df is not None or not df.empty:
-        df = pd.DataFrame(df.iloc[:, 0]).reset_index().to_html(header=False, index=False)
+    df.fillna("N/A", inplace=True)
+    if not df.empty:
+        df.iloc[0, 0] = df.iloc[0, 0].date().strftime("%d/%m/%Y")
+        df.rename(index={"Earnings Low": "EPS Low", "Earnings High": "EPS High", "Earnings Average": "EPS Average"},
+                  inplace=True)
+        df = pd.DataFrame(df.iloc[:, 0]).reset_index()
+        df = df.to_html(header=False, index=False)
     else:
         df = "N/A"
-    return render(request, 'iframe_format.html', {"title": "Calendar", "table": df})
+    return render(request, 'ticker_next_earnings.html', {"ticker_selected": ticker_selected,
+                                                         "ticker_earnings": df})
 
 
 def ticker_earnings(request):
     """
-    Show earnings of ticker. Data from yahoo finance
+    Show historical earnings of ticker. Data from yahoo finance
     """
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected, session=session)
     df = ticker.earnings
-    if df is not None or not df.empty:
+    if not df.empty:
         df.reset_index(inplace=True)
         df.sort_values(by=["Year"], ascending=False, inplace=True)
         df = df.to_html(index=False)
@@ -321,6 +328,7 @@ def historical_data(request):
     """
     Allow users to filter/sort historical data of ticker
     """
+    pd.options.display.float_format = '{:.1f}'.format
     ticker_selected = default_ticker(request)
 
     if request.GET.get("sort"):
@@ -438,7 +446,6 @@ def financial(request):
                     balance_col_list = data[ticker_selected]["balance_col_list"]
             else:
                 date_list, balance_list, balance_col_list = check_financial_data(ticker_selected, ticker, data, r)
-
         return render(request, 'financial.html', {"ticker_selected": ticker_selected,
                                                   "information": information,
                                                   "date_list": date_list,
@@ -453,6 +460,7 @@ def options(request):
     """
     Get options (Max pain, option chain, C/P ratio) of ticker.
     """
+    pd.options.display.float_format = '{:.1f}'.format
     ticker_selected = default_ticker(request)
     try:
         ticker = yf.Ticker(ticker_selected)
@@ -573,7 +581,7 @@ def short_volume(request):
 
 def failure_to_deliver(request):
     """
-    Get FTD of tickers (only popular ones). Data from SEC
+    Get FTD of tickers. Data from SEC
     """
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
@@ -681,7 +689,7 @@ def reddit_analysis(request):
     else:
         date_selected = all_dates[0]
 
-    db.execute("SELECT * FROM {} WHERE date_updated LIKE '{}' ORDER BY total DESC LIMIT 35".format(subreddit, "%" + date_selected + "%"))
+    db.execute("SELECT * FROM {} WHERE date_updated LIKE '{}' ORDER BY rank ASC LIMIT 35".format(subreddit, "%" + date_selected + "%"))
     trending_tickers = db.fetchall()
     trending_tickers = list(map(list, trending_tickers))
 
@@ -802,6 +810,23 @@ def ark_trades(request):
     Get trades/positions of ARK Funds. Data from https://arkfunds.io/api
     """
     return render(request, 'ark_trade.html')
+
+
+def amd_xlnx_ratio(request):
+    pd.options.display.float_format = '{:.4f}'.format
+    combined_df = pd.DataFrame()
+    amd_df = yf.Ticker("AMD").history(interval="1d", period="1y")
+    xlnx_df = yf.Ticker("XLNX").history(interval="1d", period="1y")
+
+    combined_df["AMD Price (Close)"] = amd_df["Close"].round(2)
+    combined_df["XLNX Price (Close)"] = xlnx_df["Close"].round(2)
+    combined_df["XLNX % Upside"] = 100 * ((1.7234 * combined_df["AMD Price (Close)"]) / combined_df["XLNX Price (Close)"] - 1)
+    combined_df["Ratio"] = combined_df["XLNX Price (Close)"] / combined_df["AMD Price (Close)"]
+    combined_df["Ratio"] = combined_df["Ratio"].round(4)
+    combined_df.reset_index(inplace=True)
+    combined_df.rename(columns={"index": "Date"}, inplace=True)
+    combined_df = combined_df[combined_df["Date"] >= "2020-10-30"]
+    return render(request, 'amd_xlnx_ratio.html', {"combined_df": combined_df[::-1].to_html(index=False)})
 
 
 def about(request):

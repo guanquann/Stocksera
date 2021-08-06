@@ -1,0 +1,51 @@
+
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | AMD-XLNX Ratio {% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/ftd.css' %}">
+<script src="{% static 'javascript/amd_xlnx_ratio.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}amd_xlnx_ratio_graph(){% endblock %}
+
+{% block main_nav %}
+<div class="top_nav"></div>
+{% endblock %}
+
+{% block main_content %}
+<div>
+    <div class="instructions">
+        <h2>AMD-XLNX Share Price Ratio</h2>
+        <p>
+
+        </p>
+    </div>
+
+    <div id="ftd">
+        <div id="more_info_div">
+            <a class="more_info_btn" href="{% url 'ticker' %}?quote=AMD" onclick="clickAndDisable(this);" target="_blank">Explore AMD</a>
+            <a class="more_info_btn" href="{% url 'ticker' %}?quote=XLNX" onclick="clickAndDisable(this);" target="_blank">Explore XLNX</a>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="ratio_chart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="price_chart"></canvas>
+        </div>
+
+        <div class="scrollable_div">
+            {{combined_df|safe}}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block bottom_script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+{% endblock %}

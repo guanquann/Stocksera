@@ -16,6 +16,7 @@
 <div class="top_nav">
     <div style="display: none" id="small_logo">
         <img class="top_logo" src="{% static 'images/logo.png' %}">
+        <span id="cut_off"></span>
     </div>
 </div>
 {% endblock %}
@@ -66,7 +67,7 @@
 
             <div class="section_div_description" id="reddit_description">
                 <div class="section_div_text">
-                    Get trending tickers on stocks & crypto-related subreddits based on indicators such as sentiment,
+                    Get trending tickers on stocks & crypto-related subreddits based on sentiment,
                     number of posts, comments and upvotes.
                 </div>
                 <div class="href_btn"><a href="/reddit_analysis/">VIEW MORE</a></div>
@@ -85,6 +86,7 @@
                 <button onclick="show_discover('hedge', this)">Hedge Funds</button>
                 <button onclick="show_discover('ark', this)">ARK Trades</button>
                 <button onclick="show_discover('rrp', this)">Reverse Repo</button>
+                <button onclick="show_discover('amd_xlnx_ratio', this)">AMD-XLNX Ratio</button>
             </div>
 
             <div class="section_div_description" id="discover_description">

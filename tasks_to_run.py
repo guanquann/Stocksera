@@ -19,7 +19,7 @@ import scheduled_tasks.miscellaneous as miscellaneous
 
 # Best to run 1 hour before market opens daily to get trending tickers and subreddit count
 SCRAPE_REDDIT_STOCKS = True
-SCRAPE_REDDIT_CRYPTO = False
+SCRAPE_REDDIT_CRYPTO = True
 SCRAPE_SUBREDDIT_STATS = True
 
 # Update latest price of Reddit ETF. Run this WHEN MARKET OPENS to get latest price
@@ -57,14 +57,14 @@ if __name__ == '__main__':
     # Data will not be over-written.
     create_database.database()
 
+    if SCRAPE_SUBREDDIT_STATS:
+        get_subreddit_count.subreddit_count()
+
     if SCRAPE_REDDIT_STOCKS:
         scrape_reddit_stocks.main()
 
     if SCRAPE_REDDIT_CRYPTO:
         scrape_reddit_crypto.main()
-
-    if SCRAPE_SUBREDDIT_STATS:
-        get_subreddit_count.subreddit_count()
 
     if UPDATE_REDDIT_ETF:
         conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
@@ -101,10 +101,9 @@ if __name__ == '__main__':
 
     if FTD:
         # Uncomment this if there is not new FTD txt file from SEC
-        # get_failure_to_deliver.update_all_tickers(ftd_txt_file_name="INSERT_FTD_TXT_FILE_PATH")
-
-        for i in get_failure_to_deliver.full_ticker_list():
-            get_failure_to_deliver.add_new_ticker(i)
+        # get_failure_to_deliver.convert_to_csv(ftd_txt_file_name="INSERT_FTD_TXT_FILE_PATH")
+        FOLDER_PATH = r"C:\Users\Acer\PycharmProjects\StocksAnalysis\database\failure_to_deliver\csv"
+        get_failure_to_deliver.combine_df(folder_path=FOLDER_PATH)
 
     if HEDGE_FUNDS:
         get_hedge_funds_holdings.preprocess_hedge_funds(csv=r"C:\Users\Acer\Desktop\citadel_advisors_llc-current-2021-06-23_14_17_24.csv", fund_name="citadel")

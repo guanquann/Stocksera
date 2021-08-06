@@ -2,6 +2,7 @@ import os
 import sys
 import sqlite3
 import pandas as pd
+import yfinance as yf
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 

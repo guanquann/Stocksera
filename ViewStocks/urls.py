@@ -32,5 +32,6 @@ urlpatterns = [
     path('hedge_funds/', views.hedge_funds, name='hedge_funds'),
     path('subreddit_count/', views.subreddit_count, name='subreddit_count'),
     path('reddit_etf/', views.reddit_etf, name='reddit_etf'),
+    path('amd_xlnx_ratio/', views.amd_xlnx_ratio, name='amd_xlnx_ratio'),
     path('about/', views.about, name='about'),
 ]

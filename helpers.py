@@ -1,5 +1,5 @@
-import yfinance.ticker as yf
 import numpy as np
+import pandas as pd
 import json
 from datetime import datetime, timedelta
 
@@ -25,6 +25,13 @@ def check_img(ticker_selected, information):
         return "https://g.foolcdn.com/art/companylogos/mark/mrna.png"
     else:
         return information["logo_url"]
+
+
+def get_all_tickers():
+    all_ticker_list = pd.read_csv(r"database/all_tickers.csv")
+    symbol_list = all_ticker_list["SYMBOL"].to_list()
+    description = all_ticker_list["DESCRIPTION"].to_list()
+    return symbol_list, description
 
 
 def check_market_hours(ticker, ticker_selected):
@@ -54,8 +61,8 @@ def check_market_hours(ticker, ticker_selected):
                 # Last updated time is before market close and after open, update information
                 last_updated_date = data[ticker_selected]["next_update"].split()[0]
                 last_updated_time = data[ticker_selected]["next_update"].split()[1].split(".")[0].replace(":", "")
-                # print(last_updated_date, current_utc_date, last_updated_time)
-                if (market_close_time > last_updated_time > market_open_time) or last_updated_date != current_utc_date:
+
+                if (str(int(market_close_time) + 1000) > last_updated_time > market_open_time) or last_updated_date != current_utc_date:
                     information = ticker.info
                     information["logo_url"] = check_img(ticker_selected, information)
                     data[ticker_selected] = information
@@ -93,32 +100,6 @@ def check_market_hours(ticker, ticker_selected):
                 json.dump(data, r, indent=4)
                 print("Market Open. Scraping data")
     return information
-
-
-def ticker_bar():
-    """
-    Custom ticker bar in HTML page. I did not use this anymore, since I replaced it with the ticker bar provided by Trading View
-    """
-    popular_ticker_list = ["SPY", "QQQ", "DIA", "AAPL", "GME", "AMC", "TSLA", "NIO", "PLTR", "NVDA"]
-    popular_name_list = ["S&P500 ETF", "NASDAQ-100", "Dow ETF", "Apple", "GameStop", "AMC", "Tesla", "Nio",
-                         "Palantir", "NVIDIA"]
-
-    price_list = list()
-    for ticker in popular_ticker_list:
-    
-        ticker = yf.Ticker(ticker)
-        price_df = ticker.history(period="3d")['Close']
-        opening_price = float(price_df.iloc[1])
-        closing_price = float(price_df.iloc[2])
-        price_change = round(closing_price - opening_price, 2)
-
-        percentage_change = round(((price_change / opening_price) * 100), 2)
-        if percentage_change >= 0:
-            price_change = '+' + str(price_change)
-            percentage_change = '+' + str(percentage_change)
-
-        price_list.append([round(closing_price, 2), price_change, percentage_change])
-    return popular_ticker_list, popular_name_list, price_list
 
 
 def check_financial_data(ticker_selected, ticker, data, r):

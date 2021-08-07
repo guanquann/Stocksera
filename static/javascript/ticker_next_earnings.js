@@ -24,7 +24,7 @@ function load_graph() {
                     yAxisID: 'B',
                 },
                 {
-                    label: 'Earnings',
+                    label: 'EPS',
                     type: 'bar',
                     data: earnings_list,
                     backgroundColor: 'red',
@@ -49,7 +49,7 @@ function load_graph() {
                         type: "linear",
                         scaleLabel: {
                             display: true,
-                            labelString: 'Earnings [$]',
+                            labelString: 'EPS [$]',
                         },
                         ticks: {
                             callback: function(value, index, values) {

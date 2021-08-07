@@ -85,7 +85,6 @@ def database():
                "mkt_cap TEXT, "
                "eps_est TEXT, "
                "eps_act TEXT, "
-               "img_url TEXT, "
                "earning_date TEXT, "
                "earning_time TEXT, "
                "UNIQUE(name, symbol) )")

@@ -171,14 +171,10 @@ You can view the application in 127.0.0.1:8000 and you are ready to explore!
 - [x] Show ranking of tickers in reddit and compare it with its price
 - [x] Improve speed of website (although I feel that the major issue lies with pythonanywhere-the website I'm hosting instead, since it runs smoothly locally)
     - Solved by caching tickers' information when market is closed and caching financial data
-- [ ] Add trending symbols on r/cryptocurrency
+- [x] Add trending symbols on r/cryptocurrency
 - [ ] Income Statement and Cash Flow for Financial data
 - [ ] Show theta, delta, gamma in Options data
 - [ ] Show performance of Reddit ETF vs SPY
-
-### Review and Showcase:
-In 10 hours, there were more than 10 awards and 500 upvotes.
-![Review and Showcase in r/options](./static/images/github/reddit_review.png)
 
 ### License:
 This project is under the <a href="https://github.com/spartan737/stocksera/blob/master/LICENSE">MIT</a> license.

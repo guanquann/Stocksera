@@ -45,6 +45,12 @@ def get_high_short_interest():
     db.execute("DELETE FROM short_interest")
     for index, row in df_high_short_interest.iterrows():
         information = yf.Ticker(row["Ticker"]).info
+
+        quick_stats = {'regularMarketPreviousClose': 'prvCls', 'fiftyDayAverage': '50DayAvg',
+                       'regularMarketVolume': 'volume', 'averageDailyVolume3Month': '3MonthVolAvg',
+                       'regularMarketPrice': 'price', 'regularMarketChangePercent': '1DayChange%',
+                       'floatShares': 'floating_shares', 'beta': 'beta', 'marketCap': 'mkt_cap'}
+
         db.execute("INSERT INTO short_interest VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                    (row['Ticker'], row['Company'], row['Exchange'], information["previousClose"],
                     row['ShortInt'], row['Float'], row['Outstd'], row['Industry'], information["logo_url"]))

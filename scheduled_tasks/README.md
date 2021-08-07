@@ -18,10 +18,14 @@ You can view a sample of the database in <a href="https://drive.google.com/drive
 - Transfer database folder to the main parent directory
 
 #### scheduled_tasks/get_reddit_trending_stocks/scrape_reddit.py
-- Script to scrape trending tickers in Reddit (r/wallstreetbets, r/StockMarket, r/stocks, r/options).
+- Script to scrape trending tickers in Reddit (r/wallstreetbets, r/StockMarket, r/stocks, r/options, r/pennystocks, r/investing).
 - Additional information (beta, volume, industry, recommendation etc) of the ticker will be extracted from yahoo finance too.
 - Edit your config in scheduled_tasks/config.py. Make sure you have you PRAW API key first.
 - Extension of [https://github.com/kaito1410/AutoDD_Rev2](https://github.com/kaito1410/AutoDD_Rev2)
+
+#### scheduled_tasks/get_reddit_trending_crypto.py
+- Script to scrape trending crypto in Reddit (r/CryptoCurrenncy)
+- Additional information (circulating supply, max suply etc) will be extracted from CoinGeckoAPI
 
 #### scheduled_tasks/get_subreddit_count.py
 - Script to get total number of users and active users in popular subreddits on Reddit.
@@ -60,6 +64,9 @@ py scheduled_tasks/get_short_volume.py
 ```
 py scheduled_tasks/get_news_sentiment.py
 ```
+
+#### scheduled_tasks/get_reverse_repo.py
+- Get reverse repo transaction
 
 ### Scheduled Tasks to run if required
 

@@ -187,6 +187,11 @@ function check_if_num(property) {
     return property_name
 }
 
+function load_error_img(elem, symbol) {
+    document.getElementById("ticker_basic_stats").innerHTML = `<div id="no_img_div">
+    <div>${symbol}</div></div>` + document.getElementById("ticker_basic_stats").innerHTML
+}
+
 <!--If ticker does not have a website, bring users to Yahoo Finance-->
 if (information.hasOwnProperty("website") == true) {
     var website = information["website"]
@@ -197,7 +202,7 @@ else {
 
 <!--If ticker does not have an image, show a default image-->
 var img = `https://g.foolcdn.com/art/companylogos/mark/${information["symbol"]}.png`
-var img_code = `<img src="${img}" onerror=this.src="{% static 'images/not_available.svg' %}">`
+var img_code = `<img src="${img}" onerror="this.error=null;this.parentElement.remove();load_error_img(this, information['symbol'])">`
 
 <!--Check if input is an ETF/Crypto/Stock and display information to user accordingly-->
 var quoteType = information["quoteType"]

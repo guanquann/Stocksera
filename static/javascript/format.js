@@ -78,6 +78,71 @@ function restore_dark_mode() {
     }
 }
 
+function show_ticker_price(information) {
+    <!--Code to show price change-->
+    var latest_price = information["regularMarketPrice"];
+    var mkt_close = information["previousClose"];
+    <!--Code to show price change-->
+    var price_change = Math.round((latest_price - mkt_close) * 100) / 100
+    var price_percentage_change = Math.round(((latest_price - mkt_close) / mkt_close) * 10000) / 100
+    if (price_change > 0) {
+        price_change = "+" + String(price_change)
+        price_percentage_change = "+" + String(price_percentage_change) + "%"
+    }
+    else {
+        price_percentage_change = String(price_percentage_change) + "%"
+    }
+
+    <!--Function to check that dictionary has a key-->
+    function check_stats(property) {
+        if (information.hasOwnProperty(property) == true) {
+            property_name = information[property]
+        }
+        else {
+            property_name = "N/A"
+        }
+        return property_name
+    }
+
+    function load_error_img(elem, symbol) {
+        document.getElementById("ticker_basic_stats").innerHTML = `<div id="no_img_div">
+        <div>${symbol}</div></div>` + document.getElementById("ticker_basic_stats").innerHTML
+    }
+
+    <!--If ticker does not have a website, bring users to Yahoo Finance-->
+    if (information.hasOwnProperty("website") == true) {
+        var website = information["website"]
+    }
+    else {
+        var website = `https://finance.yahoo.com/quote/${information["symbol"]}`
+    }
+
+    <!--If ticker does not have an image, show a default image-->
+    var img = `https://g.foolcdn.com/art/companylogos/mark/${information["symbol"]}.png`
+    var img_code = `<img src="${img}" onerror="this.error=null;this.parentElement.remove();load_error_img(this, information['symbol'])">`
+
+    <!--Code to display image, full name, symbol, industry and sector-->
+    var official_name = check_stats("longName")
+    var sector = check_stats("sector")
+    var industry = check_stats("industry")
+
+    if (price_percentage_change.includes("-")) {
+        var price_code = `<div class="price_details negative_price">$${latest_price}<br>${price_change} (${price_percentage_change})</div>`
+    }
+    else {
+        var price_code = `<div class="price_details positive_price">$${latest_price}<br>${price_change} (${price_percentage_change})</div>`
+    }
+
+    var ticker_basic_stats_code = `
+        <div id="img_div">${img_code}</div>
+        <div id="ticker_intro">
+            <span>${official_name} (${information["symbol"]})</span>
+            <br>Sector: <b>${sector}</b><br>Industry: <b>${industry}</b>
+        </div>
+        ${price_code}`
+    document.getElementById("ticker_basic_stats").innerHTML = ticker_basic_stats_code;
+}
+
 function clickAndDisable(link) {
     // disable subsequent clicks
     link.onclick = function(event) {

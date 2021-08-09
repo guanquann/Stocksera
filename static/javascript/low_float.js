@@ -6,17 +6,27 @@ function update_table() {
         <th onclick="sortTable(1)" class="th-sort-desc" id='1'>Company</th>
         <th onclick="sortTable(2)" class="th-sort-desc" id='2'>Exchange</th>
         <th onclick="sortTable(3)" class="th-sort-desc" id='3'>Previous Close</th>
-        <th onclick="sortTable(4)" class="th-sort-desc" id='4'>Floating Shares</th>
-        <th onclick="sortTable(5)" class="th-sort-desc" id='5'>Outstanding Shares</th>
-        <th onclick="sortTable(6)" class="th-sort-desc" id='6'>Short Interest</th>
-        <th onclick="sortTable(7)" class="th-sort-desc" id='7'>Industry</th>`
+        <th onclick="sortTable(4)" class="th-sort-desc" id='4'>1 Day Change %</th>
+        <th onclick="sortTable(5)" class="th-sort-desc" id='5'>Floating Shares</th>
+        <th onclick="sortTable(6)" class="th-sort-desc" id='6'>Outstanding Shares</th>
+        <th onclick="sortTable(7)" class="th-sort-desc" id='7'>Short Interest</th>
+        <th onclick="sortTable(8)" class="th-sort-desc" id='8'>Market Cap</th>
+        <th onclick="sortTable(9)" class="th-sort-desc" id='9'>Industry</th>`
 
     for (i=1; i<rows.length; i++) {
         var td = rows[i].querySelectorAll("td");
-        td[0].innerHTML = `<img src='${td[8].innerHTML}' onerror='this.src="/static/images/not_available.svg"'><b>` + td[0].innerHTML + "</b>";
+        img_url = `https://g.foolcdn.com/art/companylogos/mark/${td[0].innerHTML}.png`
+        td[0].innerHTML = `<a href="/ticker/?quote=${td[0].innerHTML}" target="_blank"><img src=${img_url} onerror='this.src="/static/images/not_available.svg"'><b>${td[0].innerHTML}</b></a>`;
         td[3].innerHTML = "$" + td[3].innerHTML;
-        td[8].style.display = "none";
+        td[4].innerHTML = td[4].innerHTML + "%";
+        if (td[4].innerHTML.includes("-")) {
+            td[4].style.color = "red"
+        }
+        else {
+            td[4].style.color = "green"
+        }
     }
+    document.getElementsByClassName("table_div")[0].style.removeProperty("display");
 }
 
 function sortTable(n) {
@@ -49,7 +59,7 @@ function sortTable(n) {
 
 
             // If column is floating/outstanding shares
-            if (n == 4 || n == 5 || n == 6) {
+            if (n == 5 || n == 6 || n == 8) {
                 x = rows[i].getElementsByTagName("TD")[n].innerHTML
                 y = rows[i + 1].getElementsByTagName("TD")[n].innerHTML
                 if (x.includes("B")) {

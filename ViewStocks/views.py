@@ -1,6 +1,5 @@
 import os
 import math
-import sqlite3
 
 from custom_extensions.custom_words import *
 from custom_extensions.stopwords import *
@@ -16,9 +15,6 @@ from finvizfinance.quote import finvizfinance
 from django.shortcuts import render
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
-db = conn.cursor()
-
 analyzer = SentimentIntensityAnalyzer()
 analyzer.lexicon.update(new_words)
 
@@ -32,7 +28,10 @@ session.headers['User-agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKi
 
 
 def main(request):
-    return render(request, "home.html")
+    db.execute("SELECT * FROM stocksera_trending ORDER BY count DESC LIMIT 10")
+    trending = db.fetchall()
+    trending = list(map(list, trending))
+    return render(request, "home.html", {"trending": trending})
 
 
 def stock_price(request):
@@ -678,7 +677,7 @@ def reddit_analysis(request):
     else:
         subreddit = "wallstreetbets"
 
-    db.execute("SELECT DISTINCT(date_updated) FROM {} ORDER BY ID DESC LIMIT 30".format(subreddit,))
+    db.execute("SELECT DISTINCT(date_updated) FROM {} ORDER BY ID DESC LIMIT 14".format(subreddit,))
     all_dates = db.fetchall()
     all_dates = list(map(convert_date, all_dates))
 
@@ -793,6 +792,7 @@ def short_interest(request):
     """
     Get short interest of ticker. Data if from highshortinterest.com
     """
+    pd.options.display.float_format = '{:.2f}'.format
     df_high_short_interest = pd.read_sql("SELECT * FROM short_interest", con=conn)
     return render(request, 'short_interest.html', {"df_high_short_interest": df_high_short_interest.to_html(index=False)})
 
@@ -801,6 +801,7 @@ def low_float(request):
     """
     Get short interest of ticker. Data if from lowfloat.com
     """
+    pd.options.display.float_format = '{:.2f}'.format
     df_low_float = pd.read_sql("SELECT * FROM low_float", con=conn)
     return render(request, 'low_float.html', {"df_low_float": df_low_float.to_html(index=False)})
 

@@ -8,6 +8,12 @@ db = conn.cursor()
 
 
 def database():
+    db.execute("CREATE table IF NOT EXISTS stocksera_trending ("
+               "symbol TEXT, "
+               "name TEXT, "
+               "count INTEGER, "
+               "UNIQUE('symbol'))")
+
     subreddits = ["wallstreetbets", "stocks", "stockmarket", "options", "pennystocks", "investing"]
     for subreddit in subreddits:
         db.execute("CREATE table IF NOT EXISTS {} ("
@@ -102,22 +108,24 @@ def database():
                "company TEXT, "
                "exchange TEXT, "
                "previous_close FLOAT, "
+               "one_day_change FLOAT, "
                "short_int TEXT, "
                "float TEXT, "
-               "outstanding_shares TEXT,"
-               "industry TEXT, "
-               "logo_url TEXT )")
+               "outstanding_shares TEXT, "
+               "market_cap INTEGER, "
+               "industry TEXT )")
 
     db.execute("CREATE table IF NOT EXISTS low_float ("
                "ticker TEXT, "
                "company TEXT, "
                "exchange TEXT, "
                "previous_close FLOAT, "
+               "one_day_change FLOAT, "
                "float TEXT, "
                "outstanding_shares TEXT,"
                "short_int TEXT, "
-               "industry TEXT, "
-               "logo_url TEXT )")
+               "market_cap INTEGER, "
+               "industry TEXT )")
 
     db.execute("CREATE table IF NOT EXISTS short_volume ("
                "ticker TEXT, "

@@ -407,6 +407,7 @@ def print_df(df, filename, writesql, writecsv, subreddit):
 
     # Create past 1 month chart
     print("Saving last 1 month chart now...")
+    chart_path = r"static/graph_chart/stocks"
     top_35 = df[:35]
     for index, i in top_35.iterrows():
         trending_ticker = i[1]
@@ -429,5 +430,12 @@ def print_df(df, filename, writesql, writecsv, subreddit):
             plt.yticks([])
 
             plt.plot(days_list, price_list, color=color)
-            plt.savefig(r"static/graph_chart/stocks/{}.svg".format(trending_ticker), transparent=True)
+            plt.savefig(os.path.join(chart_path, r"{}.svg".format(trending_ticker)), transparent=True)
             plt.close()
+
+    # Remove old charts
+    to_delete_date = datetime.utcnow().date() - timedelta(days=15)
+    for img_name in os.listdir(chart_path):
+        img_last_modified = datetime.fromtimestamp(os.path.getmtime(os.path.join(chart_path, img_name))).date()
+        if img_last_modified <= to_delete_date:
+            os.remove(os.path.join(chart_path, img_name))

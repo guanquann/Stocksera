@@ -17,18 +17,19 @@ function load_graph() {
             labels: ["Low", "Avg", "High"],
             datasets: [
                 {
+                    label: 'EPS',
+                    type: 'line',
+                    data: earnings_list,
+                    borderColor: 'red',
+                    backgroundColor: 'transparent',
+                    yAxisID: 'A',
+                },
+                {
                     label: 'Revenue',
                     type: 'bar',
                     data: revenue_list,
                     backgroundColor: 'wheat',
                     yAxisID: 'B',
-                },
-                {
-                    label: 'EPS',
-                    type: 'bar',
-                    data: earnings_list,
-                    backgroundColor: 'red',
-                    yAxisID: 'A',
                 },
                 ]
         },

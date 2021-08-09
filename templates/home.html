@@ -8,6 +8,10 @@
 <link rel="stylesheet" href="{% static 'style/home.css' %}">
 <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
 <script src="{% static 'javascript/home.js' %}"></script>
+<style>
+
+
+</style>
 {% endblock %}
 
 {% block onload_properties%}restore_dark_mode(){% endblock %}
@@ -31,6 +35,28 @@
                 <p>We track trending tickers on Reddit and provide Due-Diligence at no cost.</p>
             </div>
         </div>
+    </div>
+
+    <div class="ranking_div">
+        <div class="section_div_left">
+            <h1>Stocksera Trending Tickers</h1>
+            <div class="ranking">
+                <div class="ranking_num"><b>Rank</b></div>
+                <div class="ranking_symbol"><b>Symbol</b></div>
+                <div class="ranking_name"><b>Name</b></div>
+            </div>
+            {% for i in trending %}
+            <div class="ranking">
+                <a href="/ticker/?quote={{i.0}}">
+                    <div class="ranking_num">{{ forloop.counter }}.</div>
+                    <div class="ranking_symbol">{{i.0}}</div>
+                    <div class="ranking_name">{{i.1}}</div>
+                </a>
+            </div>
+            {% endfor %}
+            <span><i>Data is updated real time</i></span>
+        </div>
+        <div class="section_div_right ranking_img"><img src="{% static 'images/homepage/trending.png' %}"></div>
     </div>
 
     <div id="contents_title"></div>
@@ -115,7 +141,7 @@
                 <div class="href_btn"><a href="https://www.youtube.com/watch?v=SEYXEcVKt38" target="_blank">VIEW MORE</a></div>
             </div>
         </div>
-        <div class="section_div_right"><a href="https://www.youtube.com/watch?v=SEYXEcVKt38" target="_blank"><img src="{% static 'images/github/youtube.png' %}"></a></div>
+        <div class="section_div_right"><a href="https://www.youtube.com/watch?v=SEYXEcVKt38" target="_blank"><img src="{% static 'images/homepage/youtube.png' %}"></a></div>
     </div>
 
     <div class="section_div">
@@ -130,7 +156,7 @@
                 </div>
             </div>
         </div>
-        <div class="section_div_right"><img src="{% static 'images/github/responsive.png' %}"></div>
+        <div class="section_div_right"><img src="{% static 'images/homepage/responsive.png' %}"></div>
     </div>
 </div>
 {% endblock %}

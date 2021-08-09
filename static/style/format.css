@@ -134,6 +134,64 @@
         max-width: 100px;
     }
 
+    #no_img_div {
+        border-radius: 50%;
+        background-color: white;
+        opacity: 0.8;
+        color: black !important;
+        width: 50px;
+        height: 50px;
+        vertical-align: top;
+        border: 0.8px solid black;
+        display: inline-block;
+        text-align: center;
+        margin: auto;
+    }
+
+    #no_img_div div {
+        margin-top: 18px;
+        font-size: 13px;
+        font-weight: bolder;
+    }
+
+    #img_div {
+        width: 50px;
+        display: inline-block;
+    }
+
+    #img_div img {
+        border-radius: 50%;
+        height: 50px;
+        width: 50px;
+        object-fit: contain;
+        border: 0.8px solid black;
+    }
+
+    #ticker_intro span {
+        font-size:15px;
+        font-weight:bold;
+    }
+
+    #ticker_intro {
+        width: 58%;
+        margin-left: 8px;
+        display: inline-block;
+        vertical-align: bottom;
+    }
+
+    .price_details {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: bold;
+        border-radius: 6px;
+        padding-top: 4px;
+        padding-bottom: 3px;
+        padding-left: 5px;
+        padding-right: 5px;
+        float: right;
+        margin-top: 10px;
+    }
+
     .submit_btn {
         border: 1px solid grey;
         border-radius: 6px;
@@ -291,6 +349,64 @@
         padding: 7px;
         text-transform: uppercase;
         max-width: 120px;
+    }
+
+    #no_img_div {
+        border-radius: 50%;
+        background-color: white;
+        opacity: 0.8;
+        color: black !important;
+        width: 60px;
+        height: 60px;
+        vertical-align: top;
+        border: 0.8px solid black;
+        display: inline-block;
+        text-align: center;
+        margin: auto;
+    }
+
+    #no_img_div div {
+        margin-top: 22px;
+        font-size: 18px;
+        font-weight: bolder;
+    }
+
+    #img_div {
+        width: 60px;
+        display: inline-block;
+    }
+
+    #img_div img {
+        border-radius: 50%;
+        height: 60px;
+        width: 60px;
+        object-fit: contain;
+        border: 0.8px solid black;
+    }
+
+    #ticker_intro span {
+        font-size:22px;
+        font-weight:bold;
+    }
+
+    #ticker_intro {
+        width: 73%;
+        margin-left: 8px;
+        display: inline-block;
+        vertical-align: bottom;
+    }
+
+    .price_details {
+        display: inline-block;
+        font-size: 15px;
+        font-weight: bold;
+        border-radius: 6px;
+        padding-top: 6px;
+        padding-bottom: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
+        float: right;
+        margin-top: 10px;
     }
 
     .submit_btn {
@@ -457,24 +573,6 @@ a {
 
 .dark_mode a {
     color: wheat;
-}
-
-#img_div {
-    width: 6%;
-    min-width: 50px;
-    max-width: 80px;
-    display: inline-block;
-}
-
-#img_div img {
-    border-radius: 50%;
-    width: 100%;
-    min-height: 45px;
-    max-height: 65px;
-    max-width: 65px;
-    min-width: 45px;
-    object-fit: contain;
-    border: 0.8px solid black;
 }
 
 .dark_mode #img_div img {
@@ -810,6 +908,16 @@ input:checked + .slider:before {
 .dark_mode .github_div img {
     background-color: wheat;
     border: 2px solid wheat;
+}
+
+.positive_price {
+    background-color: green;
+    color: white;
+}
+
+.negative_price {
+    background-color: red;
+    color: white;
 }
 
 ::-webkit-scrollbar {

@@ -18,6 +18,46 @@
         width: 70% !important;
     }
 
+    .ranking_div {
+        background-color: #eae9e9;
+        width: 80vw;
+        border-radius: 10px;
+        display: flex;
+        margin: auto;
+        margin-bottom: 15px;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 5px;
+    }
+
+    .ranking {
+        width: 95%;
+        padding: 5px;
+        margin: 4px auto;
+        border: 1.5px solid gray;
+        border-radius: 5px;
+        display: flex;
+    }
+
+    .ranking_num {
+        width: 13%;
+    }
+
+    .ranking_symbol {
+        width: 20%
+    }
+
+    .ranking_name {
+        width: 70%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        text-align: left;
+    }
+
+    .ranking_img {
+        display: none;
+    }
+
     .section_div {
         text-align: center;
         margin: auto;
@@ -111,6 +151,34 @@
         max-width: 400px !important;
     }
 
+    .ranking_div {
+        background-color: #eae9e9;
+        width: 94%;
+        border-radius: 10px;
+        display: flex;
+        margin: auto;
+        margin-bottom: 15px;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 5px;
+    }
+
+    .ranking {
+        padding: 3px;
+        margin: 5px auto;
+        border: 1.5px solid gray;
+        border-radius: 5px;
+        display: flex;
+    }
+
+    .ranking_num {
+        width: 10%;
+    }
+
+    .ranking_symbol {
+        width: 20%
+    }
+
     .section_div {
         background-color: #eae9e9;
         width: 94%;
@@ -198,7 +266,7 @@
     opacity: 1
 }
 
-.dark_mode .main_div a {
+.dark_mode .main_div a, .dark_mode .ranking a {
     color: wheat;
 }
 
@@ -234,7 +302,7 @@ h1 {
     margin-bottom: 5px;
 }
 
-.dark_mode .section_div {
+.dark_mode .section_div, .dark_mode .ranking_div {
     background-color: #505050;
 }
 
@@ -246,7 +314,7 @@ h1 {
     margin-bottom: 2px;
 }
 
-.section_div_left button:hover, .selected {
+.section_div_left button:hover, .section_div_left .ranking:not(:first-of-type):hover, .selected {
     background-color: gray;
     color: white;
 }
@@ -263,4 +331,21 @@ h1 {
     width: 100%;
     max-width: 400px;
     border-radius: 10px;
+}
+
+.ranking:not(:first-of-type):hover {
+        cursor: pointer;
+        transition: 0.5s;
+    }
+
+.ranking a {
+    display: inherit;
+    width: 100%;
+}
+.ranking a:hover {
+    color: white
+}
+
+.dark_mode .ranking a {
+    color: wheat;
 }

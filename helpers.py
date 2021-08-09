@@ -1,7 +1,11 @@
+import sqlite3
 import numpy as np
 import pandas as pd
 import json
 from datetime import datetime, timedelta
+
+conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
+db = conn.cursor()
 
 # Time Format: HHMMSS
 market_open_time = "133000"
@@ -99,10 +103,17 @@ def check_market_hours(ticker, ticker_selected):
                 r.truncate()
                 json.dump(data, r, indent=4)
                 print("Market Open. Scraping data")
+
+    if "shortName" in information:
+        db.execute("INSERT INTO stocksera_trending VALUES (?, ?, 1) ON CONFLICT (symbol) DO UPDATE SET count=count+1",
+                   (ticker_selected, information["shortName"]))
+        conn.commit()
+
     return information
 
 
 def check_financial_data(ticker_selected, ticker, data, r):
+    print("Getting financial data for {}".format(ticker_selected))
     balance_sheet = ticker.quarterly_balance_sheet
     balance_sheet = balance_sheet.replace(np.nan, 0)[balance_sheet.columns[::-1]]
     date_list = balance_sheet.columns.astype("str").to_list()

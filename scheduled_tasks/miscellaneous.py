@@ -1,8 +1,13 @@
+import os
+import sys
 import sqlite3
 import requests
 from bs4 import BeautifulSoup
-import yfinance.ticker as yf
 import pandas as pd
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from helpers import *
+import scheduled_tasks.get_reddit_trending_stocks.fast_yahoo as fast_yahoo
 
 conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
@@ -42,18 +47,20 @@ def get_high_short_interest():
                 len(df_high_short_interest.index)
             ] = shorted_stock_data[:-1]
 
+    quick_stats = {'regularMarketPreviousClose': 'PreviousClose',
+                   'regularMarketChangePercent': '1DayChange%',
+                   'marketCap': 'MktCap'}
+    yf_stats_df = fast_yahoo.download_quick_stats(df_high_short_interest["Ticker"].to_list(), quick_stats)
+    yf_stats_df.reset_index(inplace=True)
+    yf_stats_df.rename(columns={"Symbol": "Ticker"}, inplace=True)
+
+    results_df = pd.merge(df_high_short_interest, yf_stats_df, on="Ticker")
+    print(results_df)
     db.execute("DELETE FROM short_interest")
-    for index, row in df_high_short_interest.iterrows():
-        information = yf.Ticker(row["Ticker"]).info
-
-        quick_stats = {'regularMarketPreviousClose': 'prvCls', 'fiftyDayAverage': '50DayAvg',
-                       'regularMarketVolume': 'volume', 'averageDailyVolume3Month': '3MonthVolAvg',
-                       'regularMarketPrice': 'price', 'regularMarketChangePercent': '1DayChange%',
-                       'floatShares': 'floating_shares', 'beta': 'beta', 'marketCap': 'mkt_cap'}
-
-        db.execute("INSERT INTO short_interest VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                   (row['Ticker'], row['Company'], row['Exchange'], information["previousClose"],
-                    row['ShortInt'], row['Float'], row['Outstd'], row['Industry'], information["logo_url"]))
+    for index, row in results_df.iterrows():
+        db.execute("INSERT INTO short_interest VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                   (row['Ticker'], row['Company'], row['Exchange'], row['PreviousClose'], round(row['1DayChange%'], 2),
+                    row['ShortInt'], row['Float'], row['Outstd'], long_number_format(row['MktCap']), row['Industry']))
         conn.commit()
         print("INSERT {} INTO SHORT INTEREST DATABASE SUCCESSFULLY!".format(row['Ticker']))
 
@@ -88,12 +95,20 @@ def get_low_float():
         if len(low_float_data) == 8:
             df_low_float.loc[len(df_low_float.index)] = low_float_data[:-1]
 
+    quick_stats = {'regularMarketPreviousClose': 'PreviousClose',
+                   'regularMarketChangePercent': '1DayChange%',
+                   'marketCap': 'MktCap'}
+    yf_stats_df = fast_yahoo.download_quick_stats(df_low_float["Ticker"].to_list(), quick_stats)
+    yf_stats_df.reset_index(inplace=True)
+    yf_stats_df.rename(columns={"Symbol": "Ticker"}, inplace=True)
+
+    results_df = pd.merge(df_low_float, yf_stats_df, on="Ticker")
+    print(results_df)
     db.execute("DELETE FROM low_float")
-    for index, row in df_low_float.iterrows():
-        information = yf.Ticker(row["Ticker"]).info
-        db.execute("INSERT INTO low_float VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                   (row['Ticker'], row['Company'], row['Exchange'], information["previousClose"],
-                    row['Float'], row['Outstd'], row['Outstd'], row['Industry'], information["logo_url"]))
+    for index, row in results_df.iterrows():
+        db.execute("INSERT INTO low_float VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                   (row['Ticker'], row['Company'], row['Exchange'], row['PreviousClose'], round(row['1DayChange%'], 2),
+                    row['Float'], row['Outstd'], row['ShortInt'], long_number_format(row['MktCap']), row['Industry']))
         conn.commit()
         print("INSERT {} INTO LOW FLOAT DATABASE SUCCESSFULLY!".format(row['Ticker']))
 

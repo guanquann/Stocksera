@@ -49,30 +49,30 @@ def financial(ticker_symbol):
 
     # To check if input is a valid ticker
     if "symbol" in information:
-        # with open(r"database/financials.json", "r+") as r:
-        #     data = json.load(r)
-            # check_financial_data(ticker_symbol, ticker, data, r)
+        with open(r"database/financials.json", "r+") as r:
+            data = json.load(r)
+            check_financial_data(ticker_symbol, ticker, data, r)
 
-        url_ratings = "https://finance.yahoo.com/calendar/earnings?symbol={}".format(ticker_symbol)
-        text_soup_ratings = BeautifulSoup(get_earnings_html(url_ratings), "lxml")
-
-        earnings_list, financial_quarter_list = [], []
-        # [[1, 0.56, 0.64], [2, 0.51, 0.65], [3, 0.7, 0.73], [4, 1.41, 1.68], [5, 0.98]]
-        count = 5
-        for earning in text_soup_ratings.findAll("tr"):
-            tds = earning.findAll("td")
-            if len(tds) > 0:
-                earning_date = tds[2].text.rsplit(",", 1)[0]
-                eps_est = tds[3].text
-                eps_act = tds[4].text
-                print(earning_date, eps_est, eps_act, ticker_symbol)
-                if eps_est != "-" and eps_act != "-":
-                    if eps_act != "-":
-                        earnings_list.append([count, earning_date, eps_est, eps_act])
-                    else:
-                        earnings_list.append([count, earning_date, eps_est])
-            else:
-                break
+        # url_ratings = "https://finance.yahoo.com/calendar/earnings?symbol={}".format(ticker_symbol)
+        # text_soup_ratings = BeautifulSoup(get_earnings_html(url_ratings), "lxml")
+        #
+        # earnings_list, financial_quarter_list = [], []
+        # # [[1, 0.56, 0.64], [2, 0.51, 0.65], [3, 0.7, 0.73], [4, 1.41, 1.68], [5, 0.98]]
+        # count = 5
+        # for earning in text_soup_ratings.findAll("tr"):
+        #     tds = earning.findAll("td")
+        #     if len(tds) > 0:
+        #         earning_date = tds[2].text.rsplit(",", 1)[0]
+        #         eps_est = tds[3].text
+        #         eps_act = tds[4].text
+        #         print(earning_date, eps_est, eps_act, ticker_symbol)
+        #         if eps_est != "-" and eps_act != "-":
+        #             if eps_act != "-":
+        #                 earnings_list.append([count, earning_date, eps_est, eps_act])
+        #             else:
+        #                 earnings_list.append([count, earning_date, eps_est])
+        #     else:
+        #         break
         # print(earnings_list)
 
         #     if len(earnings_list) != 100:

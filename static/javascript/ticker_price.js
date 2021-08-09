@@ -8,7 +8,10 @@ function display_data() {
         document.getElementsByClassName("ticker_summary")[0].style.removeProperty("display");
         document.getElementsByClassName("tradingview-widget-container")[0].style.removeProperty("display");
 
-        document.getElementById("img_div").style.removeProperty("display");
+        if (document.getElementById("img_div") != null) {
+            document.getElementById("img_div").style.removeProperty("display");
+        }
+
         document.getElementById("ticker_intro").style = "display:inline-block;";
         document.getElementById("ticker_table").style.removeProperty("display");
         document.getElementById("latest_price").style.removeProperty("display");

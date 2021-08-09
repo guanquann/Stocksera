@@ -96,21 +96,9 @@
             <a class="more_info_btn" href="{% url 'hedge_funds' %}" onclick="clickAndDisable(this);">Hedge Fund</a>
         </div>
 
-        <div class="table_div">
+        <div class="table_div" style="display: none">
             {{ df_low_float|safe }}
         </div>
         <p>Data from: <a href="https://www.lowfloat.com" target="_blank">lowfloat.com</a>
     </div>
-{% endblock %}
-
-{% block bottom_script %}
-<script>
-    var table = document.getElementsByTagName("table")[0];
-    var tr = table.querySelectorAll("tr");
-    for (row=1; row<tr.length; row++) {
-        var td = tr[row].querySelector("td");
-        ticker = td.innerHTML;
-        td.innerHTML = `<a href="{% url 'ticker' %}?quote=${ticker}" target="_blank">${ticker}</a>`;
-    }
-</script>
 {% endblock %}

@@ -210,7 +210,7 @@ def get_financial_data(stats_table, crypto_id, symbol):
         market_data = client.get_coin_by_id(crypto_id)['market_data']
     except requests.exceptions.RequestException as e:
         print(e, "error")
-        time.sleep(10)
+        time.sleep(20)
         market_data = client.get_coin_by_id(crypto_id)['market_data']
 
     current_price = market_data["current_price"]["usd"]
@@ -218,8 +218,14 @@ def get_financial_data(stats_table, crypto_id, symbol):
     market_cap = long_number_format(market_data["market_cap"]["usd"])
     if str(market_cap) == "0":
         market_cap = "N/A"
-    price_change_percentage_24h = round(market_data["price_change_percentage_24h"], 2)
-    price_change_percentage_30d = round(market_data["price_change_percentage_30d"], 2)
+    if market_data["price_change_percentage_24h"] is not None:
+        price_change_percentage_24h = round(market_data["price_change_percentage_24h"], 2)
+    else:
+        price_change_percentage_24h = 0
+    if market_data["price_change_percentage_30d"] is not None:
+        price_change_percentage_30d = round(market_data["price_change_percentage_30d"], 2)
+    else:
+        price_change_percentage_30d = 0
     circulating_supply = long_number_format(market_data["circulating_supply"])
     if str(circulating_supply) == "0":
         circulating_supply = "N/A"
@@ -238,7 +244,7 @@ def get_graph_chart(crypto_id, symbol):
         prices = client.get_coin_market_chart_by_id(crypto_id, vs_currency="USD", days=30)
     except requests.exceptions.RequestException as e:
         print(e, "error")
-        time.sleep(10)
+        time.sleep(20)
         prices = client.get_coin_market_chart_by_id(crypto_id, vs_currency="USD", days=30)
     prices = prices["prices"]
     df = pd.DataFrame(data=prices, columns=["time", "price"]).iloc[::12, :]
@@ -280,7 +286,8 @@ def main():
         coingecko_coin_list = client.get_coins_list()
     except requests.exceptions.RequestException as e:
         print("error", e)
-        time.sleep(10)
+        print("20 ")
+        time.sleep(20)
         coingecko_coin_list = client.get_coins_list()
 
     print(len(ticker_list), "number of tickers")

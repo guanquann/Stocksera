@@ -2,14 +2,14 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | Reverse Repo{% endblock %}
+{% block title %}StocksEra | Daily Treasury{% endblock %}
 
 {% block additional_script %}
-<link rel="stylesheet" href="{% static 'style/reverse_repo.css' %}">
-<script src="{% static 'javascript/reverse_repo.js' %}"></script>
+<link rel="stylesheet" href="{% static 'style/daily_treasury.css' %}">
+<script src="{% static 'javascript/daily_treasury.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode();reverse_repo('{{selected}}'){% endblock %}
+{% block onload_properties%}restore_dark_mode();daily_treasury('{{selected}}'){% endblock %}
 
 {% block main_nav %}
     <div class="ticker-wrap">
@@ -68,20 +68,14 @@
 
 {% block main_content %}
     <div class="instructions">
-        <h2>Reverse Repo</h2>
-        <p> In a repo transaction, the Fed purchases Treasury, agency debt, or agency mortgage-backed securities (MBS)
-            from a counterparty subject to an agreement to resell the securities at a later date. It is economically
-            similar to a loan collateralized by securities having a value higher than the loan to protect the Fed
-            against market and credit risk. Repo transactions temporarily increase the quantity of reserve balances
-            in the banking system.
-            <br><br>
-            In a reverse repo transaction, the opposite occurs: the Fed sells securities to a counterparty subject to
-            an agreement to repurchase the securities at a later date at a higher repurchase price. Reverse repo
-            transactions temporarily reduce the quantity of reserve balances in the banking system.
+        <h2>Daily Treasury</h2>
+        <p>
+            The Daily Treasury Statement summarizes the US Treasury’s cash and debt operations for the Federal
+            Government on a modified cash basis. Deposits are reported as received and withdrawals are reported as processed.
         </p>
     </div>
 
-    <div class="reverse_repo">
+    <div class="daily_treasury">
         <div id="more_info_div">
             <a class="more_info_btn" href="{% url 'reverse_repo' %}" onclick="clickAndDisable(this);">Reverse Repo</a>
             <a class="more_info_btn" href="{% url 'daily_treasury' %}" onclick="clickAndDisable(this);">Daily Treasury</a>
@@ -97,25 +91,27 @@
         </form>
 
         <div class="chart-container">
-            <canvas id="reverse_repo_chart"></canvas>
+            <canvas id="daily_treasury_chart"></canvas>
         </div>
 
-        <table id="reverse_repo_table">
+        <table id="daily_treasury_table">
             <thead>
                 <tr>
                     <th>Date</th>
-                    <th>Amount</th>
-                    <th>Num Parties</th>
-                    <th>Average</th>
+                    <th>Close Balance</th>
+                    <th>Open Balance</th>
+                    <th>Amount Change</th>
+                    <th>Percent Change</th>
                 </tr>
             </thead>
             <tbody>
-                {% for repo in reverse_repo_stats %}
+                {% for daily_treasury in daily_treasury_stats %}
                     <tr>
-                        <td>{{repo.0}}</td>
-                        <td>{{repo.1}}</td>
-                        <td>{{repo.2}}</td>
-                        <td>{{repo.3}}</td>
+                        <td>{{daily_treasury.0}}</td>
+                        <td>{{daily_treasury.1}}</td>
+                        <td>{{daily_treasury.2}}</td>
+                        <td>{{daily_treasury.3}}</td>
+                        <td>{{daily_treasury.4}}</td>
                     </tr>
                 {% endfor %}
             </tbody>

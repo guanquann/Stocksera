@@ -38,10 +38,10 @@ SHORT_VOL = False
 NEWS_SENTIMENT = True
 
 # If you want to get tickers with low float
-LOW_FLOAT = False
+LOW_FLOAT = True
 
 # If you want to get tickers with high short interest
-SHORT_INT = False
+SHORT_INT = True
 
 # If you want to get upcoming earnings calendar
 EARNINGS_CALENDAR = False

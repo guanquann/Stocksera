@@ -131,6 +131,7 @@
 <script type="text/javascript">
 <!--Hack to convert python variables to javascript-->
 var None = "N/A", False = false; True = true;
-show_ticker_price({{information|safe}})
+var information = {{information|safe}}
+show_ticker_price(information)
 </script>
 {% endblock %}

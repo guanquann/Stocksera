@@ -782,10 +782,32 @@ def reverse_repo(request):
     """
     Get reverse repo. Data is from https://apps.newyorkfed.org/markets/autorates/tomo-results-display?SHOWMORE=TRUE&startDate=01/01/2000&enddate=01/01/2000
     """
-    db.execute("SELECT * FROM reverse_repo")
+    if request.GET.get("date_range"):
+        date_range = request.GET.get("date_range")
+    else:
+        date_range = "Max"
+    query = date_selector_html(date_range)
+    db.execute("SELECT * FROM reverse_repo " + query)
     reverse_repo_stats = db.fetchall()
     reverse_repo_stats = reversed(list(map(list, reverse_repo_stats)))
-    return render(request, 'reverse_repo.html', {"reverse_repo_stats": reverse_repo_stats})
+    return render(request, 'reverse_repo.html', {"reverse_repo_stats": reverse_repo_stats,
+                                                 "selected": date_range})
+
+
+def daily_treasury(request):
+    """
+       Get daily treasury. Data is from https://fiscaldata.treasury.gov/datasets/daily-treasury-statement/operating-cash-balance
+   """
+    if request.GET.get("date_range"):
+        date_range = request.GET.get("date_range")
+    else:
+        date_range = "Max"
+    query = date_selector_html(date_range)
+    db.execute("SELECT * FROM daily_treasury " + query)
+    daily_treasury_stats = db.fetchall()
+    daily_treasury_stats = reversed(list(map(list, daily_treasury_stats)))
+    return render(request, 'daily_treasury.html', {"daily_treasury_stats": daily_treasury_stats,
+                                                   "selected": date_range})
 
 
 def short_interest(request):

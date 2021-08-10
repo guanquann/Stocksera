@@ -1,12 +1,12 @@
 @media only screen and (max-width: 900px) {
-    .reverse_repo {
+    .daily_treasury {
         width: 90%;
         margin:auto;
     }
 }
 
 @media only screen and (min-width: 900px) {
-    .reverse_repo {
+    .daily_treasury {
         width: 98%;
         margin:auto;
     }

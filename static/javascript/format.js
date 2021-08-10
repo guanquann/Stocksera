@@ -78,10 +78,38 @@ function restore_dark_mode() {
     }
 }
 
+function load_error_img(elem, symbol) {
+    document.getElementById("ticker_basic_stats").innerHTML = `<div id="no_img_div">
+    <div>${symbol}</div></div>` + document.getElementById("ticker_basic_stats").innerHTML
+}
+
+<!--Function to check that dictionary has a key-->
+function check_stats(property) {
+    if (information.hasOwnProperty(property) == true) {
+        property_name = information[property]
+    }
+    else {
+        property_name = "N/A"
+    }
+    return property_name
+}
+
+function check_if_num(property) {
+    property_name = information[property]
+    if (typeof(property_name) == "number") {
+        property_name= Number(property_name).toLocaleString()
+    }
+    else {
+        property_name = "N/A"
+    }
+    return property_name
+}
+
 function show_ticker_price(information) {
     <!--Code to show price change-->
     var latest_price = information["regularMarketPrice"];
     var mkt_close = information["previousClose"];
+
     <!--Code to show price change-->
     var price_change = Math.round((latest_price - mkt_close) * 100) / 100
     var price_percentage_change = Math.round(((latest_price - mkt_close) / mkt_close) * 10000) / 100
@@ -91,30 +119,6 @@ function show_ticker_price(information) {
     }
     else {
         price_percentage_change = String(price_percentage_change) + "%"
-    }
-
-    <!--Function to check that dictionary has a key-->
-    function check_stats(property) {
-        if (information.hasOwnProperty(property) == true) {
-            property_name = information[property]
-        }
-        else {
-            property_name = "N/A"
-        }
-        return property_name
-    }
-
-    function load_error_img(elem, symbol) {
-        document.getElementById("ticker_basic_stats").innerHTML = `<div id="no_img_div">
-        <div>${symbol}</div></div>` + document.getElementById("ticker_basic_stats").innerHTML
-    }
-
-    <!--If ticker does not have a website, bring users to Yahoo Finance-->
-    if (information.hasOwnProperty("website") == true) {
-        var website = information["website"]
-    }
-    else {
-        var website = `https://finance.yahoo.com/quote/${information["symbol"]}`
     }
 
     <!--If ticker does not have an image, show a default image-->

@@ -1,37 +1,33 @@
-function reverse_repo(selected) {
-    var date_list = [], amount_list = [], parties_list = [];
+function daily_treasury(selected) {
+    var date_list = [], close_list = []
     var table = document.getElementsByTagName("table")[0];
     var tr = table.querySelectorAll("tr");
     for (i=tr.length-1; i>0; i--) {
         var td = tr[i].querySelectorAll("td");
         date_list.push(td[0].innerHTML)
-        amount_list.push(td[1].innerHTML)
-        parties_list.push(td[2].innerHTML)
+        close_list.push(td[1].innerHTML)
         td[1].innerHTML = "$" + td[1].innerHTML + "B"
-        td[3].innerHTML = "$" + td[3].innerHTML + "B"
+        td[2].innerHTML = "$" + td[2].innerHTML + "B"
+        if (td[3].innerHTML.includes("-")) {
+            td[3].innerHTML = td[3].innerHTML.replace("-", "-$") + "B"
+        }
+        else {
+            td[3].innerHTML = "$" + td[3].innerHTML + "B"
+        }
+        td[4].innerHTML = td[4].innerHTML + "%"
     }
 
-    var reverse_repo_chart = document.getElementById('reverse_repo_chart');
-    var reverse_repo_chart = new Chart(reverse_repo_chart, {
+    var daily_treasury_chart = document.getElementById('daily_treasury_chart');
+    var daily_treasury_chart = new Chart(daily_treasury_chart, {
         data: {
             labels: date_list,
             datasets: [
                 {
-                    label: 'Amount',
+                    label: 'Close Balance',
                     type: 'bar',
-                    data: amount_list,
+                    data: close_list,
                     borderColor: 'rgb(38, 166, 154)',
                     backgroundColor: 'rgb(38, 166, 154)',
-                    yAxisID: 'A',
-                },
-                {
-                    label: 'Num Parties',
-                    type: 'line',
-                    data: parties_list,
-                    pointRadius: 0,
-                    borderColor: 'wheat',
-                    backgroundColor: 'wheat',
-                    yAxisID: 'B',
                 }
                 ]
         },
@@ -45,35 +41,20 @@ function reverse_repo(selected) {
             scales: {
                 yAxes: [
                     {
-                        position: 'left',
                         gridLines: {
                             display: false
                         },
                         type: "linear",
-                        id: "A",
                         scaleLabel: {
                             display: true,
-                            labelString: 'Amount [$B]',
+                            labelString: 'Close Balance [$B]',
                             beginAtZero: true,
                         },
-                    },
-                    {
-                        position: 'right',
-                        gridLines: {
-                            display: false
-                        },
-                        type: "linear",
-                        id: "B",
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Num Parties',
-                            beginAtZero: true,
-                        },
-
                     }
                     ],
 
                 xAxes: [{
+                    offset: true,
                     ticks: {
                       maxTicksLimit: 10,
                       maxRotation: 45,
@@ -89,6 +70,13 @@ function reverse_repo(selected) {
             tooltips: {
                 mode: 'index',
                 intersect: false,
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                        var label = data.datasets[tooltipItem.datasetIndex].label;
+                        return label + ': ' + "$" + value + 'B';
+                    }
+                },
             },
             hover: {
                 mode: 'index',

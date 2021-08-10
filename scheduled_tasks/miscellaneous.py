@@ -62,7 +62,6 @@ def get_high_short_interest():
                    (row['Ticker'], row['Company'], row['Exchange'], row['PreviousClose'], round(row['1DayChange%'], 2),
                     row['ShortInt'], row['Float'], row['Outstd'], long_number_format(row['MktCap']), row['Industry']))
         conn.commit()
-        print("INSERT {} INTO SHORT INTEREST DATABASE SUCCESSFULLY!".format(row['Ticker']))
 
 
 def get_low_float():
@@ -110,7 +109,6 @@ def get_low_float():
                    (row['Ticker'], row['Company'], row['Exchange'], row['PreviousClose'], round(row['1DayChange%'], 2),
                     row['Float'], row['Outstd'], row['ShortInt'], long_number_format(row['MktCap']), row['Industry']))
         conn.commit()
-        print("INSERT {} INTO LOW FLOAT DATABASE SUCCESSFULLY!".format(row['Ticker']))
 
 
 if __name__ == '__main__':

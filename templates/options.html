@@ -126,7 +126,8 @@
 <script type="text/javascript">
 <!--Hack to convert python variables to javascript-->
 var None = "N/A", False = false; True = true;
-show_ticker_price({{information|safe}})
+var information = {{information|safe}};
+show_ticker_price(information)
 
 var call_loss_list = {{ call_loss_list|safe }};
 var put_loss_list = {{ put_loss_list|safe }};

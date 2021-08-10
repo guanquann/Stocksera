@@ -96,6 +96,21 @@ This website will be free forever! No subscription needed! But if you want to su
 - Data is from <a href="https://arkfunds.io/api/">arkfunds.io/api</a>
 ![ARK Trades](./static/images/github/ark_trades.png)
 
+#### /reverse_repo/
+- Daily reverse repo transactions (amount, number of parties, average)
+- Data is from <a href="https://apps.newyorkfed.org/markets/autorates/tomo-search-page">newyorkfed</a>
+![Reverse Repo](./static/images/github/reverse_repo.PNG)
+
+#### /daily_treasury/
+- Daily treasury (closing balance, opening balance)
+- Data is from <a href="https://fiscaldata.treasury.gov/datasets/daily-treasury-statement/operating-cash-balance">fiscaldata.treasury.gov</a>
+![Daily Treasury](./static/images/github/daily_treasury.png)
+
+#### /amd_xlnx_ratio/
+- AMD-XLNX Share Price Ratio.
+- Percentage upside when buying XLNX
+![AMD-XLNX Ratio](./static/images/github/amd_xlnx_ratio.PNG)
+
 #### /latest_news/
 - View latest news of your favorite ticker
 - Get their overall news sentiment and their sentiment level over time

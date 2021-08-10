@@ -14,7 +14,7 @@ market_close_time = "200000"
 
 def default_ticker(request):
     if request.GET.get("quote"):
-        ticker_selected = request.GET['quote'].upper()
+        ticker_selected = request.GET['quote'].upper().replace(" ", "")
     else:
         ticker_selected = "AAPL"
     return ticker_selected
@@ -105,8 +105,20 @@ def check_market_hours(ticker, ticker_selected):
                 print("Market Open. Scraping data")
 
     if "shortName" in information:
-        db.execute("INSERT INTO stocksera_trending VALUES (?, ?, 1) ON CONFLICT (symbol) DO UPDATE SET count=count+1",
-                   (ticker_selected, information["shortName"]))
+        # db.execute("SELECT * FROM stocksera_trending WHERE symbol=?", (ticker_selected,))
+        # count = db.fetchone()
+        # if count is None:
+        #     count = 1
+        # else:
+        #     count = count[2] + 1
+        #
+        # db.execute("DELETE from stocksera_trending WHERE symbol=?", (ticker_selected,))
+        #
+        # db.execute("INSERT INTO stocksera_trending VALUES (?, ?, ?) ",
+        #            (ticker_selected, information["shortName"], count))
+        db.execute("INSERT INTO stocksera_trending (symbol, name, count) VALUES (?, ?, 1) ON CONFLICT (symbol) "
+                   "DO UPDATE SET count=count+1", (ticker_selected, information["shortName"]))
+        # db.execute("UPDATE stocksera_trending SET next_update=?", (next_update_time, ))
         conn.commit()
 
     return information
@@ -197,6 +209,21 @@ def get_max_pain(chain):
     chain["loss"] = loss_list
     max_pain = chain["loss"].idxmin()
     return max_pain, call_loss_list, put_loss_list
+
+
+def date_selector_html(date_range):
+    if date_range.lower() == "1 month":
+        date_from = str(datetime.utcnow().date() - timedelta(days=30))
+        query = "WHERE record_date >= '{}'".format(date_from)
+    elif date_range.lower() == "6 months":
+        date_from = str(datetime.utcnow().date() - timedelta(days=180))
+        query = "WHERE record_date >= '{}'".format(date_from)
+    elif date_range.lower() == "1 year":
+        date_from = str(datetime.utcnow().date() - timedelta(days=360))
+        query = "WHERE record_date >= '{}'".format(date_from)
+    else:
+        query = ""
+    return query
 
 
 def long_number_format(num):

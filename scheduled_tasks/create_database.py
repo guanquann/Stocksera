@@ -12,6 +12,7 @@ def database():
                "symbol TEXT, "
                "name TEXT, "
                "count INTEGER, "
+               "next_update TEXT, "
                "UNIQUE('symbol'))")
 
     subreddits = ["wallstreetbets", "stocks", "stockmarket", "options", "pennystocks", "investing"]
@@ -137,11 +138,19 @@ def database():
                "UNIQUE('ticker', 'reported_date','short_vol','total_vol','percent'))")
 
     db.execute("CREATE table IF NOT EXISTS reverse_repo ("
-               "date_updated TEXT, "
+               "record_date TEXT, "
                "amount FLOAT, "
                "parties INTEGER, "
                "average FLOAT, "
                "UNIQUE ('date_updated') )")
+
+    db.execute("CREATE table IF NOT EXISTS daily_treasury ("
+               "record_date TEXT, "
+               "close_today_bal FLOAT, "
+               "open_today_bal FLOAT, "
+               "amount_change FLOAT, "
+               "percent_change FLOAT, "
+               "UNIQUE ('record_date') )")
 
     db.execute("CREATE table IF NOT EXISTS contact ("
                "name TEXT, "

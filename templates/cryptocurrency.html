@@ -152,7 +152,7 @@
                         {% for ticker in trending_tickers %}
                         <tr>
                             <td>{{ticker.1}}</td>
-                            <td><img class="ticker_logo" src="https://s3-symbol-logo.tradingview.com/crypto/XTVC{{ticker.2}}.svg" onerror=this.src="{% static 'images/not_available.svg' %}"><b>{{ticker.2}}</b></td>
+                            <td><img class="ticker_logo" src="https://s3-symbol-logo.tradingview.com/crypto/XTVC{{ticker.2}}.svg" onerror="this.error=null;load_table_error_img(this, '{{ticker.2}}')"><b>{{ticker.2}}</b></td>
                             <td>{{ticker.3}}</td>
                             <td>{{ticker.4}}</td>
                             <td>{{ticker.5}}</td>

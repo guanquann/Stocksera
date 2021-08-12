@@ -154,6 +154,16 @@
         font-weight: bolder;
     }
 
+    .no_img_table_img div {
+        margin-top: 5px;
+        padding: 0 6px 0 6px;
+        font-weight: bold;
+    }
+
+    .no_img_table_img_symbol {
+        margin-top: 5px;
+    }
+
     #img_div {
         width: 50px;
         display: inline-block;
@@ -236,6 +246,11 @@
 
     #img_div img {
         max-height: 50px !important;
+    }
+
+    .table_ticker_logo {
+        width: 20px;
+        height: 20px;
     }
 }	
 
@@ -371,6 +386,16 @@
         font-weight: bolder;
     }
 
+    .no_img_table_img div {
+        margin-top: 8px;
+        padding: 0 10px 0 10px;
+        font-weight: bold;
+    }
+
+    .no_img_table_img_symbol {
+        margin-top: 8px;
+    }
+
     #img_div {
         width: 60px;
         display: inline-block;
@@ -462,6 +487,11 @@
         animation-duration: 0.4s;
         border-radius: 8px;
         border: 1.5px solid gray;
+    }
+
+    .table_ticker_logo {
+        width: 30px;
+        height: 30px;
     }
 }
 
@@ -643,6 +673,15 @@ th {
     background-color: #EAE9E9;
     position: sticky;
     top: -1px;
+}
+
+.no_img_table_div {
+    display: flex;
+}
+
+.no_img_table_img {
+    border: 0.1px solid gray;
+    text-align: center
 }
 
 .dark_mode th {
@@ -918,6 +957,15 @@ input:checked + .slider:before {
 .negative_price {
     background-color: red;
     color: white;
+}
+
+.table_ticker_logo {
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+    background-color: white;
+    color: black;
+    opacity: 0.8;
 }
 
 ::-webkit-scrollbar {

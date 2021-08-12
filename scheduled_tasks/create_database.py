@@ -152,6 +152,22 @@ def database():
                "percent_change FLOAT, "
                "UNIQUE ('record_date') )")
 
+    db.execute("CREATE table IF NOT EXISTS inflation ("
+               "Year TEXT, "
+               "Jan FLOAT, "
+               "Feb FLOAT, "
+               "Mar FLOAT, "
+               "Apr FLOAT, "
+               "May FLOAT, "
+               "Jun FLOAT, "
+               "Jul FLOAT, "
+               "Aug FLOAT, "
+               "Sep FLOAT, "
+               "Oct FLOAT, "
+               "Nov FLOAT, "
+               "Dec FLOAT, "
+               "Avg FLOAT )")
+
     db.execute("CREATE table IF NOT EXISTS contact ("
                "name TEXT, "
                "email TEXT, "

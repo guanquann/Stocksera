@@ -4,11 +4,6 @@
         margin: auto;
     }
 
-    td img {
-        width: 20px;
-        height: 20px;
-    }
-
     .table_title {
         text-align: center;
         font-size: 15px;
@@ -23,37 +18,12 @@
         margin: auto;
     }
 
-    td img {
-        width: 30px;
-        height: 30px;
-    }
-
     .table_title {
         text-align: center;
         font-size: large;
         font-weight: bold;
         margin-bottom: 5px;
     }
-}
-
-.refresh_td {
-    max-width:22px;
-}
-
-.refresh_td button {
-    background-color: transparent;
-    max-width: 20px;
-    border: 0;
-    padding: 0;
-}
-
-.dark_mode .refresh_td button:hover {
-    background-color: transparent;
-}
-
-.refresh_td img {
-    max-width: 19px;
-    border:0;
 }
 
 .previous_stats_div {
@@ -96,12 +66,4 @@ table .th-sort-asc::after {
 
 table .th-sort-desc::after {
     content: "\25be";
-}
-
-td img {
-    border-radius: 50%;
-    margin-right: 6px;
-    vertical-align: middle;
-    background-color: white;
-    opacity: 1 !important;
 }

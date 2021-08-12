@@ -79,8 +79,8 @@ function show_discover(type, elem) {
         text = "Get holdings, daily trades and news of ARK Fund."
         url = "/ark_trades/"
     }
-    else if (type == "education") {
-        text = "View reverse-repo transactions & daily treasury statement over the years."
+    else if (type == "economy") {
+        text = "View reverse-repo transactions, daily treasury statement & inflation levels over the years."
         url = "/reverse_repo/"
     }
     else if (type == "amd_xlnx_ratio") {

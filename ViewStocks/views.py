@@ -429,7 +429,8 @@ def financial(request):
     ticker = yf.Ticker(ticker_selected)
 
     information = check_market_hours(ticker, ticker_selected)
-
+    # print(ticker.quarterly_balance_sheet)
+    # print(ticker.quarterly_cashflow)
     # To check if input is a valid ticker
     if "symbol" in information:
         current_datetime = str(datetime.utcnow().date())
@@ -445,6 +446,7 @@ def financial(request):
                     balance_col_list = data[ticker_selected]["balance_col_list"]
             else:
                 date_list, balance_list, balance_col_list = check_financial_data(ticker_selected, ticker, data, r)
+        print(date_list)
         return render(request, 'financial.html', {"ticker_selected": ticker_selected,
                                                   "information": information,
                                                   "date_list": date_list,
@@ -796,7 +798,7 @@ def reverse_repo(request):
 
 def daily_treasury(request):
     """
-       Get daily treasury. Data is from https://fiscaldata.treasury.gov/datasets/daily-treasury-statement/operating-cash-balance
+   Get daily treasury. Data is from https://fiscaldata.treasury.gov/datasets/daily-treasury-statement/operating-cash-balance
    """
     if request.GET.get("date_range"):
         date_range = request.GET.get("date_range")
@@ -808,6 +810,14 @@ def daily_treasury(request):
     daily_treasury_stats = reversed(list(map(list, daily_treasury_stats)))
     return render(request, 'daily_treasury.html', {"daily_treasury_stats": daily_treasury_stats,
                                                    "selected": date_range})
+
+
+def inflation(request):
+    """
+    Get inflation. Data is from https://www.usinflationcalculator.com/inflation/current-inflation-rates/
+    """
+    inflation_stats = pd.read_sql_query("SELECT * FROM inflation", conn).to_html(index=False)
+    return render(request, 'inflation.html', {"inflation_stats": inflation_stats})
 
 
 def short_interest(request):

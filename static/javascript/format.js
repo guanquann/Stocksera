@@ -83,6 +83,16 @@ function load_error_img(elem, symbol) {
     <div>${symbol}</div></div>` + document.getElementById("ticker_basic_stats").innerHTML
 }
 
+function load_table_error_img(elem, symbol) {
+    elem.parentElement.innerHTML = `<div class="no_img_table_div">
+        <div class="no_img_table_img table_ticker_logo">
+            <div>${symbol[0]}</div>
+        </div>
+        <div class="no_img_table_img_symbol"><b>${symbol}</b></div>
+        </div>`
+    elem.remove()
+}
+
 <!--Function to check that dictionary has a key-->
 function check_stats(property) {
     if (information.hasOwnProperty(property) == true) {

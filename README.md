@@ -104,7 +104,12 @@ This website will be free forever! No subscription needed! But if you want to su
 #### /daily_treasury/
 - Daily treasury (closing balance, opening balance)
 - Data is from <a href="https://fiscaldata.treasury.gov/datasets/daily-treasury-statement/operating-cash-balance">fiscaldata.treasury.gov</a>
-![Daily Treasury](./static/images/github/daily_treasury.png)
+![Daily Treasury](./static/images/github/daily_treasury.PNG)
+
+#### /inflation/
+- Monthly inflation rate (with heat map) from 2001
+- Data is from <a href="https://www.usinflationcalculator.com/inflation/current-inflation-rates/">usinflationcalculator.com/inflation</a>
+![Inflation](./static/images/github/inflation.png)
 
 #### /amd_xlnx_ratio/
 - AMD-XLNX Share Price Ratio.

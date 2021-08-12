@@ -16,7 +16,7 @@ function update_table() {
     for (i=1; i<rows.length; i++) {
         var td = rows[i].querySelectorAll("td");
         img_url = `https://g.foolcdn.com/art/companylogos/mark/${td[0].innerHTML}.png`
-        td[0].innerHTML = `<a href="/ticker/?quote=${td[0].innerHTML}" target="_blank"><img src=${img_url} onerror='this.src="/static/images/not_available.svg"'><b>${td[0].innerHTML}</b></a>`;
+        td[0].innerHTML = `<a href="/ticker/?quote=${td[0].innerHTML}" target="_blank"><img src=${img_url} class="table_ticker_logo" onerror="this.error=null;load_table_error_img(this, '${td[0].innerHTML}')"><b>${td[0].innerHTML}</b></a>`;
         td[3].innerHTML = "$" + td[3].innerHTML;
         td[4].innerHTML = td[4].innerHTML + "%";
         if (td[4].innerHTML.includes("-")) {

@@ -114,7 +114,7 @@
                         <tbody>
                             {% for ticker in open_trade %}
                                 <tr>
-                                    <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank"><img src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.0}}.png" onerror=this.src="{% static 'images/not_available.svg' %}">{{ticker.0}}</a></td>
+                                    <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank"><img src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.0}}.png" class="table_ticker_logo" onerror="this.error=null;load_table_error_img(this, '{{ticker.0}}')">{{ticker.0}}</a></td>
                                     <td>{{ticker.2}}</td>
                                     <td>${{ticker.3}}</td>
                                     <td>{{ticker.4}}</td>
@@ -149,7 +149,7 @@
                     <tbody>
                         {% for ticker in close_trade %}
                             <tr>
-                                <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank"><img src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.0}}.png" onerror=this.src="{% static 'images/not_available.svg' %}">{{ticker.0}}</a></td>
+                                <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank"><img src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.0}}.png" class="table_ticker_logo" onerror="this.error=null;load_table_error_img(this, '{{ticker.0}}')">{{ticker.0}}</a></td>
                                 <td>{{ticker.2}}</td>
                                 <td>${{ticker.3}}</td>
                                 <td>{{ticker.4}}</td>

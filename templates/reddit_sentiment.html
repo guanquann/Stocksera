@@ -177,7 +177,7 @@
                         {% for ticker in trending_tickers %}
                         <tr>
                             <td>{{ticker.0}}</td>
-                            <td><a href="{% url 'reddit_ticker_analysis' %}?quote={{ticker.1}}&subreddit={{subreddit_selected}}" target="_blank"><img class="ticker_logo" src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.1}}.png" onerror=this.src="{% static 'images/not_available.svg' %}"><b>{{ticker.1}}</b></a></td>
+                            <td><a href="{% url 'reddit_ticker_analysis' %}?quote={{ticker.1}}&subreddit={{subreddit_selected}}" target="_blank"><img class="table_ticker_logo" src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.1}}.png" onerror="this.error=null;load_table_error_img(this, '{{ticker.1}}')"><b>{{ticker.1}}</b></a></td>
                             <td>{{ticker.2}}</td>
                             <td>{{ticker.3}}</td>
                             <td>{{ticker.4}}</td>

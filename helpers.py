@@ -114,7 +114,7 @@ def check_market_hours(ticker, ticker_selected):
         #
         # db.execute("DELETE from stocksera_trending WHERE symbol=?", (ticker_selected,))
         #
-        # db.execute("INSERT INTO stocksera_trending VALUES (?, ?, ?) ",
+        # db.execute("INSERT INTO stocksera_trending (symbol, name, count) VALUES (?, ?, ?) ",
         #            (ticker_selected, information["shortName"], count))
         db.execute("INSERT INTO stocksera_trending (symbol, name, count) VALUES (?, ?, 1) ON CONFLICT (symbol) "
                    "DO UPDATE SET count=count+1", (ticker_selected, information["shortName"]))

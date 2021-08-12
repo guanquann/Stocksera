@@ -15,6 +15,7 @@ urlpatterns = [
     path('market_overview/', views.market_overview, name='market_overview'),
     path('reverse_repo/', views.reverse_repo, name='reverse_repo'),
     path('daily_treasury/', views.daily_treasury, name='daily_treasury'),
+    path('inflation/', views.inflation, name='inflation'),
     path('short_interest/', views.short_interest, name='short_interest'),
     path('low_float/', views.low_float, name='low_float'),
     path('ark_trades/', views.ark_trades, name='ark_trades'),

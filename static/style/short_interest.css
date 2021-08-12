@@ -4,11 +4,6 @@
         margin-left: auto;
         margin-right: auto;
     }
-
-    td img {
-        width: 20px;
-        height: 20px;
-    }
 }
 
 @media only screen and (min-width: 900px) {
@@ -16,11 +11,6 @@
         width: 98%;
         margin-left: auto;
         margin-right: auto;
-    }
-
-    td img {
-        width: 30px;
-        height: 30px;
     }
 }
 
@@ -38,17 +28,9 @@
     margin-bottom: 15px;
 }
 
-td img {
-    border-radius: 50%;
-    margin-right: 6px;
-    vertical-align: middle;
-    background-color: white;
-}
-
 th:hover {
     cursor: pointer;
 }
-
 
 .th-sort-asc::after {
     content: "\25b4";

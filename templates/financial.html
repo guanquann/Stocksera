@@ -24,7 +24,7 @@
 
 {% block main_content %}
     <div class="instructions">
-        <h2>Financials</h2>
+        <h2>Financials (Balance Sheet)</h2>
         <p>This page is still in beta. Currently, only the Balance Sheet of the company is available. Income Statement and Cash Flow will be added in the next update.</p>
     </div>
 
@@ -42,7 +42,7 @@
             <a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this)">FTD</a>
         </div>
 
-        <div><i>Note: All numbers are in thousands</i></div>
+        <div><i>Note: All numbers are in millions</i></div>
 
         <div>
             <h2>Current Assets<button type="button" onclick="show_graph(this)" class="selected_btn">Graph</button><button type="button" onclick="show_table(this)">Table</button></h2>
@@ -97,9 +97,18 @@ var totalLiab=[], cash=[], shortTermInvestments=[], totalcash=[], netReceivables
 function simplify_num(row) {
     var new_list=[];
     for (k=0; k<row.length; k++) {
-        new_list.push(row[k]/1000)
+        new_list.push(row[k]/1000000)
     }
     return new_list
+}
+
+function replace_nan(x) {
+    if (typeof(x) == "undefined" || x == "NaN") {
+        return "N/A"
+    }
+    else {
+        return Number(x) + "M"
+    }
 }
 
 for (i=balance_col_list.length-1; i>=0; i--) {
@@ -125,8 +134,6 @@ for (i=balance_col_list.length-1; i>=0; i--) {
         totalCurrentAssets = simplify_num(balance_list[i])
     }
 
-
-
     else if (balance_col_list[i] == "Property Plant Equipment") {
         propertyPlantEquipment = simplify_num(balance_list[i])
     }
@@ -139,8 +146,6 @@ for (i=balance_col_list.length-1; i>=0; i--) {
     else if (balance_col_list[i] == "Property Plant Equipment") {
         propertyPlantEquipment = simplify_num(balance_list[i])
     }
-
-
 
     else if (balance_col_list[i] == "Accounts Payable") {
         accountsPayable = simplify_num(balance_list[i])
@@ -161,8 +166,6 @@ for (i=balance_col_list.length-1; i>=0; i--) {
         totalLiab = simplify_num(balance_list[i])
     }
 
-
-
     else if (balance_col_list[i] == "Common Stock") {
         commonStock = simplify_num(balance_list[i])
     }
@@ -178,9 +181,15 @@ for (i=balance_col_list.length-1; i>=0; i--) {
 }
 
 for (i=0; i<cash.length; i++) {
-    totalcash.push(cash[i] + shortTermInvestments[i])
-    totalNonCurrentAssets.push(longTermInvestments[i] + otherAssets[i])
-}    
+    totalcash_value = cash[i] + shortTermInvestments[i]
+    if (isNaN(totalcash_value) == false) {
+        totalcash.push(totalcash_value)
+    }
+    totalNonCurrentAssets_value = longTermInvestments[i] + otherAssets[i]
+    if (isNaN(totalNonCurrentAssets_value) == false) {
+        totalNonCurrentAssets.push(totalNonCurrentAssets_value)
+    }
+}
 
 var options_dict = {
         responsive:true,
@@ -204,7 +213,12 @@ var options_dict = {
                     beginAtZero: false,
                     minTicksLimit: 8,
                     maxTicksLimit: 12,
-                }, 
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Amount [$M]',
+                    beginAtZero: false,
+                },
             }],
         },
 
@@ -216,7 +230,7 @@ var options_dict = {
                 label: function(tooltipItem, data) {
                     var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
                     var label = data.datasets[tooltipItem.datasetIndex].label;
-                    return label + ': ' + value + 'K USD';
+                    return label + ': ' + value + 'M USD';
                 }
             },
         },
@@ -290,64 +304,74 @@ var current_assets = new Chart(current_assets, {
     options: options_dict,
 });
 
+date_row = ""
+cash_and_cash_equi_row = "", short_term_investment_row = "", net_receivable_row = "", inventory_row = "", other_current_assets_row = "", total_cash_row = "", total_current_assets_row = ""
+property_plant_row = "", long_term_investment_row = "", other_assets_row = "", total_non_current_assets_row = ""
+accounts_payable_row = [], debt_row = "", long_term_debt_row = "", other_current_liab_row = "", total_current_liab_row = "", total_liab_row = ""
+common_stock_row = [], retained_earnings_row = [], treasury_row = [], total_stockholder_row = []
+
+for (i=0; i<date_list.length; i++) {
+    date_row += `<th>${date_list[i]}</th>`
+    cash_and_cash_equi_row += `<td>${replace_nan(cash[i])}</td>`
+    short_term_investment_row += `<td>${replace_nan(shortTermInvestments[i])}</td>`
+    net_receivable_row += `<td>${replace_nan(netReceivables[i])}</td>`
+    inventory_row += `<td>${replace_nan(inventory[i])}</td>`
+    other_current_assets_row += `<td>${replace_nan(otherCurrentAssets[i])}</td>`
+    total_cash_row += `<td>${replace_nan(totalcash[i])}</td>`
+    total_current_assets_row += `<td>${replace_nan(totalCurrentAssets[i])}</td>`
+
+    property_plant_row += `<td>${replace_nan(propertyPlantEquipment[i])}</td>`
+    long_term_investment_row += `<td>${replace_nan(longTermInvestments[i])}</td>`
+    other_assets_row += `<td>${replace_nan(otherAssets[i])}</td>`
+    total_non_current_assets_row += `<td>${replace_nan(totalNonCurrentAssets[3])}</td>`
+
+    accounts_payable_row += `<td>${replace_nan(accountsPayable[i])}</td>`
+    debt_row += `<td>${replace_nan(shortTermDebt[i])}</td>`
+    long_term_debt_row += `<td>${replace_nan(longTermDebt[i])}</td>`
+    other_current_liab_row += `<td>${replace_nan(otherCurrentLiab[i])}</td>`
+    total_current_liab_row += `<td>${totalCurrentLiab[i]}</td>`
+    total_liab_row += `<td>${replace_nan(totalLiab[i])}</td>`
+
+    common_stock_row += `<td>${replace_nan(commonStock[i])}</td>`
+    retained_earnings_row += `<td>${replace_nan(retainedEarnings[i])}</td>`
+    treasury_row += `<td>${replace_nan(treasury[i])}</td>`
+    total_stockholder_row += `<td>${replace_nan(totalStockholderEquity[i])}</td>`
+}
+
 var current_assets_table = document.getElementById("current_assets_table");
 var current_assets_table_html =  `
     <table>
         <tr>
             <th></th>
-            <th>${date_list[0]}</th>
-            <th>${date_list[1]}</th>
-            <th>${date_list[2]}</th>
-            <th>${date_list[3]}</th>
+            ${date_row}
         </tr>
         <tr>
             <th>Cash & Cash Equivalent</th>
-            <td>${Number(cash[0]).toLocaleString()}</td>
-            <td>${Number(cash[1]).toLocaleString()}</td>
-            <td>${Number(cash[2]).toLocaleString()}</td>
-            <td>${Number(cash[3]).toLocaleString()}</td>
+            ${cash_and_cash_equi_row}
         </tr>
         <tr>
             <th>Other Short-Term Investments</th>
-            <td>${Number(shortTermInvestments[0]).toLocaleString()}</td>
-            <td>${Number(shortTermInvestments[1]).toLocaleString()}</td>
-            <td>${Number(shortTermInvestments[2]).toLocaleString()}</td>
-            <td>${Number(shortTermInvestments[3]).toLocaleString()}</td>
+            ${short_term_investment_row}
         </tr>
         <tr>
             <th>Net Receivables</th>
-            <td>${Number(netReceivables[0]).toLocaleString()}</td>
-            <td>${Number(netReceivables[1]).toLocaleString()}</td>
-            <td>${Number(netReceivables[2]).toLocaleString()}</td>
-            <td>${Number(netReceivables[3]).toLocaleString()}</td>
+            ${net_receivable_row}
         </tr>
         <tr>
             <th>Inventory</th>
-            <td>${Number(inventory[0]).toLocaleString()}</td>
-            <td>${Number(inventory[1]).toLocaleString()}</td>
-            <td>${Number(inventory[2]).toLocaleString()}</td>
-            <td>${Number(inventory[3]).toLocaleString()}</td>
+            ${inventory_row}
         </tr>
         <tr>
             <th>Other Current Assets</th>
-            <td>${Number(otherCurrentAssets[0]).toLocaleString()}</td>
-            <td>${Number(otherCurrentAssets[1]).toLocaleString()}</td>
-            <td>${Number(otherCurrentAssets[2]).toLocaleString()}</td>
-            <td>${Number(otherCurrentAssets[3]).toLocaleString()}</td>
+            ${other_current_assets_row}
         </tr>
         <tr>
             <th>Total Cash</th>
-            <td>${Number(totalcash[0]).toLocaleString()}</td>
-            <td>${Number(totalcash[1]).toLocaleString()}</td>
-            <td>${Number(totalcash[2]).toLocaleString()}</td>
-            <td>${Number(totalcash[3]).toLocaleString()}</td>
+            ${total_cash_row}
         </tr>
         <tr>
             <th>Total Current Assets</th>
-            <td>${Number(totalCurrentAssets[0]).toLocaleString()}</td>
-            <td>${Number(totalCurrentAssets[1]).toLocaleString()}</td>
-            <td>${Number(totalCurrentAssets[2]).toLocaleString()}</td>
-            <td>${Number(totalCurrentAssets[3]).toLocaleString()}</td>
+            ${total_current_assets_row}
         </tr>
     </table>`
 current_assets_table.innerHTML = current_assets_table_html
@@ -402,38 +426,23 @@ var non_current_assets_table_html =  `
     <table>
         <tr>
             <th></th>
-            <th>${date_list[0]}</th>
-            <th>${date_list[1]}</th>
-            <th>${date_list[2]}</th>
-            <th>${date_list[3]}</th>
+            ${date_row}
         </tr>
         <tr>
             <th>Net Property, Plant & Equipment</th>
-            <td>${Number(propertyPlantEquipment[0]).toLocaleString()}</td>
-            <td>${Number(propertyPlantEquipment[1]).toLocaleString()}</td>
-            <td>${Number(propertyPlantEquipment[2]).toLocaleString()}</td>
-            <td>${Number(propertyPlantEquipment[3]).toLocaleString()}</td>
+            ${property_plant_row}
         </tr>
         <tr>
             <th>Equity & Other Investments</th>
-            <td>${Number(longTermInvestments[0]).toLocaleString()}</td>
-            <td>${Number(longTermInvestments[1]).toLocaleString()}</td>
-            <td>${Number(longTermInvestments[2]).toLocaleString()}</td>
-            <td>${Number(longTermInvestments[3]).toLocaleString()}</td>
+            ${long_term_investment_row}
         </tr>
         <tr>
             <th>Other Long-Term Assets</th>
-            <td>${Number(otherAssets[0]).toLocaleString()}</td>
-            <td>${Number(otherAssets[1]).toLocaleString()}</td>
-            <td>${Number(otherAssets[2]).toLocaleString()}</td>
-            <td>${Number(otherAssets[3]).toLocaleString()}</td>
+            ${other_assets_row}
         </tr>
         <tr>
             <th>Total Non-Current Assets</th>
-            <td>${Number(totalNonCurrentAssets[0]).toLocaleString()}</td>
-            <td>${Number(totalNonCurrentAssets[1]).toLocaleString()}</td>
-            <td>${Number(totalNonCurrentAssets[2]).toLocaleString()}</td>
-            <td>${Number(totalNonCurrentAssets[3]).toLocaleString()}</td>
+            ${total_non_current_assets_row}
         </tr>
     </table>`
 non_current_assets_table.innerHTML = non_current_assets_table_html
@@ -503,52 +512,31 @@ var liabilities_table_html =  `
     <table>
         <tr>
             <th></th>
-            <th>${date_list[0]}</th>
-            <th>${date_list[1]}</th>
-            <th>${date_list[2]}</th>
-            <th>${date_list[3]}</th>
+            ${date_row}
         </tr>
         <tr>
             <th>Accounts Payable</th>
-            <td>${Number(accountsPayable[0]).toLocaleString()}</td>
-            <td>${Number(accountsPayable[1]).toLocaleString()}</td>
-            <td>${Number(accountsPayable[2]).toLocaleString()}</td>
-            <td>${Number(accountsPayable[3]).toLocaleString()}</td>
+            ${accounts_payable_row}
         </tr>
         <tr>
             <th>Debt</th>
-            <td>${Number(shortTermDebt[0]).toLocaleString()}</td>
-            <td>${Number(shortTermDebt[1]).toLocaleString()}</td>
-            <td>${Number(shortTermDebt[2]).toLocaleString()}</td>
-            <td>${Number(shortTermDebt[3]).toLocaleString()}</td>
+            ${debt_row}
         </tr>
         <tr>
             <th>Long Term Debt</th>
-            <td>${Number(longTermDebt[0]).toLocaleString()}</td>
-            <td>${Number(longTermDebt[1]).toLocaleString()}</td>
-            <td>${Number(longTermDebt[2]).toLocaleString()}</td>
-            <td>${Number(longTermDebt[3]).toLocaleString()}</td>
+            ${long_term_debt_row}
         </tr>
         <tr>
             <th>Other Current Liab</th>
-            <td>${Number(otherCurrentLiab[0]).toLocaleString()}</td>
-            <td>${Number(otherCurrentLiab[1]).toLocaleString()}</td>
-            <td>${Number(otherCurrentLiab[2]).toLocaleString()}</td>
-            <td>${Number(otherCurrentLiab[3]).toLocaleString()}</td>
+            ${other_current_liab_row}
         </tr>
         <tr>
             <th>Total Current Liab</th>
-            <td>${Number(accountsPayable[3]).toLocaleString()}</td>
-            <td>${totalCurrentLiab[1]}</td>
-            <td>${totalCurrentLiab[2]}</td>
-            <td>${totalCurrentLiab[3]}</td>
+            ${total_current_liab_row}
         </tr>
         <tr>
             <th>Total Liab</th>
-            <td>${Number(totalLiab[0]).toLocaleString()}</td>
-            <td>${Number(totalLiab[1]).toLocaleString()}</td>
-            <td>${Number(totalLiab[2]).toLocaleString()}</td>
-            <td>${Number(totalLiab[3]).toLocaleString()}</td>
+            ${total_liab_row}
         </tr>
     </table>`
 liabilities_table.innerHTML = liabilities_table_html
@@ -603,38 +591,23 @@ var stockholders_equity_table_html =  `
     <table>
         <tr>
             <th></th>
-            <th>${date_list[0]}</th>
-            <th>${date_list[1]}</th>
-            <th>${date_list[2]}</th>
-            <th>${date_list[3]}</th>
+            ${date_row}
         </tr>
         <tr>
             <th>Common Stock</th>
-            <td>${Number(commonStock[0]).toLocaleString()}</td>
-            <td>${Number(commonStock[1]).toLocaleString()}</td>
-            <td>${Number(commonStock[2]).toLocaleString()}</td>
-            <td>${Number(commonStock[3]).toLocaleString()}</td>
+            ${common_stock_row}
         </tr>
         <tr>
             <th>Retained Earnings</th>
-            <td>${Number(retainedEarnings[0]).toLocaleString()}</td>
-            <td>${Number(retainedEarnings[1]).toLocaleString()}</td>
-            <td>${Number(retainedEarnings[2]).toLocaleString()}</td>
-            <td>${Number(retainedEarnings[3]).toLocaleString()}</td>
+            ${retained_earnings_row}
         </tr>
         <tr>
             <th>Treasury</th>
-            <td>${Number(treasury[0]).toLocaleString()}</td>
-            <td>${Number(treasury[1]).toLocaleString()}</td>
-            <td>${Number(treasury[2]).toLocaleString()}</td>
-            <td>${Number(treasury[3]).toLocaleString()}</td>
+            ${treasury_row}
         </tr>
         <tr>
             <th>Total StockHolders' Equity</th>
-            <td>${Number(totalStockholderEquity[0]).toLocaleString()}</td>
-            <td>${Number(totalStockholderEquity[1]).toLocaleString()}</td>
-            <td>${Number(totalStockholderEquity[2]).toLocaleString()}</td>
-            <td>${Number(totalStockholderEquity[3]).toLocaleString()}</td>
+            ${total_stockholder_row}
         </tr>
     </table>`
 stockholders_equity_table.innerHTML = stockholders_equity_table_html

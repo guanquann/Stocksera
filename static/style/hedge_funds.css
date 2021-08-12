@@ -9,10 +9,6 @@
         max-width: 160px;
     }
 
-    td img {
-        width: 20px;
-    }
-
     .page_num {
         padding-top: 5px;
         padding-bottom: 5px;
@@ -35,10 +31,6 @@
 
     td, th {
         max-width: 280px;
-    }
-
-    td img {
-        width: 30px;
     }
 
     .page_num {
@@ -94,13 +86,6 @@ input, button {
 th, td {
     text-overflow: ellipsis;
     overflow: hidden;
-}
-
-td img {
-    border-radius: 50%;
-    margin-right: 6px;
-    vertical-align: middle;
-    background-color: white;
 }
 
 .page_section {

@@ -36,7 +36,6 @@ select {
     border: 1px solid grey;
     border-radius: 6px;
     padding: 7px;
-    margin-top: 15px;
 }
 
 .chart-container {

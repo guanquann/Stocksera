@@ -1,23 +1,28 @@
 function load_graph() {
     var query = document.getElementsByTagName("table");
     date_list = [], revenue_list = [], earnings_list = []
-    if (query.length != 0) {
+
     var earnings_table = query[0].querySelectorAll("tr");
         for (i=earnings_table.length-1; i>0; i--) {
             td = earnings_table[i].querySelectorAll("td");
             date_list.push(td[0].innerHTML)
+            if (td[1].innerHTML != "N/A") {
+                rev = Number(td[1].innerHTML) / 1000000
+                td[1].innerHTML = rev + "M"
+                revenue_list.push(rev)
 
-            rev = Number(td[1].innerHTML) / 1000000
-            td[1].innerHTML = rev + "M"
-            revenue_list.push(rev)
-
-            earnings = Number(td[2].innerHTML) / 1000000
-            td[2].innerHTML = earnings + "M"
-            earnings_list.push(earnings)
+                earnings = Number(td[2].innerHTML) / 1000000
+                td[2].innerHTML = earnings + "M"
+                earnings_list.push(earnings)
+            }
         }
-    }
-    else {
-        date_list = ['2017', '2018', '2019', '2020']
+
+
+    var tr = query[1].querySelectorAll("tr");
+    if (tr[5].querySelectorAll("td")[1].innerHTML != "N/A") {
+        tr[5].querySelectorAll("td")[1].innerHTML = tr[5].querySelectorAll("td")[1].innerHTML / 1000000 + "M"
+        tr[6].querySelectorAll("td")[1].innerHTML = tr[6].querySelectorAll("td")[1].innerHTML / 1000000 + "M"
+        tr[7].querySelectorAll("td")[1].innerHTML = tr[7].querySelectorAll("td")[1].innerHTML / 1000000 + "M"
     }
 
     var earnings_chart = document.getElementById('earnings_chart');

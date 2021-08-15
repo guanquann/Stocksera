@@ -17,21 +17,22 @@ function reverse_repo(selected) {
             labels: date_list,
             datasets: [
                 {
+                    label: 'Num Parties',
+                    type: 'line',
+                    data: parties_list,
+                    pointRadius: 0,
+                    borderWidth: 2,
+                    borderColor: 'wheat',
+                    backgroundColor: 'transparent',
+                    yAxisID: 'B',
+                },
+                {
                     label: 'Amount',
                     type: 'bar',
                     data: amount_list,
                     borderColor: 'rgb(38, 166, 154)',
                     backgroundColor: 'rgb(38, 166, 154)',
                     yAxisID: 'A',
-                },
-                {
-                    label: 'Num Parties',
-                    type: 'line',
-                    data: parties_list,
-                    pointRadius: 0,
-                    borderColor: 'wheat',
-                    backgroundColor: 'wheat',
-                    yAxisID: 'B',
                 }
                 ]
         },
@@ -89,6 +90,11 @@ function reverse_repo(selected) {
             tooltips: {
                 mode: 'index',
                 intersect: false,
+            },
+            elements: {
+                line: {
+                    tension: 0
+                }
             },
             hover: {
                 mode: 'index',

@@ -1,4 +1,4 @@
-from scheduled_tasks.get_reddit_trending_stocks.AutoDD import *
+from scheduled_tasks.reddit.get_reddit_trending_stocks.AutoDD import *
 from scheduled_tasks.config import *
 
 

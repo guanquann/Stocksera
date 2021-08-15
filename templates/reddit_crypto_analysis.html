@@ -2,7 +2,7 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | Reddit Ticker{% endblock %}
+{% block title %}StocksEra | Reddit Crypto{% endblock %}
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/reddit_ticker_analysis.css' %}">
@@ -68,35 +68,20 @@
 
 {% block main_content %}
     <div class="instructions">
-        <h2>Reddit Ticker Analysis</h2>
-        <p>View ranking of popular tickers in Reddit over time and compare it with its price.</p>
+        <h2>Reddit Crypto Analysis</h2>
+        <p>View ranking of popular cryptocurrencies in Reddit over time and compare it with its price.</p>
     </div>
 
     <div class="reddit_ticker_analysis">
         <form action="" method="GET" autocomplete="off">
             <select name="subreddit" onchange="this.form.submit()">
-                <option>Subreddit: {{subreddit}}</option>
-                <option value="wallstreetbets">Wall Street Bets</option>
-                <option value="stocks">Stocks</option>
-                <option value="stockmarket">Stock Market</option>
-                <option value="options">Options</option>
-                <option value="investing">Investing</option>
-                <option value="pennystocks">Pennystocks</option>
+                <option>Subreddit: CryptoCurrency</option>
             </select>
             <input placeholder="TICKER: " name="quote" value="{{ticker_selected}}">
             <button>SEARCH</button>
         </form>
 
-        <div id="ticker_basic_stats"></div>
-
-        <div id="more_info_div">
-            <a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Analysis</a>
-            <a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Options</a>
-            <a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Short Vol</a>
-            <a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">FTD</a>
-        </div>
-
-        <h2>Ranking of ${{ticker_selected}} in r/{{subreddit}} over time</h2>
+        <h2>Ranking of ${{ticker_selected}} in r/CryptoCurrency over time</h2>
         <div class="ranking_description">The lower the ranking, the more popular the ticker.</div>
 
         <div class="chart-container">
@@ -128,10 +113,4 @@
 
 {% block bottom_script %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-<script type="text/javascript">
-<!--Hack to convert python variables to javascript-->
-var None = "N/A", False = false; True = true;
-var information = {{information|safe}}
-show_ticker_price(information)
-</script>
 {% endblock %}

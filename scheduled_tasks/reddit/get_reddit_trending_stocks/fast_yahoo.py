@@ -1,4 +1,4 @@
-import scheduled_tasks.get_reddit_trending_stocks.shared as shared
+import scheduled_tasks.reddit.get_reddit_trending_stocks.shared as shared
 import requests
 import numbers
 import multitasking as multitasking

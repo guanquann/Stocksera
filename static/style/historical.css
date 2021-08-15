@@ -8,12 +8,26 @@ th {
     border: 0;
 }
 
+.select_div {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 select {
     border: 1px solid grey;
     border-radius: 6px;
     padding: 7px;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
+}
+
+.download_btn {
+    border:0;
+    float: right;
+}
+
+.dark_mode .download_btn, .dark_mode .download_btn:hover {
+    color: wheat;
+    background-color: transparent;
 }
 
 #general_stats {

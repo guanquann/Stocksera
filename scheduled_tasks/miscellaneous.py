@@ -7,7 +7,7 @@ import pandas as pd
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from helpers import *
-import scheduled_tasks.get_reddit_trending_stocks.fast_yahoo as fast_yahoo
+import scheduled_tasks.reddit.get_reddit_trending_stocks.fast_yahoo as fast_yahoo
 
 conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()

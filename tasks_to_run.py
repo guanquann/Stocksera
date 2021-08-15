@@ -4,12 +4,12 @@ Compilation of scheduled tasks to run
 
 import sqlite3
 import scheduled_tasks.create_database as create_database
-import scheduled_tasks.get_reddit_trending_stocks.scrape_reddit as scrape_reddit_stocks
-import scheduled_tasks.get_reddit_trending_crypto as scrape_reddit_crypto
+import scheduled_tasks.reddit.get_reddit_trending_stocks.scrape_reddit as scrape_reddit_stocks
+import scheduled_tasks.reddit.get_reddit_trending_crypto as scrape_reddit_crypto
 import scheduled_tasks.get_news_sentiment as get_news_sentiment
-import scheduled_tasks.get_subreddit_count as get_subreddit_count
+import scheduled_tasks.reddit.get_subreddit_count as get_subreddit_count
 import scheduled_tasks.get_short_volume as get_short_volume
-import scheduled_tasks.buy_trending_tickers as buy_trending_tickers
+import scheduled_tasks.reddit.buy_trending_tickers as buy_trending_tickers
 import scheduled_tasks.get_ticker_info as get_ticker_info
 import scheduled_tasks.get_financial as get_financial
 import scheduled_tasks.get_earnings_calendar as get_earnings_calendar

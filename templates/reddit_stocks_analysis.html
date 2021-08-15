@@ -1,0 +1,137 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Reddit Ticker{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/reddit_ticker_analysis.css' %}">
+<script src="{% static 'javascript/reddit_ticker_analysis.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}restore_dark_mode();rank_chart(){% endblock %}
+
+{% block main_nav %}
+    <div class="ticker-wrap">
+        <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+            {
+            "symbols": [
+            {
+              "proName": "FOREXCOM:SPXUSD",
+              "title": "S&P 500"
+            },
+            {
+              "proName": "FOREXCOM:NSXUSD",
+              "title": "Nasdaq 100"
+            },
+            {
+              "description": "Apple",
+              "proName": "NASDAQ:AAPL"
+            },
+            {
+              "description": "Tesla, Inc",
+              "proName": "NASDAQ:TSLA"
+            },
+            {
+              "description": "Nvidia",
+              "proName": "NASDAQ:NVDA"
+            },
+            {
+              "description": "Microsoft",
+              "proName": "NASDAQ:MSFT"
+            },
+            {
+              "description": "GameStop",
+              "proName": "NYSE:GME"
+            },
+            {
+              "description": "AMC",
+              "proName": "NYSE:AMC"
+            },
+            {
+              "description": "Blackberry",
+              "proName": "NYSE:BB"
+            }
+            ],
+            "showSymbolLogo": true,
+            "colorTheme": "light",
+            "isTransparent": true,
+            "displayMode": "regular",
+            "locale": "en"
+            }
+            </script>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main_content %}
+    <div class="instructions">
+        <h2>Reddit Stocks Analysis</h2>
+        <p>View ranking of popular tickers in Reddit over time and compare it with its price.</p>
+    </div>
+
+    <div class="reddit_ticker_analysis">
+        <form action="" method="GET" autocomplete="off">
+            <select name="subreddit" onchange="this.form.submit()">
+                <option>Subreddit: {{subreddit}}</option>
+                <option value="wallstreetbets">Wall Street Bets</option>
+                <option value="stocks">Stocks</option>
+                <option value="stockmarket">Stock Market</option>
+                <option value="options">Options</option>
+                <option value="investing">Investing</option>
+                <option value="pennystocks">Pennystocks</option>
+            </select>
+            <input placeholder="TICKER: " name="quote" value="{{ticker_selected}}">
+            <button>SEARCH</button>
+        </form>
+
+        <div id="ticker_basic_stats"></div>
+
+        <div id="more_info_div">
+            <a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Analysis</a>
+            <a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Options</a>
+            <a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Short Vol</a>
+            <a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">FTD</a>
+        </div>
+
+        <h2>Ranking of ${{ticker_selected}} in r/{{subreddit}} over time</h2>
+        <div class="ranking_description">The lower the ranking, the more popular the ticker.</div>
+
+        <div class="chart-container">
+            <canvas id="rank_chart"></canvas>
+        </div>
+
+        <table id="reddit_table" style="display:none">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>48H Score</th>
+                    <th>Previous Close</th>
+                    <th>Date (DD/MM/YYYY)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rank in ranking %}
+                    <tr>
+                        <td>{{rank.0}}</td>
+                        <td>{{rank.1}}</td>
+                        <td>{{rank.2}}</td>
+                        <td>{{rank.3}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block bottom_script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script type="text/javascript">
+<!--Hack to convert python variables to javascript-->
+var None = "N/A", False = false; True = true;
+var information = {{information|safe}}
+show_ticker_price(information)
+</script>
+{% endblock %}

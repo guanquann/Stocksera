@@ -51,7 +51,7 @@ def database():
     db.execute("CREATE table IF NOT EXISTS cryptocurrency ("
                "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                "rank INTEGER NOT NULL, "
-               "symbol VARCHAR (10), "
+               "ticker VARCHAR (10), "
                "total INTEGER NOT NULL DEFAULT 0, "
                "recent INTEGER NOT NULL DEFAULT 0, "
                "previous INTEGER NOT NULL DEFAULT 0, "
@@ -167,11 +167,6 @@ def database():
                "Nov FLOAT, "
                "Dec FLOAT, "
                "Avg FLOAT )")
-
-    db.execute("CREATE table IF NOT EXISTS contact ("
-               "name TEXT, "
-               "email TEXT, "
-               "suggestions TEXT)")
 
     print("Successfully created/updated database")
 

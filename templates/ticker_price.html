@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/ticker_price.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}display_data();restore_dark_mode(){% endblock %}
+{% block onload_properties%}display_data();restore_dark_mode();document.getElementsByClassName('show_more_btn')[0].form.submit();to_remove(document.getElementsByClassName('show_more_btn')[0], 'Historical Data'){% endblock %}
  
 {% block main_nav %}
 <div class="top_nav">
@@ -94,60 +94,80 @@
 
         <div style="display:none" class="ticker_summary"></div>
 
-        <form action="/historical_data" method="GET" autocomplete="off" target="historical_data">
-            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Historical Data <span>&#x25BA;</span></button>
-        </form>
-        <iframe name="historical_data" scrolling="no" onload="expand_iframe(this)"></iframe>
+        <div style="margin-top: 30px">
+            <div class="btn_div">
+                <form action="/historical_data" method="GET" autocomplete="off" target="Historical Data" >
+                    <input style="display: none" name="quote" value="{{ticker_selected}}">
+                    <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Historical Data')">Historical Data</button>
+                </form>
+            </div>
 
-        <form action="/major_holders" method="GET" autocomplete="off" target="major_holders">
-            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Major Holders <span>&#x25BA;</span></button>
-        </form>
-        <iframe name="major_holders" scrolling="no" onload="expand_iframe(this)"></iframe>
+            <div class="btn_div">
+                <form action="/major_holders" method="GET" autocomplete="off" target="Major Holders">
+                    <input style="display: none" name="quote" value="{{ticker_selected}}">
+                    <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Major Holders')">Major Holders</button>
+                </form>
+            </div>
 
-        <form action="/institutional_holders" method="GET" autocomplete="off" target="institutional_holders">
-            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Institutional Holders <span>&#x25BA;</span></button>
-        </form>
-        <iframe name="institutional_holders" scrolling="no" onload="expand_iframe(this)"></iframe>
+            <div class="btn_div">
+                <form action="/institutional_holders" method="GET" autocomplete="off" target="Institutional Holders">
+                    <input style="display: none" name="quote" value="{{ticker_selected}}">
+                    <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Institutional Holders')">Institutional Holders</button>
+                </form>
+            </div>
 
-        <form action="/mutual_fund_holders" method="GET" autocomplete="off" target="mutual_fund_holders">
-            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Mutual-Fund Holders <span>&#x25BA;</span></button>
-        </form>
-        <iframe name="mutual_fund_holders" scrolling="no" onload="expand_iframe(this)"></iframe>
+            <div class="btn_div">
+                <form action="/mutual_fund_holders" method="GET" autocomplete="off" target="Mutual-Fund Holders">
+                    <input style="display: none" name="quote" value="{{ticker_selected}}">
+                    <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Mutual-Fund Holders')">Mutual-Fund Holders</button>
+                </form>
+            </div>
 
-        <form action="/dividend_and_split" method="GET" autocomplete="off" target="dividend_and_split">
-            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Dividend & Splits <span>&#x25BA;</span></button>
-        </form>
-        <iframe name="dividend_and_split" scrolling="no" onload="expand_iframe(this)"></iframe>
+            <div class="btn_div">
+                <form action="/dividend_and_split" method="GET" autocomplete="off" target="Dividend & Splits">
+                    <input style="display: none" name="quote" value="{{ticker_selected}}">
+                    <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Dividend & Splits')">Dividend & Splits</button>
+                </form>
+            </div>
 
-        <form action="/ticker_calendar" method="GET" autocomplete="off" target="ticker_calendar">
-            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Next Earnings <span>&#x25BA;</span></button>
-        </form>
-        <iframe name="ticker_calendar" scrolling="no" onload="expand_iframe(this)"></iframe>
+            <div class="btn_div">
+                <form action="/ticker_earnings" method="GET" autocomplete="off" target="Earnings">
+                    <input style="display: none" name="quote" value="{{ticker_selected}}">
+                    <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Earnings')">Earnings</button>
+                </form>
+            </div>
 
-        <form action="/ticker_earnings" method="GET" autocomplete="off" target="ticker_earnings">
-            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Past Earnings <span>&#x25BA;</span></button>
-        </form>
-        <iframe name="ticker_earnings" scrolling="no" onload="expand_iframe(this)"></iframe>
+            <div class="btn_div">
+                <form action="/recommendations" method="GET" autocomplete="off" target="Upgrades & Downgrades">
+                    <input style="display: none" name="quote" value="{{ticker_selected}}">
+                    <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Upgrades & Downgrades')">Upgrades & Downgrades</button>
+                </form>
+            </div>
 
-        <form action="/recommendations" method="GET" autocomplete="off" target="recommendations">
-            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Upgrades & Downgrades <span>&#x25BA;</span></button>
-        </form>
-        <iframe name="recommendations" scrolling="no" onload="expand_iframe(this)"></iframe>
+            <div class="btn_div">
+                <form action="/google_trends" method="GET" autocomplete="off" target="Google Trends">
+                    <input style="display: none" name="quote" value="{{ticker_selected}}">
+                    <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Google Trends')">Google Trends</button>
+                </form>
+            </div>
+            
+<!--            <div class="btn_div">-->
+<!--                <form action="/sub_news" method="GET" autocomplete="off" target="News Article">-->
+<!--                    <input style="display: none" name="quote" value="{{ticker_selected}}">-->
+<!--                    <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'News Article')">News Article</button>-->
+<!--                </form>-->
+<!--            </div>-->
+        </div>
 
-        <form action="/sustainability" method="GET" autocomplete="off" target="sustainability">
-            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Sustainability <span>&#x25BA;</span></button>
-        </form>
-        <iframe name="sustainability" scrolling="no" onload="expand_iframe(this)"></iframe>
-
-        <form action="/google_trends" method="GET" autocomplete="off" target="google_trends">
-            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Google Trending <span>&#x25BA;</span></button>
-        </form>
-        <iframe name="google_trends" scrolling="no" onload="expand_iframe(this)"></iframe>
-
-<!--        <form action="/sub_news" method="GET" autocomplete="off" target="news_article">-->
-<!--            <button type="submit" name="quote" value="{{ticker_selected}}" class="show_more_btn" onclick="this.form.submit();">Recent News Articles <span>&#x25BA;</span></button>-->
-<!--        </form>-->
-<!--        <iframe name="news_article" scrolling="no" onload="expand_iframe(this)"></iframe>-->
+        <iframe class="more_details" name="Historical Data" scrolling="no" onload="expand_iframe(this)"></iframe>
+        <iframe style="display: none" class="more_details" name="Major Holders" scrolling="no" onload="expand_iframe(this)"></iframe>
+        <iframe style="display: none" class="more_details" name="Institutional Holders" scrolling="no" onload="expand_iframe(this)"></iframe>
+        <iframe style="display: none" class="more_details" name="Mutual-Fund Holders" scrolling="no" onload="expand_iframe(this)"></iframe>
+        <iframe style="display: none" class="more_details" name="Dividend & Splits" scrolling="no" onload="expand_iframe(this)"></iframe>
+        <iframe style="display: none" class="more_details" name="Earnings" scrolling="no" onload="expand_iframe(this)"></iframe>
+        <iframe style="display: none" class="more_details" name="Upgrades & Downgrades" scrolling="no" onload="expand_iframe(this)"></iframe>
+        <iframe style="display: none" class="more_details" name="Google Trends" scrolling="no" onload="expand_iframe(this)"></iframe>
+<!--        <iframe style="display: none" class="more_details" name="News Article" scrolling="no" onload="expand_iframe(this)"></iframe>-->
 
         <p>Data from: <a href="https://finance.yahoo.com/" target="_blank">finance.yahoo.com</a></p>
     </div>

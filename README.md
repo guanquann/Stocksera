@@ -1,6 +1,5 @@
 # StocksEra
 
-
 You can view the application in:
 - <a href="https://stocksera.pythonanywhere.com">stocksera.pythonanywhere.com </a>
 

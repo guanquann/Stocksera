@@ -1,9 +1,9 @@
-import os
 import math
 
 from custom_extensions.custom_words import *
 from custom_extensions.stopwords import *
 from scheduled_tasks.get_popular_tickers import full_ticker_list
+from email_server import *
 from helpers import *
 
 import requests_cache
@@ -13,6 +13,7 @@ from pytrends.request import TrendReq
 from finvizfinance.quote import finvizfinance
 
 from django.shortcuts import render
+from django.http import HttpResponse
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 analyzer = SentimentIntensityAnalyzer()
@@ -65,11 +66,15 @@ def ticker_recommendations(request):
         recommendations.reset_index(inplace=True)
         recommendations["Date"] = recommendations["Date"].dt.date
         recommendations.sort_values(by=["Date"], ascending=False, inplace=True)
-        recommendations = recommendations[:100].to_html(index=False)
     except TypeError:
-        recommendations = "N/A"
+        recommendations = pd.DataFrame()
+        recommendations["Date"] = ["N/A"]
+        recommendations["Firm"] = ["N/A"]
+        recommendations["To Grade"] = ["N/A"]
+        recommendations["From Grade"] = ["N/A"]
+        recommendations["Action"] = ["N/A"]
     return render(request, 'iframe_format.html', {"title": "Recommendations",
-                                                  "table": recommendations})
+                                                  "table": recommendations[:100].to_html(index=False)})
 
 
 def ticker_major_holders(request):
@@ -98,12 +103,22 @@ def ticker_institutional_holders(request):
             institutional_holders.columns = (institutional_holders.columns.str.replace("% Out", "Stake"))
             institutional_holders["Stake"] = institutional_holders["Stake"].apply(lambda x: str(f"{100 * x:.2f}") + "%")
             institutional_holders["Value"] = institutional_holders["Value"].apply(lambda x: "$" + str(x))
-            institutional_holders = institutional_holders.to_html(index=False)
         except AttributeError:
-            institutional_holders = "N/A"
+            institutional_holders = pd.DataFrame()
+            institutional_holders["Holder"] = ["N/A"]
+            institutional_holders["Shares"] = ["N/A"]
+            institutional_holders["Date Reported"] = ["N/A"]
+            institutional_holders["Stake"] = ["N/A"]
+            institutional_holders["Value"] = ["N/A"]
     else:
-        institutional_holders = "N/A"
-    return render(request, 'iframe_format.html', {"title": "Institutional Holders", "table": institutional_holders})
+        institutional_holders = pd.DataFrame()
+        institutional_holders["Holder"] = ["N/A"]
+        institutional_holders["Shares"] = ["N/A"]
+        institutional_holders["Date Reported"] = ["N/A"]
+        institutional_holders["Stake"] = ["N/A"]
+        institutional_holders["Value"] = ["N/A"]
+    return render(request, 'iframe_format.html', {"title": "Institutional Holders",
+                                                  "table": institutional_holders.to_html(index=False)})
 
 
 def ticker_mutual_fund_holders(request):
@@ -117,10 +132,15 @@ def ticker_mutual_fund_holders(request):
         mutual_fund_holders.columns = (mutual_fund_holders.columns.str.replace("% Out", "Stake"))
         mutual_fund_holders["Stake"] = mutual_fund_holders["Stake"].apply(lambda x: str(f"{100 * x:.2f}") + "%")
         mutual_fund_holders["Value"] = mutual_fund_holders["Value"].apply(lambda x: "$" + str(x))
-        mutual_fund_holders = mutual_fund_holders.to_html(index=False)
     else:
-        mutual_fund_holders = "N/A"
-    return render(request, 'iframe_format.html', {"title": "MutualFund Holders", "table": mutual_fund_holders})
+        mutual_fund_holders = pd.DataFrame()
+        mutual_fund_holders["Holder"] = ["N/A"]
+        mutual_fund_holders["Shares"] = ["N/A"]
+        mutual_fund_holders["Date Reported"] = ["N/A"]
+        mutual_fund_holders["Stake"] = ["N/A"]
+        mutual_fund_holders["Value"] = ["N/A"]
+    return render(request, 'iframe_format.html', {"title": "MutualFund Holders",
+                                                  "table": mutual_fund_holders.to_html(index=False)})
 
 
 def dividend_and_split(request):
@@ -139,78 +159,38 @@ def dividend_and_split(request):
     return render(request, 'iframe_format.html', {"title": "Dividend & Split", "table": df})
 
 
-def ticker_calendar(request):
-    """
-    Show calendar of earnings of ticker. Data from yahoo finance
-    """
-    pd.options.display.float_format = '{:.3f}'.format
-    ticker_selected = default_ticker(request)
-    ticker = yf.Ticker(ticker_selected, session=session)
-    df = ticker.calendar
-    df.fillna("N/A", inplace=True)
-    if not df.empty:
-        df.iloc[0, 0] = df.iloc[0, 0].date().strftime("%d/%m/%Y")
-        df.rename(index={"Earnings Low": "EPS Low", "Earnings High": "EPS High", "Earnings Average": "EPS Average"},
-                  inplace=True)
-        df = pd.DataFrame(df.iloc[:, 0]).reset_index()
-        df = df.to_html(header=False, index=False)
-    else:
-        df = "N/A"
-    return render(request, 'ticker_next_earnings.html', {"ticker_selected": ticker_selected,
-                                                         "ticker_earnings": df})
-
-
 def ticker_earnings(request):
     """
     Show historical earnings of ticker. Data from yahoo finance
     """
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected, session=session)
-    df = ticker.earnings
-    if not df.empty:
-        df.reset_index(inplace=True)
-        df.sort_values(by=["Year"], ascending=False, inplace=True)
-        df = df.to_html(index=False)
+    past_df = ticker.earnings
+    if not past_df.empty:
+        past_df.reset_index(inplace=True)
+        past_df.sort_values(by=["Year"], ascending=False, inplace=True)
     else:
-        df = "N/A"
+        past_df = pd.DataFrame(columns=["Year", "Revenue", "Earnings"])
+        past_df["Year"] = ["2021", "2020", "2019", "2018"]
+        past_df["Revenue"] = ["N/A", "N/A", "N/A", "N/A"]
+        past_df["Earnings"] = ["N/A", "N/A", "N/A", "N/A"]
+
+    next_df = ticker.calendar
+    next_df.fillna("N/A", inplace=True)
+    if not next_df.empty:
+        next_df.iloc[0, 0] = next_df.iloc[0, 0].date().strftime("%d/%m/%Y")
+        next_df.rename(index={"Earnings Low": "EPS Low", "Earnings High": "EPS High",
+                              "Earnings Average": "EPS Average"}, inplace=True)
+        next_df = pd.DataFrame(next_df.iloc[:, 0]).reset_index()
+        next_df.rename(columns={"index": "", 0: "Estimate"}, inplace=True)
+    else:
+        next_df = pd.DataFrame(columns=["Next Earning", "Estimate"])
+        next_df["Next Earning"] = ["Earning Date", "EPS Average", "EPS Low", "EPS High", "Revenue Average", "Revenue Low",
+                                   "Revenue High"]
+        next_df["Estimate"] = ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
     return render(request, 'ticker_earnings.html', {"ticker_selected": ticker_selected,
-                                                    "ticker_earnings": df})
-
-
-def sustainability(request):
-    """
-    Show sustainability of ticker. Data from yahoo finance
-    """
-    ticker_selected = default_ticker(request)
-    ticker = yf.Ticker(ticker_selected, session=session)
-    df = ticker.sustainability
-    if df is not None:
-        df = df.rename(
-            index={
-                "controversialWeapons": "Controversial Weapons",
-                "socialPercentile": "Social Percentile",
-                "peerCount": "Peer Count",
-                "governanceScore": "Governance Score",
-                "environmentPercentile": "Environment Percentile",
-                "animalTesting": "Animal Testing",
-                "highestControversy": "Highest Controversy",
-                "environmentScore": "Environment Score",
-                "governancePercentile": "Governance Percentile",
-                "militaryContract": "Military Contract",
-                "palmOil": "Palm Oil",
-                "socialScore": "Social Score",
-                "esgPerformance": "Esg Performance",
-                "peerGroup": "Peer Group",
-                "totalEsg": "Total Esg",
-                "furLeather": "Fur Leather"
-            }
-        )
-        df.reset_index(inplace=True)
-        df.iloc[:, 0] = df.iloc[:, 0].str.title()
-        df = df.to_html(index=False)
-    else:
-        df = "N/A"
-    return render(request, 'iframe_format.html', {"title": "Sustainability", "table": df})
+                                                    "ticker_earnings": past_df.to_html(index=False),
+                                                    "ticker_next_earnings": next_df.to_html(index=False)})
 
 
 def sub_news(request):
@@ -329,7 +309,8 @@ def historical_data(request):
     """
     pd.options.display.float_format = '{:.1f}'.format
     ticker_selected = default_ticker(request)
-
+    print(request.GET)
+    print(request.POST)
     if request.GET.get("sort"):
         sort_by = request.GET['sort'].replace("Sort By: ", "")
     else:
@@ -368,6 +349,17 @@ def historical_data(request):
     price_df = price_df.round(2)
     price_df = price_df.fillna(0)
     latest_date = price_df["Date"].astype(str).max()
+
+    if "download_csv" in request.GET:
+        file_name = "{}.csv".format(ticker_selected)
+        price_df.to_csv(file_name, index=False)
+        with open(file_name) as to_download:
+            response = HttpResponse(to_download, content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename={}'.format(file_name)
+            if os.path.isfile(file_name):
+                os.remove(file_name)
+            return response
+
     price_df = price_df.to_html(index=False)
 
     return render(request, 'historical_data.html', {"ticker_selected": ticker_selected,
@@ -429,8 +421,12 @@ def financial(request):
     ticker = yf.Ticker(ticker_selected)
 
     information = check_market_hours(ticker, ticker_selected)
-    # print(ticker.quarterly_balance_sheet)
-    # print(ticker.quarterly_cashflow)
+
+    # quarterly_cashflow = ticker.quarterly_cashflow
+    # print(quarterly_cashflow)
+    # for i in quarterly_cashflow.index.to_list():
+    #     print(i)
+
     # To check if input is a valid ticker
     if "symbol" in information:
         current_datetime = str(datetime.utcnow().date())
@@ -446,7 +442,6 @@ def financial(request):
                     balance_col_list = data[ticker_selected]["balance_col_list"]
             else:
                 date_list, balance_list, balance_col_list = check_financial_data(ticker_selected, ticker, data, r)
-        print(date_list)
         return render(request, 'financial.html', {"ticker_selected": ticker_selected,
                                                   "information": information,
                                                   "date_list": date_list,
@@ -727,17 +722,20 @@ def reddit_ticker_analysis(request):
     else:
         subreddit = "wallstreetbets"
 
-    ticker = yf.Ticker(ticker_selected)
-    information = check_market_hours(ticker, ticker_selected)
-
     db.execute("SELECT rank, total, price, date_updated from {} WHERE ticker=? and rank != 0".format(subreddit),
                (ticker_selected,))
     ranking = db.fetchall()
 
-    return render(request, 'reddit_ticker_analysis.html', {"ticker_selected": ticker_selected,
-                                                           "information": information,
-                                                           "ranking": ranking,
-                                                           "subreddit": subreddit})
+    if subreddit != "cryptocurrency":
+        ticker = yf.Ticker(ticker_selected)
+        information = check_market_hours(ticker, ticker_selected)
+        return render(request, 'reddit_stocks_analysis.html', {"ticker_selected": ticker_selected,
+                                                               "information": information,
+                                                               "ranking": ranking,
+                                                               "subreddit": subreddit})
+    else:
+        return render(request, 'reddit_crypto_analysis.html', {"ticker_selected": ticker_selected,
+                                                               "ranking": ranking})
 
 
 def reddit_etf(request):
@@ -816,6 +814,7 @@ def inflation(request):
     """
     Get inflation. Data is from https://www.usinflationcalculator.com/inflation/current-inflation-rates/
     """
+    pd.options.display.float_format = '{:.1f}'.format
     inflation_stats = pd.read_sql_query("SELECT * FROM inflation", conn).to_html(index=False)
     return render(request, 'inflation.html', {"inflation_stats": inflation_stats})
 
@@ -870,6 +869,5 @@ def about(request):
         name = request.POST.get("name")
         email = request.POST.get("email")
         suggestions = request.POST.get("suggestions")
-        db.execute("INSERT INTO contact VALUES (?, ?, ?)", (name, email, suggestions))
-        conn.commit()
+        send_email(name, email, suggestions)
     return render(request, 'about.html')

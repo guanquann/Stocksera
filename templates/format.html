@@ -21,10 +21,10 @@
             <ul>
                 <li ><img class="main_logo" src="{% static 'images/logo.png' %}"></li>
 
-                <a href="{% url 'main' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/home.svg' %}">Home</li></a>
+                <a href="{% url 'main' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/nav_bar/home.svg' %}">Home</li></a>
 
                 <div onclick="expand_nav(this)">
-                    <li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/ticker_analysis.svg' %}">Stocks</li>
+                    <li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/nav_bar/ticker_analysis.svg' %}">Stocks</li>
                     <a href="{% url 'ticker' %}"><li class="sub_nav_bar" style="display: none;">Ticker Analysis</li></a>
                     <a href="{% url 'financial' %}"><li class="sub_nav_bar" style="display: none;">Financials</li></a>
                     <a href="{% url 'options' %}"><li class="sub_nav_bar" style="display: none;">Options</li></a>
@@ -35,14 +35,14 @@
                 </div>
 
                 <div onclick="expand_nav(this)">
-                    <li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/reddit.svg' %}">Reddit</li>
+                    <li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/nav_bar/reddit.svg' %}">Reddit</li>
                     <a href="{% url 'reddit_analysis' %}"><li class="sub_nav_bar" style="display: none;">Trending</li></a>
                     <a href="{% url 'reddit_etf' %}"><li class="sub_nav_bar" style="display: none;">WSB ETF</li></a>
                     <a href="{% url 'subreddit_count' %}"><li class="sub_nav_bar" style="display: none;">Subreddit Count</li></a>
                 </div>
 
                 <div onclick="expand_nav(this)">
-                    <li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/discover.svg' %}">Discover</li>
+                    <li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/nav_bar/discover.svg' %}">Discover</li>
                     <a href="{% url 'market_overview' %}"><li class="sub_nav_bar" style="display:none">Market Overview</li></a>
                     <a href="{% url 'short_interest' %}"><li class="sub_nav_bar" style="display: none;">Short Interest</li></a>
                     <a href="{% url 'low_float' %}"><li class="sub_nav_bar" style="display: none;">Low Float</li></a>
@@ -52,11 +52,11 @@
                     <a href="{% url 'reverse_repo' %}"><li class="sub_nav_bar" style="display: none;">Economy</li></a>
                 </div>
 
-                {% comment %} <a href="{% url 'latest_news' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/newspaper.svg' %}">News Sentiment</li></a> {% endcomment %}
-                <a href="{% url 'about' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/about.svg' %}">About</li></a>
+                {% comment %} <a href="{% url 'latest_news' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/nav_bar/newspaper.svg' %}">News Sentiment</li></a> {% endcomment %}
+                <a href="{% url 'about' %}"><li class="nav_bar"><img class="nav_bar_logo" src="{% static 'images/nav_bar/about.svg' %}">About</li></a>
             </ul>
-            <div><img src="{% static 'images/day_icon.svg' %}" class="sun_icon"></div>
-            <div><img src="{% static 'images/night_icon.svg' %}" class="night_icon"></div>
+            <div><img src="{% static 'images/nav_bar/day_icon.svg' %}" class="sun_icon"></div>
+            <div><img src="{% static 'images/nav_bar/night_icon.svg' %}" class="night_icon"></div>
 
             <label class="switch">
                 <input id="dark_mode" type="checkbox" onchange="activate_dark_mode()">

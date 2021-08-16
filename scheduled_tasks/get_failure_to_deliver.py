@@ -30,7 +30,13 @@ def combine_df(folder_path):
         df = pd.read_csv(os.path.join(folder_path, file))
         del df["CUSIP"]
         del df["DESCRIPTION"]
+        df["SETTLEMENT DATE"] = df["SETTLEMENT DATE"].apply(lambda x: str(x[:4] + "/" + x[4:6] + "/" + x[6:]))
         combined_df = combined_df.append(df).drop_duplicates()
+    combined_df["SETTLEMENT DATE"] = combined_df["SETTLEMENT DATE"].astype(str)
+    combined_df.rename(columns={"SETTLEMENT DATE": "Date",
+                                "SYMBOL": "Symbol",
+                                "QUANTITY (FAILS)": "Failure to Deliver",
+                                "PRICE": "Price"}, inplace=True)
     combined_df.to_csv("database/failure_to_deliver/ftd.csv", index=False)
 
 

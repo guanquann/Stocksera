@@ -18,38 +18,26 @@ Date.prototype.removeDays = function(days) {
     return date;
 }
 
-function ftd_graph() {
+function display_table() {
     var ftd = document.getElementsByTagName("table")[0].querySelectorAll("tr");
     var threshold = document.getElementById("90th_percentile").innerHTML
-
-    ftd[0].innerHTML = `
-        <th>Date</th>
-        <th>Failure to Deliver</th>
-        <th>Price</th>
-        <th>Amount (FTD x $)</th>
+    ftd[0].innerHTML += `
         <th>T+35 Date</th>`
-
-    var date_list = [], price_list = [], vol_list = []
     for (tr=ftd.length-1; tr>0; tr--) {
         var total_td = ftd[tr].querySelectorAll("td");
         date_string = total_td[0].innerHTML;
-        new_date_string = `${date_string.slice(0, 4)}/${date_string.slice(4, 6)}/${date_string.slice(6, 8)}`
-        date_list.push(new_date_string);
-        total_td[0].innerHTML = new_date_string;
+        total_td[0].innerHTML = date_string;
 
-        vol_list.push(total_td[1].innerHTML)
         if ((Number(total_td[1].innerHTML) > 1000000 | Number(total_td[3].innerHTML) > threshold) & Number(total_td[1].innerHTML) > 100000) {
             total_td[1].parentElement.style.color = "red";
             total_td[1].parentElement.style.fontWeight = "bold";
         }
         total_td[1].innerHTML = Number(total_td[1].innerHTML).toLocaleString()
 
-        price_list.push(total_td[2].innerHTML);
         total_td[2].innerHTML = "$" + total_td[2].innerHTML
-
         total_td[3].innerHTML = "$" + Number(total_td[3].innerHTML).toLocaleString()
 
-        f35_date = new Date(new_date_string).addDays(50)
+        f35_date = new Date(date_string).addDays(50)
 //        if (f35_date > new Date("2021/07/05")) {
 //            f35_date = new Date(f35_date).addDays(1)
 //        }
@@ -65,9 +53,41 @@ function ftd_graph() {
         f35_date = year + "/" + month + "/" + day;
         ftd[tr].innerHTML += `<td>${f35_date}</td>`
     }
+}
 
-    var ftd_chart = document.getElementById('ftd_chart');
-    var ftd_chart = new Chart(ftd_chart, {
+var ftd_chart = null
+
+function ftd_graph(duration) {
+    var d = new Date();
+    d.setMonth(d.getMonth() - duration);
+    var dd = d.getDate();
+    if (dd <= 9) {
+        dd = "0" + dd
+    }
+    var mm = d.getMonth() + 1;
+    if (mm <= 9) {
+        mm = "0" + mm
+    }
+    var yyyy = d.getFullYear();
+    var date_threshold = yyyy + '/' + mm + '/' + dd;
+
+    var ftd = document.getElementsByTagName("table")[0].querySelectorAll("tr");
+    var date_list = [], price_list = [], vol_list = []
+    for (tr=ftd.length-1; tr>0; tr--) {
+        var total_td = ftd[tr].querySelectorAll("td");
+        date_string = total_td[0].innerHTML;
+        if (date_string >= date_threshold) {
+            date_list.push(date_string);
+            vol_list.push(Number(total_td[1].innerHTML.replace(/[^0-9-.]/g, "")))
+            price_list.push(Number(total_td[2].innerHTML.replace("$", "")));
+        }
+    }
+
+    if(ftd_chart != null){
+        ftd_chart.destroy();
+    }
+    ftd_chart = document.getElementById('ftd_chart');
+    ftd_chart = new Chart(ftd_chart, {
         data: {
             labels: date_list,
             datasets: [
@@ -100,11 +120,9 @@ function ftd_graph() {
                         },
                         type: "linear",
                         id: "A",
-                        stacked: true,
                         scaleLabel: {
                             display: true,
                             labelString: 'Price',
-                            beginAtZero: false,
                         },
                         ticks: {
                             callback: function(value, index, values) {
@@ -116,7 +134,6 @@ function ftd_graph() {
                         scaleLabel: {
                             display: true,
                             labelString: 'FTD',
-                            beginAtZero: false,
                         },
                         type: "linear",
                         id: "B",
@@ -158,4 +175,12 @@ function ftd_graph() {
             },
         },
     });
+}
+
+function btn_selected(elem) {
+    date_range = document.getElementsByName("date_range")
+    for (i=0; i<date_range.length; i++) {
+        date_range[i].classList.remove("selected")
+    }
+    elem.classList.add("selected")
 }

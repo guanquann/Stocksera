@@ -309,8 +309,6 @@ def historical_data(request):
     """
     pd.options.display.float_format = '{:.1f}'.format
     ticker_selected = default_ticker(request)
-    print(request.GET)
-    print(request.POST)
     if request.GET.get("sort"):
         sort_by = request.GET['sort'].replace("Sort By: ", "")
     else:
@@ -585,10 +583,10 @@ def failure_to_deliver(request):
     if os.path.isfile(file_path):
         information = check_market_hours(ticker, ticker_selected)
         ftd = pd.read_csv(file_path)
-        ftd = ftd[ftd["SYMBOL"] == ticker_selected]
+        ftd = ftd[ftd["Symbol"] == ticker_selected]
         ftd = ftd[::-1]
-        ftd["Amount (FTD x $)"] = (ftd["QUANTITY (FAILS)"].astype(int) * ftd["PRICE"].astype(float)).astype(int)
-        del ftd["SYMBOL"]
+        ftd["Amount (FTD x $)"] = (ftd["Failure to Deliver"].astype(int) * ftd["Price"].astype(float)).astype(int)
+        del ftd["Symbol"]
         return render(request, 'ftd.html', {"ticker_selected": ticker_selected,
                                             "information": information,
                                             "90th_percentile": ftd["Amount (FTD x $)"].quantile(0.90),
@@ -765,10 +763,17 @@ def subreddit_count(request):
     """
     Get subreddit user count, growth, active users over time.
     """
-    db.execute("SELECT * FROM subreddit_count")
+    if request.GET.get("date_range"):
+        date_range = request.GET.get("date_range")
+    else:
+        date_range = "Max"
+    query = date_selector_html(date_range, "updated_date")
+    db.execute("SELECT * FROM subreddit_count " + query)
     subscribers = db.fetchall()
     subscribers = list(map(list, subscribers))
-    return render(request, 'subreddit_count.html', {"subscribers": subscribers})
+
+    return render(request, 'subreddit_count.html', {"subscribers": subscribers,
+                                                    "selected": date_range})
 
 
 def market_overview(request):
@@ -786,7 +791,7 @@ def reverse_repo(request):
         date_range = request.GET.get("date_range")
     else:
         date_range = "Max"
-    query = date_selector_html(date_range)
+    query = date_selector_html(date_range, "record_date")
     db.execute("SELECT * FROM reverse_repo " + query)
     reverse_repo_stats = db.fetchall()
     reverse_repo_stats = reversed(list(map(list, reverse_repo_stats)))
@@ -802,7 +807,7 @@ def daily_treasury(request):
         date_range = request.GET.get("date_range")
     else:
         date_range = "Max"
-    query = date_selector_html(date_range)
+    query = date_selector_html(date_range, "record_date")
     db.execute("SELECT * FROM daily_treasury " + query)
     daily_treasury_stats = db.fetchall()
     daily_treasury_stats = reversed(list(map(list, daily_treasury_stats)))

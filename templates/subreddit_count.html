@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/subreddit_count.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode(){% endblock %}
+{% block onload_properties%}restore_dark_mode();subreddit_count('{{selected}}'){% endblock %}
  
 {% block main_nav %}
     <div class="ticker-wrap">
@@ -94,6 +94,14 @@
     </div>
 
     <div class="subreddit_count">
+        <form action="" method="GET" autocomplete="off">
+            <div class="date_selector">
+                <button name="date_range" value="1 Month" id="1 Month">1 Month</button>
+                <button name="date_range" value="3 Months" id="3 Months">3 Months</button>
+                <button name="date_range" value="Max" id="Max">Max</button>
+            </div>
+        </form>
+
         <h2>% Growth in users over time</h2>
         <div class="chart-container">
             <canvas id="growth_chart"></canvas>

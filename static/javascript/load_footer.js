@@ -8,6 +8,7 @@ var disclaimer_btn = document.getElementById("disclaimer");
 var contact_btn = document.getElementById("contact");
 var privacy_btn = document.getElementById("privacy");
 var support_btn = document.getElementById("support");
+var top_support_btn = document.getElementById("top_support_btn");
 var share_btn = document.getElementById("share");
 
 var close = document.getElementsByClassName("close")
@@ -29,6 +30,11 @@ privacy_btn.onclick = function() {
 }
 support_btn.onclick = function() {
     support_model.style.display = "block";
+}
+if (top_support_btn != null) {
+    top_support_btn.onclick = function() {
+        support_model.style.display = "block";
+    }
 }
 share_btn.onclick = function() {
     share_model.style.display = "block";

@@ -18,7 +18,7 @@
 
 {% block main_nav %}
 <div class="top_nav">
-    <div style="display: none" id="small_logo">
+    <div style="display: none; width: fit-content" id="small_logo">
         <img class="top_logo" src="{% static 'images/logo.png' %}">
         <span id="cut_off"></span>
     </div>
@@ -130,18 +130,21 @@
         <div class="section_div_left">
             <h1>We're Open-Sourced</h1>
             <div class="op_btn">
-                <button onclick="show_op('video', this)" class="selected">Video</button>
+                <button onclick="show_op('donate', this)" class="selected">Donate</button>
                 <button onclick="show_op('code', this)">Source Code</button>
+                <button onclick="show_op('video', this)">Video</button>
             </div>
 
             <div class="section_div_description" id="op_description">
                 <div class="section_div_text">
-                    Watch out for new videos in our YouTube Channel for new updates in the future!
+                    Stocksera is an open-source application.
+                    I spent months creating this application, with no monetary benefits.
+                    If you like this project, you can support me via <a href="https://www.paypal.me/stocksera" target="_blank">Paypal</a>.
                 </div>
-                <div class="href_btn"><a href="https://www.youtube.com/watch?v=SEYXEcVKt38" target="_blank">VIEW MORE</a></div>
+                <div class="href_btn"><a href="https://www.paypal.com/paypalme/stocksera" target="_blank">VIEW MORE</a></div>
             </div>
         </div>
-        <div class="section_div_right"><a href="https://www.youtube.com/watch?v=SEYXEcVKt38" target="_blank"><img src="{% static 'images/homepage/youtube.png' %}"></a></div>
+        <div class="section_div_right"><img src="{% static 'images/homepage/opensource.png' %}"></div>
     </div>
 
     <div class="section_div">

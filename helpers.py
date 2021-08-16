@@ -211,16 +211,19 @@ def get_max_pain(chain):
     return max_pain, call_loss_list, put_loss_list
 
 
-def date_selector_html(date_range):
+def date_selector_html(date_range, date_col):
     if date_range.lower() == "1 month":
         date_from = str(datetime.utcnow().date() - timedelta(days=30))
-        query = "WHERE record_date >= '{}'".format(date_from)
+        query = "WHERE {} >= '{}'".format(date_col, date_from)
+    elif date_range.lower() == "3 months":
+        date_from = str(datetime.utcnow().date() - timedelta(days=90))
+        query = "WHERE {} >= '{}'".format(date_col, date_from)
     elif date_range.lower() == "6 months":
         date_from = str(datetime.utcnow().date() - timedelta(days=180))
-        query = "WHERE record_date >= '{}'".format(date_from)
+        query = "WHERE {} >= '{}'".format(date_col, date_from)
     elif date_range.lower() == "1 year":
         date_from = str(datetime.utcnow().date() - timedelta(days=360))
-        query = "WHERE record_date >= '{}'".format(date_from)
+        query = "WHERE {} >= '{}'".format(date_col, date_from)
     else:
         query = ""
     return query

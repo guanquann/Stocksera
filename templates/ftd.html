@@ -10,7 +10,7 @@
 <script src="{% static 'javascript/ftd.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}display_data();ftd_graph();restore_dark_mode(){% endblock %}
+{% block onload_properties%}display_data();ftd_graph(48);display_table();restore_dark_mode();{% endblock %}
 
 {% block main_nav %}
 <div class="top_nav">
@@ -18,6 +18,7 @@
         <div>
             <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" autocomplete="off">
             <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">Search</button>
+            <div id="top_support_btn" class="support">🤍 Donate</div>
         </div>
     </form>
 </div>
@@ -49,12 +50,19 @@
             <a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Short Vol</a>
         </div>
 
+        <div class="date_selector">
+            <button name="date_range" id="3 Months" onclick="btn_selected(this); ftd_graph(3)">3 Months</button>
+            <button name="date_range" id="6 Months" onclick="btn_selected(this); ftd_graph(6)">6 Months</button>
+            <button name="date_range" id="1 Year" onclick="btn_selected(this); ftd_graph(12)">1 Year</button>
+            <button name="date_range" id="Max" onclick="btn_selected(this); ftd_graph(48)" class="selected">Max</button>
+        </div>
+
         <div class="chart-container">
             <canvas id="ftd_chart"></canvas>
         </div>
 
         <div id="90th_percentile" style="display: none">{{90th_percentile}}</div>
-        <div class="scrollable_div">
+        <div class="scrollable_div" style="max-height: 800px">
             {{ftd|safe}}
         </div>
 

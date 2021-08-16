@@ -93,7 +93,6 @@ function show_discover(type, elem) {
 
 function show_op(type, elem) {
     var op_btn = document.getElementsByClassName("op_btn")[0].querySelectorAll("button")
-    var img = elem.parentElement.parentElement.parentElement.querySelector(".section_div_right")
     for (i=0; i<op_btn.length; i++) {
         op_btn[i].classList.remove("selected")
     }
@@ -102,12 +101,16 @@ function show_op(type, elem) {
     if (type == "video") {
         text = "Watch out for new videos in our YouTube Channel for new updates in the future!"
         url = "https://www.youtube.com/watch?v=SEYXEcVKt38"
-        img = "/static/images/youtube.png"
+    }
+    else if (type == "donate") {
+        text = `Stocksera is an open-source application.
+                I spent months creating this application, with no monetary benefits.
+                If you like this project, you can suppoort me via <a href="https://www.paypal.me/stocksera" target="_blank">Paypal</a>.`
+        url = "https://www.paypal.com/paypalme/stocksera"
     }
     else if (type == "code") {
         text = "You can view the code in GitHub. Do give a star if you like it!"
         url = "https://github.com/spartan737/Stocksera"
-        img = "/static/images/github.svg"
     }
     document.getElementById("op_description").innerHTML = `
         <div class="section_div_text">${text}</div><div class="href_btn"><a href="${url}" target="_blank">VIEW MORE</a></div>`

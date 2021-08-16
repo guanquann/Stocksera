@@ -100,7 +100,14 @@
     .top_nav div {
         margin-top: 3px;
         margin-left: 9.5px;
-        width: fit-content;
+    }
+
+    .top_nav .support {
+        float: right;
+        margin: 3px 9px;
+        padding: 2px;
+        border-radius: 5px;
+        font-size: 10px;
     }
 
     .ticker-wrap .ticker {
@@ -217,6 +224,7 @@
         padding: 5px 5px 5px 10px;
         background-color: #E9EAEA;
         border-radius: 10px;
+        border: 2px solid gray;
         width: 90%;
     }
 
@@ -332,7 +340,14 @@
     .top_nav div {
         margin-top: 7px;
         margin-left: 20px;
-        width: fit-content;
+    }
+
+    .top_nav .support {
+        float: right;
+        margin: 2px 9px;
+        padding: 3px;
+        border-radius: 5px;
+        font-size: 14px;
     }
 
     .ticker-wrap .ticker {
@@ -445,11 +460,12 @@
     .instructions {
         margin-left: auto;
         margin-right: auto;
-        width: 98%;
+        width: 97%;
         margin-bottom: 10px;
         padding: 5px 0px 5px 10px;
         background-color: #E9EAEA;
         border-radius: 10px;
+        border: 2px solid gray;
     }
 
     .instructions h2 {
@@ -578,6 +594,22 @@ ul {
 
 .nav_bar:hover {
     cursor: pointer;
+}
+
+.top_nav .support {
+    border: 1px solid gray;
+    color: black
+}
+
+.dark_mode .top_nav .support {
+    border: 1px solid wheat;
+    color: wheat
+}
+
+.top_nav .support:hover {
+    cursor: pointer;
+    color: #9e9e9e;
+    border-color: #9e9e9e;
 }
 
 .sub_nav_bar {
@@ -860,7 +892,7 @@ input:checked + .slider:before {
 }
 
 .modal-header h4 {
-    margin: 10px;
+    margin: 10px 0;
 }
 
 .dark_mode .modal-header, .dark_mode .explore_more {
@@ -915,7 +947,7 @@ input:checked + .slider:before {
 }
 
 #disclaimer_model, #privacy_model, #contact_model, #support_model, #share_model {
-    padding-top: 30vh !important;
+    padding-top: 27vh !important;
 }
 
 #disclaimer_model .modal-body, #privacy_model .modal-body, #contact_model .modal-body, #support_model .modal-body, #share_model .modal-body {

@@ -101,26 +101,28 @@
             <canvas id="reverse_repo_chart"></canvas>
         </div>
 
-        <table id="reverse_repo_table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Amount</th>
-                    <th>Num Parties</th>
-                    <th>Average</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for repo in reverse_repo_stats %}
+        <div class="scrollable_div" style="max-height: 800px">
+            <table id="reverse_repo_table">
+                <thead>
                     <tr>
-                        <td>{{repo.0}}</td>
-                        <td>{{repo.1}}</td>
-                        <td>{{repo.2}}</td>
-                        <td>{{repo.3}}</td>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Num Parties</th>
+                        <th>Average</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for repo in reverse_repo_stats %}
+                        <tr>
+                            <td>{{repo.0}}</td>
+                            <td>{{repo.1}}</td>
+                            <td>{{repo.2}}</td>
+                            <td>{{repo.3}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 {% endblock %}
 

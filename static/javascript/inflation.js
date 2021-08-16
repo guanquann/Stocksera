@@ -154,7 +154,7 @@ function inflation(duration) {
         },
     });
 }
-//inflation_chart.destroy()
+
 function btn_selected(elem) {
     date_range = document.getElementsByName("date_range")
     for (i=0; i<date_range.length; i++) {

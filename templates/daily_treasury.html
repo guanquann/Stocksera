@@ -95,28 +95,30 @@
             <canvas id="daily_treasury_chart"></canvas>
         </div>
 
-        <table id="daily_treasury_table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Close Balance</th>
-                    <th>Open Balance</th>
-                    <th>Amount Change</th>
-                    <th>Percent Change</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for daily_treasury in daily_treasury_stats %}
+        <div class="scrollable_div" style="max-height: 800px">
+            <table id="daily_treasury_table">
+                <thead>
                     <tr>
-                        <td>{{daily_treasury.0}}</td>
-                        <td>{{daily_treasury.1}}</td>
-                        <td>{{daily_treasury.2}}</td>
-                        <td>{{daily_treasury.3}}</td>
-                        <td>{{daily_treasury.4}}</td>
+                        <th>Date</th>
+                        <th>Close Balance</th>
+                        <th>Open Balance</th>
+                        <th>Amount Change</th>
+                        <th>Percent Change</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for daily_treasury in daily_treasury_stats %}
+                        <tr>
+                            <td>{{daily_treasury.0}}</td>
+                            <td>{{daily_treasury.1}}</td>
+                            <td>{{daily_treasury.2}}</td>
+                            <td>{{daily_treasury.3}}</td>
+                            <td>{{daily_treasury.4}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 {% endblock %}
 

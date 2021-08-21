@@ -6,20 +6,48 @@ function display_data() {
     }
 }
 
-function short_vol_graph() {
+function display_table() {
+    var shorted_vol_daily = document.getElementsByTagName("table")[0].querySelectorAll("tr");
+    for (tr=shorted_vol_daily.length-1; tr>0; tr--) {
+        var total_td = shorted_vol_daily[tr].querySelectorAll("td");
+        total_td[2].innerHTML = Number(total_td[2].innerHTML).toLocaleString()
+        total_td[3].innerHTML = Number(total_td[3].innerHTML).toLocaleString()
+    }
+}
+
+var vol_chart = null
+var price_chart = null
+
+function short_vol_graph(duration) {
+    var date_threshold = get_date_difference(duration, "-")
+
     var shorted_vol_daily = document.getElementsByTagName("table")[0].querySelectorAll("tr");
     var date_list = [], price_list = [], short_vol_list = [], long_vol_list = [], percentage_list = []
     for (tr=shorted_vol_daily.length-1; tr>0; tr--) {
         var total_td = shorted_vol_daily[tr].querySelectorAll("td");
-        date_list.push(total_td[0].innerHTML);
-        price_list.push(total_td[1].innerHTML.replace("$", ""));
-        short_vol_list.push(total_td[2].innerHTML);
-        long_vol_list.push(total_td[3].innerHTML - total_td[2].innerHTML);
-        percentage_list.push(total_td[4].innerHTML.replace("%", ""));
+        date_string = total_td[0].innerHTML;
+        if (date_string >= date_threshold) {
+            date_list.push(date_string);
+            price_list.push(total_td[1].innerHTML.replace("$", ""));
+            short_vol_num = Number(total_td[2].innerHTML.replace(/[^0-9-.]/g, ""))
+            long_vol_num = Number(total_td[3].innerHTML.replace(/[^0-9-.]/g, ""))
+            short_vol_list.push(short_vol_num);
+            long_vol_list.push(long_vol_num - short_vol_num);
+            percentage_list.push(total_td[4].innerHTML.replace("%", ""));
+            shorted_vol_daily[tr].style.removeProperty("display");
+        }
+        else {
+            shorted_vol_daily[tr].style.display = "none"
+        }
     }
 
-    var vol_chart = document.getElementById('vol_chart');
-    var vol_chart = new Chart(vol_chart, {
+    if (vol_chart != null){
+        vol_chart.destroy();
+        price_chart.destroy();
+    }
+
+    vol_chart = document.getElementById('vol_chart');
+    vol_chart = new Chart(vol_chart, {
         data: {
             labels: date_list,
             datasets: [
@@ -53,7 +81,7 @@ function short_vol_graph() {
             responsive: true,
             maintainAspectRatio: false,
             legend: {
-                display: false
+                display: true
              },
             scales: {
                 yAxes: [{
@@ -92,6 +120,7 @@ function short_vol_graph() {
                     }],
 
                 xAxes: [{
+                    offset: true,
                     ticks: {
                       maxTicksLimit: 10,
                       maxRotation: 45,
@@ -116,8 +145,8 @@ function short_vol_graph() {
         },
     });
 
-    var price_chart = document.getElementById('price_chart');
-    var price_chart = new Chart(price_chart, {
+    price_chart = document.getElementById('price_chart');
+    price_chart = new Chart(price_chart, {
         data: {
             labels: date_list,
             datasets: [
@@ -143,7 +172,7 @@ function short_vol_graph() {
             responsive: true,
             maintainAspectRatio: false,
             legend: {
-                display: false
+                display: true
              },
             scales: {
                 yAxes: [
@@ -223,4 +252,12 @@ function short_vol_graph() {
     var summary_code = `<p>The short volume for $${document.getElementById("quote").value} is ${percentage_list[percentage_list.length-1]}% on ${date_list[date_list.length-1]}. The short sale volume is ${short_vol}, long sale volume is ${long_vol}. The total volume is ${total_vol}. The short sale volume is ${percentage_change}% compared to ${date_list[date_list.length-2]}.</p>`
 
     document.getElementById("summary").innerHTML = summary_code
+}
+
+function btn_selected(elem) {
+    date_range = document.getElementsByName("date_range")
+    for (i=0; i<date_range.length; i++) {
+        date_range[i].classList.remove("selected")
+    }
+    elem.classList.add("selected")
 }

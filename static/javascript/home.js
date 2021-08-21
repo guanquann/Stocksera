@@ -105,7 +105,7 @@ function show_op(type, elem) {
     else if (type == "donate") {
         text = `Stocksera is an open-source application.
                 I spent months creating this application, with no monetary benefits.
-                If you like this project, you can suppoort me via <a href="https://www.paypal.me/stocksera" target="_blank">Paypal</a>.`
+                If you like this project, you can suppoort me via <a href="https://www.paypal.me/stocksera" target="_blank">Paypal</a> or <a href="https://www.patreon.com/stocksera" target="_blank">Patreon</a>.`
         url = "https://www.paypal.com/paypalme/stocksera"
     }
     else if (type == "code") {

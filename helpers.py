@@ -1,8 +1,9 @@
 import sqlite3
 import numpy as np
-import pandas as pd
-import json
+import os
 from datetime import datetime, timedelta
+from django.http import HttpResponse
+from fast_yahoo import *
 
 conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
@@ -67,10 +68,14 @@ def check_market_hours(ticker, ticker_selected):
                 last_updated_time = data[ticker_selected]["next_update"].split()[1].split(".")[0].replace(":", "")
 
                 if (str(int(market_close_time) + 1000) > last_updated_time > market_open_time) or last_updated_date != current_utc_date:
-                    information = ticker.info
-                    information["logo_url"] = check_img(ticker_selected, information)
-                    data[ticker_selected] = information
-                    data[ticker_selected]["next_update"] = next_update_time
+                    # information = ticker.info
+                    # data[ticker_selected] = information
+
+                    information = download_advanced_stats([ticker_selected])
+                    data.update(information)
+                    information = data[ticker_selected]
+
+                    information["next_update"] = next_update_time
                     r.seek(0)
                     r.truncate()
                     json.dump(data, r, indent=4)
@@ -79,10 +84,12 @@ def check_market_hours(ticker, ticker_selected):
                     information = data[ticker_selected]
                     print("Market Close. Using cached data")
             else:
-                information = ticker.info
-                information["logo_url"] = check_img(ticker_selected, information)
-                data[ticker_selected] = information
-                data[ticker_selected]["next_update"] = next_update_time
+                # information = ticker.info
+                # data[ticker_selected] = information
+                information = download_advanced_stats([ticker_selected])
+                data.update(information)
+                information = data[ticker_selected]
+                information["next_update"] = next_update_time
                 r.seek(0)
                 r.truncate()
                 json.dump(data, r, indent=4)
@@ -95,14 +102,18 @@ def check_market_hours(ticker, ticker_selected):
                 information = data[ticker_selected]
                 print("Market Open. Using cached data")
             else:
-                information = ticker.info
-                information["logo_url"] = check_img(ticker_selected, information)
-                data[ticker_selected] = information
-                data[ticker_selected]["next_update"] = next_update_time
+                # information = ticker.info
+                # data[ticker_selected] = information
+
+                information = download_advanced_stats([ticker_selected])
+                data.update(information)
+                information = data[ticker_selected]
+
+                information["next_update"] = next_update_time
                 r.seek(0)
                 r.truncate()
                 json.dump(data, r, indent=4)
-                print("Market Open. Scraping data")
+                print("Market Open. Scraping data", type(information))
 
     if "shortName" in information:
         # db.execute("SELECT * FROM stocksera_trending WHERE symbol=?", (ticker_selected,))
@@ -209,24 +220,6 @@ def get_max_pain(chain):
     chain["loss"] = loss_list
     max_pain = chain["loss"].idxmin()
     return max_pain, call_loss_list, put_loss_list
-
-
-def date_selector_html(date_range, date_col):
-    if date_range.lower() == "1 month":
-        date_from = str(datetime.utcnow().date() - timedelta(days=30))
-        query = "WHERE {} >= '{}'".format(date_col, date_from)
-    elif date_range.lower() == "3 months":
-        date_from = str(datetime.utcnow().date() - timedelta(days=90))
-        query = "WHERE {} >= '{}'".format(date_col, date_from)
-    elif date_range.lower() == "6 months":
-        date_from = str(datetime.utcnow().date() - timedelta(days=180))
-        query = "WHERE {} >= '{}'".format(date_col, date_from)
-    elif date_range.lower() == "1 year":
-        date_from = str(datetime.utcnow().date() - timedelta(days=360))
-        query = "WHERE {} >= '{}'".format(date_col, date_from)
-    else:
-        query = ""
-    return query
 
 
 def long_number_format(num):

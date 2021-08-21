@@ -1,16 +1,14 @@
 import math
 import time
-import sqlite3
 from collections import Counter
 
 import praw
 import requests
-import pandas as pd
 from pycoingecko import CoinGeckoAPI
 import matplotlib.pyplot as plt
 
 from helpers import *
-import scheduled_tasks.config as cfg
+import scheduled_tasks.reddit.config as cfg
 
 client = CoinGeckoAPI()
 

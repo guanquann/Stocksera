@@ -1,11 +1,8 @@
-function daily_treasury(selected) {
-    var date_list = [], close_list = []
+function display_table() {
     var table = document.getElementsByTagName("table")[0];
     var tr = table.querySelectorAll("tr");
     for (i=tr.length-1; i>0; i--) {
         var td = tr[i].querySelectorAll("td");
-        date_list.push(td[0].innerHTML)
-        close_list.push(td[1].innerHTML)
         td[1].innerHTML = "$" + td[1].innerHTML + "B"
         td[2].innerHTML = "$" + td[2].innerHTML + "B"
         if (td[3].innerHTML.includes("-")) {
@@ -16,9 +13,35 @@ function daily_treasury(selected) {
         }
         td[4].innerHTML = td[4].innerHTML + "%"
     }
+}
 
-    var daily_treasury_chart = document.getElementById('daily_treasury_chart');
-    var daily_treasury_chart = new Chart(daily_treasury_chart, {
+var daily_treasury_chart = null;
+
+function treasury(duration) {
+    var date_threshold = get_date_difference(duration, "-")
+
+    var date_list = [], close_list = []
+    var table = document.getElementsByTagName("table")[0];
+    var tr = table.querySelectorAll("tr");
+    for (i=tr.length-1; i>0; i--) {
+        var td = tr[i].querySelectorAll("td");
+        date_string = td[0].innerHTML
+        if (date_string >= date_threshold) {
+            date_list.push(date_string)
+            close_list.push(td[1].innerHTML.replace("$", "").replace("B", ""))
+            tr[i].style.removeProperty("display")
+        }
+        else {
+            tr[i].style.display = "none"
+        }
+    }
+
+    if (daily_treasury_chart != null){
+        daily_treasury_chart.destroy();
+    }
+
+    daily_treasury_chart = document.getElementById('daily_treasury_chart');
+    daily_treasury_chart = new Chart(daily_treasury_chart, {
         data: {
             labels: date_list,
             datasets: [
@@ -84,6 +107,4 @@ function daily_treasury(selected) {
             },
         },
     });
-
-    document.getElementById(selected).classList.add("selected");
 }

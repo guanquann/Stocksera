@@ -1,12 +1,12 @@
 @media only screen and (max-width: 900px) {
-    #short_vol_data {
+    .retail_sales {
         width: 90%;
         margin:auto;
     }
 }
 
 @media only screen and (min-width: 900px) {
-    #short_vol_data {
+    .retail_sales {
         width: 98%;
         margin:auto;
     }
@@ -20,22 +20,6 @@
     max-height:250px;
     margin-left: auto;
     margin-right: auto;
-}
-
-#summary {
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 10px;
-    text-align: center;
-    padding: 4px;
-    background-color: #E9EAEA;
-    border-radius: 10px;
-    width: 60%;
-    max-width: 520px;
-}
-
-.dark_mode #summary {
-    background-color: #505050;
 }
 
 .date_selector button {

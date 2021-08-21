@@ -22,7 +22,6 @@
                 {% endfor %}
             </datalist>
             <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">Search</button>
-            <div id="top_support_btn" class="support">🤍 Donate</div>
         </div>
     </form>
 </div>
@@ -299,7 +298,7 @@ var sector = check_stats("sector")
 var industry = check_stats("industry")
 
     <!--If ticker does not have a website, bring users to Yahoo Finance-->
-    if (information.hasOwnProperty("website") == true) {
+    if (information.hasOwnProperty("website") == true && information["website"] != "N/A") {
         var website = information["website"]
     }
     else {

@@ -32,4 +32,4 @@ def preprocess_hedge_funds(csv, fund_name):
 
 
 if __name__ == '__main__':
-    preprocess_hedge_funds(r"C:\Users\Acer\Desktop\melvin_capital_management_lp-current-2021-08-02_06_17_47.csv", "melvin_captial")
+    preprocess_hedge_funds(r"C:\Users\Acer\PycharmProjects\StocksAnalysis\database\new\sanders_capital__llc-current-2021-08-18_03_03_12.csv", "sanders_capital")

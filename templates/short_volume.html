@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/short_volume.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}display_data();short_vol_graph();restore_dark_mode(){% endblock %}
+{% block onload_properties%}display_data();display_table();short_vol_graph(48);restore_dark_mode(){% endblock %}
 
 {% block main_nav %}
 <div class="top_nav">
@@ -17,7 +17,6 @@
         <div>
             <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" autocomplete="off">
             <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">Search</button>
-            <div id="top_support_btn" class="support">🤍 Donate</div>
         </div>
     </form>
 </div>
@@ -47,6 +46,12 @@
 
         <div id="summary"></div>
 
+        <div class="date_selector">
+            <button name="date_range" id="1 Months" onclick="btn_selected(this); short_vol_graph(1)">1 Months</button>
+            <button name="date_range" id="3 Months" onclick="btn_selected(this); short_vol_graph(3)">3 Months</button>
+            <button name="date_range" id="Max" onclick="btn_selected(this); short_vol_graph(48)" class="selected">Max</button>
+        </div>
+
         <div class="chart-container">
             <canvas id="vol_chart"></canvas>
         </div>
@@ -55,7 +60,12 @@
             <canvas id="price_chart"></canvas>
         </div>
 
-        <div class="scrollable_div">
+        <form action="" method="GET" autocomplete="off">
+            <button type="submit" name="download_csv" class="download_btn"><u>➥ Download</u></button>
+            <input name="quote" value="{{ticker_selected}}" style="display:none">
+        </form>
+
+        <div class="scrollable_div" style="max-height: 800px">
             <table>
                 <thead>
                     <tr>
@@ -78,8 +88,8 @@
                     {% endfor %}
                 </tbody>
             </table>
-            Note: The Total Volume and Short Volume data are limited. They do not represent the actual total volume.
         </div>
+        Note: The Total Volume and Short Volume data are limited. They do not represent the actual total volume.
         <p>Data from: <a href="http://shortvolumes.com/" target="_blank">shortvolumes.com</a></p>
     </div>
 </div>

@@ -20,16 +20,6 @@ select {
     margin-bottom: 5px;
 }
 
-.download_btn {
-    border:0;
-    float: right;
-}
-
-.dark_mode .download_btn, .dark_mode .download_btn:hover {
-    color: wheat;
-    background-color: transparent;
-}
-
 #general_stats {
     margin-bottom: 15px;
 }

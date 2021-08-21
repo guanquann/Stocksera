@@ -97,12 +97,20 @@ def database():
                "UNIQUE(name, symbol) )")
 
     db.execute("CREATE table IF NOT EXISTS subreddit_count ("
+               "ticker TEXT, "
                "subreddit TEXT, "
                "subscribers INTEGER, "
                "active INTEGER, "
                "updated_date TEXT,"
                "percentage_active FLOAT, "
-               "growth FLOAT)")
+               "growth FLOAT, "
+               "UNIQUE(ticker, subreddit, updated_date) )")
+
+    db.execute("CREATE table IF NOT EXISTS twitter_followers ("
+               "ticker TEXT, "
+               "followers INTEGER, "
+               "updated_date TEXT,"
+               "UNIQUE('ticker' ))")
 
     db.execute("CREATE table IF NOT EXISTS short_interest ("
                "ticker TEXT, "
@@ -150,6 +158,13 @@ def database():
                "open_today_bal FLOAT, "
                "amount_change FLOAT, "
                "percent_change FLOAT, "
+               "UNIQUE ('record_date') )")
+
+    db.execute("CREATE table IF NOT EXISTS retail_sales ("
+               "record_date TEXT, "
+               "value FLOAT, "
+               "percent_change FLOAT, "
+               "covid_monthly_avg INTEGER, "
                "UNIQUE ('record_date') )")
 
     db.execute("CREATE table IF NOT EXISTS inflation ("

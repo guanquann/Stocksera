@@ -76,7 +76,7 @@
     }
 
     .section_div_text {
-        height: 35px;
+        min-height: 35px;
     }
 
     .href_btn {
@@ -123,8 +123,10 @@
         margin-top: 50px
     }
 
-    .main_div div {
-        margin-bottom: 20px;
+    .featured_div_img_div img {
+        min-width: 0px;
+        width: 100px;
+        height: 26px;
     }
 }
 
@@ -199,7 +201,7 @@
     }
 
     .section_div_text {
-        height: 50px;
+        min-height: 50px;
     }
 
     .experience_text {
@@ -247,8 +249,10 @@
         margin: auto;
     }
 
-    .main_div div {
-        padding-bottom: 30px;
+    .featured_div_img_div img {
+        min-width: 0px;
+        width: 120px;
+        height: 26px;
     }
 }
 
@@ -348,4 +352,22 @@ h1 {
 
 .dark_mode .ranking a {
     color: wheat;
+}
+
+#op_description .section_div_text a {
+    color: rgb(38, 166, 154);
+}
+
+.featured_div {
+    display: flex;
+    justify-content: center;
+}
+
+.featured_div_txt {
+    height: 30px;
+    line-height: 30px;
+}
+
+.featured_div_img_div {
+    padding-bottom:0;
 }

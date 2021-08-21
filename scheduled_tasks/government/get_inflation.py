@@ -7,6 +7,9 @@ db = conn.cursor()
 
 
 def inflation():
+    """
+    Get inflation data from https://www.usinflationcalculator.com/inflation/historical-inflation-rates/
+    """
     df = pd.read_html("https://www.usinflationcalculator.com/inflation/historical-inflation-rates/")[0]
     df = df[df["Year"] >= 2001][::-1]
     df["Year"] = df["Year"].astype(str)
@@ -19,6 +22,7 @@ def inflation():
         db.execute("INSERT INTO inflation VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", row)
         conn.commit()
     print(df)
+
 
 if __name__ == '__main__':
     inflation()

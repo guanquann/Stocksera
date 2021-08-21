@@ -12,7 +12,7 @@ But because I'm hosting it free on pythonanywhere, speed of website can be (very
 You are encouraged to host it locally on your computer, where the speed is much faster.
 
 ### Support:
-This website will be free forever! No subscription needed! But if you want to support me, please give me a star on Github or you can PayPal to <a href="https://www.paypal.me/stocksera">paypal.me/stocksera</a>
+This website will be free forever! No subscription needed! But if you want to support me, please give me a star on Github or you can PayPal to <a href="https://www.paypal.me/stocksera">paypal.me/stocksera</a>. Patreon is also available <a href="https://www.patreon.com/stocksera" target="_blank">here</a>.
 
 ### User Guide:
 

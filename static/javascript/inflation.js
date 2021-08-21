@@ -79,7 +79,7 @@ function inflation(duration) {
         }
     }
 
-    if(inflation_chart != null){
+    if (inflation_chart != null){
         inflation_chart.destroy();
     }
     inflation_chart = document.getElementById('inflation_chart');

@@ -18,7 +18,6 @@
         <div>
             <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" autocomplete="off">
             <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">Search</button>
-            <div id="top_support_btn" class="support">🤍 Donate</div>
         </div>
     </form>
 </div>
@@ -62,7 +61,12 @@
         </div>
 
         <div id="90th_percentile" style="display: none">{{90th_percentile}}</div>
-        <div class="scrollable_div" style="max-height: 800px">
+        <form action="" method="GET" autocomplete="off">
+            <button type="submit" name="download_csv" class="download_btn"><u>➥ Download</u></button>
+            <input name="quote" value="{{ticker_selected}}" style="display:none">
+        </form>
+
+        <div class="scrollable_div">
             {{ftd|safe}}
         </div>
 

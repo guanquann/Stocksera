@@ -157,6 +157,30 @@ function show_ticker_price(information) {
     document.getElementById("ticker_basic_stats").innerHTML = ticker_basic_stats_code;
 }
 
+function btn_selected(elem) {
+    date_range = document.getElementsByName("date_range")
+    for (i=0; i<date_range.length; i++) {
+        date_range[i].classList.remove("selected")
+    }
+    elem.classList.add("selected")
+}
+
+function get_date_difference(duration, delimiter) {
+    var d = new Date();
+    d.setMonth(d.getMonth() - duration);
+    var dd = d.getDate();
+    if (dd <= 9) {
+        dd = "0" + dd
+    }
+    var mm = d.getMonth() + 1;
+    if (mm <= 9) {
+        mm = "0" + mm
+    }
+    var yyyy = d.getFullYear();
+    var date_threshold = yyyy + delimiter + mm + delimiter + dd;
+    return date_threshold
+}
+
 function clickAndDisable(link) {
     // disable subsequent clicks
     link.onclick = function(event) {

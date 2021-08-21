@@ -16,6 +16,9 @@ import scheduled_tasks.get_earnings_calendar as get_earnings_calendar
 import scheduled_tasks.get_hedge_funds_holdings as get_hedge_funds_holdings
 import scheduled_tasks.get_failure_to_deliver as get_failure_to_deliver
 import scheduled_tasks.miscellaneous as miscellaneous
+import scheduled_tasks.government.get_reverse_repo as get_reverse_repo
+import scheduled_tasks.government.get_inflation as get_inflation
+import scheduled_tasks.government.get_daily_treasury as get_daily_treasury
 
 # Best to run 1 hour before market opens daily to get trending tickers and subreddit count
 SCRAPE_REDDIT_STOCKS = True
@@ -52,19 +55,29 @@ FTD = False
 # If you want to update hedge funds holdings
 HEDGE_FUNDS = False
 
+# If you want to get reverse repo data
+RRP = False
+
+# If you want to get inflation data
+INFLATION = False
+
+# If you want to get daily treasury data
+TREASURY = False
+
+
 if __name__ == '__main__':
     # Create/update database. It is okay to run this even though you have an existing database.
     # Data will not be over-written.
     create_database.database()
-
-    if SCRAPE_SUBREDDIT_STATS:
-        get_subreddit_count.subreddit_count()
 
     if SCRAPE_REDDIT_STOCKS:
         scrape_reddit_stocks.main()
 
     if SCRAPE_REDDIT_CRYPTO:
         scrape_reddit_crypto.main()
+
+    if SCRAPE_SUBREDDIT_STATS:
+        get_subreddit_count.subreddit_count()
 
     if UPDATE_REDDIT_ETF:
         conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
@@ -107,3 +120,12 @@ if __name__ == '__main__':
 
     if HEDGE_FUNDS:
         get_hedge_funds_holdings.preprocess_hedge_funds(csv=r"C:\Users\Acer\Desktop\citadel_advisors_llc-current-2021-06-23_14_17_24.csv", fund_name="citadel")
+
+    if RRP:
+        get_reverse_repo.reverse_repo()
+
+    if INFLATION:
+        get_inflation.inflation()
+
+    if TREASURY:
+        get_daily_treasury.download_json()

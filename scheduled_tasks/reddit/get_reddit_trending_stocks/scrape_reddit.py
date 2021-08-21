@@ -1,5 +1,5 @@
 from scheduled_tasks.reddit.get_reddit_trending_stocks.AutoDD import *
-from scheduled_tasks.config import *
+from scheduled_tasks.reddit.config import *
 
 
 def main():

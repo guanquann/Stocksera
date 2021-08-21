@@ -11,7 +11,7 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import sqlite3
 
 from scheduled_tasks.reddit.get_reddit_trending_stocks.fast_yahoo import *
-import scheduled_tasks.config as cfg
+import scheduled_tasks.reddit.config as cfg
 from custom_extensions.stopwords import stopwords_list
 from custom_extensions.custom_words import new_words
 

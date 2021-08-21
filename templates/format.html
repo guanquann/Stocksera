@@ -73,7 +73,9 @@
     <div id="main_div">
         {% block main_nav %}{% endblock %}
         <div id="main_content">
-            {% block main_content %}{% endblock %}
+            {% block main_content %}
+            {% endblock %}
+            <div class="donate_sticky" id="donate_sticky">Support</div>
         </div>
 
         <div class="footer">
@@ -140,10 +142,11 @@
                     <p>
                         <a href="https://www.paypal.me/stocksera" target="_blank"><img src="{% static 'images/paypal.svg' %}" style="width: 30px"></a>
                         <a href="https://github.com/spartan737/Stocksera" target="_blank"><img src="{% static 'images/github.svg' %}" style="width: 30px"></a>
+                        <a href="https://www.patreon.com/stocksera" target="_blank"><img src="{% static 'images/patreon.png' %}" style="width: 30px"></a>
                     </p>
                     <p>Stocksera is an open-source, free for all application.
                        I spent months just to create this application, with new updates & bug fixes almost every week, with no monetary benefits.
-                       If you like this project and would want to support it, you can <a href="https://www.paypal.me/stocksera" target="_blank">Paypal</a> me.
+                       If you like this project, you can support me via <a href="https://www.paypal.me/stocksera" target="_blank">Paypal</a> or <a href="https://www.patreon.com/stocksera" target="_blank">Patreon</a>.
                        Alternatively, you can give me a star ⭐ on <a href="https://github.com/spartan737/Stocksera" target="_blank">Github</a> and share it with everyone.</p>
                 </div>
                 </div>

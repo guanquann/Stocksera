@@ -8,6 +8,13 @@ db = conn.cursor()
 
 
 def download_json(date_to_start: str = str(datetime.utcnow().date() - timedelta(days=14))):
+    """
+    Get daily treasury by reading from json file (no actions needed)
+    Parameters
+    ----------
+    date_to_start : str
+        format: YYYY-MM-DD
+    """
     url = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/dts/dts_table_1" \
           "?fields=record_date,account_type,close_today_bal,open_today_bal,open_month_bal&" \
           "filter=record_date:gte:{}".format(date_to_start)
@@ -24,7 +31,15 @@ def download_json(date_to_start: str = str(datetime.utcnow().date() - timedelta(
             conn.commit()
 
 
-def download_csv_manual(file_path):
+def download_csv_manual(file_path: str):
+    """
+    Get daily treasury by reading from csv file (you need to download csv file manually from
+    https://fiscaldata.treasury.gov/datasets/daily-treasury-statement/operating-cash-balance first)
+    Parameters
+    ----------
+    file_path : str
+        path of csv file
+    """
     df = pd.read_csv(file_path)
     df = df[df["Type of Account"] == "Federal Reserve Account"]
     for index, row in df[::-1].iterrows():

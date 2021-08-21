@@ -1,51 +1,29 @@
 import os
 import sys
-import json
-import yfinance.ticker as yf
-from datetime import datetime, timedelta
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from scheduled_tasks.get_popular_tickers import full_ticker_list
-
+from fast_yahoo import *
 
 # Time Format: HHMMSS
 market_open_time = "133000"
 market_close_time = "200000"
 
 
-def check_img(ticker_selected, information):
-    if ticker_selected == "TSLA":
-        return "https://logo.clearbit.com/tesla.cn"
-    elif ticker_selected == "BABA":
-        return "https://logo.clearbit.com/alibaba.com"
-    else:
-        return information["logo_url"]
-
-
-def ticker_info(ticker_selected):
+def ticker_info(ticker_list):
     """
     Cache ticker information into a json file to speed up rendering time
     Parameters
     ----------
-    ticker_selected: str
-        ticker symbol (e.g: AAPL)
+    ticker_list: list
+        list of tickers (e.g: ['AAPL', 'NIO', 'BB'])
     """
-    ticker = yf.Ticker(ticker_selected)
-    current_datetime = datetime.utcnow()
-    next_update_time = str(current_datetime + timedelta(seconds=600))
-    with open(r"database/yf_cached_api.json", "r+") as r:
-        data = json.load(r)
-        information = ticker.info
-        information["logo_url"] = check_img(ticker_selected, information)
-        data[ticker_selected] = information
-        data[ticker_selected]["next_update"] = next_update_time
-        r.seek(0)
-        r.truncate()
-        json.dump(data, r, indent=4)
-    print("Saving {} information to yf_cached_api.json".format(ticker_selected))
+    with open(r"database/yf_cached_api.json", "w") as r:
+        information = download_advanced_stats(ticker_list)
+        json.dump(information, r, indent=4)
+    print("All data saved to database/yf_cached_api.json")
 
 
 if __name__ == '__main__':
-    for ticker_symbol in full_ticker_list():
-        ticker_info(ticker_symbol)
+    ticker_info(full_ticker_list())

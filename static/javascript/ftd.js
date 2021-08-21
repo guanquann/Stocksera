@@ -58,18 +58,7 @@ function display_table() {
 var ftd_chart = null
 
 function ftd_graph(duration) {
-    var d = new Date();
-    d.setMonth(d.getMonth() - duration);
-    var dd = d.getDate();
-    if (dd <= 9) {
-        dd = "0" + dd
-    }
-    var mm = d.getMonth() + 1;
-    if (mm <= 9) {
-        mm = "0" + mm
-    }
-    var yyyy = d.getFullYear();
-    var date_threshold = yyyy + '/' + mm + '/' + dd;
+    var date_threshold = get_date_difference(duration, "/")
 
     var ftd = document.getElementsByTagName("table")[0].querySelectorAll("tr");
     var date_list = [], price_list = [], vol_list = []
@@ -77,13 +66,17 @@ function ftd_graph(duration) {
         var total_td = ftd[tr].querySelectorAll("td");
         date_string = total_td[0].innerHTML;
         if (date_string >= date_threshold) {
+            ftd[tr].style.removeProperty("display");
             date_list.push(date_string);
             vol_list.push(Number(total_td[1].innerHTML.replace(/[^0-9-.]/g, "")))
             price_list.push(Number(total_td[2].innerHTML.replace("$", "")));
         }
+        else {
+            ftd[tr].style.display = "none"
+        }
     }
 
-    if(ftd_chart != null){
+    if (ftd_chart != null){
         ftd_chart.destroy();
     }
     ftd_chart = document.getElementById('ftd_chart');
@@ -175,12 +168,4 @@ function ftd_graph(duration) {
             },
         },
     });
-}
-
-function btn_selected(elem) {
-    date_range = document.getElementsByName("date_range")
-    for (i=0; i<date_range.length; i++) {
-        date_range[i].classList.remove("selected")
-    }
-    elem.classList.add("selected")
 }

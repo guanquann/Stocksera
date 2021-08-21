@@ -2,28 +2,29 @@ function update_table() {
     var rows = document.getElementsByTagName("table")[0].querySelectorAll("tr");
     var header_td = rows[0]
     header_td.innerHTML = `
-        <th onclick="sortTable(0)" class="th-sort-desc" id='0'>Ticker</th>
-        <th onclick="sortTable(1)" class="th-sort-desc" id='1'>Company</th>
-        <th onclick="sortTable(2)" class="th-sort-desc" id='2'>Exchange</th>
-        <th onclick="sortTable(3)" class="th-sort-desc" id='3'>Previous Close</th>
-        <th onclick="sortTable(4)" class="th-sort-desc" id='4'>1 Day Change %</th>
-        <th onclick="sortTable(5)" class="th-sort-desc" id='5'>Floating Shares</th>
-        <th onclick="sortTable(6)" class="th-sort-desc" id='6'>Outstanding Shares</th>
-        <th onclick="sortTable(7)" class="th-sort-desc" id='7'>Short Interest</th>
-        <th onclick="sortTable(8)" class="th-sort-desc" id='8'>Market Cap</th>
-        <th onclick="sortTable(9)" class="th-sort-desc" id='9'>Industry</th>`
+        <th onclick="sortTable(0)" class="th-sort-desc" id='0'>Rank</th>
+        <th onclick="sortTable(1)" class="th-sort-desc" id='1'>Ticker</th>
+        <th onclick="sortTable(2)" class="th-sort-desc" id='2'>Company</th>
+        <th onclick="sortTable(3)" class="th-sort-desc" id='3'>Exchange</th>
+        <th onclick="sortTable(4)" class="th-sort-desc" id='4'>Previous Close</th>
+        <th onclick="sortTable(5)" class="th-sort-desc" id='5'>1 Day Change %</th>
+        <th onclick="sortTable(6)" class="th-sort-desc" id='6'>Floating Shares</th>
+        <th onclick="sortTable(7)" class="th-sort-desc" id='7'>Outstanding Shares</th>
+        <th onclick="sortTable(8)" class="th-sort-desc" id='8'>Short Interest</th>
+        <th onclick="sortTable(9)" class="th-sort-desc" id='9'>Market Cap</th>
+        <th onclick="sortTable(10)" class="th-sort-desc" id='10'>Industry</th>`
 
     for (i=1; i<rows.length; i++) {
         var td = rows[i].querySelectorAll("td");
-        img_url = `https://g.foolcdn.com/art/companylogos/mark/${td[0].innerHTML}.png`
-        td[0].innerHTML = `<a href="/ticker/?quote=${td[0].innerHTML}" target="_blank"><img src=${img_url} class="table_ticker_logo" onerror="this.error=null;load_table_error_img(this, '${td[0].innerHTML}')"><b>${td[0].innerHTML}</b></a>`;
-        td[3].innerHTML = "$" + td[3].innerHTML;
-        td[4].innerHTML = td[4].innerHTML + "%";
-        if (td[4].innerHTML.includes("-")) {
-            td[4].style.color = "red"
+        img_url = `https://g.foolcdn.com/art/companylogos/mark/${td[1].innerHTML}.png`
+        td[1].innerHTML = `<a href="/ticker/?quote=${td[1].innerHTML}" target="_blank"><img src=${img_url} class="table_ticker_logo" onerror="this.error=null;load_table_error_img(this, '${td[1].innerHTML}')"><b>${td[1].innerHTML}</b></a>`;
+        td[4].innerHTML = "$" + td[4].innerHTML;
+        td[5].innerHTML = td[5].innerHTML + "%";
+        if (td[5].innerHTML.includes("-")) {
+            td[5].style.color = "red"
         }
         else {
-            td[4].style.color = "green"
+            td[5].style.color = "green"
         }
     }
     document.getElementsByClassName("table_div")[0].style.removeProperty("display");
@@ -59,7 +60,7 @@ function sortTable(n) {
 
 
             // If column is floating/outstanding shares
-            if (n == 5 || n == 6 || n == 8) {
+            if (n == 6 || n == 7 || n == 9) {
                 x = rows[i].getElementsByTagName("TD")[n].innerHTML
                 y = rows[i + 1].getElementsByTagName("TD")[n].innerHTML
                 if (x.includes("B")) {

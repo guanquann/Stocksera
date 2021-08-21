@@ -13,7 +13,6 @@ from pytrends.request import TrendReq
 from finvizfinance.quote import finvizfinance
 
 from django.shortcuts import render
-from django.http import HttpResponse
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 analyzer = SentimentIntensityAnalyzer()
@@ -349,7 +348,7 @@ def historical_data(request):
     latest_date = price_df["Date"].astype(str).max()
 
     if "download_csv" in request.GET:
-        file_name = "{}.csv".format(ticker_selected)
+        file_name = "{}_historical_{}.csv".format(ticker_selected, timeframe)
         price_df.to_csv(file_name, index=False)
         with open(file_name) as to_download:
             response = HttpResponse(to_download, content_type='text/csv')
@@ -556,12 +555,25 @@ def short_volume(request):
     """
     ticker_selected = default_ticker(request)
 
-    db.execute("SELECT * FROM short_volume WHERE ticker=? ORDER BY reported_date DESC", (ticker_selected,))
+    sql_query = "SELECT * FROM short_volume WHERE ticker='{}' ORDER BY reported_date DESC".format(ticker_selected)
+    db.execute(sql_query)
     short_volume_data = db.fetchall()
     if short_volume_data:
         ticker = yf.Ticker(ticker_selected)
         information = check_market_hours(ticker, ticker_selected)
         short_volume_data = list(map(list, short_volume_data))
+
+        if "download_csv" in request.GET:
+            file_name = "{}_short_volume.csv".format(ticker_selected)
+            ftd_df = pd.read_sql_query(sql_query, conn)
+            ftd_df.to_csv(file_name, index=False)
+            with open(file_name) as to_download:
+                response = HttpResponse(to_download, content_type='text/csv')
+                response['Content-Disposition'] = 'attachment; filename={}'.format(file_name)
+                if os.path.isfile(file_name):
+                    os.remove(file_name)
+                return response
+
         return render(request, 'short_volume.html', {"ticker_selected": ticker_selected,
                                                      "information": information,
                                                      "short_volume_data": short_volume_data})
@@ -587,6 +599,17 @@ def failure_to_deliver(request):
         ftd = ftd[::-1]
         ftd["Amount (FTD x $)"] = (ftd["Failure to Deliver"].astype(int) * ftd["Price"].astype(float)).astype(int)
         del ftd["Symbol"]
+
+        if "download_csv" in request.GET:
+            file_name = "{}_ftd.csv".format(ticker_selected)
+            ftd.to_csv(file_name, index=False)
+            with open(file_name) as to_download:
+                response = HttpResponse(to_download, content_type='text/csv')
+                response['Content-Disposition'] = 'attachment; filename={}'.format(file_name)
+                if os.path.isfile(file_name):
+                    os.remove(file_name)
+                return response
+
         return render(request, 'ftd.html', {"ticker_selected": ticker_selected,
                                             "information": information,
                                             "90th_percentile": ftd["Amount (FTD x $)"].quantile(0.90),
@@ -763,17 +786,10 @@ def subreddit_count(request):
     """
     Get subreddit user count, growth, active users over time.
     """
-    if request.GET.get("date_range"):
-        date_range = request.GET.get("date_range")
-    else:
-        date_range = "Max"
-    query = date_selector_html(date_range, "updated_date")
-    db.execute("SELECT * FROM subreddit_count " + query)
+    db.execute("SELECT * FROM subreddit_count")
     subscribers = db.fetchall()
     subscribers = list(map(list, subscribers))
-
-    return render(request, 'subreddit_count.html', {"subscribers": subscribers,
-                                                    "selected": date_range})
+    return render(request, 'subreddit_count.html', {"subscribers": subscribers})
 
 
 def market_overview(request):
@@ -787,32 +803,22 @@ def reverse_repo(request):
     """
     Get reverse repo. Data is from https://apps.newyorkfed.org/markets/autorates/tomo-results-display?SHOWMORE=TRUE&startDate=01/01/2000&enddate=01/01/2000
     """
-    if request.GET.get("date_range"):
-        date_range = request.GET.get("date_range")
-    else:
-        date_range = "Max"
-    query = date_selector_html(date_range, "record_date")
-    db.execute("SELECT * FROM reverse_repo " + query)
-    reverse_repo_stats = db.fetchall()
-    reverse_repo_stats = reversed(list(map(list, reverse_repo_stats)))
-    return render(request, 'reverse_repo.html', {"reverse_repo_stats": reverse_repo_stats,
-                                                 "selected": date_range})
+    reverse_repo_stats = pd.read_sql_query("SELECT * FROM reverse_repo", conn)
+    reverse_repo_stats.rename(columns={"record_date": "Date", "amount": "Amount", "parties": "Num Parties",
+                                       "average": "Average"}, inplace=True)
+    return render(request, 'reverse_repo.html', {"reverse_repo_stats": reverse_repo_stats[::-1].to_html(index=False)})
 
 
 def daily_treasury(request):
     """
-   Get daily treasury. Data is from https://fiscaldata.treasury.gov/datasets/daily-treasury-statement/operating-cash-balance
-   """
-    if request.GET.get("date_range"):
-        date_range = request.GET.get("date_range")
-    else:
-        date_range = "Max"
-    query = date_selector_html(date_range, "record_date")
-    db.execute("SELECT * FROM daily_treasury " + query)
-    daily_treasury_stats = db.fetchall()
-    daily_treasury_stats = reversed(list(map(list, daily_treasury_stats)))
-    return render(request, 'daily_treasury.html', {"daily_treasury_stats": daily_treasury_stats,
-                                                   "selected": date_range})
+    Get daily treasury. Data is from https://fiscaldata.treasury.gov/datasets/daily-treasury-statement/operating-cash-balance
+    """
+    daily_treasury_stats = pd.read_sql_query("SELECT * FROM daily_treasury", conn)
+    daily_treasury_stats.rename(columns={"record_date": "Date", "close_today_bal": "Close Balance",
+                                         "open_today_bal": "Open Balance", "amount_change": "Amount Change",
+                                         "percent_change": "Percent Change"},
+                                inplace=True)
+    return render(request, 'daily_treasury.html', {"daily_treasury_stats": daily_treasury_stats[::-1].to_html(index=False)})
 
 
 def inflation(request):
@@ -824,12 +830,26 @@ def inflation(request):
     return render(request, 'inflation.html', {"inflation_stats": inflation_stats})
 
 
+def retail_sales(request):
+    """
+    Get retail sales. Data is from https://ycharts.com/indicators/us_retail_and_food_services_sales
+    """
+    pd.options.display.float_format = '{:.2f}'.format
+    retail_stats = pd.read_sql_query("SELECT * FROM retail_sales", conn)
+    retail_stats.rename(columns={"record_date": "Date", "value": "Amount", "percent_change": "Percent Change",
+                                 "covid_monthly_avg": "Covid Monthly Average"}, inplace=True)
+    return render(request, 'retail_sales.html', {"retail_stats": retail_stats[::-1].to_html(index=False)})
+
+
 def short_interest(request):
     """
     Get short interest of ticker. Data if from highshortinterest.com
     """
     pd.options.display.float_format = '{:.2f}'.format
     df_high_short_interest = pd.read_sql("SELECT * FROM short_interest", con=conn)
+    df_high_short_interest.reset_index(inplace=True)
+    df_high_short_interest.rename(columns={"index": "Rank"}, inplace=True)
+    df_high_short_interest["Rank"] = df_high_short_interest["Rank"] + 1
     return render(request, 'short_interest.html', {"df_high_short_interest": df_high_short_interest.to_html(index=False)})
 
 
@@ -839,6 +859,9 @@ def low_float(request):
     """
     pd.options.display.float_format = '{:.2f}'.format
     df_low_float = pd.read_sql("SELECT * FROM low_float", con=conn)
+    df_low_float.reset_index(inplace=True)
+    df_low_float.rename(columns={"index": "Rank"}, inplace=True)
+    df_low_float["Rank"] = df_low_float["Rank"] + 1
     return render(request, 'low_float.html', {"df_low_float": df_low_float.to_html(index=False)})
 
 

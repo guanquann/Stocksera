@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/reverse_repo.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode();reverse_repo('{{selected}}'){% endblock %}
+{% block onload_properties%}restore_dark_mode();display_table();reverse_repo(100){% endblock %}
 
 {% block main_nav %}
     <div class="ticker-wrap">
@@ -84,44 +84,24 @@
     <div class="reverse_repo">
         <div id="more_info_div">
             <a class="more_info_btn" href="{% url 'reverse_repo' %}" onclick="clickAndDisable(this);">Reverse Repo</a>
-            <a class="more_info_btn" href="{% url 'daily_treasury' %}" onclick="clickAndDisable(this);">Daily Treasury</a>
+            <a class="more_info_btn" href="{% url 'daily_treasury' %}" onclick="clickAndDisable(this);">Treasury</a>
             <a class="more_info_btn" href="{% url 'inflation' %}" onclick="clickAndDisable(this);">Inflation</a>
+            <a class="more_info_btn" href="{% url 'retail_sales' %}" onclick="clickAndDisable(this);">Retail Sales</a>
         </div>
 
-        <form action="" method="GET" autocomplete="off">
-            <div class="date_selector">
-                <button name="date_range" value="1 Month" id="1 Month">1 Month</button>
-                <button name="date_range" value="6 Months" id="6 Months">6 Months</button>
-                <button name="date_range" value="1 Year" id="1 Year">1 Year</button>
-                <button name="date_range" value="Max" id="Max">Max</button>
-            </div>
-        </form>
+        <div class="date_selector">
+            <button name="date_range" onclick="btn_selected(this); reverse_repo(1)">1 Month</button>
+            <button name="date_range" onclick="btn_selected(this); reverse_repo(6)">6 Months</button>
+            <button name="date_range" onclick="btn_selected(this); reverse_repo(12)">1 Year</button>
+            <button name="date_range" onclick="btn_selected(this); reverse_repo(100)" class="selected">Max</button>
+        </div>
 
         <div class="chart-container">
             <canvas id="reverse_repo_chart"></canvas>
         </div>
 
-        <div class="scrollable_div" style="max-height: 800px">
-            <table id="reverse_repo_table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Amount</th>
-                        <th>Num Parties</th>
-                        <th>Average</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for repo in reverse_repo_stats %}
-                        <tr>
-                            <td>{{repo.0}}</td>
-                            <td>{{repo.1}}</td>
-                            <td>{{repo.2}}</td>
-                            <td>{{repo.3}}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="scrollable_div">
+            {{reverse_repo_stats|safe}}
         </div>
     </div>
 {% endblock %}

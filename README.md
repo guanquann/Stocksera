@@ -143,7 +143,7 @@ activate
 cd .. / ..
 
 # Install modules
-pip install -r requiresments.txt
+pip install -r requirements.txt
 
 # Set up static file
 py manage.py collectstatic
@@ -156,7 +156,7 @@ Download nltk data for sentiment analysis. Type the following in console:
 ```
 
 #### Sign up credentials for Reddit API
-- Register for an API in <a href="https://www.reddit.com/prefs/apps">https://www.reddit.com/prefs/apps </a> and enter credential in scheduled_tasks/config.py
+- Register for an API in <a href="https://www.reddit.com/prefs/apps">https://www.reddit.com/prefs/apps </a> and enter credential in scheduled_tasks/reddit/config.py
 
 #### tasks_to_run.py
 - Compilation of tasks that are needed to be completed.

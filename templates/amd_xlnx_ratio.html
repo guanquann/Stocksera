@@ -10,39 +10,46 @@
 <script src="{% static 'javascript/amd_xlnx_ratio.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}amd_xlnx_ratio_graph(){% endblock %}
+{% block onload_properties%}amd_xlnx_ratio_graph();restore_dark_mode(){% endblock %}
 
 {% block main_nav %}
-<div class="top_nav">
-</div>
+    <a href="/">Stocksera</a> /
+    <a href="/market_overview">Discover</a> /
+    <a href="/amd_xlnx_ratio">AMD-XLNX Ratio</a>
 {% endblock %}
 
 {% block main_content %}
-<div>
-    <div class="instructions">
-        <h2>AMD-XLNX Share Price Ratio</h2>
-        <p>
+<script>highlight_selected_nav('discover')</script>
+<div class="instructions">
+    <h2>AMD-XLNX Share Price Ratio</h2>
+    <p></p>
+</div>
 
-        </p>
+<div class="instructions">
+    <h2>Other Datasets Available</h2>
+    <div class="more_info_div_parent">
+        <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_overview' %}" onclick="clickAndDisable(this);">Market Overview</a></div>
+        <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_interest' %}" onclick="clickAndDisable(this);">Short Interest</a></div>
+        <div class="more_info_div"><a class="more_info_btn" href="{% url 'low_float' %}" onclick="clickAndDisable(this);">Low Float</a></div>
+        <div class="more_info_div"><a class="more_info_btn" href="{% url 'ark_trades' %}" onclick="clickAndDisable(this);">ARK Fund</a></div>
+        <div class="more_info_div"><a class="more_info_btn" href="{% url 'hedge_funds' %}" onclick="clickAndDisable(this);">Hedge Fund</a></div>
+        <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'amd_xlnx_ratio' %}" onclick="clickAndDisable(this);">AMD-XLNX Ratio</a></div>
+        <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}?quote=AMD" onclick="clickAndDisable(this);">Explore AMD</a></div>
+        <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}?quote=XLNX" onclick="clickAndDisable(this);">Explore XLNX</a></div>
+    </div>
+</div>
+
+<div id="ftd">
+    <div class="chart-container">
+        <canvas id="ratio_chart"></canvas>
     </div>
 
-    <div id="ftd">
-        <div id="more_info_div">
-            <a class="more_info_btn" href="{% url 'ticker' %}?quote=AMD" onclick="clickAndDisable(this);" target="_blank">Explore AMD</a>
-            <a class="more_info_btn" href="{% url 'ticker' %}?quote=XLNX" onclick="clickAndDisable(this);" target="_blank">Explore XLNX</a>
-        </div>
+    <div class="chart-container">
+        <canvas id="price_chart"></canvas>
+    </div>
 
-        <div class="chart-container">
-            <canvas id="ratio_chart"></canvas>
-        </div>
-
-        <div class="chart-container">
-            <canvas id="price_chart"></canvas>
-        </div>
-
-        <div class="scrollable_div">
-            {{combined_df|safe}}
-        </div>
+    <div class="scrollable_div">
+        {{combined_df|safe}}
     </div>
 </div>
 {% endblock %}

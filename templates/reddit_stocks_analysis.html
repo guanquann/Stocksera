@@ -12,67 +12,16 @@
 {% block onload_properties%}restore_dark_mode();rank_chart(){% endblock %}
 
 {% block main_nav %}
-    <div class="ticker-wrap">
-        <div class="tradingview-widget-container">
-            <div class="tradingview-widget-container__widget"></div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-            {
-            "symbols": [
-            {
-              "proName": "FOREXCOM:SPXUSD",
-              "title": "S&P 500"
-            },
-            {
-              "proName": "FOREXCOM:NSXUSD",
-              "title": "Nasdaq 100"
-            },
-            {
-              "description": "Apple",
-              "proName": "NASDAQ:AAPL"
-            },
-            {
-              "description": "Tesla, Inc",
-              "proName": "NASDAQ:TSLA"
-            },
-            {
-              "description": "Nvidia",
-              "proName": "NASDAQ:NVDA"
-            },
-            {
-              "description": "Microsoft",
-              "proName": "NASDAQ:MSFT"
-            },
-            {
-              "description": "GameStop",
-              "proName": "NYSE:GME"
-            },
-            {
-              "description": "AMC",
-              "proName": "NYSE:AMC"
-            },
-            {
-              "description": "Blackberry",
-              "proName": "NYSE:BB"
-            }
-            ],
-            "showSymbolLogo": true,
-            "colorTheme": "light",
-            "isTransparent": true,
-            "displayMode": "regular",
-            "locale": "en"
-            }
-            </script>
-        </div>
-    </div>
+    <a href="/">Stocksera</a> /
+    <a href="/reddit_analysis/?subreddit={{subreddit}}">Reddit Sentiment</a> /
+    <a href="/reddit_ticker_analysis/?quote={{ticker_selected}}&subreddit={{subreddit}}">Reddit Ranking [{{ticker_selected}}]</a>
 {% endblock %}
 
 {% block main_content %}
+    <script>highlight_selected_nav('reddit')</script>
     <div class="instructions">
         <h2>Reddit Stocks Analysis</h2>
         <p>View ranking of popular tickers in Reddit over time and compare it with its price.</p>
-    </div>
-
-    <div class="reddit_ticker_analysis">
         <form action="" method="GET" autocomplete="off">
             <select name="subreddit" onchange="this.form.submit()">
                 <option>Subreddit: {{subreddit}}</option>
@@ -86,15 +35,23 @@
             <input placeholder="TICKER: " name="quote" value="{{ticker_selected}}">
             <button>SEARCH</button>
         </form>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Analysis</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'financial' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Financials</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Options</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Short Vol</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">FTD</a></div>
+        </div>
+    </div>
+
+    <div class="reddit_ticker_analysis">
+
 
         <div id="ticker_basic_stats"></div>
-
-        <div id="more_info_div">
-            <a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Analysis</a>
-            <a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Options</a>
-            <a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Short Vol</a>
-            <a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">FTD</a>
-        </div>
 
         <h2>Ranking of ${{ticker_selected}} in r/{{subreddit}} over time</h2>
         <div class="ranking_description">The lower the ranking, the more popular the ticker.</div>

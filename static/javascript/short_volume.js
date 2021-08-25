@@ -142,6 +142,11 @@ function short_vol_graph(duration) {
                 mode: 'index',
                 intersect: false
             },
+            elements: {
+                point:{
+                    radius: 0
+                }
+            },
         },
     });
 
@@ -236,6 +241,11 @@ function short_vol_graph(duration) {
             hover: {
                 mode: 'index',
                 intersect: false
+            },
+            elements: {
+                point:{
+                    radius: 0
+                }
             },
         },
     });

@@ -22,7 +22,7 @@
     margin-right: auto;
 }
 
-.instructions a {
+.instructions:first-child a {
     text-decoration: underline;
 }
 

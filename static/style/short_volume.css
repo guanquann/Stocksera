@@ -32,6 +32,7 @@
     border-radius: 10px;
     width: 60%;
     max-width: 520px;
+    border: 2px solid gray;
 }
 
 .dark_mode #summary {

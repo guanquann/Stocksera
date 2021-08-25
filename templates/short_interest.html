@@ -12,90 +12,31 @@
 {% block onload_properties%}restore_dark_mode();update_table(){% endblock %}
 
 {% block main_nav %}
-    <div class="ticker-wrap">
-        <div class="tradingview-widget-container">
-            <div class="tradingview-widget-container__widget"></div>
-        </div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-            {
-            "symbols": [
-            {
-              "proName": "FOREXCOM:SPXUSD",
-              "title": "S&P 500"
-            },
-            {
-              "proName": "FOREXCOM:NSXUSD",
-              "title": "Nasdaq 100"
-            },
-            {
-              "description": "Apple",
-              "proName": "NASDAQ:AAPL"
-            },
-            {
-              "description": "Tesla, Inc",
-              "proName": "NASDAQ:TSLA"
-            },
-            {
-              "description": "Nvidia",
-              "proName": "NASDAQ:NVDA"
-            },
-            {
-              "description": "Microsoft",
-              "proName": "NASDAQ:MSFT"
-            },
-            {
-              "description": "Alphabet",
-              "proName": "NASDAQ:GOOGL"
-            },
-            {
-              "description": "Amazon",
-              "proName": "NASDAQ:AMZN"
-            },
-            {
-              "description": "JP Morgan",
-              "proName": "NYSE:JPM"
-            },
-            {
-              "description": "Paypal",
-              "proName": "NASDAQ:PYPL"
-            },
-            {
-              "description": "GameStop",
-              "proName": "NYSE:GME"
-            },
-            {
-              "description": "AMC",
-              "proName": "NYSE:AMC"
-            },
-            {
-              "description": "Blackberry",
-              "proName": "NYSE:BB"
-            }
-            ],
-            "showSymbolLogo": true,
-            "colorTheme": "light",
-            "isTransparent": true,
-            "displayMode": "regular",
-            "locale": "en"
-            }
-            </script>
-    </div>
+    <a href="/">Stocksera</a> /
+    <a href="/market_overview">Discover</a> /
+    <a href="/short_interest">Short Interest</a>
 {% endblock %}
 
 {% block main_content %}
+    <script>highlight_selected_nav('discover')</script>
     <div class="instructions">
         <h2>Short Interest</h2>
         <p>Short interest (SI) is the number of shares that have been sold short but have not yet been covered. The higher the SI, the higher probability of short squeezing as shortable shares reduce in number. Stocks with high SI are highly volatile.</p>
     </div>
 
-    <div class="short_interest">
-        <div id="more_info_div">
-            <a class="more_info_btn" href="{% url 'market_overview' %}" onclick="clickAndDisable(this);">Market Overview</a>
-            <a class="more_info_btn" href="{% url 'low_float' %}" onclick="clickAndDisable(this);">Low Float</a>
-            <a class="more_info_btn" href="{% url 'ark_trades' %}" onclick="clickAndDisable(this);">ARK Fund</a>
-            <a class="more_info_btn" href="{% url 'hedge_funds' %}" onclick="clickAndDisable(this);">Hedge Fund</a>
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_overview' %}" onclick="clickAndDisable(this);">Market Overview</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'short_interest' %}" onclick="clickAndDisable(this);">Short Interest</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'low_float' %}" onclick="clickAndDisable(this);">Low Float</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ark_trades' %}" onclick="clickAndDisable(this);">ARK Fund</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'hedge_funds' %}" onclick="clickAndDisable(this);">Hedge Fund</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'amd_xlnx_ratio' %}" onclick="clickAndDisable(this);">AMD-XLNX Ratio</a></div>
         </div>
+    </div>
 
+    <div class="short_interest">
         <div class="table_div" style="display: none">
             {{ df_high_short_interest|safe }}
         </div>

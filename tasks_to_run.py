@@ -6,10 +6,11 @@ import sqlite3
 import scheduled_tasks.create_database as create_database
 import scheduled_tasks.reddit.get_reddit_trending_stocks.scrape_reddit as scrape_reddit_stocks
 import scheduled_tasks.reddit.get_reddit_trending_crypto as scrape_reddit_crypto
-import scheduled_tasks.get_news_sentiment as get_news_sentiment
 import scheduled_tasks.reddit.get_subreddit_count as get_subreddit_count
-import scheduled_tasks.get_short_volume as get_short_volume
 import scheduled_tasks.reddit.buy_trending_tickers as buy_trending_tickers
+import scheduled_tasks.get_twitter_followers as get_twitter_followers
+import scheduled_tasks.get_news_sentiment as get_news_sentiment
+import scheduled_tasks.get_short_volume as get_short_volume
 import scheduled_tasks.get_ticker_info as get_ticker_info
 import scheduled_tasks.get_financial as get_financial
 import scheduled_tasks.get_earnings_calendar as get_earnings_calendar
@@ -27,6 +28,9 @@ SCRAPE_SUBREDDIT_STATS = True
 
 # Update latest price of Reddit ETF. Run this WHEN MARKET OPENS to get latest price
 UPDATE_REDDIT_ETF = True
+
+# Update number of followers of company in Twitter
+UPDATE_TWITTER = True
 
 # If you want to update the cached ticker info for faster processing time
 TICKER_INFO = False
@@ -78,6 +82,9 @@ if __name__ == '__main__':
 
     if SCRAPE_SUBREDDIT_STATS:
         get_subreddit_count.subreddit_count()
+
+    if UPDATE_TWITTER:
+        get_twitter_followers.main()
 
     if UPDATE_REDDIT_ETF:
         conn = sqlite3.connect(r"database/database.db", check_same_thread=False)

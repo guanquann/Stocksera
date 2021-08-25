@@ -11,85 +11,25 @@
 {% block onload_properties%}restore_dark_mode();check_table();show_subreddit_img('{{subreddit_selected}}'){% endblock %}
 
 {% block main_nav %}
-    <div class="ticker-wrap">
-        <div class="tradingview-widget-container">
-            <div class="tradingview-widget-container__widget"></div>
-        </div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-            {
-            "symbols": [
-            {
-              "proName": "FOREXCOM:SPXUSD",
-              "title": "S&P 500"
-            },
-            {
-              "proName": "FOREXCOM:NSXUSD",
-              "title": "Nasdaq 100"
-            },
-            {
-              "description": "Apple",
-              "proName": "NASDAQ:AAPL"
-            },
-            {
-              "description": "Tesla, Inc",
-              "proName": "NASDAQ:TSLA"
-            },
-            {
-              "description": "Nvidia",
-              "proName": "NASDAQ:NVDA"
-            },
-            {
-              "description": "Microsoft",
-              "proName": "NASDAQ:MSFT"
-            },
-            {
-              "description": "Alphabet",
-              "proName": "NASDAQ:GOOGL"
-            },
-            {
-              "description": "Amazon",
-              "proName": "NASDAQ:AMZN"
-            },
-            {
-              "description": "JP Morgan",
-              "proName": "NYSE:JPM"
-            },
-            {
-              "description": "Paypal",
-              "proName": "NASDAQ:PYPL"
-            },
-            {
-              "description": "GameStop",
-              "proName": "NYSE:GME"
-            },
-            {
-              "description": "AMC",
-              "proName": "NYSE:AMC"
-            },
-            {
-              "description": "Blackberry",
-              "proName": "NYSE:BB"
-            }
-            ],
-            "showSymbolLogo": true,
-            "colorTheme": "light",
-            "isTransparent": true,
-            "displayMode": "regular",
-            "locale": "en"
-            }
-            </script>
-    </div>
+    <a href="/">Stocksera</a> /
+    <a href="/reddit_analysis/?subreddit={{subreddit_selected}}">Reddit Sentiment [{{subreddit_selected}}]</a>
 {% endblock %}
 
 {% block main_content %}
+    <script>highlight_selected_nav('reddit')</script>
     <div class="instructions">
         <h2>Reddit Sentiment</h2>
-        <p>This page shows the top 35 trending tickers with a minimum of 10 score in Reddit in the last 48H. Number of posts (including deleted), comments and sentiment are taken into account. Data is refreshed daily.</p>
+        <p>This page shows the top 35 trending tickers with a minimum of 5 score in Reddit in the last 48H. Number of posts (including deleted), comments and sentiment are taken into account. Data is refreshed daily.</p>
     </div>
 
-    <div id="more_info_div">
-        <a class="more_info_btn" href="{% url 'reddit_etf' %}" onclick="clickAndDisable(this);">WSB ETF</a>
-        <a class="more_info_btn" href="{% url 'subreddit_count' %}" onclick="clickAndDisable(this);">Subreddit Stats</a>
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn current_link" href="/reddit_analysis/?subreddit={{subreddit_selected}}" onclick="clickAndDisable(this);">Trending Stocks</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis/?subreddit=cryptocurrency" onclick="clickAndDisable(this);">Trending Crypto</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reddit_etf' %}" onclick="clickAndDisable(this);">WSB ETF</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'subreddit_count' %}" onclick="clickAndDisable(this);">Subreddit Stats</a></div>
+        </div>
     </div>
 
     <form action="" method="GET" autocomplete="off">

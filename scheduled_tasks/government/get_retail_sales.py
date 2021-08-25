@@ -23,7 +23,7 @@ def retail_sales():
 
     combined_df["Date"] = combined_df["Date"].astype('datetime64[ns]').astype(str)
 
-    covid_df = pd.read_csv(r"C:\Users\Acer\PycharmProjects\StocksAnalysis\database\owid-covid-data.csv")
+    covid_df = pd.read_csv(r'https://covid.ourworldindata.org/data/owid-covid-data.csv')
     usa_df = covid_df[covid_df["iso_code"] == "USA"]
     usa_df.index = pd.to_datetime(usa_df["date"])
     usa_df = usa_df.groupby(pd.Grouper(freq="M"))

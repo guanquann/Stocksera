@@ -17,22 +17,17 @@
 {% block onload_properties%}restore_dark_mode(){% endblock %}
 
 {% block main_nav %}
-<div class="top_nav">
-    <div style="display: none; width: fit-content" id="small_logo">
-        <img class="top_logo" src="{% static 'images/logo.png' %}">
-        <span id="cut_off"></span>
-    </div>
-</div>
 {% endblock %}
 
 {% block main_content %}
+<script>highlight_selected_nav('home')</script>
 <div>
     <div class="section_1">
         <div class="main_div">
             <img class="logo" src="{% static 'images/logo.png' %}">
             <h2>StocksEra</h2>
             <div>
-                <p>We track trending tickers on Reddit and provide Due-Diligence at no cost.</p>
+                <p>We track trending tickers on social media and provide free data for easy due-diligence & analysis.</p>
                 <div class="featured_div">
                     <div class="featured_div_txt">Featured On | </div>
                     <div class="featured_div_img_div">
@@ -42,6 +37,19 @@
             </div>
         </div>
     </div>
+
+<!--    <div class="section_div" style="margin-top: 65px">-->
+<!--        <div class="section_div_left">-->
+<!--            <h1 style="font-size: 35px">We track trending tickers on social media and provide free data for easy due-diligence & analysis.</h1>-->
+<!--            <div class="featured_div">-->
+<!--                    <div class="featured_div_txt">Featured On | </div>-->
+<!--                    <div class="featured_div_img_div">-->
+<!--                        <img src="{% static 'images/homepage/seeking_alpha.svg' %}">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--        </div>-->
+<!--        <div class="section_div_right"><img src="{% static 'images/homepage/trending.png' %}"></div>-->
+<!--    </div>-->
 
     <div class="ranking_div">
         <div class="section_div_left">
@@ -172,25 +180,5 @@
 
 {% block bottom_script %}
 <script>
-    // When the user scrolls the page, execute myFunction
-    window.onscroll = function() {stick_menu()};
-
-    // Get the header
-    var cut_off = document.getElementById("cut_off");
-
-    var small_logo = document.getElementById("small_logo");
-
-    // Get the offset position of the navbar
-    var cut_off_pos = cut_off.offsetTop + 120;
-
-    // Add the sticky class to the menu when you reach its scroll position. Remove "sticky" when you leave the scroll position
-    function stick_menu() {
-        if (window.pageYOffset > cut_off_pos) {
-            small_logo.style.removeProperty("display");
-        }
-        else {
-            small_logo.style.display = "none";
-        }
-    }
 </script>
 {% endblock %}

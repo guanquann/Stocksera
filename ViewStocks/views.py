@@ -306,7 +306,7 @@ def historical_data(request):
     """
     Allow users to filter/sort historical data of ticker
     """
-    pd.options.display.float_format = '{:.1f}'.format
+    pd.options.display.float_format = '{:.2f}'.format
     ticker_selected = default_ticker(request)
     if request.GET.get("sort"):
         sort_by = request.GET['sort'].replace("Sort By: ", "")
@@ -333,6 +333,9 @@ def historical_data(request):
     price_df["% Vol Change"] = price_df["Volume"].shift(-1)
     price_df["% Vol Change"] = 100 * (price_df["Volume"] - price_df["% Vol Change"]) / price_df["% Vol Change"]
 
+    price_df["Volume / % Price Ratio"] = round(price_df["Volume"] / price_df["% Price Change"].abs())
+    price_df.insert(0, 'Day', price_df["Date"].dt.day_name())
+
     if request.GET.get("order"):
         order = request.GET['order'].replace("Order: ", "")
     else:
@@ -344,19 +347,18 @@ def historical_data(request):
         price_df.sort_values(by=[sort_by], inplace=True)
 
     price_df = price_df.round(2)
+    price_df = price_df.replace([np.inf, -np.inf], np.nan)
     price_df = price_df.fillna(0)
     latest_date = price_df["Date"].astype(str).max()
 
     if "download_csv" in request.GET:
         file_name = "{}_historical_{}.csv".format(ticker_selected, timeframe)
-        price_df.to_csv(file_name, index=False)
-        with open(file_name) as to_download:
-            response = HttpResponse(to_download, content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename={}'.format(file_name)
-            if os.path.isfile(file_name):
-                os.remove(file_name)
-            return response
+        response = download_file(price_df, file_name)
+        return response
 
+    price_df.index = np.arange(1, len(price_df) + 1)
+    price_df.reset_index(inplace=True)
+    price_df.rename(columns={"index": "Rank"}, inplace=True)
     price_df = price_df.to_html(index=False)
 
     return render(request, 'historical_data.html', {"ticker_selected": ticker_selected,
@@ -567,12 +569,8 @@ def short_volume(request):
             file_name = "{}_short_volume.csv".format(ticker_selected)
             ftd_df = pd.read_sql_query(sql_query, conn)
             ftd_df.to_csv(file_name, index=False)
-            with open(file_name) as to_download:
-                response = HttpResponse(to_download, content_type='text/csv')
-                response['Content-Disposition'] = 'attachment; filename={}'.format(file_name)
-                if os.path.isfile(file_name):
-                    os.remove(file_name)
-                return response
+            response = download_file(ftd_df, file_name)
+            return response
 
         return render(request, 'short_volume.html', {"ticker_selected": ticker_selected,
                                                      "information": information,
@@ -603,12 +601,8 @@ def failure_to_deliver(request):
         if "download_csv" in request.GET:
             file_name = "{}_ftd.csv".format(ticker_selected)
             ftd.to_csv(file_name, index=False)
-            with open(file_name) as to_download:
-                response = HttpResponse(to_download, content_type='text/csv')
-                response['Content-Disposition'] = 'attachment; filename={}'.format(file_name)
-                if os.path.isfile(file_name):
-                    os.remove(file_name)
-                return response
+            response = download_file(ftd, file_name)
+            return response
 
         return render(request, 'ftd.html', {"ticker_selected": ticker_selected,
                                             "information": information,
@@ -786,7 +780,8 @@ def subreddit_count(request):
     """
     Get subreddit user count, growth, active users over time.
     """
-    db.execute("SELECT * FROM subreddit_count")
+    db.execute("SELECT * FROM subreddit_count WHERE subreddit in ('wallstreetbets', 'StockMarket', 'stocks', "
+               "'investing', 'amcstock', 'Superstonk', 'GME', 'options','pennystocks', 'cryptocurrency')")
     subscribers = db.fetchall()
     subscribers = list(map(list, subscribers))
     return render(request, 'subreddit_count.html', {"subscribers": subscribers})
@@ -813,6 +808,7 @@ def daily_treasury(request):
     """
     Get daily treasury. Data is from https://fiscaldata.treasury.gov/datasets/daily-treasury-statement/operating-cash-balance
     """
+    pd.options.display.float_format = '{:.1f}'.format
     daily_treasury_stats = pd.read_sql_query("SELECT * FROM daily_treasury", conn)
     daily_treasury_stats.rename(columns={"record_date": "Date", "close_today_bal": "Close Balance",
                                          "open_today_bal": "Open Balance", "amount_change": "Amount Change",
@@ -837,7 +833,7 @@ def retail_sales(request):
     pd.options.display.float_format = '{:.2f}'.format
     retail_stats = pd.read_sql_query("SELECT * FROM retail_sales", conn)
     retail_stats.rename(columns={"record_date": "Date", "value": "Amount", "percent_change": "Percent Change",
-                                 "covid_monthly_avg": "Covid Monthly Average"}, inplace=True)
+                                 "covid_monthly_avg": "Covid Monthly Average Cases"}, inplace=True)
     return render(request, 'retail_sales.html', {"retail_stats": retail_stats[::-1].to_html(index=False)})
 
 

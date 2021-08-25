@@ -12,35 +12,46 @@
 {% block onload_properties%}display_data();restore_dark_mode(){% endblock %}
 
 {% block main_nav %}
-<div class="top_nav">
-    <form action="" method="GET" autocomplete="off">
-        <div>
-            <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Search Ticker:" autocomplete="off">
-            <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">Search</button>
-        </div>
-    </form>
-</div>
+    <a href="/">Stocksera</a> /
+    <a href="/ticker/?quote={{ticker_selected}}">Analysis</a> /
+    <a href="/ticker/financial/?quote={{ticker_selected}}">Financial [{{ticker_selected}}]</a>
 {% endblock %}
 
 {% block main_content %}
+    <script>highlight_selected_nav('stocks_analysis')</script>
     <div class="instructions">
         <h2>Financials (Balance Sheet)</h2>
         <p>This page is still in beta. Currently, only the Balance Sheet of the company is available. Income Statement and Cash Flow will be added in the next update.</p>
+        <form action="" method="GET" autocomplete="off">
+            <div class="top_nav_right_btn">
+                <input class="ticker_input" name="quote" id="quote" list="list_of_tickers" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                <datalist id="list_of_tickers">
+                    {% for i in symbol_list %}
+                    <option value="{{i}}">{{i}}</option>
+                    {% endfor %}
+                </datalist>
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">Search</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Analysis</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'financial' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Financials</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Options</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Short Vol</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">FTD</a></div>
+        </div>
     </div>
 
     <div id="error_msg" style="display:none;" class="instructions {{error}}">
-            <p>There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).</p>
+        <p>There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).</p>
     </div>
 
     <div class="top_section">
         <div id="ticker_basic_stats"></div>
-
-        <div id="more_info_div">
-            <a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this)">Analysis</a>
-            <a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this)">Options</a>
-            <a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this)">Short Vol</a>
-            <a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this)">FTD</a>
-        </div>
 
         <div><i>Note: All numbers are in millions</i></div>
 

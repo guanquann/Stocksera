@@ -10,38 +10,26 @@ function update_price_color() {
     }
 }
 
-function expand_nav(elem) {
-    sub_nav_bar = document.getElementsByClassName("sub_nav_bar");
-    selected_nav = elem.querySelectorAll(".sub_nav_bar");
-    to_open = true
-
-    if (selected_nav[0].style.display != "none") {
-        to_open = false
-    }
-
-    for (i=0; i<sub_nav_bar.length; i++) {
-        sub_nav_bar[i].style.display = "none";
-    }
-
-    for (i=0; i<selected_nav.length; i++) {
-        if (to_open == true) {
-            selected_nav[i].style.removeProperty("display");
-        }
-    }
+function highlight_selected_nav(elem) {
+    document.getElementById(elem).classList.add("current_link")
 }
 
-function hide_nav_bar() {
+function top_right_nav(elem) {
     var nav_bar_div = document.getElementById("nav_bar_div");
-    var nav_bar_div_sm = document.getElementById("nav_bar_div_sm");
-    if (nav_bar_div.style.opacity == "1") {
-        nav_bar_div.style.removeProperty("opacity");
-        nav_bar_div.style.display = "none";
-        nav_bar_div_sm.style.removeProperty("left");
+    var dark_mode_btn = document.getElementById("dark_mode_btn");
+    if (elem.classList.contains("opened")){
+        elem.classList.remove("opened")
+        nav_bar_div.style.height = 0;
+        nav_bar_div.style.width = 0;
+        nav_bar_div.querySelector("ul").style.display = "none"
+        dark_mode_btn.style.display = "none"
     }
     else {
-        nav_bar_div.style.opacity = "1";
-        nav_bar_div.style.display = "block";
-        nav_bar_div_sm.style.left = "105px";
+        elem.classList.add("opened")
+        nav_bar_div.style.height = "230px";
+        nav_bar_div.style.width = "100%";
+        nav_bar_div.querySelector("ul").style.display = "block"
+        dark_mode_btn.style.display = "block"
     }
 }
 
@@ -116,19 +104,18 @@ function check_if_num(property) {
 }
 
 function show_ticker_price(information) {
-    <!--Code to show price change-->
     var latest_price = information["regularMarketPrice"];
     var mkt_close = information["previousClose"];
+    var price_change = information["regularMarketChange"]
+    var price_percentage_change = information["regularMarketChangePercent"]
 
-    <!--Code to show price change-->
-    var price_change = Math.round((latest_price - mkt_close) * 100) / 100
-    var price_percentage_change = Math.round(((latest_price - mkt_close) / mkt_close) * 10000) / 100
     if (price_change > 0) {
         price_change = "+" + String(price_change)
-        price_percentage_change = "+" + String(price_percentage_change) + "%"
+        price_percentage_change = "+" + String(price_percentage_change)
+        color_type = "positive_price"
     }
     else {
-        price_percentage_change = String(price_percentage_change) + "%"
+        color_type = "negative_price"
     }
 
     <!--If ticker does not have an image, show a default image-->
@@ -140,12 +127,21 @@ function show_ticker_price(information) {
     var sector = check_stats("sector")
     var industry = check_stats("industry")
 
-    if (price_percentage_change.includes("-")) {
-        var price_code = `<div class="price_details negative_price">$${latest_price}<br>${price_change} (${price_percentage_change})</div>`
+    var current_mkt_status = information["marketState"]
+
+    if (current_mkt_status == "PRE" || current_mkt_status == "PREPRE") {
+        mkt_pre_post_code = `<div style="font-size:9px">Pre: $${Math.round((Number(latest_price.replace(",", "")) + Number(information["preMarketChange"])) * 100) / 100} (${information["preMarketChangePercent"]})</div> `
+    }
+    else if (current_mkt_status == "POST" || current_mkt_status == "POSTPOST") {
+        mkt_pre_post_code = `<div style="font-size:9px">Post: $${Math.round((Number(latest_price.replace(",", "")) + Number(information["postMarketChange"])) * 100) / 100} (${information["postMarketChangePercent"]})</div> `
     }
     else {
-        var price_code = `<div class="price_details positive_price">$${latest_price}<br>${price_change} (${price_percentage_change})</div>`
+        mkt_pre_post_code = ""
     }
+
+    var price_code = `<div class="price_details ${color_type}">$${latest_price}
+        <br> <div>${price_change} (${price_percentage_change})</div>
+        ${mkt_pre_post_code}</div>`
 
     var ticker_basic_stats_code = `
         <div id="img_div">${img_code}</div>

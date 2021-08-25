@@ -41,7 +41,12 @@ function rank_chart() {
             maintainAspectRatio: false,
             legend: {
                 display: true
-             },
+            },
+            elements: {
+                point:{
+                    radius: 0
+                }
+            },
             scales: {
                 yAxes: [
                     {

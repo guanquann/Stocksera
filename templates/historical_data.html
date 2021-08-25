@@ -25,6 +25,7 @@
                 <option value="% Price Change">% Price Change</option>
                 <option value="Amplitude">Amplitude</option>
                 <option value="% Vol Change">% Vol Change</option>
+                <option value="Volume / % Price Ratio">Volume / % Price Ratio</option>
             </select>
             <select name="order" onchange="this.form.submit()">
                 <option>Order: {{order}}</option>
@@ -46,6 +47,7 @@
     </form>
     <div>
         <div id="general_stats"></div>
+        <div>Note: Volume / % Price Ratio refers to the number of shares needed to move the price of stock by 1%</div>
         <div class="scrollable_div" style="max-height:450px">
             {{price_df|safe}}
         </div>

@@ -125,6 +125,9 @@ function retail_sales(duration) {
             elements: {
                 line: {
                     tension: 0
+                },
+                point:{
+                    radius: 0
                 }
             },
             hover: {

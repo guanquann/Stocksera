@@ -14,13 +14,6 @@
     }
 }
 
-#more_info_div {
-    display: flex;
-    margin: auto;
-    overflow: auto;
-    justify-content: center;
-}
-
 .table_div {
     overflow-x: auto;
     overflow-y: auto;

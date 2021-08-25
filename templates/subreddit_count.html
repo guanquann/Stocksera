@@ -12,95 +12,35 @@
 <script src="{% static 'javascript/subreddit_count.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode();subreddit_count(48){% endblock %}
+{% block onload_properties%}restore_dark_mode();subreddit_count(1){% endblock %}
  
 {% block main_nav %}
-    <div class="ticker-wrap">
-        <div class="tradingview-widget-container">
-            <div class="tradingview-widget-container__widget"></div>
-        </div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-            {
-            "symbols": [
-            {
-              "proName": "FOREXCOM:SPXUSD",
-              "title": "S&P 500"
-            },
-            {
-              "proName": "FOREXCOM:NSXUSD",
-              "title": "Nasdaq 100"
-            },
-            {
-              "description": "Apple",
-              "proName": "NASDAQ:AAPL"
-            },
-            {
-              "description": "Tesla, Inc",
-              "proName": "NASDAQ:TSLA"
-            },
-            {
-              "description": "Nvidia",
-              "proName": "NASDAQ:NVDA"
-            },
-            {
-              "description": "Microsoft",
-              "proName": "NASDAQ:MSFT"
-            },
-            {
-              "description": "Alphabet",
-              "proName": "NASDAQ:GOOGL"
-            },
-            {
-              "description": "Amazon",
-              "proName": "NASDAQ:AMZN"
-            },
-            {
-              "description": "JP Morgan",
-              "proName": "NYSE:JPM"
-            },
-            {
-              "description": "Paypal",
-              "proName": "NASDAQ:PYPL"
-            },
-            {
-              "description": "GameStop",
-              "proName": "NYSE:GME"
-            },
-            {
-              "description": "AMC",
-              "proName": "NYSE:AMC"
-            },
-            {
-              "description": "Blackberry",
-              "proName": "NYSE:BB"
-            }
-            ],
-            "showSymbolLogo": true,
-            "colorTheme": "light",
-            "isTransparent": true,
-            "displayMode": "regular",
-            "locale": "en"
-            }
-            </script>
-    </div>
+    <a href="/">Stocksera</a> /
+    <a href="/subreddit_count">Subreddit Statistics</a>
 {% endblock %}
 
 {% block main_content %}
+    <script>highlight_selected_nav('reddit')</script>
     <div class="instructions">
         <h2>Subreddit Statistics</h2>
         <p>Identify number of new members in your favourite sub-reddit. Data is updated once daily, one hour before market opens. New features coming really soon!</p>
     </div>
 
-    <div id="more_info_div">
-        <a class="more_info_btn" href="{% url 'reddit_analysis' %}" onclick="clickAndDisable(this);">Trending</a>
-        <a class="more_info_btn" href="{% url 'reddit_etf' %}" onclick="clickAndDisable(this);">WSB ETF</a>
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis" onclick="clickAndDisable(this);">Trending Stocks</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis/?subreddit=cryptocurrency" onclick="clickAndDisable(this);">Trending Crypto</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reddit_etf' %}" onclick="clickAndDisable(this);">WSB ETF</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'subreddit_count' %}" onclick="clickAndDisable(this);">Subreddit Stats</a></div>
+        </div>
     </div>
 
     <div class="subreddit_count">
         <div class="date_selector">
-            <button name="date_range" onclick="btn_selected(this); subreddit_count(1)">1 Month</button>
+            <button name="date_range" onclick="btn_selected(this); subreddit_count(1)" class="selected">1 Month</button>
             <button name="date_range" onclick="btn_selected(this); subreddit_count(3)">3 Months</button>
-            <button name="date_range" onclick="btn_selected(this); subreddit_count(48)" class="selected">Max</button>
+            <button name="date_range" onclick="btn_selected(this); subreddit_count(48)">Max</button>
         </div>
 
         <h2>% Growth in users over time</h2>

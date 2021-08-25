@@ -11,11 +11,12 @@
 {% block onload_properties%};restore_dark_mode(){% endblock %}
 
 {% block main_nav %}
-<div class="top_nav">
-</div>
+    <a href="/">Stocksera</a> /
+    <a href="/about">About</a>
 {% endblock %}
 
 {% block main_content %}
+    <script>highlight_selected_nav('about')</script>
     <div class="instructions">
         <h2>About</h2>
         <p>Welcome to StocksEra! Do contact us if you have any feedbacks or suggestions. We will get to you as soon as possible!</p>
@@ -66,6 +67,13 @@
                     <tr>
                         <th>Date</th>
                         <th>Major Updates</th>
+                    </tr>
+                    <tr>
+                        <td>25 Aug 2021</td>
+                        <td>
+                            <li>Re-designed web UI format</li>
+                            <li>Add Retail Sales & Inflation data</li>
+                        </td>
                     </tr>
                     <tr>
                         <td>9 Aug 2021</td>

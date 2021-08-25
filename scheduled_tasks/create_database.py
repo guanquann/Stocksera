@@ -110,7 +110,7 @@ def database():
                "ticker TEXT, "
                "followers INTEGER, "
                "updated_date TEXT,"
-               "UNIQUE('ticker' ))")
+               "UNIQUE('ticker', 'updated_date' ))")
 
     db.execute("CREATE table IF NOT EXISTS short_interest ("
                "ticker TEXT, "

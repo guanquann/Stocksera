@@ -18,7 +18,7 @@ subreddits = ["wallstreetbets", "stocks", "stockmarket", "options", "pennystocks
 
 # Filter out results that have less than the min score
 # Type: list, where the index of minimum_score correspond to subreddits list
-minimum_score = [10, 10, 10, 10, 10, 10]
+minimum_score = [5, 5, 5, 5, 5, 5]
 
 # Minimum volume of ticker
 # Type: list, where the index of minimum_volume correspond to subreddits list

@@ -46,13 +46,6 @@
     }
 }
 
-#more_info_div {
-    display: flex;
-    margin: auto;
-    overflow: auto;
-    justify-content: center;
-}
-
 select, option {
     border: 1px solid grey;
     border-radius: 3px;

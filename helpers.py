@@ -9,7 +9,7 @@ conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
 
 # Time Format: HHMMSS
-market_open_time = "133000"
+market_open_time = "080000"  # 133000
 market_close_time = "200000"
 
 
@@ -68,9 +68,6 @@ def check_market_hours(ticker, ticker_selected):
                 last_updated_time = data[ticker_selected]["next_update"].split()[1].split(".")[0].replace(":", "")
 
                 if (str(int(market_close_time) + 1000) > last_updated_time > market_open_time) or last_updated_date != current_utc_date:
-                    # information = ticker.info
-                    # data[ticker_selected] = information
-
                     information = download_advanced_stats([ticker_selected])
                     data.update(information)
                     information = data[ticker_selected]
@@ -84,8 +81,6 @@ def check_market_hours(ticker, ticker_selected):
                     information = data[ticker_selected]
                     print("Market Close. Using cached data")
             else:
-                # information = ticker.info
-                # data[ticker_selected] = information
                 information = download_advanced_stats([ticker_selected])
                 data.update(information)
                 information = data[ticker_selected]
@@ -102,9 +97,6 @@ def check_market_hours(ticker, ticker_selected):
                 information = data[ticker_selected]
                 print("Market Open. Using cached data")
             else:
-                # information = ticker.info
-                # data[ticker_selected] = information
-
                 information = download_advanced_stats([ticker_selected])
                 data.update(information)
                 information = data[ticker_selected]
@@ -242,3 +234,14 @@ def long_number_format(num):
         num_str = int(num) if num.is_integer() else f"{num:.3f}"
         return f"{num_str}{' KMBTP'[magnitude]}".strip()
     return num
+
+
+def download_file(df, file_name):
+    df.to_csv(file_name, index=False)
+    with open(file_name) as to_download:
+        response = HttpResponse(to_download, content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename={}'.format(file_name)
+        if os.path.isfile(file_name):
+            os.remove(file_name)
+        return response
+

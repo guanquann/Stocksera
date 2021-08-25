@@ -18,13 +18,16 @@ config = {'summaryDetail': ['regularMarketOpen', 'previousClose', 'dayHigh', 'fi
                                    'trailingEps', 'pegRatio', 'enterpriseToRevenue', 'netIncomeToCommon',
                                    'threeYearAverageReturn', 'fiveYearAverageReturn'],
           'summaryProfile': ['industry', 'sector', 'website', 'longBusinessSummary'],
-          'price': ['longName', 'symbol', 'regularMarketPrice', 'quoteType']}
+          'price': ['longName', 'symbol', 'regularMarketPrice', 'quoteType', 'marketState',
+                    'regularMarketChangePercent', 'regularMarketChange',
+                    'postMarketChangePercent', 'postMarketChange', 'preMarketChangePercent', 'preMarketChange']}
 
 
 def download_advanced_stats(symbol_list, threads=True):
     """
     Downloads advanced yahoo stats for many tickers by doing one request per ticker.
     """
+    print(symbol_list, "!!!!!!!!!!!!")
     num_requests = len(symbol_list)
     if threads:
         num_threads = min([num_requests, multitasking.cpu_count() * 2])
@@ -59,11 +62,11 @@ def download_advanced_stats(symbol_list, threads=True):
                         stat = retrieved_module_dict[stat_name]
                         if isinstance(stat, dict):
                             if stat:  # only if non-empty otherwise N/A
-                                stat_val = stat['raw']
+                                stat_val = stat['fmt']
                         elif isinstance(stat, str) or isinstance(stat, numbers.Number):
                             stat_val = stat
-                        else:
-                            raise TypeError('Expected dictionary, string or number.')
+                        # else:
+                        #     raise TypeError('Expected dictionary, string or number.')
                     stats_list.append(stat_val)
             else:
                 stats_list.extend(['N/A'] * len(stat_name_dict))

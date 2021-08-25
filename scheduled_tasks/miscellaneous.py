@@ -1,9 +1,6 @@
 import os
 import sys
-import sqlite3
-import requests
 from bs4 import BeautifulSoup
-import pandas as pd
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from helpers import *

@@ -35,7 +35,6 @@ def retail_sales():
     usa_df.rename(columns={"date": "Date"}, inplace=True)
     combined_df = pd.merge(combined_df, usa_df, how='left', on='Date')
     combined_df.fillna(0, inplace=True)
-
     print(combined_df)
     for index, row in combined_df.iterrows():
         db.execute("INSERT OR IGNORE INTO retail_sales VALUES (?, ?, ?, ?)", (row[0], row[1], row[2], row[3]))

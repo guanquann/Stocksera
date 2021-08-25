@@ -26,7 +26,7 @@ function top_right_nav(elem) {
     }
     else {
         elem.classList.add("opened")
-        nav_bar_div.style.height = "230px";
+        nav_bar_div.style.height = "240px";
         nav_bar_div.style.width = "100%";
         nav_bar_div.querySelector("ul").style.display = "block"
         dark_mode_btn.style.display = "block"
@@ -129,10 +129,10 @@ function show_ticker_price(information) {
 
     var current_mkt_status = information["marketState"]
 
-    if (current_mkt_status == "PRE" || current_mkt_status == "PREPRE") {
+    if (information["preMarketChange"] != "N/A" & current_mkt_status != "N/A") {
         mkt_pre_post_code = `<div style="font-size:9px">Pre: $${Math.round((Number(latest_price.replace(",", "")) + Number(information["preMarketChange"])) * 100) / 100} (${information["preMarketChangePercent"]})</div> `
     }
-    else if (current_mkt_status == "POST" || current_mkt_status == "POSTPOST") {
+    else if (information["postMarketChange"] != "N/A" & current_mkt_status != "N/A") {
         mkt_pre_post_code = `<div style="font-size:9px">Post: $${Math.round((Number(latest_price.replace(",", "")) + Number(information["postMarketChange"])) * 100) / 100} (${information["postMarketChangePercent"]})</div> `
     }
     else {

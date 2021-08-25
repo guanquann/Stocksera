@@ -6,10 +6,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from scheduled_tasks.get_popular_tickers import full_ticker_list
 from fast_yahoo import *
 
-# Time Format: HHMMSS
-market_open_time = "133000"
-market_close_time = "200000"
-
 
 def ticker_info(ticker_list):
     """

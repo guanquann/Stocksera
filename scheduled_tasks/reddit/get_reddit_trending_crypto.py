@@ -1,9 +1,7 @@
 import math
-import time
 from collections import Counter
 
 import praw
-import requests
 from pycoingecko import CoinGeckoAPI
 import matplotlib.pyplot as plt
 

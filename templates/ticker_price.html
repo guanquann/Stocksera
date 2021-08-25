@@ -12,7 +12,7 @@
 {% block onload_properties%}display_data();restore_dark_mode();document.getElementsByClassName('show_more_btn')[0].form.submit();to_remove(document.getElementsByClassName('show_more_btn')[0], 'Historical Data'){% endblock %}
  
 {% block main_nav %}
-    <a href="/">Stocksera</a> / <a href="/ticker/quote={{ticker_selected}}">Analysis [{{ticker_selected}}]</a>
+    <a href="/">Stocksera</a> / <a href="/ticker/?quote={{ticker_selected}}">Analysis [{{ticker_selected}}]</a>
 {% endblock %}
 
 {% block main_content %}

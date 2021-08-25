@@ -54,58 +54,21 @@ def check_market_hours(ticker, ticker_selected):
     current_datetime = datetime.utcnow()
 
     next_update_time = str(current_datetime + timedelta(seconds=600))
-    current_utc_date = str(current_datetime).split()[0]
+    with open(r"database/yf_cached_api.json", "r+") as r:
+        data = json.load(r)
+        if ticker_selected in data and str(current_datetime) < data[ticker_selected]["next_update"]:
+            information = data[ticker_selected]
+            print("Market Open. Using cached data")
+        else:
+            information = download_advanced_stats([ticker_selected])
+            data.update(information)
+            information = data[ticker_selected]
 
-    current_utc_time = str(current_datetime).split()[1].split(".")[0].replace(":", "")
-
-    # If market is closed
-    if current_utc_time > market_close_time or current_utc_time < market_open_time or current_datetime.today().weekday() >= 5:
-        with open(r"database/yf_cached_api.json", "r+") as r:
-            data = json.load(r)
-            if ticker_selected in data:
-                # Last updated time is before market close and after open, update information
-                last_updated_date = data[ticker_selected]["next_update"].split()[0]
-                last_updated_time = data[ticker_selected]["next_update"].split()[1].split(".")[0].replace(":", "")
-
-                if (str(int(market_close_time) + 1000) > last_updated_time > market_open_time) or last_updated_date != current_utc_date:
-                    information = download_advanced_stats([ticker_selected])
-                    data.update(information)
-                    information = data[ticker_selected]
-
-                    information["next_update"] = next_update_time
-                    r.seek(0)
-                    r.truncate()
-                    json.dump(data, r, indent=4)
-                    print("Market Close. Updating data")
-                else:
-                    information = data[ticker_selected]
-                    print("Market Close. Using cached data")
-            else:
-                information = download_advanced_stats([ticker_selected])
-                data.update(information)
-                information = data[ticker_selected]
-                information["next_update"] = next_update_time
-                r.seek(0)
-                r.truncate()
-                json.dump(data, r, indent=4)
-                print("Market Close. Scraping data")
-    # If market is opened
-    else:
-        with open(r"database/yf_cached_api.json", "r+") as r:
-            data = json.load(r)
-            if ticker_selected in data and str(current_datetime) < data[ticker_selected]["next_update"]:
-                information = data[ticker_selected]
-                print("Market Open. Using cached data")
-            else:
-                information = download_advanced_stats([ticker_selected])
-                data.update(information)
-                information = data[ticker_selected]
-
-                information["next_update"] = next_update_time
-                r.seek(0)
-                r.truncate()
-                json.dump(data, r, indent=4)
-                print("Market Open. Scraping data", type(information))
+            information["next_update"] = next_update_time
+            r.seek(0)
+            r.truncate()
+            json.dump(data, r, indent=4)
+            print("Market Open. Scraping data", type(information))
 
     if "shortName" in information:
         # db.execute("SELECT * FROM stocksera_trending WHERE symbol=?", (ticker_selected,))

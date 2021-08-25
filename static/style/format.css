@@ -1,9 +1,3 @@
-@media only screen and (max-width: 380px) {
-    #ticker_intro {
-        width: 51% !important;
-    }
-}
-
 @media only screen and (max-width: 900px) {
     body, button, input, select, textarea {
         font-size: 10px;
@@ -61,7 +55,7 @@
 
     .switch {
         margin-left: 32px;
-        top: 247px;
+        top: 257px;
         position: fixed;
         display: inline-block;
         width: 33px;
@@ -93,14 +87,14 @@
     .sun_icon {
         width: 13px;
         position: fixed;
-        top: 248px;
+        top: 258px;
         margin-left: 16px;
     }
 
     .night_icon {
         width: 11px;
         position: fixed;
-        top: 249px;
+        top: 259px;
         margin-left: 68px;
     }
 
@@ -109,21 +103,6 @@
 		border: 0px;
 		overflow-y: scroll;
 	}
-
-    .ticker-wrap {
-        background-color:#e9eaea;
-        position: fixed;
-        width: 110%;
-        overflow: hidden;
-        height: 35px;
-        box-sizing: content-box;
-        z-index: 999;
-        border-bottom: 1px solid darkgrey;
-    }
-
-    .ticker-wrap div {
-        display: none;
-    }
 
     .top_nav_right {
         background-color:#e9eaea;
@@ -203,10 +182,10 @@
     }
 
     #ticker_intro {
-        width: 58%;
         margin-left: 8px;
         display: inline-block;
         vertical-align: bottom;
+        width: calc(75% - 90px);
     }
 
     .price_details {
@@ -232,7 +211,7 @@
     .instructions {
         margin-left: auto;
         margin-right: auto;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
         margin-top: 15px;
         padding: 5px 5px 5px 10px;
         background-color: #E9EAEA;
@@ -378,17 +357,6 @@
 		margin-top: 30px;
 	}
 
-	.ticker-wrap {
-        background-color:#e9eaea;
-        position: fixed;
-        width: 100%;
-        overflow: hidden;
-        height: 46px;
-        box-sizing: content-box;
-        z-index: 999;
-        border-bottom: 1px solid darkgrey;
-    }
-
     .top_nav_right_link {
         margin-left: 210px !important;
         margin-top: 15px !important;
@@ -473,7 +441,6 @@
     }
 
     #ticker_intro {
-        width: 73%;
         margin-left: 8px;
         display: inline-block;
         vertical-align: bottom;
@@ -504,7 +471,7 @@
         margin-left: auto;
         margin-right: auto;
         width: 97%;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
         padding: 5px 0px 5px 10px;
         background-color: #E9EAEA;
         border-radius: 10px;
@@ -609,6 +576,8 @@ ul {
 
 .nav_bar:hover {
     cursor: pointer;
+    background-color: gray;
+    transition: 1s;
 }
 
 #donate_sticky:hover {
@@ -630,7 +599,7 @@ a {
     background-color: white;
 }
 
-.dark_mode #nav_bar_div, .dark_mode .instructions, .dark_mode #nav_bar_div_logo, .dark_mode .ticker-wrap, .dark_mode .top_nav_right {
+.dark_mode #nav_bar_div, .dark_mode .instructions, .dark_mode #nav_bar_div_logo, .dark_mode .top_nav_right {
     background-color: #505050;
 }
 
@@ -663,6 +632,10 @@ a {
 
 .change_day_btn:hover {
     background-color: #eae9e9;
+}
+
+#ticker_basic_stats {
+    margin-bottom: 15px;
 }
 
 table {

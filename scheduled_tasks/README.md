@@ -43,6 +43,9 @@ You can view a sample of the database in <a href="https://drive.google.com/drive
 - Update prices of tickers in custom ETF.
 - Best to run this script the moment market opens.
 
+#### scheduled_tasks/get_twitter_followers.py
+- Get number of followers of business accounts in Twitter.
+
 #### scheduled_tasks/get_popular_tickers.py
 - To add a new ticker, add it to list_of_tickers list in full_ticker_list().
 

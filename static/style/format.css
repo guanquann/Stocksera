@@ -1,3 +1,10 @@
+@media only screen and (min-width: 2000px) {
+    #main_content {
+        width: 70%;
+        margin: auto;
+    }
+}
+
 @media only screen and (max-width: 900px) {
     body, button, input, select, textarea {
         font-size: 10px;
@@ -115,11 +122,6 @@
         border-bottom: 1px solid darkgrey;
     }
 
-/*    .top_nav_right div {
-        margin-top: 7px;
-        margin-left: 9.5px;
-    }*/
-
     .nav_bar {
         padding: 10px;
         text-align: center;
@@ -127,10 +129,11 @@
 
     .ticker_input {
         border: 1px solid grey;
-        border-radius: 6px;
+        border-right: 0;
+        border-radius: 5px 0 0 5px;
         padding: 4.5px;
         text-transform: uppercase;
-        max-width: 100px;
+        max-width: 70px;
     }
 
     #no_img_div {
@@ -203,9 +206,14 @@
 
     .submit_btn {
         border: 1px solid grey;
-        border-radius: 6px;
+        border-left: 0;
+        border-radius: 0 5px 5px 0;
         padding: 4.5px;
         text-transform: uppercase;
+    }
+
+    .submit_btn img {
+        width:9px;
     }
 
     .instructions {
@@ -374,11 +382,6 @@
         border-bottom: 1px solid darkgrey;
     }
 
-    /*.top_nav_right div {
-        margin-top: 7px;
-        margin-left: 20px;
-    }*/
-
     .nav_bar {
         padding: 12px;
         text-align: left;
@@ -386,10 +389,11 @@
 
     .ticker_input {
         border: 1px solid grey;
-        border-radius: 6px;
+        border-right: 0;
+        border-radius: 5px 0 0 5px;
         padding: 7px;
         text-transform: uppercase;
-        max-width: 120px;
+        max-width: 90px;
     }
 
     #no_img_div {
@@ -461,10 +465,15 @@
 
     .submit_btn {
         border: 1px solid grey;
-        border-radius: 6px;
+        border-left: 0;
+        border-radius: 0 5px 5px 0;
         padding: 7px;
         text-transform: uppercase;
         min-width: 40px;
+    }
+
+    .submit_btn img {
+        width:12px;
     }
 
     .instructions {
@@ -508,9 +517,9 @@
 
     .donate_sticky {
         position: fixed;
-        left: 93.5%;
+        right: 15px;
         bottom: 3%;
-        width: 5%;
+        width: 55px;
         background-color: rgb(38, 166, 154);
         color: white;
         text-align: center;
@@ -526,8 +535,8 @@ body {
 	background-color: white;
 }
 
-.submit_btn:hover {
-    background-color: rgb(38, 166, 154);
+.dark_mode .submit_btn {
+    border-color: wheat;
 }
 
 button:hover, a:hover {
@@ -638,6 +647,10 @@ a {
     margin-bottom: 15px;
 }
 
+.search_bar {
+    display: inline-table;
+}
+
 table {
     border: 0;
     border-collapse: collapse;
@@ -730,7 +743,6 @@ input:focus + .slider {
     box-shadow: 0 0 1px #2196F3;
 }
 
-/* Rounded sliders */
 .slider.round {
     border-radius: 34px;
 }
@@ -795,11 +807,6 @@ input:focus + .slider {
 .top_nav_right_link a {
     color: rgb(38, 166, 154);
 }
-
-/*.top_nav_right_btn {
-    margin-left: auto !important;
-    margin-right:10px !important;
-}*/
 
 .modal {
     display: none; /* Hidden by default */
@@ -989,7 +996,7 @@ input:focus + .slider {
 }
 
 .hamburger {
-    padding: 1px 0 10px 10px;
+    padding: 1px 3px 10px 10px;
     display: inline-block;
     vertical-align: middle;
     transform: scale(.7);

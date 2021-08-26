@@ -22,14 +22,9 @@
         <h2>Options</h2>
         <p>View options chain of your favourite ticker and get the max pain price of the week! Data is updated real time. </p>
         <form action="" method="GET" autocomplete="off">
-            <div class="top_nav_right_btn">
-                <input class="ticker_input" name="quote" id="quote" list="list_of_tickers" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
-                <datalist id="list_of_tickers">
-                    {% for i in symbol_list %}
-                    <option value="{{i}}">{{i}}</option>
-                    {% endfor %}
-                </datalist>
-                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">Search</button>
+            <div class="search_bar">
+                <input class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;"><img src="{% static 'images/search_icon.svg' %}"></button>
             </div>
     </div>
 

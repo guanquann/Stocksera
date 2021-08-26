@@ -128,6 +128,42 @@
         width: 100px;
         height: 26px;
     }
+
+    .showcase_div {
+        text-align: center;
+        background-color: #eae9e9;
+        width: 80vw;
+        min-width: 250px;
+        height: 250px;
+        border-radius: 10px;
+        margin: auto;
+        margin-bottom: 15px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .slides {
+        height:220px;
+    }
+
+    .showcase1 {
+        width: 90%;
+        max-width: 360px;
+    }
+
+    .showcase2 {
+        width: 70%;
+        max-width: 220px;
+    }
+
+    .showcase3, .showcase4 {
+        width: 90%;
+    }
+
+    .dot {
+        height: 9px;
+        width: 9px;
+    }
 }
 
 @media only screen and (min-width: 900px) {
@@ -254,6 +290,38 @@
         width: 120px;
         height: 26px;
     }
+
+    .showcase_div {
+        background-color: #eae9e9;
+        width: 94%;
+        height: 355px;
+        border-radius: 10px;
+        margin: auto;
+        margin-bottom: 15px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .slides {
+        height:320px;
+    }
+
+    .showcase1 {
+        width: 56%;
+    }
+
+    .showcase2 {
+        width: 33%;
+    }
+
+    .showcase3, .showcase4 {
+        width: 50%;
+    }
+
+    .dot {
+        height: 12px;
+        width: 12px;
+    }
 }
 
 .section_1 {
@@ -306,7 +374,7 @@ h1 {
     margin-bottom: 5px;
 }
 
-.dark_mode .section_div, .dark_mode .ranking_div {
+.dark_mode .section_div, .dark_mode .ranking_div, .dark_mode .showcase_div {
     background-color: #505050;
 }
 
@@ -370,4 +438,56 @@ h1 {
 
 .featured_div_img_div {
     padding-bottom:0;
+}
+
+.slideshow-container {
+    max-width: 1000px;
+    position: relative;
+    margin: 10px auto;
+}
+
+.slides {
+    display: none;
+    text-align: center;
+    vertical-align: middle;
+    width:100vw;
+}
+
+.text {
+    padding: 8px 12px;
+    bottom: 8px;
+    text-align: center;
+}
+
+.dot_div {
+    text-align: center;
+}
+
+.dot {
+    margin: 0 2px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+
+.active {
+    background-color: #717171;
+}
+
+.fade {
+    -webkit-animation-name: fade;
+    -webkit-animation-duration: 1.5s;
+    animation-name: fade;
+    animation-duration: 1.5s;
+}
+
+@-webkit-keyframes fade {
+    from {opacity: .4}
+    to {opacity: 1}
+}
+
+@keyframes fade {
+    from {opacity: .4}
+    to {opacity: 1}
 }

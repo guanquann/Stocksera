@@ -27,7 +27,6 @@ def download_advanced_stats(symbol_list, threads=True):
     """
     Downloads advanced yahoo stats for many tickers by doing one request per ticker.
     """
-    print(symbol_list, "!!!!!!!!!!!!")
     num_requests = len(symbol_list)
     if threads:
         num_threads = min([num_requests, multitasking.cpu_count() * 2])

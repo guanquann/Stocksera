@@ -143,6 +143,9 @@ function short_vol_graph(duration) {
                 intersect: false
             },
             elements: {
+                line: {
+                    tension: 0
+                },
                 point:{
                     radius: 0
                 }
@@ -243,6 +246,9 @@ function short_vol_graph(duration) {
                 intersect: false
             },
             elements: {
+                line: {
+                    tension: 0
+                },
                 point:{
                     radius: 0
                 }

@@ -129,14 +129,14 @@ function show_ticker_price(information) {
 
     var current_mkt_status = information["marketState"]
 
-    if (information["preMarketChange"] != "N/A" & current_mkt_status != "N/A") {
+    if (current_mkt_status == "REGULAR") {
+        mkt_pre_post_code = ""
+    }
+    else if (information["preMarketChange"] != "N/A" & current_mkt_status != "N/A" & ! current_mkt_status.includes("POST")) {
         mkt_pre_post_code = `<div style="font-size:9px">Pre: $${Math.round((Number(latest_price.replace(",", "")) + Number(information["preMarketChange"])) * 100) / 100} (${information["preMarketChangePercent"]})</div> `
     }
-    else if (information["postMarketChange"] != "N/A" & current_mkt_status != "N/A") {
+    else if (information["postMarketChange"] != "N/A" & current_mkt_status != "N/A" & ! current_mkt_status.includes("PRE")) {
         mkt_pre_post_code = `<div style="font-size:9px">Post: $${Math.round((Number(latest_price.replace(",", "")) + Number(information["postMarketChange"])) * 100) / 100} (${information["postMarketChangePercent"]})</div> `
-    }
-    else {
-        mkt_pre_post_code = ""
     }
 
     var price_code = `<div class="price_details ${color_type}">$${latest_price}
@@ -180,6 +180,6 @@ function get_date_difference(duration, delimiter) {
 function clickAndDisable(link) {
     // disable subsequent clicks
     link.onclick = function(event) {
-        event.preventDefault();
+        setTimeout(event.preventDefault(), 10000);
     }
 }

@@ -37,15 +37,15 @@ function display_table() {
         total_td[2].innerHTML = "$" + total_td[2].innerHTML
         total_td[3].innerHTML = "$" + Number(total_td[3].innerHTML).toLocaleString()
 
-        f35_date = new Date(date_string).addDays(50)
+        f35_date = new Date(date_string).addDays(36)
 //        if (f35_date > new Date("2021/07/05")) {
 //            f35_date = new Date(f35_date).addDays(1)
 //        }
 
         // because of US Independence Day
-        if (f35_date >= new Date("2021/08/23")) {
-            f35_date = new Date(f35_date).removeDays(1)
-        }
+//        if (f35_date >= new Date("2021/08/23")) {
+//            f35_date = new Date(f35_date).removeDays(1)
+//        }
 
         month = f35_date.getUTCMonth() + 1;
         day = f35_date.getUTCDate();
@@ -97,7 +97,7 @@ function ftd_graph(duration) {
                     type: 'line',
                     data: price_list,
                     backgroundColor: 'transparent',
-                    borderColor: '#505050',
+                    borderColor: 'rgb(38, 166, 154)',
                     yAxisID: 'A',
                 }]
         },
@@ -157,6 +157,9 @@ function ftd_graph(duration) {
 
             // To remove the point of each label
             elements: {
+                line: {
+                    tension: 0
+                },
                 point: {
                     radius: 0
                 }

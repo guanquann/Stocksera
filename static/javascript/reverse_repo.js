@@ -1,11 +1,21 @@
 function display_table() {
     var table = document.getElementsByTagName("table")[0];
     var tr = table.querySelectorAll("tr");
-    for (i=tr.length-1; i>0; i--) {
+    var consecutive_num = 0
+    var consecutive = true
+    for (i=1; i<tr.length; i++) {
         var td = tr[i].querySelectorAll("td");
+        if (td[1].innerHTML >= 1000 && consecutive == true) {
+            consecutive_num += 1
+        }
+        else {
+            consecutive = false
+        }
         td[1].innerHTML = "$" + td[1].innerHTML + "B"
         td[3].innerHTML = "$" + td[3].innerHTML + "B"
     }
+    document.getElementById("consecutive_text").innerHTML =
+    `As of ${tr[1].querySelector("td").innerHTML}, ${consecutive_num} consecutive days of RRP >= $1B.`
 }
 
 var reverse_repo_chart = null;

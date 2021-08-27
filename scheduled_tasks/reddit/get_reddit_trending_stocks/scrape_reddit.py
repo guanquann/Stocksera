@@ -7,7 +7,8 @@ def main():
     print("Getting submissions from Reddit...")
     for index, subreddit in enumerate(subreddits):
         current_scores, prev_scores, total_rocket_score, total_posts_score, \
-            total_upvotes_score, total_comments_score = get_submission_generators(interval, subreddit)
+            total_upvotes_score, total_comments_score = get_submission_generators(interval, subreddit,
+                                                                                  n_num=num_posts[index])
 
         print("Populating results for {}...".format(subreddit))
         results_df = populate_df(current_scores, prev_scores, interval)

@@ -9,6 +9,7 @@ chardet==4.0.0
 click==7.1.2
 cycler==0.10.0
 DateTime==4.3
+distro==1.6.0
 Django==3.1.6
 feedparser==6.0.2
 finvizfinance==0.9.7
@@ -50,9 +51,9 @@ rsa==4.7.2
 scikit-learn==0.24.2
 sgmllib3k==1.0.0
 six==1.15.0
-sklearn==0.0
 soupsieve==2.2.1
 sqlparse==0.4.1
+tabula-py==2.3.0
 termcolor==1.1.0
 threadpoolctl==2.1.0
 tqdm==4.56.2
@@ -68,6 +69,6 @@ Werkzeug==1.0.1
 whitenoise==5.2.0
 wrapt==1.12.1
 xlrd==2.0.1
-yfinance==0.1.62
+yfinance==0.1.63
 zipp==3.4.1
 zope.interface==5.4.0

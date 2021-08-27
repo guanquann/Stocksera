@@ -10,7 +10,6 @@ def retail_sales():
     Get retail sales and compare it with avg monthly covid cases
     """
     df = pd.read_html("https://ycharts.com/indicators/us_retail_and_food_services_sales")
-    # print(df[3]) next date
     combined_df = df[6][::-1].append(df[5][::-1])
 
     combined_df["Value"] = combined_df["Value"].str.replace("B", "")

@@ -13,10 +13,10 @@ from pytrends.request import TrendReq
 from finvizfinance.quote import finvizfinance
 
 from django.shortcuts import render
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
+# from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-analyzer = SentimentIntensityAnalyzer()
-analyzer.lexicon.update(new_words)
+# analyzer = SentimentIntensityAnalyzer()
+# analyzer.lexicon.update(new_words)
 
 trends = TrendReq(hl='en-US', tz=360)
 
@@ -798,23 +798,31 @@ def reverse_repo(request):
     """
     Get reverse repo. Data is from https://apps.newyorkfed.org/markets/autorates/tomo-results-display?SHOWMORE=TRUE&startDate=01/01/2000&enddate=01/01/2000
     """
+    pd.options.display.float_format = '{:.2f}'.format
     reverse_repo_stats = pd.read_sql_query("SELECT * FROM reverse_repo", conn)
     reverse_repo_stats.rename(columns={"record_date": "Date", "amount": "Amount", "parties": "Num Parties",
                                        "average": "Average"}, inplace=True)
-    return render(request, 'reverse_repo.html', {"reverse_repo_stats": reverse_repo_stats[::-1].to_html(index=False)})
+    with open(r"database/economic_date.json", "r+") as r:
+        data = json.load(r)
+    return render(request, 'reverse_repo.html', {"reverse_repo_stats": reverse_repo_stats[::-1].to_html(index=False),
+                                                 "next_date": data})
 
 
 def daily_treasury(request):
     """
     Get daily treasury. Data is from https://fiscaldata.treasury.gov/datasets/daily-treasury-statement/operating-cash-balance
     """
-    pd.options.display.float_format = '{:.1f}'.format
+    pd.options.display.float_format = '{:.2f}'.format
     daily_treasury_stats = pd.read_sql_query("SELECT * FROM daily_treasury", conn)
     daily_treasury_stats.rename(columns={"record_date": "Date", "close_today_bal": "Close Balance",
                                          "open_today_bal": "Open Balance", "amount_change": "Amount Change",
                                          "percent_change": "Percent Change"},
                                 inplace=True)
-    return render(request, 'daily_treasury.html', {"daily_treasury_stats": daily_treasury_stats[::-1].to_html(index=False)})
+    with open(r"database/economic_date.json", "r+") as r:
+        data = json.load(r)
+    return render(request, 'daily_treasury.html', {"daily_treasury_stats":
+                                                       daily_treasury_stats[::-1].to_html(index=False),
+                                                   "next_date": data})
 
 
 def inflation(request):
@@ -823,7 +831,9 @@ def inflation(request):
     """
     pd.options.display.float_format = '{:.1f}'.format
     inflation_stats = pd.read_sql_query("SELECT * FROM inflation", conn).to_html(index=False)
-    return render(request, 'inflation.html', {"inflation_stats": inflation_stats})
+    with open(r"database/economic_date.json", "r+") as r:
+        data = json.load(r)
+    return render(request, 'inflation.html', {"inflation_stats": inflation_stats, "next_date": data})
 
 
 def retail_sales(request):
@@ -834,7 +844,10 @@ def retail_sales(request):
     retail_stats = pd.read_sql_query("SELECT * FROM retail_sales", conn)
     retail_stats.rename(columns={"record_date": "Date", "value": "Amount", "percent_change": "Percent Change",
                                  "covid_monthly_avg": "Covid Monthly Average Cases"}, inplace=True)
-    return render(request, 'retail_sales.html', {"retail_stats": retail_stats[::-1].to_html(index=False)})
+    with open(r"database/economic_date.json", "r+") as r:
+        data = json.load(r)
+    return render(request, 'retail_sales.html', {"retail_stats": retail_stats[::-1].to_html(index=False),
+                                                 "next_date": data})
 
 
 def short_interest(request):
@@ -883,6 +896,48 @@ def amd_xlnx_ratio(request):
     combined_df.rename(columns={"index": "Date"}, inplace=True)
     combined_df = combined_df[combined_df["Date"] >= "2020-10-30"]
     return render(request, 'amd_xlnx_ratio.html', {"combined_df": combined_df[::-1].to_html(index=False)})
+
+
+def beta(request):
+    pd.options.display.float_format = '{:.3f}'.format
+    ticker_interested = default_ticker(request)
+    if request.GET.get("quote2"):
+        default = request.GET['quote2'].upper().replace(" ", "")
+    else:
+        default = "SPY"
+
+    if request.GET.get("timeframe"):
+        timeframe = request.GET['timeframe'].replace("Timeframe: ", "").replace(" Year", "y").replace(" Months", "mo")
+    else:
+        timeframe = "5y"
+
+    if request.GET.get("interval"):
+        interval = request.GET['interval'].replace("Interval: ", "").replace("Monthly", "1mo").replace("Daily", "1d")
+    else:
+        interval = "1mo"
+
+    df = pd.DataFrame()
+    df1 = yf.Ticker(ticker_interested).history(interval=interval, period=timeframe)
+    df2 = yf.Ticker(default).history(interval=interval, period=timeframe)
+
+    df[ticker_interested] = df1["Close"]
+    df[default] = df2["Close"]
+
+    price_change = df.pct_change()
+    price_change.dropna(inplace=True)
+
+    price_change.reset_index(inplace=True)
+
+    coef = linear_regression(price_change[default].values, price_change[ticker_interested].values)
+    price_change[ticker_interested] = price_change[ticker_interested] * 100
+    price_change[default] = price_change[default] * 100
+
+    return render(request, 'beta.html', {"beta": round(coef, 3),
+                                         "ticker_selected": ticker_interested,
+                                         "ticker_selected2": default,
+                                         "price_change": price_change[::-1].to_html(index=False),
+                                         "timeframe": timeframe.replace("mo", " Months").replace("y", " Year"),
+                                         "interval": interval.replace("1mo", "Monthly").replace("1d", "Daily")})
 
 
 def about(request):

@@ -52,7 +52,7 @@
     <div id="top_nav_bar">
         <div id="nav_bar_div_logo">
             <ul>
-                <li><img class="main_logo" src="{% static 'images/logo.png' %}"></li>
+                <a href="/"><li><img class="main_logo" src="{% static 'images/logo.png' %}"></li></a>
             </ul>
         </div>
         <div>
@@ -81,7 +81,7 @@
                 </a>
                 <a href="{% url 'ticker' %}">
                     <li id="stocks_analysis" class="nav_bar">
-                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/ticker_analysis.svg' %}">Stocks
+                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/ticker_analysis.svg' %}">Stock
                     </li>
                 </a>
                 <a href="{% url 'reddit_analysis' %}">
@@ -92,6 +92,11 @@
                 <a href="{% url 'reverse_repo' %}">
                     <li id="economy" class="nav_bar">
                         <img class="nav_bar_logo" src="{% static 'images/nav_bar/economy.svg' %}">Economy
+                    </li>
+                </a>
+                <a href="{% url 'beta' %}">
+                    <li id="beta" class="nav_bar">
+                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/beta.svg' %}">Stocks Beta
                     </li>
                 </a>
                 <a href="{% url 'market_overview' %}">

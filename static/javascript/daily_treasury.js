@@ -1,18 +1,26 @@
 function display_table() {
     var table = document.getElementsByTagName("table")[0];
     var tr = table.querySelectorAll("tr");
-    for (i=tr.length-1; i>0; i--) {
+    var consecutive_num = 0
+    var consecutive = true
+    for (i=1; i<tr.length; i++) {
         var td = tr[i].querySelectorAll("td");
         td[1].innerHTML = "$" + td[1].innerHTML + "B"
         td[2].innerHTML = "$" + td[2].innerHTML + "B"
         if (td[3].innerHTML.includes("-")) {
             td[3].innerHTML = td[3].innerHTML.replace("-", "-$") + "B"
+            if (consecutive == true) {
+                consecutive_num += 1
+            }
         }
         else {
             td[3].innerHTML = "$" + td[3].innerHTML + "B"
+            consecutive = false
         }
         td[4].innerHTML = td[4].innerHTML + "%"
     }
+    document.getElementById("consecutive_text").innerHTML =
+    `As of ${tr[1].querySelector("td").innerHTML}, ${consecutive_num} consecutive days of decrease in daily treasury.`
 }
 
 var daily_treasury_chart = null;

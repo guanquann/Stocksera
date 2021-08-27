@@ -17,9 +17,9 @@ import scheduled_tasks.get_earnings_calendar as get_earnings_calendar
 import scheduled_tasks.get_hedge_funds_holdings as get_hedge_funds_holdings
 import scheduled_tasks.get_failure_to_deliver as get_failure_to_deliver
 import scheduled_tasks.miscellaneous as miscellaneous
-import scheduled_tasks.government.get_reverse_repo as get_reverse_repo
-import scheduled_tasks.government.get_inflation as get_inflation
-import scheduled_tasks.government.get_daily_treasury as get_daily_treasury
+import scheduled_tasks.economy.get_reverse_repo as get_reverse_repo
+import scheduled_tasks.economy.get_inflation as get_inflation
+import scheduled_tasks.economy.get_daily_treasury as get_daily_treasury
 
 # Best to run 1 hour before market opens daily to get trending tickers and subreddit count
 SCRAPE_REDDIT_STOCKS = True

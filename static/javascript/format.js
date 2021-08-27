@@ -26,7 +26,7 @@ function top_right_nav(elem) {
     }
     else {
         elem.classList.add("opened")
-        nav_bar_div.style.height = "240px";
+        nav_bar_div.style.height = "270px";
         nav_bar_div.style.width = "100%";
         nav_bar_div.querySelector("ul").style.display = "block"
         dark_mode_btn.style.display = "block"
@@ -132,11 +132,14 @@ function show_ticker_price(information) {
     if (current_mkt_status == "REGULAR") {
         mkt_pre_post_code = ""
     }
-    else if (information["preMarketChange"] != "N/A" & current_mkt_status != "N/A" & ! current_mkt_status.includes("POST")) {
+    if (current_mkt_status == "PRE") {
         mkt_pre_post_code = `<div style="font-size:9px">Pre: $${Math.round((Number(latest_price.replace(",", "")) + Number(information["preMarketChange"])) * 100) / 100} (${information["preMarketChangePercent"]})</div> `
     }
-    else if (information["postMarketChange"] != "N/A" & current_mkt_status != "N/A" & ! current_mkt_status.includes("PRE")) {
+    else if (current_mkt_status == "PREPRE" || current_mkt_status == "POST" || current_mkt_status == "POSTPOST") {
         mkt_pre_post_code = `<div style="font-size:9px">Post: $${Math.round((Number(latest_price.replace(",", "")) + Number(information["postMarketChange"])) * 100) / 100} (${information["postMarketChangePercent"]})</div> `
+    }
+    else {
+        mkt_pre_post_code = ""
     }
 
     var price_code = `<div class="price_details ${color_type}">$${latest_price}
@@ -175,6 +178,59 @@ function get_date_difference(duration, delimiter) {
     var yyyy = d.getFullYear();
     var date_threshold = yyyy + delimiter + mm + delimiter + dd;
     return date_threshold
+}
+
+function get_economic_releases(elem) {
+    today_date = new Date()
+    day = today_date.getDate()
+    month = today_date.getMonth() + 1
+    if (month < 10) {
+        month = "0" + month
+    }
+    year = today_date.getFullYear()
+    today_date = year + "-" + month + "-" + day
+
+    rrp = elem["Reverse Repo"]["Release Date"]
+    treasury = elem["Daily Treasury"]["Release Date"]
+    inflation = elem["Inflation"]["Release Date"]
+    retail_sales = elem["Retail Sales"]["Release Date"]
+
+    if (rrp == today_date) {
+        rrp_code = `<div style="color:red">RRP: ${rrp} </div>`
+    }
+    else {
+        rrp_code = `<div>RRP: ${rrp} </div>`
+    }
+    if (treasury == today_date) {
+        treasury_code = `<div style="color:red">Treasury: ${treasury} </div>`
+    }
+    else {
+        treasury_code = `<div>Treasury: ${treasury} </div>`
+    }
+    if (inflation == today_date) {
+        inflation_code = `<div style="color:red">Inflation: ${inflation} (Pre)</div>`
+    }
+    else {
+        inflation_code = `<div>Inflation: ${inflation} (Pre)</div>`
+    }
+    if (retail_sales == today_date) {
+        retail_sales_code = `<div style="color:red">Retail Sales: ${retail_sales} (Pre)</div>`
+    }
+    else {
+        retail_sales_code = `<div>Retail Sales: ${retail_sales} (Pre)</div>`
+    }
+
+
+    code = `
+            <div style="display:inline-block;width:52%">
+                ${rrp_code}
+                ${treasury_code}
+            </div>
+            <div style="display:inline-block">
+                ${inflation_code}
+                ${retail_sales_code}
+            </div>`
+    document.getElementById("releases_div").innerHTML += code
 }
 
 function clickAndDisable(link) {

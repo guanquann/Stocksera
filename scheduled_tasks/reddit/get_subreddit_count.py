@@ -13,7 +13,7 @@ conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
 
 interested_subreddits = {
-    "ALL": ["wallstreetbets", "stocks", "StockMarket", "options", "pennystocks", "investing"],
+    "ALL": ["wallstreetbets", "stocks", "StockMarket", "options", "pennystocks", "investing", "SPACs", "Shortsqueeze"],
     "GME": ["Superstonk", "GME"],
     "AMC": ["amcstock"],
     "CLOV": ["CLOV"],

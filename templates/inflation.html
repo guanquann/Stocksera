@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/inflation.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode();color_table('checked');inflation('max'){% endblock %}
+{% block onload_properties%}restore_dark_mode();color_table('checked');inflation('max');get_economic_releases({{next_date}}){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -36,6 +36,10 @@
             <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'inflation' %}" onclick="clickAndDisable(this);">Inflation</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'retail_sales' %}" onclick="clickAndDisable(this);">Retail Sales</a></div>
         </div>
+    </div>
+
+    <div class="instructions" id="releases_div">
+        <h2>Next Release Date</h2>
     </div>
 
     <div class="inflation">

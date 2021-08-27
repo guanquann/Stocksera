@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/reverse_repo.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode();display_table();reverse_repo(100){% endblock %}
+{% block onload_properties%}restore_dark_mode();display_table();reverse_repo(100);get_economic_releases({{next_date}}){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -32,6 +32,7 @@
             an agreement to repurchase the securities at a later date at a higher repurchase price. Reverse repo
             transactions temporarily reduce the quantity of reserve balances in the banking system.
         </p>
+        <div id="consecutive_text"></div>
     </div>
 
     <div class="instructions">
@@ -42,6 +43,10 @@
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'inflation' %}" onclick="clickAndDisable(this);">Inflation</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'retail_sales' %}" onclick="clickAndDisable(this);">Retail Sales</a></div>
         </div>
+    </div>
+
+    <div class="instructions" id="releases_div">
+        <h2>Next Release Date</h2>
     </div>
 
     <div class="reverse_repo">

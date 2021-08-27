@@ -62,7 +62,7 @@
 
     .switch {
         margin-left: 32px;
-        top: 257px;
+        top: 287px;
         position: fixed;
         display: inline-block;
         width: 33px;
@@ -75,7 +75,7 @@
         height: 13px;
         width: 13px;
         left: 4px;
-        bottom: 2px;
+        bottom: 1.5px;
         background-color: white;
         -webkit-transition: .4s;
         transition: .4s;
@@ -94,14 +94,14 @@
     .sun_icon {
         width: 13px;
         position: fixed;
-        top: 258px;
+        top: 288px;
         margin-left: 16px;
     }
 
     .night_icon {
         width: 11px;
         position: fixed;
-        top: 259px;
+        top: 289px;
         margin-left: 68px;
     }
 
@@ -685,8 +685,8 @@ tr:last-child td {
 }
 
 th {
-    padding-top: 9px;
-    padding-bottom: 9px;
+    padding-top: 7px;
+    padding-bottom: 7px;
     text-align: left;
     background-color: #EAE9E9;
     position: sticky;
@@ -1021,4 +1021,9 @@ input:focus + .slider {
 
 .hamburger.opened .bottom {
     transform: translateY(-10px) rotate(45deg);
+}
+
+#consecutive_text {
+    font-weight: bold;
+    font-size: larger;
 }

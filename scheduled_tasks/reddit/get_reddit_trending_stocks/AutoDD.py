@@ -61,7 +61,7 @@ def get_sentiment(text, increment):
     return increment, sentiment_score
 
 
-def get_submission_praw(n, sub):
+def get_submission_praw(n, sub, n_num):
     """
     Returns a list of results for submission in past:
     1st list: current result from n hours ago until now
@@ -79,8 +79,7 @@ def get_submission_praw(n, sub):
     prev = {}
     subreddit = reddit.subreddit(sub)
     all_results = []
-    for post in subreddit.new(limit=700):
-        #  post.comments,
+    for post in subreddit.new(limit=n_num):
         all_results.append([post.title, post.link_flair_text, post.selftext, post.score, post.num_comments,
                             post.created_utc])
 
@@ -90,12 +89,12 @@ def get_submission_praw(n, sub):
     return recent, prev
 
 
-def get_submission_generators(n, sub):
+def get_submission_generators(n, sub, n_num):
     """
     Returns dictionary of current scores, previous score, total score, upvote score and comment score
     """
 
-    recent, prev = get_submission_praw(n, sub)
+    recent, prev = get_submission_praw(n, sub, n_num)
     print("Searching for tickers in {}...".format(sub))
 
     current_scores, current_rocket_scores, current_posts_dict, current_upvotes_dict, current_comments_dict = get_ticker_scores_praw(recent)

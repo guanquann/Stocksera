@@ -34,5 +34,6 @@ urlpatterns = [
     path('subreddit_count/', views.subreddit_count, name='subreddit_count'),
     path('reddit_etf/', views.reddit_etf, name='reddit_etf'),
     path('amd_xlnx_ratio/', views.amd_xlnx_ratio, name='amd_xlnx_ratio'),
+    path('beta/', views.beta, name='beta'),
     path('about/', views.about, name='about'),
 ]

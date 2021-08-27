@@ -15,7 +15,8 @@ def database():
                "next_update TEXT, "
                "UNIQUE('symbol'))")
 
-    subreddits = ["wallstreetbets", "stocks", "stockmarket", "options", "pennystocks", "investing"]
+    subreddits = ["wallstreetbets", "stocks", "stockmarket", "options", "pennystocks", "investing", "shortsqueeze",
+                  "spacs"]
     for subreddit in subreddits:
         db.execute("CREATE table IF NOT EXISTS {} ("
                    "rank INTEGER NOT NULL, "

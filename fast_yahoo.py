@@ -64,8 +64,6 @@ def download_advanced_stats(symbol_list, threads=True):
                                 stat_val = stat['fmt']
                         elif isinstance(stat, str) or isinstance(stat, numbers.Number):
                             stat_val = stat
-                        # else:
-                        #     raise TypeError('Expected dictionary, string or number.')
                     stats_list.append(stat_val)
             else:
                 stats_list.extend(['N/A'] * len(stat_name_dict))

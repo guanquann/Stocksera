@@ -1,7 +1,6 @@
 import sqlite3
 import numpy as np
 import os
-from datetime import datetime, timedelta
 from django.http import HttpResponse
 from fast_yahoo import *
 
@@ -208,3 +207,25 @@ def download_file(df, file_name):
             os.remove(file_name)
         return response
 
+
+def linear_regression(x, y):
+    """
+    Linear Regression model without sklearn library
+    Parameters
+    ----------
+        x: list of x axis
+        y: list of y axis
+    """
+    # calculate mean of x & y using an inbuilt numpy method mean()
+    mean_x = np.mean(x)
+    mean_y = np.mean(y)
+    m = len(y)
+
+    # using the formula to calculate m & c
+    numer = 0
+    denom = 0
+    for i in range(m):
+        numer += (x[i] - mean_x) * (y[i] - mean_y)
+        denom += (x[i] - mean_x) ** 2
+    m = numer / denom
+    return m

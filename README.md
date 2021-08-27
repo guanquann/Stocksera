@@ -115,6 +115,10 @@ This website will be free forever! No subscription needed! But if you want to su
 - Retail sales data is from <a href="https://ycharts.com/indicators/us_retail_and_food_services_sales">ycharts.com/indicators/us_retail_and_food_services_sales</a>
 - Covid-19 data is from <a href="https://covid.ourworldindata.org/data/owid-covid-data.csv">covid.ourworldindata.org/data/owid-covid-data.csv</a>
 
+#### /beta/
+- Calculate the true beta value of any stock real-time.
+![Beta](./static/images/github/beta.png)
+
 #### /amd_xlnx_ratio/
 - AMD-XLNX Share Price Ratio.
 - Percentage upside when buying XLNX

@@ -151,7 +151,7 @@ def database():
                "amount FLOAT, "
                "parties INTEGER, "
                "average FLOAT, "
-               "UNIQUE ('date_updated') )")
+               "UNIQUE ('record_date') )")
 
     db.execute("CREATE table IF NOT EXISTS daily_treasury ("
                "record_date TEXT, "

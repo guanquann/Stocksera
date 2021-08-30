@@ -1,0 +1,56 @@
+@media only screen and (max-width: 900px) {
+    .selector {
+        margin-right: 8px;
+        padding-bottom: 4px;
+        margin-bottom: 4px;
+        font-size: larger;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    .selector {
+        margin-right: 16px;
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+        font-size: larger;
+    }
+}
+
+.selector_div {
+    display: flex;
+}
+
+.selector:hover {
+    cursor: pointer;
+    color: rgb(38, 166, 154);
+}
+
+.dark_mode .selector:hover {
+    color: #ffba39;
+}
+
+.selected {
+    color: rgb(38, 166, 154);
+    border-bottom: 2px solid rgb(38, 166, 154);
+}
+
+.dark_mode .selected {
+    color: #ffba39;
+    border-bottom: 2px solid #ffba39;
+}
+
+.chart-container {
+    height: 70vh;
+    min-width: 650px;
+    max-height: 1800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.chart-container div {
+    margin:auto;
+}
+
+::-webkit-scrollbar-thumb {
+    background: transparent;
+}

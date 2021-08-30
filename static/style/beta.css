@@ -1,0 +1,13 @@
+@media only screen and (max-width: 900px) {
+    #beta_chart {
+        margin-top: 30px;
+        max-height: 350px;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    #beta_chart {
+        margin-top: 30px;
+        max-height: 400px;
+    }
+}

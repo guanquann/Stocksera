@@ -1,0 +1,253 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Home{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/home.css' %}">
+<link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
+<script src="{% static 'javascript/home.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}restore_dark_mode(){% endblock %}
+
+{% block main_nav %}
+{% endblock %}
+
+{% block main_content %}
+<script>highlight_selected_nav('home')</script>
+<div class="section_1">
+    <div class="main_div">
+        <img class="logo" src="{% static 'images/logo.png' %}">
+        <h2>StocksEra</h2>
+        <div>
+            <p>We track trending tickers on social media and provide free data for easy due-diligence & analysis.</p>
+            <div class="featured_div">
+                <div class="featured_div_txt">Featured On | </div>
+                <div class="featured_div_img_div">
+                    <img src="{% static 'images/homepage/seeking_alpha.svg' %}">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ranking_div">
+    <div class="section_div_left">
+        <h1>Stocksera Trending Tickers</h1>
+        <div class="ranking">
+            <div class="ranking_num"><b>Rank</b></div>
+            <div class="ranking_symbol"><b>Symbol</b></div>
+            <div class="ranking_name"><b>Name</b></div>
+        </div>
+        {% for i in trending %}
+        <div class="ranking">
+            <a href="/ticker/?quote={{i.0}}">
+                <div class="ranking_num">{{ forloop.counter }}.</div>
+                <div class="ranking_symbol">{{i.0}}</div>
+                <div class="ranking_name">{{i.1}}</div>
+            </a>
+        </div>
+        {% endfor %}
+        <span><i>Data is updated real time</i></span>
+    </div>
+    <div class="section_div_right ranking_img"><img src="{% static 'images/homepage/trending.png' %}"></div>
+</div>
+
+<div id="contents_title"></div>
+<div class="section_div">
+    <div class="section_div_left">
+        <h1>Due-Diligence</h1>
+        <div class="dd_btn">
+            <button onclick="show_dd('analysis', this)" class="selected">Analysis</button>
+            <button onclick="show_dd('financials', this)">Financials</button>
+            <button onclick="show_dd('options', this)">Options</button>
+            <button onclick="show_dd('short_volume', this)">Short Volume</button>
+            <button onclick="show_dd('ftd', this)">FTD</button>
+        </div>
+
+        <div class="section_div_description" id="dd_description">
+            <div class="section_div_text">
+                View latest price, key statistics, major holders, institutional holders, earnings, recommendations and sort
+                historical data.
+            </div>
+            <div class="href_btn"><a href="/ticker/">VIEW MORE</a></div>
+        </div>
+    </div>
+    <div class="section_div_right"><img src="{% static 'images/homepage/dd.png' %}"></div>
+</div>
+
+<div class="section_div">
+    <div class="section_div_left">
+        <h1>Reddit Analysis</h1>
+        <div class="reddit_btn">
+            <button onclick="show_reddit('reddit_trending', this)" class="selected">Trending</button>
+            <button onclick="show_reddit('reddit_etf', this)">WSB ETF</button>
+            <button onclick="show_reddit('subreddit', this)">Subreddit</button>
+        </div>
+
+        <div class="section_div_description" id="reddit_description">
+            <div class="section_div_text">
+                Get trending tickers on stocks & crypto-related subreddits based on sentiment,
+                number of posts, comments and upvotes.
+            </div>
+            <div class="href_btn"><a href="/reddit_analysis/">VIEW MORE</a></div>
+        </div>
+    </div>
+    <div class="section_div_right"><img src="{% static 'images/homepage/reddit.png' %}"></div>
+</div>
+
+<div class="section_div">
+    <div class="section_div_left">
+        <h1>Economy</h1>
+        <div class="economy_btn">
+            <button onclick="show_economy('rrp', this)" class="selected">Reverse Repo</button>
+            <button onclick="show_economy('treasury', this)">Daily Treasury</button>
+            <button onclick="show_economy('inflation', this)">Inflation</button>
+            <button onclick="show_economy('retail', this)">Retail Sales</button>
+        </div>
+
+        <div class="section_div_description" id="economy_description">
+            <div class="section_div_text">
+                View record high reverse-repo transaction.
+            </div>
+            <div class="href_btn"><a href="/reverse_repo/">VIEW MORE</a></div>
+        </div>
+    </div>
+    <div class="section_div_right"><img src="{% static 'images/homepage/economy.png' %}"></div>
+</div>
+
+
+<div class="section_div">
+    <div class="section_div_left">
+        <h1>Stocks Beta</h1>
+        <div class="beta_btn">
+            <button onclick="show_beta('true_beta', this)" class="selected">True Beta</button>
+            <button onclick="show_beta('covid_beta', this)">Covid Beta</button>
+        </div>
+
+        <div class="section_div_description" id="beta_description">
+            <div class="section_div_text">
+                Insert here.
+            </div>
+            <div class="href_btn"><a href="/reverse_repo/">VIEW MORE</a></div>
+        </div>
+    </div>
+    <div class="section_div_right"><img src="{% static 'images/homepage/beta.png' %}"></div>
+</div>
+
+<div class="section_div">
+    <div class="section_div_left">
+        <h1>Discover</h1>
+        <div class="discover_btn">
+            <button onclick="show_discover('overview', this)" class="selected">Market Overview</button>
+            <button onclick="show_discover('short_int', this)">Short Interest</button>
+            <button onclick="show_discover('low_float', this)">Low Float</button>
+            <button onclick="show_discover('hedge', this)">Hedge Funds</button>
+            <button onclick="show_discover('ark', this)">ARK Trades</button>
+            <button onclick="show_discover('amd_xlnx_ratio', this)">AMD-XLNX Ratio</button>
+        </div>
+
+        <div class="section_div_description" id="discover_description">
+            <div class="section_div_text">
+                Get trending tickers on Reddit based on indicators such as sentiment, number of posts,
+                comments and upvotes.
+            </div>
+            <div class="href_btn"><a href="/market_overview/">VIEW MORE</a></div>
+        </div>
+    </div>
+    <div class="section_div_right"><img src="{% static 'images/homepage/discover.png' %}"></div>
+</div>
+
+<div class="section_div">
+    <div class="section_div_left">
+        <h1>We're Open-Sourced</h1>
+        <div class="op_btn">
+            <button onclick="show_op('donate', this)" class="selected">Donate</button>
+            <button onclick="show_op('code', this)">Source Code</button>
+            <button onclick="show_op('video', this)">Video</button>
+        </div>
+
+        <div class="section_div_description" id="op_description">
+            <div class="section_div_text">
+                Stocksera is an open-source application.
+                I spent months creating this application, without monetary benefits.
+                If you like this project, you can support me via <a href="https://www.paypal.me/stocksera" target="_blank">Paypal</a> or <a href="https://www.patreon.com/stocksera" target="_blank">Patreon</a>.
+            </div>
+            <div class="href_btn"><a href="https://www.paypal.com/paypalme/stocksera" target="_blank">VIEW MORE</a></div>
+        </div>
+    </div>
+    <div class="section_div_right"><img src="{% static 'images/homepage/opensource.png' %}"></div>
+</div>
+
+<div class="section_div">
+    <div class="section_div_left">
+        <h1>Your Experience Matters</h1>
+        <div class="section_div_description">
+            <div class="section_div_text">
+                <p class="experience_text">
+                    Responsive web design, dark mode available and most importantly, no annoying advertisements -
+                    because we care about your experience.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="section_div_right"><img src="{% static 'images/homepage/responsive.png' %}"></div>
+</div>
+
+
+<div class="showcase_div">
+    <div class="slideshow-container">
+        <div class="slides fade">
+            <img src="{% static 'images/homepage/showcase.png' %}" class="showcase1">
+            <div class="text">More than 5k upvotes in r/superstonk, a forum on Reddit to discuss about GME stock.</div>
+        </div>
+
+        <div class="slides fade">
+            <img src="{% static 'images/homepage/showcase2.png' %}" class="showcase2">
+            <div class="text">Top awarded post in r/amcstock, a forum on Reddit to discuss about AMC stock.</div>
+        </div>
+
+        <div class="slides fade" style="display:table-cell">
+            <img src="{% static 'images/homepage/showcase3.png' %}" class="showcase3">
+            <div class="text">Review by a redditor in Reddit.</div>
+        </div>
+
+        <div class="slides fade">
+            <img src="{% static 'images/homepage/showcase4.png' %}" class="showcase4">
+            <div class="text">Review by a redditor in Reddit.</div>
+        </div>
+    </div>
+
+    <div class="dot_div">
+        <span class="dot" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+        <span class="dot" onclick="currentSlide(3)"></span>
+        <span class="dot" onclick="currentSlide(4)"></span>
+    </div>
+</div>
+{% endblock %}
+
+{% block bottom_script %}
+<script>
+var slideIndex = 0;
+showSlides();
+function showSlides() {
+    var i;
+    var slides = document.getElementsByClassName("slides");
+    var dots = document.getElementsByClassName("dot");
+    for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+    }
+    slideIndex++;
+    if (slideIndex > slides.length) {slideIndex = 1}
+    for (i = 0; i < dots.length; i++) {
+        dots[i].className = dots[i].className.replace(" active", "");
+    }
+    slides[slideIndex-1].style.display = "table-cell";
+    dots[slideIndex-1].className += " active";
+    setTimeout(showSlides, 4000);
+}
+</script>
+{% endblock %}

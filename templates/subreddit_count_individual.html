@@ -1,0 +1,88 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Subscribers{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/subreddit_count.css' %}">
+<script src="{% static 'javascript/subreddit_count.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}restore_dark_mode();subreddit_individual(1){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/subreddit_count">Subreddit Statistics</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('reddit')</script>
+    <div class="instructions">
+        <h2>Subreddit Statistics</h2>
+        <p>
+            Identify your favourite subreddit statistics over time. Data is updated once daily, one hour before market opens.
+            <br><br>
+            As this is meant to track stocks discussion & activity on Reddit, <b>stocks-related subreddit are preferred</b> (e.g: r/AMD_Stock instead of r/AMD).
+            <br><br>
+            We have now included data of more than 60 subreddits.
+            If you have a subreddit to share, click here to inform us.
+            Do note that not all subreddits suggested will be included. The post frequency and number of redditors in that subreddit will be considered.
+            <br><br>
+            Note: If the number of active users in the subreddit is unusually low, it might be a bug on Reddit side. There is nothing we can do about it.
+        </p>
+        <form action="" method="GET" autocomplete="off">
+            <select onchange="this.form.submit()" name="quote">
+                <option>Subreddit: {{ticker_selected}}</option>
+                {% for i in interested_subreddits %}
+                    {% if i != "SUMMARY" %}
+                        <option value="{{i}}">{{i}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <a href="/subreddit_count/" class="overview_btn">Overview</a>
+        </form>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis" onclick="clickAndDisable(this);">Trending Stocks</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis/?subreddit=cryptocurrency" onclick="clickAndDisable(this);">Trending Crypto</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reddit_etf' %}" onclick="clickAndDisable(this);">WSB ETF</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'subreddit_count' %}" onclick="clickAndDisable(this);">Subreddit Stats</a></div>
+        </div>
+    </div>
+
+    <div class="contents_div">
+        <div id="ticker_basic_stats"></div>
+
+        <div class="individual_subreddit_description">
+            <h2>r/{{subreddit}}</h2>
+            <div style="width: max-content;margin: auto;" class="explore"><a href="https://www.reddit.com/r/{{subreddit}}" target="_blank">Explore ></a></div>
+        </div>
+
+<!--        <div class="date_selector">-->
+<!--            <button name="date_range" onclick="btn_selected(this); subreddit_count(1)" class="selected">1 Month</button>-->
+<!--            <button name="date_range" onclick="btn_selected(this); subreddit_count(3)">3 Months</button>-->
+<!--            <button name="date_range" onclick="btn_selected(this); subreddit_count(48)">Max</button>-->
+<!--        </div>-->
+
+<!--        <div class="chart-container">-->
+<!--            <canvas id="subreddit_chart"></canvas>-->
+<!--        </div>-->
+        <div id="chart" class="chart"></div>
+        {{ stats|safe }}
+    </div>
+{% endblock %}
+
+{% block bottom_script %}
+<!--<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>-->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    <!--Hack to convert python variables to javascript-->
+    var None = "N/A", False = false; True = true;
+    var information = {{information|safe}};
+    show_ticker_price(information)
+</script>
+{% endblock %}

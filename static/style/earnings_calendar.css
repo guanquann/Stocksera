@@ -1,0 +1,122 @@
+@media only screen and (max-width: 900px) {
+    .earnings_calendar {
+        width: 90%;
+        margin:auto;
+        margin-bottom: 50px;
+    }
+
+    .earnings_container {
+        width: calc(100% / 6);
+        border: 1.5px solid grey;
+        margin: 1px;
+        text-align: center;
+        padding: 1px;
+        word-wrap: break-word;
+    }
+
+    .sticky {
+        position: fixed;
+        top: 40px;
+        width: 87%;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    .earnings_calendar {
+        width: 98%;
+        margin:auto;
+        margin-bottom: 50px;
+    }
+
+    .earnings_container {
+        width: 118px;
+        border: 2px solid grey;
+        margin: 1px;
+        text-align: center;
+        padding: 3px;
+        word-wrap: break-word;
+    }
+
+    .sticky {
+        position: fixed;
+        top: 45px;
+        width: 82%;
+    }
+}
+
+.menu {
+    padding: 6px;
+    border-radius: 6px;
+    z-index: 99;
+    background-color: #e9eaea;
+}
+
+.dark_mode .menu {
+    background-color: #505050;
+}
+
+#to_top {
+    float: right;
+    margin-right: 20px;
+    padding: 2px;
+}
+
+.dark_mode #to_top {
+}
+
+button {
+    border: 1px solid grey;
+    border-radius: 3px;
+    padding: 0.4%;
+}
+
+button:hover {
+    cursor: pointer;
+    outline: 0;
+    background-color: #26a69a;
+}
+
+.selected_btn {
+    background-color: #26a69a;
+}
+
+select {
+    padding: 0.35%;
+    border: 1px solid grey;
+    border-radius: 3px;
+}
+
+input {
+    border: 1px solid grey;
+    border-radius: 3px;
+    padding: 0.4%;
+    text-transform: uppercase;
+    max-width: 70px;
+}
+
+input:focus {
+    outline: none;
+}
+
+.earnings_div {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+h2 {
+    margin-bottom: 5px;
+}
+
+.company_img {
+    width: 100%;
+    background-color: white;
+}
+
+.earnings_container p {
+    text-align: left;
+    margin: 1px;
+}
+
+.earnings_container span {
+    font-weight: bold;
+}

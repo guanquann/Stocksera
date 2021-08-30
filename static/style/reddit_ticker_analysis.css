@@ -1,0 +1,31 @@
+@media only screen and (max-width: 900px) {
+    .ranking_header {
+        margin-top: 22px;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    .ranking_header {
+        margin-top: 30px;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+}
+
+.chart-container {
+    position: relative;
+    height:55vh;
+    width:98%;
+    max-width: 900px;
+    max-height:250px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ranking_description {
+    text-align: center;
+    font-size: smaller;
+    font-style: italic;
+}

@@ -1,0 +1,14 @@
+.git
+.idea
+*.pyc
+__pycache__
+venv/
+.vscode
+*.db
+database
+static/graph_chart
+*.zip
+db.sqlite3
+logging.log
+staticfiles
+yfinance.cache

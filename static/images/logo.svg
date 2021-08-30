@@ -1,0 +1,14 @@
+<svg width="271" height="50" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+<defs>
+<clipPath id="clip0">
+<rect x="401" y="114" width="271" height="100"/>
+</clipPath>
+</defs>
+<g clip-path="url(#clip0)" transform="translate(-400 -165)">
+<text fill="#26a69a" font-family="Calibri,Sans,Arial" font-size="60" transform="translate(444 210)">stocksera</text>
+<path d="M419 194 419 209" stroke="#26a69a" stroke-width="5" stroke-linecap="round" fill="none" fill-rule="evenodd"/>
+<path d="M429 184 429 209" stroke="#26a69a" stroke-width="5" stroke-linecap="round" fill="none" fill-rule="evenodd"/>
+<path d="M439 174 439 209" stroke="#26a69a" stroke-width="5" stroke-linecap="round" fill="none" fill-rule="evenodd"/>
+<path d="M409 204 409 209" stroke="#26a69a" stroke-width="5" stroke-linecap="round" fill="none" fill-rule="evenodd"/>
+</g>
+</svg>

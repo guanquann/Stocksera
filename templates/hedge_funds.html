@@ -1,0 +1,105 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Hedge Funds{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/hedge_funds.css' %}">
+<script src="{% static 'javascript/hedge_funds.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}restore_dark_mode();update_table();load_page_num(){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/market_overview">Discover</a> /
+    <a href="/hedge_funds">Hedge Funds</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('discover')</script>
+    <div class="instructions">
+        <h2>Hedge Funds Holdings</h2>
+        <p>View 13F Fillings of some of the largest hedge funds in the world.</p>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_overview' %}" onclick="clickAndDisable(this);">Market Overview</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_interest' %}" onclick="clickAndDisable(this);">Short Interest</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'low_float' %}" onclick="clickAndDisable(this);">Low Float</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ark_trades' %}" onclick="clickAndDisable(this);">ARK Fund</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'hedge_funds' %}" onclick="clickAndDisable(this);">Hedge Fund</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'amd_xlnx_ratio' %}" onclick="clickAndDisable(this);">AMD-XLNX Ratio</a></div>
+        </div>
+    </div>
+
+    <div class="contents_div">
+        <h2>{{description.name}}</h2>
+        <form action="" method="GET" id="form">
+            <input id="page_num" name="page_num" style="display: none" value="{{page_num}}">
+            <input id="total_pages" style="display: none" value="{{num_pages}}">
+            <select name="fund_name" onchange="this.form.submit()">
+                <option>Hedge Fund: {{description.name}}</option>
+                {% for fund_name in all_fund_names %}
+                    <option>{{fund_name}}</option>
+                {% endfor %}
+            </select>
+            <select name="sort_by" onchange="this.form.submit()">
+                <option>Sort By: {{selected_sort}}</option>
+                {% for sort in sort_by %}
+                    <option>{{sort}}</option>
+                {% endfor %}
+            </select>
+            <div class="search_bar">
+                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="submit"><img src="{% static 'images/search_icon.svg' %}"></button>
+            </div>
+
+            <div>{{description.description}}</div>
+            <a href="{{description.website}}" target="_blank" class="read_more"><i>View More (whalewisdom)</i></a>
+            <div class="table_div">
+                {{ df|safe }}
+            </div>
+            <div class="page_section"></div>
+        </form>
+        <p>Data from: <a href="https://whalewisdom.com/" target="_blank">whalewisdom.com</a>
+    </div>
+{% endblock %}
+
+{% block bottom_script %}
+<script>
+function update_table() {
+    var table = document.getElementsByTagName("table")[0];
+    var tr = table.querySelectorAll("tr");
+    for (i=1; i<tr.length; i++) {
+        var td = tr[i].querySelectorAll("td");
+        td[1].innerHTML = `<a href="{% url 'ticker' %}?quote=${td[2].innerHTML}" target="_blank"><img src="https://g.foolcdn.com/art/companylogos/mark/${td[2].innerHTML}.png" class="table_ticker_logo" onerror="this.error=null;load_table_error_img(this, '${td[1].innerHTML}')"><b>${td[1].innerHTML}</b></a>`
+        td[2].innerHTML = `<a href="{% url 'ticker' %}?quote=${td[2].innerHTML}" target="_blank"><b>${td[2].innerHTML}</b></a>`
+        td[5].innerHTML = "$" + td[5].innerHTML
+        td[6].innerHTML = td[6].innerHTML + "%"
+        td[7].innerHTML = td[7].innerHTML + "%"
+
+        var value_change = td[8].innerHTML
+        if (value_change.includes("-")) {
+            td[8].innerHTML = value_change.replace("-", "-$")
+        }
+        else {
+            td[8].innerHTML = "$" + value_change
+        }
+
+        td[9].innerHTML = td[9].innerHTML + "%"
+
+        if (td[11].innerHTML != "N/A" & td[11].innerHTML != "NO DATA") {
+            td[11].innerHTML = td[11].innerHTML + "%"
+        }
+
+        if (td[15].innerHTML != "N/A") {
+            td[15].innerHTML = "$" + td[15].innerHTML
+        }
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+@media only screen and (max-width: 900px) {
+    .chart-container {
+        position: relative;
+        height:55vh;
+        width:90%;
+        max-height:250px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    .chart-container {
+        position: relative;
+        height:55vh;
+        width:98%;
+        max-height:250px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+.contents_div h2 {
+    margin-top: 30px;
+    margin-bottom: 5px;
+}
+
+h2 button {
+    border: 0px;
+    border-bottom: 2px solid #858585;
+    background-color: transparent;
+    color: #858585;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.dark_mode h2 button {
+    background-color: transparent;
+    color: wheat
+}
+
+.dark_mode h2 button:hover {
+    background-color: transparent;
+}
+
+.selected_btn {
+    border-bottom: 2px solid rgb(38, 166, 154);
+    color: rgb(38, 166, 154);
+}
+
+.dark_mode .selected_btn {
+    border-bottom: 2px solid wheat;
+    color: wheat;
+}

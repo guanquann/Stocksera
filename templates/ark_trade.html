@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="{% static 'style/ark_trade.css' %}">
 {% endblock %}
 
-{% block onload_properties%}load_holdings(0);load_profile();restore_dark_mode(){% endblock %}
+{% block onload_properties%}load_holdings(0);load_profile();restore_dark_mode();{% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -21,24 +21,6 @@
     <div class="instructions">
         <h2>ARK Statistics</h2>
         <p>These are the positions, trades, and weight of all companies in ARK Fund. Data is updated daily.</p>
-    </div>
-
-    <div class="instructions">
-        <h2>Other Datasets Available</h2>
-        <div class="more_info_div_parent">
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_overview' %}" onclick="clickAndDisable(this);">Market Overview</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_interest' %}" onclick="clickAndDisable(this);">Short Interest</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'low_float' %}" onclick="clickAndDisable(this);">Low Float</a></div>
-            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'ark_trades' %}" onclick="clickAndDisable(this);">ARK Fund</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'hedge_funds' %}" onclick="clickAndDisable(this);">Hedge Fund</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'amd_xlnx_ratio' %}" onclick="clickAndDisable(this);">AMD-XLNX Ratio</a></div>
-        </div>
-    </div>
-
-    <div class="contents_div">
-        <div id="profile"></div>
-
-        <input id="fund_selected" value="ARKK">
         <div class="fund_type_parent">
             <div class="fund_type selected" onclick="update_fund(this)">ARKK</div>
             <div class="fund_type" onclick="update_fund(this)">ARKQ</div>
@@ -49,12 +31,37 @@
             <div class="fund_type" onclick="update_fund(this)">PRNT</div>
             <div class="fund_type" onclick="update_fund(this)">IZRL</div>
         </div>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_overview' %}" onclick="clickAndDisable(this);">Market Overview</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_interest' %}" onclick="clickAndDisable(this);">Short Interest</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'low_float' %}" onclick="clickAndDisable(this);">Low Float</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'ark_trades' %}" onclick="clickAndDisable(this);">ARK Fund</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'amd_xlnx_ratio' %}" onclick="clickAndDisable(this);">AMD-XLNX Ratio</a></div>
+        </div>
+    </div>
+
+    <div class="contents_div">
+        <div id="profile"></div>
+        <div class="weightage_div"></div>
+
+        <input id="fund_selected" value="ARKK">
+
+        <div class="chart-container">
+            <canvas id="weighting_chart"></canvas>
+        </div>
 
         <div class="button_parent">
             <button class="btn_type selected" onclick="load_holdings(0)" type="button">Holdings</button>
             <button class="btn_type" onclick="load_trades(1)" type="button">Trades</button>
             <button class="btn_type" onclick="load_news(2)" type="button">News</button>
-            <input placeholder="Ticker:" onkeyup="searchFun()" id="ticker_name">
+            <div class="search_bar">
+                <input type="text" class="ticker_input" placeholder="Ticker: " onkeyup="searchFun()" id="ticker_name">
+                <button class="submit_btn" type="button"><img src="{% static 'images/search_icon.svg' %}"></button>
+            </div>
         </div>
         <div class="scrollable_div"></div>
 
@@ -80,4 +87,5 @@
 
 {% block bottom_script %}
 <script src="{% static 'javascript/ark_trade.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.min.js"></script>
 {% endblock %}

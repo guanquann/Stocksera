@@ -576,6 +576,11 @@ function subreddit_individual(duration) {
         type: 'bar',
         marker: {
             color: 'orange',
+            opacity: 0.6,
+            line: {
+                color: 'wheat',
+                width: 1.5
+            }
         }
     };
 
@@ -602,7 +607,7 @@ function subreddit_individual(duration) {
         autosize: true,
         margin: {
             t:30,
-            l:50,
+            l:60,
             r:50,
             pad: 0
         },
@@ -630,6 +635,7 @@ function subreddit_individual(duration) {
                       size: 11,
                 }
             },
+
         },
         yaxis2: {
             showgrid: false,

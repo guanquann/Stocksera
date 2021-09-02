@@ -32,6 +32,24 @@
     }
 }
 
+.chart-container {
+    position: relative;
+    height:55vh;
+    width:98%;
+    max-width: 900px;
+    max-height:250px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn_type {
+    border: 1px solid grey;
+    border-radius: 5px;
+    padding: 7px;
+    margin-left: -1px;
+    min-width: 40px;
+}
+
 button {
     border: 1.5px solid gray;
     border-radius: 3px;
@@ -54,20 +72,30 @@ input {
     color: black;
 }
 
+.weightage_div {
+    display: flex;
+    margin-top: 5px
+}
+
+.weightage_div div {
+    border-radius: 5px;
+    border: 2px solid grey;
+    padding: 5px;
+    margin-right: 4px;
+}
+
 #fund_selected {
     display: none;
 }
 
 .fund_type_parent {
     display: flex;
-    width: min-content;
-    margin: auto;
-    max-width: 90%;
+    max-width: 100%;
     overflow: auto;
 }
 
 .fund_type_parent .selected, .button_parent .selected {
-    background-color: #26a69a;
+    background-color: gray;
     transition: 0.5s;
 }
 
@@ -164,8 +192,8 @@ td div:hover {
 }
 
 .read_more {
-    text-decoration: none;
-    color: grey;
+    text-decoration: none !important;
+    color: grey !important;
 }
 
 .read_more:hover {

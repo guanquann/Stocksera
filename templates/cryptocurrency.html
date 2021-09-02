@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="{% static 'style/reddit_sentiment.css' %}">
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode();check_table();{% endblock %}
+{% block onload_properties%}restore_dark_mode();load_graph();check_table();{% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -20,6 +20,19 @@
     <div class="instructions">
         <h2>Reddit Sentiment</h2>
         <p>This page shows the top 35 trending tickers with a minimum of 10 score in Reddit in the last 48H. Number of posts (including deleted), comments and sentiment are taken into account. Data is refreshed daily.</p>
+        <form action="" method="GET" autocomplete="off">
+            <div class="select_div">
+                <select name="subreddit" onchange="this.form.submit()">
+                    <option>Selected: Cryptocurrency</option>
+                </select>
+                <select name="date_selected" onchange="this.form.submit()">
+                    <option>Date: {{date_selected}}</option>
+                    {% for date in all_dates %}
+                        <option value="{{date}}">{{date}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
     </div>
 
     <div class="instructions">
@@ -33,27 +46,6 @@
     </div>
 
     <div class="contents_div">
-        <form action="" method="GET" autocomplete="off">
-            <div class="select_div">
-                <select name="subreddit" onchange="this.form.submit()">
-                    <option>Selected: Cryptocurrency</option>
-                    <option value="wallstreetbets">Wall Street Bets</option>
-                    <option value="stocks">Stocks</option>
-                    <option value="stockmarket">Stock Market</option>
-                    <option value="options">Options</option>
-                    <option value="investing">Investing</option>
-                    <option value="pennystocks">Pennystocks</option>
-                    <option value="cryptocurrency">Cryptocurrency</option>
-                </select>
-                <select name="date_selected" onchange="this.form.submit()">
-                    <option>Date: {{date_selected}}</option>
-                    {% for date in all_dates %}
-                        <option value="{{date}}">{{date}}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </form>
-
         <div class="subreddit_intro">
             <div><img src="/static/images/subreddit_icon/crypto_currency.png"></div>
             <div class="main_div">
@@ -62,6 +54,10 @@
                     <div class="sm">r/CryptoCurrency</div>
                 </div>
             </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="subreddit_chart"></canvas>
         </div>
 
         <div id="filter_section">
@@ -145,5 +141,6 @@
 {% endblock %}
 
 {% block bottom_script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.min.js"></script>
 <script src="{% static 'javascript/reddit_sentiment_crypto.js' %}"></script>
 {% endblock %}

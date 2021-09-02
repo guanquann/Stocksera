@@ -46,7 +46,12 @@ def short_volume(symbol):
         print("Short volume data for {} not found!".format(symbol))
 
 
-def get_monthly_data_finra():
+def get_30d_data_finra():
+    """
+    Get short volume data from https://cdn.finra.org/
+    This is an alternative source to shortsvolume.com because shortsvolume.com stopped updating for some reason
+    But this is better in the sense that it gets all tickers short volume for the last 30 days and save them to csv
+    """
     last_date = datetime.now().date() - timedelta(days=30)
     combined_df = pd.DataFrame(columns=["Date", "Symbol", "ShortVolume", "ShortExemptVolume", "TotalVolume", "%Shorted"])
     while current_date != last_date:
@@ -70,7 +75,11 @@ def get_monthly_data_finra():
     combined_df.to_csv("database/short_volume.csv", index=False)
 
 
-def get_daily_data_finra(date_to_process: datetime.date = datetime.now().date()):
+def get_daily_data_finra(date_to_process: datetime.date = datetime.now().date() - timedelta(days=1)):
+    """
+    Get short volume data from https://cdn.finra.org/
+    This function gets daily data for popular tickers in scheduled_tasks/get_popular_tickers.py and save them to db
+    """
     url = r"https://cdn.finra.org/equity/regsho/daily/CNMSshvol{}.txt".format(str(date_to_process).replace("-", ""))
     print(url)
     s = requests.get(url).content
@@ -81,6 +90,12 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.now().date())
         df["Date"] = df["Date"].astype(str).apply(lambda x: x[0:4] + "-" + x[4:6] + "-" + x[6:])
         df["%Shorted"] = 100 * (df["ShortVolume"] / df["TotalVolume"])
         df["%Shorted"] = df["%Shorted"].round(2)
+
+        highest_shorted = df[df["ShortVolume"] >= 3000000].nlargest(20, "%Shorted")
+        del highest_shorted["Date"]
+        del highest_shorted["Market"]
+        highest_shorted.to_csv("database/highest_short_volume.csv", index=False)
+
         for symbol in full_ticker_list():
             ticker = yf.Ticker(symbol)
             print(symbol)
@@ -98,5 +113,5 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.now().date())
 
 
 if __name__ == '__main__':
-    get_monthly_data_finra()
-    # get_daily_data_finra()
+    get_30d_data_finra()
+    get_daily_data_finra()

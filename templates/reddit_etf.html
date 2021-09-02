@@ -25,7 +25,7 @@
             If a new ticker enters the Top 10 trending ticker list before the market opens, $10000 worth of shares will be bought.
             Any ticker that falls out of the Top 10 list will be sold. All trades will be conducted the moment market opens.
             <br><br>
-            Starting from 2021-09-01, ETFs such as SPY, QQQ, ARKK <b>will no longer be purchased by Reddit ETF</b>.
+            Starting from 2021-09-01, the ETFs listed: SPY, QQQ, TQQQ, DIA <b>will no longer be purchased by Reddit ETF</b>.
             <br><br>
             <b>Do note that this is not financial advice.</b> All "trades" are conducted solely based on tickers' popularity in r/wallstreetbets.
         </p>
@@ -62,12 +62,12 @@
                             {% for ticker in open_trade %}
                                 <tr>
                                     <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank"><img src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.0}}.png" class="table_ticker_logo" onerror="this.error=null;load_table_error_img(this, '{{ticker.0}}')">{{ticker.0}}</a></td>
-                                    <td>{{ticker.2}}</td>
-                                    <td>${{ticker.3}}</td>
-                                    <td>{{ticker.4}}</td>
-                                    <td>${{ticker.6}}</td>
-                                    <td>{{ticker.7}}</td>
-                                    <td>{{ticker.8}}%</td>
+                                    <td>{{ticker.1}}</td>
+                                    <td>${{ticker.2}}</td>
+                                    <td>{{ticker.3}}</td>
+                                    <td>${{ticker.5}}</td>
+                                    <td>{{ticker.6}}</td>
+                                    <td>{{ticker.7}}%</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -100,13 +100,13 @@
                         {% for ticker in close_trade %}
                             <tr>
                                 <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank"><img src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.0}}.png" class="table_ticker_logo" onerror="this.error=null;load_table_error_img(this, '{{ticker.0}}')">{{ticker.0}}</a></td>
-                                <td>{{ticker.2}}</td>
-                                <td>${{ticker.3}}</td>
+                                <td>{{ticker.1}}</td>
+                                <td>${{ticker.2}}</td>
+                                <td>{{ticker.3}}</td>
                                 <td>{{ticker.4}}</td>
-                                <td>{{ticker.5}}</td>
-                                <td>${{ticker.6}}</td>
-                                <td>{{ticker.7}}</td>
-                                <td>{{ticker.8}}%</td>
+                                <td>${{ticker.5}}</td>
+                                <td>{{ticker.6}}</td>
+                                <td>{{ticker.7}}%</td>
                             </tr>
                         {% endfor %}
                     </tbody>

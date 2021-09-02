@@ -15,7 +15,7 @@ function display_table() {
         td[3].innerHTML = "$" + td[3].innerHTML + "B"
     }
     document.getElementById("consecutive_text").innerHTML =
-    `As of ${tr[1].querySelector("td").innerHTML}, ${consecutive_num} consecutive days of RRP >= $1B.`
+    `As of ${tr[1].querySelector("td").innerHTML}, ${consecutive_num} consecutive days of RRP >= $1T.`
 }
 
 var reverse_repo_chart = null;

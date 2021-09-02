@@ -16,7 +16,6 @@
     padding: 4px;
     background-color: #E9EAEA;
     border-radius: 10px;
-    width: 60%;
     max-width: 520px;
     border: 2px solid gray;
 }
@@ -46,4 +45,9 @@
 .dark_mode .selected {
     border-bottom: 2px solid wheat !important;
     color: wheat !important;
+}
+
+.highest_short_vol {
+    color: rgb(38, 166, 154) !important;
+    text-decoration: underline !important;
 }

@@ -9,20 +9,20 @@ function show_subreddit_img(subreddit) {
         subreddit_name = "Stocks"
         subreddit_description = "r/stocks"
     }
-    else if (subreddit == "Stock Market") {
-        img_src = "/static/images/subreddit_icon/stockmarket.png"
-        subreddit_name = "StockMarket"
-        subreddit_description = "r/StockMarket"
+    else if (subreddit == "Shortsqueeze") {
+        img_src = "/static/images/subreddit_icon/shortsqueeze.png"
+        subreddit_name = "Shortsqueeze"
+        subreddit_description = "r/Shortsqueeze"
     }
     else if (subreddit == "Options") {
         img_src = "/static/images/subreddit_icon/options.png"
         subreddit_name = "Options"
         subreddit_description = "r/options"
     }
-    else if (subreddit == "Investing") {
-        img_src = "/static/images/subreddit_icon/investing.png"
-        subreddit_name = "Investing"
-        subreddit_description = "r/investing"
+    else if (subreddit == "SPACs") {
+        img_src = "/static/images/subreddit_icon/spacs.png"
+        subreddit_name = "SPACs"
+        subreddit_description = "r/SPACs"
     }
     else if (subreddit == "Pennystocks") {
         img_src = "/static/images/subreddit_icon/pennystocks.png"
@@ -39,6 +39,105 @@ function show_subreddit_img(subreddit) {
             </div>
         </div>`
     document.getElementsByClassName("subreddit_intro")[0].innerHTML = subreddit_code;
+}
+
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
+}
+
+function load_graph() {
+    var tr = document.getElementById("reddit_table").querySelectorAll("tr")
+    var list_24_48H = [], list_24H = [], ticker_list = [], industry_dict = {}
+    for (i=1; i<tr.length; i++) {
+        var td = tr[i].querySelectorAll("td")
+        ticker_list.push(td[1].querySelector("b").innerHTML)
+        list_24H.push(Number(td[3].innerHTML))
+        list_24_48H.push(Number(td[4].innerHTML))
+        if ( ! industry_dict.hasOwnProperty(td[20].innerHTML)) {
+            industry_dict[td[20].innerHTML] = 1
+        }
+        else {
+            industry_dict[td[20].innerHTML] += 1
+        }
+    }
+
+    score_chart = document.getElementById('score_chart');
+    score_chart = new Chart(score_chart, {
+        data: {
+            labels: ticker_list,
+            datasets: [
+                {
+                    label: '24H Score',
+                    type: 'bar',
+                    data: list_24H,
+                    backgroundColor: 'rgb(38, 166, 154)',
+                },
+                {
+                    label: '24 - 48H Score',
+                    type: 'bar',
+                    data: list_24_48H,
+                    backgroundColor: 'orange',
+                }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                display: true
+             },
+            scales: {
+                yAxes: [{
+                        gridLines: {
+                            display: false
+                        },
+                        type: "linear",
+                        stacked: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Total Score',
+                            beginAtZero: true,
+                        },
+                    }],
+
+                xAxes: [{
+                    offset: true,
+                    gridLines: {
+                        drawOnChartArea: false
+                    },
+                    stacked: true
+                }],
+            },
+
+            // To show value when hover on any part of the graph
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+            hover: {
+                mode: 'index',
+                intersect: false
+            },
+            elements: {
+                line: {
+                    tension: 0
+                },
+                point:{
+                    radius: 0
+                }
+            },
+        },
+    });
+
+    values = Object.values(industry_dict).sort()
+    count_list = [], industry_list = []
+    for (i=0; i<5; i++) {
+        value = values[values.length-1-i]
+        key = getKeyByValue(industry_dict, value)
+        count_list.push(value)
+        industry_list.push(key)
+        delete industry_dict[key]
+    }
 }
 
 function check_table() {

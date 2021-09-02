@@ -11,7 +11,7 @@
     <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
     <script src="{% static 'javascript/format.js' %}"></script>
     <script>
-        function load_graph() {
+        function load_td_graph() {
             var ticker = "{{ticker_selected}}".replace("-", "")
             if (localStorage.getItem("mode") == "dark") {
                 var graph_mode = "dark";
@@ -115,7 +115,7 @@
                 <div><img src="{% static 'images/nav_bar/day_icon.svg' %}" class="sun_icon"></div>
                 <div><img src="{% static 'images/nav_bar/night_icon.svg' %}" class="night_icon"></div>
                 <label class="switch">
-                    <input id="dark_mode" type="checkbox" onchange="activate_dark_mode();load_graph()">
+                    <input id="dark_mode" type="checkbox" onchange="activate_dark_mode();load_td_graph()">
                     <span class="slider round"></span>
                 </label>
             </div>

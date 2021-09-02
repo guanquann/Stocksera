@@ -12,6 +12,7 @@ reddit = praw.Reddit(client_id=CLIENT_ID, client_secret=CLIENT_SECRET, user_agen
 conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
 
+# key of the dict is the symbol of the stock (if applicable), value is the subreddit
 interested_stocks_subreddits = {
     "SUMMARY": ["wallstreetbets", "stocks", "options", "pennystocks", "SPACs", "Shortsqueeze"],
     "GME": ["Superstonk"],

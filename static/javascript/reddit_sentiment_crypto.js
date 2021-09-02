@@ -1,3 +1,82 @@
+function load_graph() {
+    var tr = document.getElementById("reddit_table").querySelectorAll("tr")
+    var list_24_48H = [], list_24H = [], ticker_list = []
+    for (i=1; i<tr.length; i++) {
+        var td = tr[i].querySelectorAll("td")
+        ticker_list.push(td[1].querySelector("b").innerHTML)
+        list_24H.push(Number(td[3].innerHTML))
+        list_24_48H.push(Number(td[4].innerHTML))
+    }
+
+    subreddit_chart = document.getElementById('subreddit_chart');
+    subreddit_chart = new Chart(subreddit_chart, {
+        data: {
+            labels: ticker_list,
+            datasets: [
+                {
+                    label: '24H Score',
+                    type: 'bar',
+                    data: list_24H,
+                    backgroundColor: 'rgb(38, 166, 154)',
+                },
+                {
+                    label: '24 - 48H Score',
+                    type: 'bar',
+                    data: list_24_48H,
+                    backgroundColor: 'orange',
+                }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                display: true
+             },
+            scales: {
+                yAxes: [{
+                        gridLines: {
+                            display: false
+                        },
+                        type: "linear",
+                        stacked: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Total Score',
+                            beginAtZero: true,
+                        },
+                    }],
+
+                xAxes: [{
+                    offset: true,
+                    gridLines: {
+                        drawOnChartArea: false
+                    },
+                    stacked: true
+                }],
+            },
+
+            // To show value when hover on any part of the graph
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+            hover: {
+                mode: 'index',
+                intersect: false
+            },
+            elements: {
+                line: {
+                    tension: 0
+                },
+                point:{
+                    radius: 0
+                }
+            },
+        },
+    });
+}
+
 function check_table() {
     var table = document.getElementById("reddit_table");
     for (i = 0; i < (table.rows.length - 1); i++) {
@@ -17,9 +96,6 @@ function check_table() {
                 score_change.innerText = score_change.innerText + "%";
             }
         }
-
-//        var price_chart = row.cells[6]
-//        price_chart.innerHTML = `<img class="price_chart" src="/static/graph_chart/${row.cells[1].querySelector('b').innerHTML}.svg" onerror=this.src="/static/graph_chart/EMPTY_IMG.svg">`
 
         var prev_close = row.cells[10];
         if (prev_close.innerText != "N/A") {

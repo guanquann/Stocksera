@@ -1066,3 +1066,23 @@ input[type=text] {
   -moz-appearance: none;
   appearance: none;
 }
+
+.error_page {
+    margin: auto;
+    text-align: center;
+    margin-top: 20vh;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.error_page_return_home {
+    text-align: center;
+    margin: auto;
+    padding: 5px;
+    border: 1.5px solid #9c9c9c;
+    border-radius: 5px;
+}
+
+.error_page_return_home:hover {
+    background-color: grey;
+}

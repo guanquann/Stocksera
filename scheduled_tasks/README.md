@@ -1,3 +1,4 @@
+
 # StocksEra Developers Guide
 
 ### Scheduled Tasks to run 
@@ -19,6 +20,7 @@ Before continuing, register for an API in the links shown below.
 | -------------- |---------------------------------------------------- | ---------------------------------------- |
 | Reddit         | https://www.reddit.com/prefs/apps                   | scheduled_tasks/reddit/config.py         |
 | Twitter        | https://developer.twitter.com/en/portal/dashboard   | scheduled_tasks/get_twitter_followers.py |
+| Gmail -optional| https://realpython.com/python-send-email/           | email_server.py                          |
 
 You can view a sample of the database in <a href="https://drive.google.com/drive/folders/1qR7ssxnNzOUuvYCWR-kEajyoRoGKjbcT?usp=sharing">this</a> Google Drive link.
 - Transfer graph_chart folder to static directory
@@ -53,23 +55,22 @@ You can view a sample of the database in <a href="https://drive.google.com/drive
 - Get ticker information to cache data in order to speed up rendering time
 
 #### scheduled_tasks/get_short_volume.py
-- Get short volume of tickers you are interested in.
-- Best to run this daily to identify the trending of short volume over time.
+- Get short volume of ticker
 
 #### scheduled_tasks/get_news_sentiment.py
 - Get news sentiment of ticker you are interested in.
 - Best to run this daily to identify the trending of news sentiment over time.
 
-#### scheduled_tasks/government/get_reverse_repo.py
+#### scheduled_tasks/economy/get_reverse_repo.py
 - Get reverse repo transaction
 
-#### scheduled_tasks/government/get_daily_treasury.py
+#### scheduled_tasks/economy/get_daily_treasury.py
 - Get daily treasury
 
-#### scheduled_tasks/government/get_inflation.py
+#### scheduled_tasks/economy/get_inflation.py
 - Get monthly inflation
 
-#### scheduled_tasks/government/get_retail_sales.py
+#### scheduled_tasks/economy/get_retail_sales.py
 - Get monthly retail sales and compare it with the number of Covid-19 cases
 
 #### scheduled_tasks/get_financial.py
@@ -82,8 +83,3 @@ You can view a sample of the database in <a href="https://drive.google.com/drive
 - Get Failure to Deliver data from [SEC](https://www.sec.gov/data/foiadocsfailsdatahtm).
 - Download the txt file. You do not need to convert it to csv. The script automatically does it for you.
 - Run this script once every few weeks.
-
-#### scheduled_tasks/get_hedge_funds_holdings.py
-- Get holdings of major hedge funds
-- Download csv from [whalewisdom](https://whalewisdom.com/). You need to sign up a free account to access the csv files. Data is updated quarterly.
-![Get hedge funds instructions](../static/images/github/get_hedge_funds_instructions.png)

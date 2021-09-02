@@ -45,7 +45,10 @@ function rank_chart() {
             elements: {
                 point:{
                     radius: 0
-                }
+                },
+                line: {
+                    tension: 0
+                },
             },
             scales: {
                 yAxes: [
@@ -101,7 +104,7 @@ function rank_chart() {
             hover: {
                 mode: 'index',
                 intersect: false
-            },
+            }
         },
     });
 }

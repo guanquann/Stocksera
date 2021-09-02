@@ -15,7 +15,7 @@
     }
 
     .filter_ticker {
-        padding: 3px;
+        padding: 4px;
     }
 }
 
@@ -38,6 +38,16 @@
         border: 1.2px solid wheat;
         background-color: black;
     }
+}
+
+.chart-container {
+    position: relative;
+    height:55vh;
+    width:98%;
+    max-width: 900px;
+    max-height:250px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .subreddit_intro {
@@ -82,6 +92,7 @@
     max-width: 70px;
     text-transform: uppercase;
     color: black !important;
+    background: white;
 }
 
 .dark_mode .filter_ticker {

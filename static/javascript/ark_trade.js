@@ -42,25 +42,14 @@ function update_fund(elem) {
 function load_profile() {
     var fund_selected = document.getElementById("fund_selected").value;
     var loading_profile = false;
-    var profile_url = `https://arkfunds.io/api/v1/etf/profile?symbol=${fund_selected}`;
+    var profile_url = `https://arkfunds.io/api/v2/etf/profile?symbol=${fund_selected}`;
     if (loading_profile == false) {
         loading_profile = true;
         fetch(profile_url)
         .then(res => res.json())
         .then((out) => {
-            profile = out["profile"][0];
-            if (fund_selected == "IZRL") {
-                description = "The ARK Israel Innovative Technology ETF (IZRL) seeks to provide investment results that closely correspond, before fees and expenses, to the performance of the ARK Israeli Innovation Index, which is designed to track the price movements of exchange-listed Israeli companies whose main business operations are causing disruptive innovation in the areas of genomics, health care, biotechnology, industrials, manufacturing, the Internet or information technology."
-            }
-            else if (fund_selected == "PRNT") {
-                description = "The 3D Printing ETF (PRNT) seeks to provide investment results that closely correspond, before fees and expenses, to the performance of the Total 3D-Printing Index, which is designed to track the price movements of stocks of companies involved in the 3D printing industry."
-            }
-            else if (fund_selected == "ARKX") {
-                description = "ARKX is an actively-managed exchange-traded fund (“ETF”) that will invest under normal circumstances primarily (at least 80% of its assets) in domestic and foreign equity securities of companies that are engaged in the Fund’s investment theme of Space Exploration and innovation. The Adviser defines “Space Exploration” as leading, enabling, or benefitting from technologically enabled products and/or services that occur beyond the surface of the Earth."
-            }
-            else {
-                description = profile["description"];
-            }
+            profile = out["profile"];
+            description = profile["description"];
             profile_code = `
                 <a href="${profile["website"]}" target="_blank"><span>${profile["name"]} (${profile["symbol"]})</span></a>
                 <p>${description}</p>`
@@ -77,16 +66,18 @@ function load_holdings(elem) {
         btn_type[i].classList.remove("selected");
     }
     btn_type[elem].classList.add("selected");
-    document.getElementById("ticker_name").style.removeProperty("display");
+    document.getElementsByClassName("search_bar")[0].style.removeProperty("display");
     if (holdings_clicks == 0) {
         holdings_clicks = 1, trades_clicks = 0, news_clicks = 0;
-        var holdings_url = `https://arkfunds.io/api/v1/etf/holdings?symbol=${document.getElementById("fund_selected").value}`;  <!--    &date=2021-05-13-->
+        var ticker_list = [], weight_list = [], top_10_weight = 0, top_20_weight = 0
+        var holdings_url = `https://arkfunds.io/api/v2/etf/holdings?symbol=${document.getElementById("fund_selected").value}`;  <!--    &date=2021-05-13-->
         table_code = `
             <table>
                 <tr>
                     <th>Rank</th>
                     <th>Company</th>
                     <th>Ticker</th>
+                    <th>Last Price</th>
                     <th>Weight</th>
                     <th>Shares</th>
                     <th>Market Value</th>
@@ -100,9 +91,24 @@ function load_holdings(elem) {
                 for (holding=0; holding<holdings.length; holding++) {
                     var stats = holdings[holding];
                     var ticker = stats["ticker"]
+                    var weightage = stats["weight"]
+                    var num_shares = stats["shares"]
+                    var mkt_value = stats["market_value"]
+                    var quote = Math.round(100 * mkt_value / num_shares) / 100
+
                     if (ticker == null) {
                         ticker = ""
                     }
+                    ticker_list.push(ticker)
+                    weight_list.push(weightage)
+                    top_20_weight += weightage
+                    if (ticker_list.length <= 10) {
+                        top_10_weight += weightage
+                    }
+                    else if (ticker_list.length == 20) {
+                        load_graph(ticker_list, weight_list, top_10_weight, top_20_weight)
+                    }
+
                     var company = stats["company"]
                     img_url = `https://g.foolcdn.com/art/companylogos/mark/${ticker}.png`
                     table_code += `
@@ -110,9 +116,10 @@ function load_holdings(elem) {
                             <td style="width: min-content;">${stats["weight_rank"]}</td>
                             <td><div><img src=${img_url} onerror=this.src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl4idYt_TOF1TPtJ1rF8OOLgALA0WDd00shg&usqp=CAU"><div>${company}</div></div></td>
                             <td>${ticker}</td>
-                            <td>${stats["weight"]}%</td>
-                            <td>${stats["shares"]}</td>
-                            <td>$${stats["market_value"]}</td>
+                            <td>$${quote}</td>
+                            <td>${weightage}%</td>
+                            <td>${num_shares.toLocaleString()}</td>
+                            <td>$${mkt_value.toLocaleString()}</td>
                         </tr>`
                 }
                 table_code += "</table>"
@@ -122,18 +129,103 @@ function load_holdings(elem) {
     }
 }
 
+var weighting_chart = null
+
+function load_graph(ticker_list, weight_list, top_10_weight, top_20_weight) {
+    if (weighting_chart != null){
+        weighting_chart.destroy();
+    }
+
+    weighting_chart = document.getElementById('weighting_chart');
+    weighting_chart = new Chart(weighting_chart, {
+        data: {
+            labels: ticker_list,
+            datasets: [
+                {
+                    label: 'Weight',
+                    type: 'bar',
+                    data: weight_list,
+                    backgroundColor: 'rgb(38, 166, 154)',
+                }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                display: true
+             },
+            scales: {
+                yAxes: [{
+                        gridLines: {
+                            display: false
+                        },
+                        type: "linear",
+                        stacked: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Weightage [%]',
+                            beginAtZero: true,
+                        },
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return value + "%";
+                            }
+                        },
+                    }],
+
+                xAxes: [{
+                    offset: true,
+                    gridLines: {
+                        drawOnChartArea: false
+                    },
+                    stacked: true
+                }],
+            },
+
+            // To show value when hover on any part of the graph
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+                callbacks: {
+                    label: function(tooltipItems, data) {
+                        return "Weight: " + tooltipItems.yLabel + '%';
+                    }
+                },
+            },
+            hover: {
+                mode: 'index',
+                intersect: false
+            },
+            elements: {
+                line: {
+                    tension: 0
+                },
+                point:{
+                    radius: 0
+                }
+            },
+        },
+    });
+
+     document.getElementsByClassName("weightage_div")[0].innerHTML = `
+            <div><b>Top 10 Holdings:</b> ${Math.round(top_10_weight * 100) / 100}%</div>
+            <div><b>Top 20 Holdings:</b> ${Math.round(top_20_weight * 100) / 100}%</div>
+        </div>`
+}
+
 function load_trades(elem) {
     var btn_type = document.getElementsByClassName("btn_type");
     for (i=0; i<btn_type.length; i++) {
         btn_type[i].classList.remove("selected");
     }
     btn_type[elem].classList.add("selected");
-    document.getElementById("ticker_name").style.removeProperty("display");
+    document.getElementsByClassName("search_bar")[0].style.removeProperty("display");
     if (trades_clicks == 0) {
         holdings_clicks = 0, trades_clicks = 1, news_clicks = 0;
         var fund_selected = document.getElementById("fund_selected").value;
         if (fund_selected != "PRNT" && fund_selected != "IZRL") {
-            let trades_url = `https://arkfunds.io/api/v1/etf/trades?symbol=${fund_selected}`;
+            let trades_url = `https://arkfunds.io/api/v2/etf/trades?symbol=${fund_selected}`;
             table_code = `
             <table>
                 <tr>
@@ -162,7 +254,7 @@ function load_trades(elem) {
                            <td><div><img src=${img_url} onerror=this.src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl4idYt_TOF1TPtJ1rF8OOLgALA0WDd00shg&usqp=CAU"><div>${company}</div></div></td>
                            <td>${ticker}</td>
                            <td>${stats["direction"]}</td>
-                           <td>${stats["shares"]}</td>
+                           <td>${stats["shares"].toLocaleString()}</td>
                            <td>${stats["etf_percent"]}%</td>
                         </tr>`
                     }
@@ -183,7 +275,7 @@ function load_news(elem) {
         btn_type[i].classList.remove("selected");
     }
     btn_type[elem].classList.add("selected");
-    document.getElementById("ticker_name").style.display = "none";
+    document.getElementsByClassName("search_bar")[0].style.display = "none";
     if (news_clicks == 0) {
         holdings_clicks = 0, trades_clicks = 0, news_clicks = 1;
         var today_date = new Date();
@@ -223,6 +315,8 @@ function load_news(elem) {
 
 function load_individual_profile(elem) {
     document.getElementById("ticker_description").innerHTML = ""
+    document.getElementById("ticker_trade").innerHTML = ""
+    document.getElementById("fund_ownership").innerHTML = ""
     if (profile_clicks == 0) {
         var ticker_selected = elem.querySelectorAll("td")[2].innerHTML;
         if (ticker_selected != "") {
@@ -245,7 +339,7 @@ function load_individual_profile(elem) {
                         <div class="ticker_summary">
                         <p><b>Summary</b></p>
                         ${out["summary"]}<br>
-                        <a href=${out["website"]} target="_blank" class="read_more"><i>Read More...</i></a>
+                        <a href=${out["website"]} target="_blank" class="read_more"><i>${out["website"]}</i></a>
                         </div>
                         `
                     document.getElementById("ticker_description").innerHTML = profile_code
@@ -279,7 +373,7 @@ function load_individual_profile(elem) {
                                          <td>${date}</td>
                                          <td>${direction}</td>
                                          <td>${etf_percent}%</td>
-                                         <td>${shares}</td>
+                                         <td>${shares.toLocaleString()}</td>
                                          <td>${fund}</td>
                                      </tr>`
                             }
@@ -316,8 +410,8 @@ function load_individual_profile(elem) {
                             <td>${stats["fund"]}</td>
                             <td>${stats["weight"]}%</td>
                             <td>${stats["weight_rank"]}</td>
-                            <td>${stats["shares"]}</td>
-                            <td>$${stats["market_value"]}</td>
+                            <td>${stats["shares"].toLocaleString()}</td>
+                            <td>$${stats["market_value"].toLocaleString()}</td>
                             <td>${out["date"]}</td>
                         <tr>`
                     }
@@ -327,8 +421,8 @@ function load_individual_profile(elem) {
                             <td>Number Funds: ${total["funds"]}</td>
                             <td></td>
                             <td></td>
-                            <td>${total["shares"]}</td>
-                            <td>$${total["market_value"]}</td>
+                            <td>${total["shares"].toLocaleString()}</td>
+                            <td>$${total["market_value"].toLocaleString()}</td>
                             <td>${out["date"]}</td>
                         </tr>
                     </table>`
@@ -356,6 +450,3 @@ window.onclick = function(event) {
     profile_clicks = 0
   }
 }
-
-// to do: add more stats for description, click on new fund remove bottom, ticker search reset
-// add graph!

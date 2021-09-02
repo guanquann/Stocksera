@@ -71,10 +71,6 @@ function show_discover(type, elem) {
         text = "View stocks with low float."
         url = "/low_float/"
     }
-    else if (type == "hedge") {
-        text = "View 13F fillings of some of the largest hedge funds such as Citadel and Melvin Capital."
-        url = "/hedge_funds/"
-    }
     else if (type == "ark") {
         text = "Get holdings, daily trades and news of ARK Fund."
         url = "/ark_trades/"
@@ -111,6 +107,25 @@ function show_economy(type, elem) {
         url = "/retail_sales/"
     }
     document.getElementById("economy_description").innerHTML = `
+        <div class="section_div_text">${text}</div><div class="href_btn"><a href="${url}">VIEW MORE</a></div>`
+}
+
+function show_beta(type, elem) {
+    var beta_btn = document.getElementsByClassName("beta_btn")[0].querySelectorAll("button")
+    for (i=0; i<beta_btn.length; i++) {
+        beta_btn[i].classList.remove("selected")
+    }
+    elem.classList.add("selected");
+
+    if (type == "true_beta") {
+        text = "Ever wonder why different websites show different beta values for the same stock? Find out here!"
+        url = "/beta/"
+    }
+    else if (type == "covid_beta") {
+        text = "With the rise of Covid-19 cases, what are some of the best plays right now?"
+        url = "/beta_covid/"
+    }
+    document.getElementById("beta_description").innerHTML = `
         <div class="section_div_text">${text}</div><div class="href_btn"><a href="${url}">VIEW MORE</a></div>`
 }
 

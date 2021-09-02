@@ -22,7 +22,16 @@
 <div>
     <div class="instructions">
         <h2>Short Volume</h2>
-        <p>Short Volume measures the number of shares that have been shorted,  while Short Interest represents the number of shorted shares that have yet to be closed out or covered.</p>
+        <p>
+            Short Volume measures the number of shares that have been shorted,  while Short Interest represents the number of shorted shares that have yet to be closed out or covered.
+            <br><br>
+            <b>Do note that the total and short volume data are limited. They do not represent the actual total volume as these are the volume that are reported to Finra.</b>
+            <br><br>
+            Highest Short Volume Today (Min. 3M Short Vol.):
+            {% for i in highest_short_vol %}
+                <a href="/ticker/short_volume/?quote={{i}}" class="highest_short_vol">{{i}}</a>
+            {% endfor %}
+        </p>
         <form action="" method="GET" autocomplete="off">
             <div class="search_bar">
                 <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
@@ -43,7 +52,7 @@
     </div>
 
     <div id="error_msg" style="display:none;" class="instructions {{error}}">
-        <p>Currently, only popular tickers like {{included_list|safe}} have short volume data. If you like to see more tickers, drop me a message in the <a href="{% url 'about' %}" style="color:rgb(38, 166, 154)">About</a> section.</p>
+        <p>There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).</p>
     </div>
 
     <div class="contents_div">
@@ -73,9 +82,16 @@
         <div class="scrollable_div" style="max-height: 800px">
             {{ short_volume_data|safe }}
         </div>
-        <p>Note: The Total Volume and Short Volume data are limited. They do not represent the actual total volume.</p>
-        <p>Data from: <a href="http://shortvolumes.com/" target="_blank">shortvolumes.com</a></p>
     </div>
+
+    <div class="instructions">
+        <p>
+            You may realise that some tickers such as AAPL, GME, AMC, TSLA have more short volume data than others.
+            This is because we have identified a number of popular tickers, which we will collect more data. Short volume
+            data for tickers which are less popular will be limited to the past 1 month.
+        </p>
+    </div>
+
 </div>
 {% endblock %}
 

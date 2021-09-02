@@ -14,7 +14,6 @@ import scheduled_tasks.get_short_volume as get_short_volume
 import scheduled_tasks.get_ticker_info as get_ticker_info
 import scheduled_tasks.get_financial as get_financial
 import scheduled_tasks.get_earnings_calendar as get_earnings_calendar
-import scheduled_tasks.get_hedge_funds_holdings as get_hedge_funds_holdings
 import scheduled_tasks.get_failure_to_deliver as get_failure_to_deliver
 import scheduled_tasks.miscellaneous as miscellaneous
 import scheduled_tasks.economy.get_reverse_repo as get_reverse_repo
@@ -22,7 +21,7 @@ import scheduled_tasks.economy.get_inflation as get_inflation
 import scheduled_tasks.economy.get_daily_treasury as get_daily_treasury
 
 # Best to run 1 hour before market opens daily to get trending tickers and subreddit count
-SCRAPE_REDDIT_STOCKS = False
+SCRAPE_REDDIT_STOCKS = True
 SCRAPE_REDDIT_CRYPTO = True
 SCRAPE_SUBREDDIT_STATS = True
 
@@ -33,7 +32,7 @@ UPDATE_REDDIT_ETF = True
 UPDATE_TWITTER = True
 
 # If you want to update the cached ticker info for faster processing time
-TICKER_INFO = False
+TICKER_INFO = True
 
 # IF you want to update the cached ticker financial data for faster processing time
 TICKER_FINANCIAL = False
@@ -55,9 +54,6 @@ EARNINGS_CALENDAR = False
 
 # If you want to update Failure to Deliver
 FTD = False
-
-# If you want to update hedge funds holdings
-HEDGE_FUNDS = False
 
 # If you want to get reverse repo data
 RRP = False
@@ -96,16 +92,15 @@ if __name__ == '__main__':
         buy_trending_tickers.update_bought_ticker_price()
 
     if TICKER_INFO:
-        for i in get_ticker_info.full_ticker_list():
-            get_ticker_info.ticker_info(i)
+        get_ticker_info.ticker_info(get_ticker_info.full_ticker_list())
 
     if TICKER_FINANCIAL:
         for i in get_ticker_info.full_ticker_list():
             get_financial.financial(i)
 
     if SHORT_VOL:
-        for i in get_short_volume.full_ticker_list():
-            get_short_volume.short_volume(i)
+        get_short_volume.get_30d_data_finra()
+        get_short_volume.get_daily_data_finra()
 
     if NEWS_SENTIMENT:
         get_news_sentiment.news_sentiment()
@@ -124,9 +119,6 @@ if __name__ == '__main__':
         # get_failure_to_deliver.convert_to_csv(ftd_txt_file_name="INSERT_FTD_TXT_FILE_PATH")
         FOLDER_PATH = r"C:\Users\Acer\PycharmProjects\StocksAnalysis\database\failure_to_deliver\csv"
         get_failure_to_deliver.combine_df(folder_path=FOLDER_PATH)
-
-    if HEDGE_FUNDS:
-        get_hedge_funds_holdings.preprocess_hedge_funds(csv=r"C:\Users\Acer\Desktop\citadel_advisors_llc-current-2021-06-23_14_17_24.csv", fund_name="citadel")
 
     if RRP:
         get_reverse_repo.reverse_repo()

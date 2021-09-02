@@ -82,7 +82,7 @@ def download_quick_stats(symbol_list, quick_stats_dict, threads=True):
     1000 tickers and one group with the remaining 350 tickers, and will get quick stats with only 3 http requests. Only
     returns those tickers that are valid, thus can be used to validate tickers efficiently.
     """
-    # through trial and error, 1179 was the max without returning an error, but that number feels too arbitrary
+    # through trial and errors, 1179 was the max without returning an errors, but that number feels too arbitrary
     max_params = 1000
     num_requests = math.ceil(len(symbol_list)/max_params)
     last_request_size = len(symbol_list) % max_params

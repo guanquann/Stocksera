@@ -205,7 +205,7 @@ def get_financial_data(stats_table, crypto_id, symbol):
     try:
         market_data = client.get_coin_by_id(crypto_id)['market_data']
     except requests.exceptions.RequestException as e:
-        print(e, "error")
+        print(e, "errors")
         time.sleep(30)
         market_data = client.get_coin_by_id(crypto_id)['market_data']
 
@@ -239,7 +239,7 @@ def get_graph_chart(crypto_id, symbol):
     try:
         prices = client.get_coin_market_chart_by_id(crypto_id, vs_currency="USD", days=30)
     except requests.exceptions.RequestException as e:
-        print(e, "error")
+        print(e, "errors")
         time.sleep(30)
         prices = client.get_coin_market_chart_by_id(crypto_id, vs_currency="USD", days=30)
     prices = prices["prices"]
@@ -281,7 +281,7 @@ def main():
     try:
         coingecko_coin_list = client.get_coins_list()
     except requests.exceptions.RequestException as e:
-        print("error", e)
+        print("errors", e)
         print("20 ")
         time.sleep(30)
         coingecko_coin_list = client.get_coins_list()

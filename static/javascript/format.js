@@ -192,6 +192,9 @@ function get_economic_releases(elem) {
     today_date = new Date()
     day = today_date.getDate()
     month = today_date.getMonth() + 1
+    if (day < 10) {
+        day = "0" + day
+    }
     if (month < 10) {
         month = "0" + month
     }

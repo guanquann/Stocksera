@@ -9,6 +9,7 @@ db = conn.cursor()
 # https://developer.twitter.com/en/portal/dashboard
 bearer_token = os.environ.get("BEARER_TOKEN")
 
+# key of the dict is the symbol of the ticker, while the value is the username of the Twitter account
 interested_accounts = {
     "GME": "GameStop",
     "AMC": "AMCTheatres",
@@ -177,7 +178,7 @@ def connect_to_endpoint(url):
     response = requests.request("GET", url, auth=bearer_oauth,)
     if response.status_code != 200:
         raise Exception(
-            "Request returned an error: {} {}".format(
+            "Request returned an errors: {} {}".format(
                 response.status_code, response.text
             )
         )

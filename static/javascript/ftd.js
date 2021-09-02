@@ -80,7 +80,7 @@ function ftd_graph(duration) {
                     label: 'FTD',
                     type: 'line',
                     data: vol_list,
-                    borderColor: 'wheat',
+                    borderColor: 'orange',
                     backgroundColor: 'transparent',
                     yAxisID: 'B',
                 },

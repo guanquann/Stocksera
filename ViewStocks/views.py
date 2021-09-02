@@ -47,7 +47,7 @@ def stock_price(request):
                                                      })
     else:
         return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
-                                                     "error": "error_true"})
+                                                     "errors": "error_true"})
 
 
 def ticker_recommendations(request):
@@ -295,7 +295,7 @@ def latest_news(request):
         included_list = ", ".join(sorted(full_ticker_list()))
         return render(request, 'news_sentiment.html', {"ticker_selected": ticker_selected,
                                                        "included_list": included_list,
-                                                       "error": "error_true"})
+                                                       "errors": "error_true"})
 
 
 def historical_data(request):
@@ -443,7 +443,7 @@ def financial(request):
                                                   "balance_col_list": balance_col_list})
     else:
         return render(request, 'financial.html', {"ticker_selected": ticker_selected,
-                                                  "error": "error_true"})
+                                                  "errors": "error_true"})
 
 
 def options(request):
@@ -543,7 +543,7 @@ def options(request):
                                                 "puts": puts.to_html(index=False),
                                                 "merge": df_merge.to_html(index=False)})
     except (IndexError, KeyError, Exception):
-        return render(request, 'options.html', {"ticker_selected": ticker_selected, "error": "error_true"})
+        return render(request, 'options.html', {"ticker_selected": ticker_selected, "errors": "error_true"})
 
 
 def short_volume(request):
@@ -562,7 +562,6 @@ def short_volume(request):
         if short_volume_data.empty:
             short_volume_data = pd.read_csv("database/short_volume.csv")[::-1]
             short_volume_data = short_volume_data[short_volume_data["ticker"] == ticker_selected]
-            # short_volume_data["reported_date"] = pd.to_datetime(short_volume_data['reported_date'], format="%d/%m/%Y").dt.date.astype(str)
             history = pd.DataFrame(yf.Ticker(ticker_selected).history(interval="1d", period="1y")["Close"])
             history.reset_index(inplace=True)
             history["Date"] = history["Date"].astype(str)
@@ -580,12 +579,15 @@ def short_volume(request):
                                           "short_exempt_vol": "Short Exempt Vol", "total_vol": "Total Volume",
                                           "percent": "% Shorted", "close_price": "Close Price"}, inplace=True)
 
+        highest_short_vol = pd.read_csv(r"database/highest_short_volume.csv")["Symbol"].tolist()
+
         return render(request, 'short_volume.html', {"ticker_selected": ticker_selected,
                                                      "information": information,
+                                                     "highest_short_vol": highest_short_vol,
                                                      "short_volume_data": short_volume_data.to_html(index=False)})
     else:
         return render(request, 'short_volume.html', {"ticker_selected": ticker_selected,
-                                                     "error": "error_true"})
+                                                     "errors": "error_true"})
 
 
 def failure_to_deliver(request):
@@ -613,7 +615,7 @@ def failure_to_deliver(request):
                                             "ftd": ftd.to_html(index=False)})
     else:
         return render(request, 'ftd.html', {"ticker_selected": ticker_selected,
-                                            "error": "error_true"})
+                                            "errors": "error_true"})
 
 
 def earnings_calendar(request):
@@ -625,58 +627,6 @@ def earnings_calendar(request):
     calendar = list(map(list, calendar))
 
     return render(request, 'earnings_calendar.html', {"earnings_calendar": calendar})
-
-
-def hedge_funds(request):
-    """
-    Get holdings of top hedge funds in the world. Data is from whalewisdom
-    """
-    if request.GET.get("fund_name"):
-        fund_name = request.GET.get("fund_name").replace("Hedge Fund: ", "")
-    else:
-        fund_name = "CITADEL ADVISORS LLC"
-
-    if request.GET.get("sort_by"):
-        selected_sort = request.GET.get("sort_by").replace("Sort By: ", "")
-        page_num = int(request.GET.get("page_num"))
-    else:
-        selected_sort = "Rank"
-        page_num = 1
-
-    # hedge_funds_description.json remember to change the file name to the csv's file you have saved
-    with open(r"database/hedge_funds_holdings/hedge_funds_description.json") as r:
-        hedge_funds_holdings = json.load(r)["hedge funds"]
-
-    ticker_selected = ""
-    if request.GET.get("quote"):
-        ticker_selected = request.GET.get("quote").upper()
-
-    all_fund_names = []
-    for fund in hedge_funds_holdings:
-        all_fund_names.append(fund["name"])
-        if fund["name"] == fund_name:
-            df = pd.read_csv(r"database/hedge_funds_holdings/{}".format(fund["file_name"]))
-            if ticker_selected != "":
-                num_pages = 1
-                df = df[df["Ticker"] == ticker_selected]
-            else:
-                num_pages = math.ceil(len(df) / 100)
-                if len(df) > 100:
-                    df = df[page_num*100-100:page_num*100]
-
-            df = df.sort_values(by=[selected_sort])  # ascending=False
-            df = df.replace(np.nan, "N/A")
-            description = fund
-            sort_by = df.columns
-
-    return render(request, 'hedge_funds.html', {"df": df.to_html(index=False),
-                                                "description": description,
-                                                "all_fund_names": all_fund_names,
-                                                "ticker_selected": ticker_selected,
-                                                "sort_by": sort_by,
-                                                "selected_sort": selected_sort,
-                                                "page_num": page_num,
-                                                "num_pages": num_pages})
 
 
 def reddit_analysis(request):
@@ -712,9 +662,9 @@ def reddit_analysis(request):
 
     database_mapping = {"wallstreetbets": "Wall Street Bets",
                         "stocks": "Stocks",
-                        "stockmarket": "Stock Market",
+                        "shortsqueeze": "Shortsqueeze",
                         "options": "Options",
-                        "investing": "Investing",
+                        "spacs": "SPACs",
                         "pennystocks": "Pennystocks"}
     subreddit = database_mapping[subreddit]
 
@@ -961,6 +911,10 @@ def beta(request):
                                          "interval": interval.replace("1mo", "Monthly").replace("1d", "Daily")})
 
 
+def covid_beta(request):
+    return render(request, 'beta_covid.html')
+
+
 def about(request):
     """
     About section of the website and contact me if there's any issues/suggestions
@@ -971,3 +925,19 @@ def about(request):
         suggestions = request.POST.get("suggestions")
         send_email(name, email, suggestions)
     return render(request, 'about.html')
+
+
+def custom_page_not_found_view(request, exception):
+    return render(request, "errors/404.html", {})
+
+
+def custom_error_view(request, exception=None):
+    return render(request, "errors/500.html", {})
+
+
+def custom_permission_denied_view(request, exception=None):
+    return render(request, "errors/403.html", {})
+
+
+def custom_bad_request_view(request, exception=None):
+    return render(request, "errors/400.html", {})

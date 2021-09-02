@@ -66,7 +66,6 @@ This website will be free forever! No subscription needed! But if you want to su
 #### /subreddit_count/
 - Look at the increase in number of redditors on popular sub-reddits such as r/wallstreetbets, r/Superstonk and r/amcstock.
 - Growth in number of new redditors and percentage of active redditors.
-- This page is currently very basic, open to new suggestions on how to improve this page.
 ![Subreddit Stats](./static/images/github/subreddit_stats.png)
 
 #### /market_overview/
@@ -83,11 +82,6 @@ This website will be free forever! No subscription needed! But if you want to su
 - Identify tickers with low float.
 - Data is from <a href="https://www.lowfloat.com">lowfloat.com</a>
 ![Low Float](./static/images/github/low_float.png)
-
-#### /hedge_funds/
-- Identify top holdings from some of the major hedge funds.
-- Data is from <a href="https://whalewisdom.com/">whalewisdom</a>
-![Hedge Funds](./static/images/github/hedge_funds.png)
 
 #### /ark_trades/
 - View holdings, trades and news of all companies in ARK Fund.
@@ -154,7 +148,7 @@ cd .. / ..
 # Install modules
 pip install -r requirements.txt
 
-# Set up static file
+# Set up static file (if debug is set to False in settings.py)
 py manage.py collectstatic
 ```
 
@@ -163,9 +157,6 @@ Download nltk data for sentiment analysis. Type the following in console:
 >>> import nltk
 >>> nltk.download("vader_lexicon")
 ```
-
-#### Sign up credentials for Reddit API
-- Register for an API in <a href="https://www.reddit.com/prefs/apps">https://www.reddit.com/prefs/apps </a> and enter credential in scheduled_tasks/config.py
 
 #### tasks_to_run.py
 - Compilation of tasks that are needed to be completed.

@@ -77,7 +77,6 @@ def database():
 
     db.execute("CREATE table IF NOT EXISTS reddit_etf ("
                "ticker TEXT, "
-               "logo_url TEXT, "
                "open_date TEXT, "
                "open_price FLOAT, "
                "num_shares INTEGER, "
@@ -138,12 +137,13 @@ def database():
                "industry TEXT )")
 
     db.execute("CREATE table IF NOT EXISTS short_volume ("
-               "ticker TEXT, "
                "reported_date TEXT, "
-               "close_price FLOAT, "
+               "ticker TEXT, "
                "short_vol INTEGER, "
+               "short_exempt_vol INTEGER, "
                "total_vol INTEGER, "
                "percent TEXT, "
+               "close_price FLOAT, "
                "UNIQUE('ticker', 'reported_date','short_vol','total_vol','percent'))")
 
     db.execute("CREATE table IF NOT EXISTS reverse_repo ("
@@ -151,7 +151,7 @@ def database():
                "amount FLOAT, "
                "parties INTEGER, "
                "average FLOAT, "
-               "UNIQUE ('date_updated') )")
+               "UNIQUE ('record_date') )")
 
     db.execute("CREATE table IF NOT EXISTS daily_treasury ("
                "record_date TEXT, "

@@ -1,3 +1,7 @@
+"""
+Script for setting up email so that any suggestions or feedbacks will be sent to admin
+"""
+
 import os
 import ssl
 import smtplib
@@ -5,7 +9,7 @@ from datetime import datetime
 
 
 def send_email(name, email, feedback):
-    port = 465  # For SSL
+    port = 465
     smtp_server = "smtp.gmail.com"
     sender_email = os.environ.get("EMAIL_SENDER") or "Enter your address"
     receiver_email = os.environ.get("EMAIL_RECEIVER") or "Enter receiver address"

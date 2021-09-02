@@ -56,5 +56,6 @@ def get_all_tickers_csv(folder_path):
 
 
 if __name__ == '__main__':
+    # convert_to_csv(r"C:\Users\Acer\PycharmProjects\StocksAnalysis\database\failure_to_deliver\cnsfails202108a.txt")
     FOLDER_PATH = r"C:\Users\Acer\PycharmProjects\StocksAnalysis\database\failure_to_deliver\csv"
     combine_df(folder_path=FOLDER_PATH)

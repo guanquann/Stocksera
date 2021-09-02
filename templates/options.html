@@ -203,10 +203,7 @@ function draw_max_pain() {
                 mode: 'index',
                 intersect: false,
                 callbacks: {
-                    // title: function(tooltipItems, data) { 
-                    //     return data.labels[tooltipItem[0].index] + ' USD';
-                    // },
-                    label: function(tooltipItems, data) { 
+                    label: function(tooltipItems, data) {
                         return tooltipItems.yLabel + ' M';
                     }
                 }

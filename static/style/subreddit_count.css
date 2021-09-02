@@ -32,6 +32,13 @@
         margin-bottom: 5px;
         text-align:center;
     }
+
+    .overview_btn {
+        border: 1px solid grey;
+        border-radius: 5px;
+        padding: 4.5px;
+        min-width: 40px;
+    }
 }
 
 @media only screen and (min-width: 900px) {

@@ -16,7 +16,6 @@ prev_bought = db.fetchall()
 prev_bought_ticker = []
 for bought in prev_bought:
     prev_bought_ticker.append(bought[0])
-new_bought_ticker = []
 print("Previously bought tickers: ", prev_bought_ticker)
 
 
@@ -41,9 +40,9 @@ def buy_new_ticker(date):
     rows = download_advanced_stats(rows)
     for symbol, info in rows.items():
         if symbol not in prev_bought_ticker:
-            if info["marketState"] == "CLOSED":
-                print("Market not open today! No tickers bought!")
-                break
+            if info["marketState"] != "REGULAR":
+                print("Market not open currently! {} not bought!".format(symbol))
+                continue
             open_price = round(float(info["regularMarketOpen"]), 2)
             num_shares = round(10000 / open_price, 2)
             message = "Ticker {} to be bought on {} for ${}.".format(symbol, str(latest_date).split()[0], open_price)
@@ -77,16 +76,16 @@ def sell_ticker(date):
 
     rows = db.fetchall()
     rows = list(map(lambda x: x[0], rows))
-    rows = download_advanced_stats(rows)
+    new_bought_ticker = rows
 
-    for symbol, info in rows.items():
-        new_bought_ticker.append(symbol)
     sell = list(set(prev_bought_ticker)-set(new_bought_ticker))
+    rows = download_advanced_stats(sell)
+    print(sell, "yes")
     for symbol in sell:
         info = rows[symbol]
-        if info["marketState"] == "CLOSED":
-            print("Market not open today! No tickers sold!")
-            break
+        if info["marketState"] != "REGULAR":
+            print("Market not open currently! {} not sold!".format(symbol))
+            continue
         close_price = round(float(info["regularMarketOpen"]), 3)
         message = "Ticker {} to be sold on {} at ${} during market open.".format(symbol, str(latest_date).split()[0], close_price)
         print(message)
@@ -94,7 +93,7 @@ def sell_ticker(date):
         db.execute("SELECT * FROM reddit_etf WHERE ticker=? AND status='Open'", (symbol, ))
         stats = db.fetchone()
         difference = round(close_price - stats[2], 2)
-        PnL = round(difference * stats[4], 2)
+        PnL = round(difference * stats[3], 2)
         percentage_diff = round((difference / stats[2]) * 100, 2)
         db.execute("UPDATE reddit_etf SET close_date=?, close_price=?, PnL=?, percentage=?, status=? "
                    "WHERE ticker=? AND status=?", (str(latest_date).split()[0], close_price, PnL, percentage_diff,

@@ -10,6 +10,32 @@ function display_table() {
     }
 }
 
+function display_top_short_volume() {
+    var tr = document.getElementsByTagName("table")[0].querySelectorAll("tr");
+    for (i=1; i<tr.length; i++) {
+        var total_td = tr[i].querySelectorAll("td");
+        total_td[1].innerHTML = `<a href="/ticker/short_volume/?quote=${total_td[1].innerHTML}" target="_blank"><b>${total_td[1].innerHTML}</b></a>`
+        total_td[2].innerHTML = Number(total_td[2].innerHTML).toLocaleString()
+        total_td[3].innerHTML = Number(total_td[3].innerHTML).toLocaleString()
+        total_td[4].innerHTML = Number(total_td[4].innerHTML).toLocaleString()
+        total_td[5].innerHTML += "%"
+        total_td[6].innerHTML = "$" + total_td[6].innerHTML
+        total_td[7].innerHTML += "%"
+        if (total_td[7].innerHTML.includes("-")) {
+            total_td[7].style.color = "red"
+        }
+        else {
+            total_td[7].style.color = "green"
+        }
+        if (isNaN(total_td[8].innerHTML)) {
+            total_td[8].innerHTML = "N/A"
+        }
+        else {
+            total_td[8].innerHTML = Number(total_td[8].innerHTML).toLocaleString()
+        }
+    }
+}
+
 var vol_chart = null
 var price_chart = null
 

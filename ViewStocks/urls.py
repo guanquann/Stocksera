@@ -1,11 +1,5 @@
 from django.urls import path
-# from django.conf.urls import (handler400, handler403, handler404, handler500)
 from . import views
-
-# handler404 = 'ViewStocks.views.custom_page_not_found_view'
-# handler500 = 'ViewStocks.views.custom_error_view'
-# handler403 = 'ViewStocks.views.custom_permission_denied_view'
-# handler400 = 'ViewStocks.views.custom_bad_request_view'
 
 urlpatterns = [
     path('', views.main, name='main'),
@@ -41,5 +35,4 @@ urlpatterns = [
     path('beta/', views.beta, name='beta'),
     path('covid_beta/', views.covid_beta, name='covid_beta'),
     path('about/', views.about, name='about'),
-
 ]

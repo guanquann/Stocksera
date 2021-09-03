@@ -13,6 +13,13 @@
         width: 20px;
         height: 20px;
     }
+
+    .btn_type {
+        border: 1px solid grey;
+        border-radius: 5px;
+        padding: 4.5px;
+        min-width: 40px;
+    }
 }
 
 @media only screen and (min-width: 900px) {
@@ -30,6 +37,13 @@
         width: 30px;
         height: 30px;
     }
+
+    .btn_type {
+        border: 1px solid grey;
+        border-radius: 5px;
+        padding: 7px;
+        min-width: 40px;
+    }
 }
 
 .chart-container {
@@ -40,14 +54,6 @@
     max-height:250px;
     margin-left: auto;
     margin-right: auto;
-}
-
-.btn_type {
-    border: 1px solid grey;
-    border-radius: 5px;
-    padding: 7px;
-    margin-left: -1px;
-    min-width: 40px;
 }
 
 button {

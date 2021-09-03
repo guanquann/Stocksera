@@ -33,7 +33,6 @@ def download_advanced_stats(symbol_list, module_name_map, threads=True):
     # construct stats table from responses
     stats_table = []
     for symbol, retrieved_modules_dict in shared.response_dict.items():
-
         stats_list = [symbol]
 
         for module_name, stat_name_dict in module_name_map.items():

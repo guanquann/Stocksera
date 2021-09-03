@@ -10,6 +10,22 @@ Date.prototype.removeDays = function(days) {
     return date;
 }
 
+function display_top_ftd_table() {
+    var tr = document.getElementsByTagName("table")[0].querySelectorAll("tr");
+    for (i=1; i<tr.length; i++) {
+        var td = tr[i].querySelectorAll("td");
+        if (td[0].innerHTML != "") {
+            td[1].innerHTML = `<a href="/ticker/failure_to_deliver/?quote=${td[1].innerHTML}" target="_blank" style="font-weight:bold">${td[1].innerHTML}</a>`
+            td[2].innerHTML = Number(td[2].innerHTML).toLocaleString()
+            td[3].innerHTML = "$" + td[3].innerHTML
+            td[4].innerHTML = "$" + Number(td[4].innerHTML).toLocaleString()
+        }
+        else {
+            td[0].style.padding = "15px"
+        }
+    }
+}
+
 function display_table() {
     var ftd = document.getElementsByTagName("table")[0].querySelectorAll("tr");
     var threshold = document.getElementById("90th_percentile").innerHTML

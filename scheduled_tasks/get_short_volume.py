@@ -4,12 +4,13 @@ import sys
 import sqlite3
 import requests
 import pandas as pd
-from datetime import datetime, timedelta
+import numpy as np
 import yfinance as yf
+from datetime import datetime, timedelta
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
 from scheduled_tasks.get_popular_tickers import full_ticker_list
+import scheduled_tasks.reddit.get_reddit_trending_stocks.fast_yahoo as fast_yahoo
 
 conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
@@ -91,14 +92,28 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.now().date() 
         df["%Shorted"] = 100 * (df["ShortVolume"] / df["TotalVolume"])
         df["%Shorted"] = df["%Shorted"].round(2)
 
-        highest_shorted = df[df["ShortVolume"] >= 3000000].nlargest(20, "%Shorted")
+        highest_shorted = df[df["ShortVolume"] >= 3000000].nlargest(50, "%Shorted")
         del highest_shorted["Date"]
         del highest_shorted["Market"]
+        highest_shorted.index = np.arange(1, len(highest_shorted) + 1)
+        highest_shorted.reset_index(inplace=True)
+        highest_shorted.rename(columns={"index": "Rank",
+                                        "ShortVolume": "Short Volume",
+                                        "ShortExemptVolume": "Short Exempt Vol",
+                                        "TotalVolume": "Total Volume",
+                                        "%Shorted": "% Shorted"}, inplace=True)
+
+        quick_stats = {'regularMarketPreviousClose': 'Previous Close',
+                       'regularMarketChangePercent': '1 Day Change %',
+                       'marketCap': 'Market Cap'}
+        stats_df = fast_yahoo.download_quick_stats(highest_shorted["Symbol"].to_list(), quick_stats)
+
+        highest_shorted = pd.merge(highest_shorted, stats_df, on="Symbol")
+        highest_shorted.replace(np.nan, "N/A", inplace=True)
         highest_shorted.to_csv("database/highest_short_volume.csv", index=False)
 
         for symbol in full_ticker_list():
             ticker = yf.Ticker(symbol)
-            print(symbol)
             history = ticker.history(period="1y", interval="1d")
             row = df[df["Symbol"] == symbol]
             if not row.empty:

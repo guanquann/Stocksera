@@ -551,6 +551,11 @@ def short_volume(request):
     Get short volume of tickers (only popular ones). Data from shortvolumes.com
     """
     ticker_selected = default_ticker(request)
+
+    if ticker_selected == "TOP_SHORT_VOLUME":
+        highest_short_vol = pd.read_csv(r"database/highest_short_volume.csv")
+        return render(request, 'top_short_volume.html', {"highest_short_vol": highest_short_vol.to_html(index=False)})
+
     information = check_market_hours(ticker_selected)
 
     if "longName" in information and information["regularMarketPrice"] != "N/A":
@@ -579,7 +584,7 @@ def short_volume(request):
                                           "short_exempt_vol": "Short Exempt Vol", "total_vol": "Total Volume",
                                           "percent": "% Shorted", "close_price": "Close Price"}, inplace=True)
 
-        highest_short_vol = pd.read_csv(r"database/highest_short_volume.csv")["Symbol"].tolist()
+        highest_short_vol = pd.read_csv(r"database/highest_short_volume.csv")["Symbol"].tolist()[:20]
 
         return render(request, 'short_volume.html', {"ticker_selected": ticker_selected,
                                                      "information": information,
@@ -595,6 +600,12 @@ def failure_to_deliver(request):
     Get FTD of tickers. Data from SEC
     """
     ticker_selected = default_ticker(request)
+
+    if ticker_selected == "TOP_FTD":
+        top_ftd = pd.read_csv(r"database/failure_to_deliver/top_ftd.csv")
+        top_ftd = top_ftd.replace(np.nan, "")
+        return render(request, 'top_ftd.html', {"top_ftd": top_ftd.to_html(index=False)})
+
     information = check_market_hours(ticker_selected)
     if "longName" in information and information["regularMarketPrice"] != "N/A":
         ftd = pd.read_csv(r"database/failure_to_deliver/ftd.csv")
@@ -912,6 +923,9 @@ def beta(request):
 
 
 def covid_beta(request):
+    pd.options.display.float_format = '{:.3f}'.format
+    ticker_interested = default_ticker(request)
+    print(ticker_interested)
     return render(request, 'beta_covid.html')
 
 

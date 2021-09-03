@@ -27,26 +27,26 @@
 <!--            <br><br>-->
 <!--            Stocksera allows you to calculate the true beta value of any stock real-time.-->
 <!--        </p>-->
-<!--        <form action="" method="GET" autocomplete="off">-->
-<!--            <div class="search_bar">-->
-<!--                <input type="text" class="ticker_input" name="quote" value="{{ticker_selected}}" placeholder="Ticker 1:" autocomplete="off">-->
-<!--                <button class="submit_btn" type="submit"><img src="{% static 'images/search_icon.svg' %}"></button>-->
-<!--            </div>-->
+        <form action="" method="GET" autocomplete="off">
+            <div class="search_bar">
+                <input type="text" class="ticker_input" name="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="submit"><img src="{% static 'images/search_icon.svg' %}"></button>
+            </div>
 
-<!--            <select name="timeframe" onchange="this.form.submit()">-->
-<!--                <option>Timeframe: {{timeframe}}</option>-->
-<!--                <option value="3mo">3 Months</option>-->
-<!--                <option value="6mo">6 Months</option>-->
-<!--                <option value="1y">1 Year</option>-->
-<!--                <option value="5y">5 Year</option>-->
-<!--            </select>-->
+            <select name="timeframe" onchange="this.form.submit()">
+                <option>Timeframe: {{timeframe}}</option>
+                <option value="3mo">3 Months</option>
+                <option value="6mo">6 Months</option>
+                <option value="1y">1 Year</option>
+                <option value="5y">5 Year</option>
+            </select>
 
-<!--            <select name="interval" onchange="this.form.submit()">-->
-<!--                <option>Interval: {{interval}}</option>-->
-<!--                <option value="1d">Daily</option>-->
-<!--                <option value="1mo">Monthly</option>-->
-<!--            </select>-->
-<!--        </form>-->
+            <select name="interval" onchange="this.form.submit()">
+                <option>Interval: {{interval}}</option>
+                <option value="1d">Daily</option>
+                <option value="1mo">Monthly</option>
+            </select>
+        </form>
     </div>
 
     <div class="instructions">

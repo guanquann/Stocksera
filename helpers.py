@@ -226,5 +226,7 @@ def linear_regression(x, y):
     for i in range(m):
         numer += (x[i] - mean_x) * (y[i] - mean_y)
         denom += (x[i] - mean_x) ** 2
+    if denom == 0:
+        denom = 1
     m = numer / denom
     return m

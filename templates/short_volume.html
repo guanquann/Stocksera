@@ -29,8 +29,9 @@
             <br><br>
             Highest Short Volume Today (Min. 3M Short Vol.):
             {% for i in highest_short_vol %}
-                <a href="/ticker/short_volume/?quote={{i}}" class="highest_short_vol">{{i}}</a>
+                <a href="/ticker/short_volume/?quote={{i}}" class="highest_short_vol" target="_blank">{{i}}</a>
             {% endfor %}
+            <a href="/ticker/short_volume/?quote=top_short_volume" class="highest_short_vol" target="_blank">View More</a>
         </p>
         <form action="" method="GET" autocomplete="off">
             <div class="search_bar">

@@ -55,7 +55,7 @@ function reverse_repo(duration) {
                     data: parties_list,
                     pointRadius: 0,
                     borderWidth: 2,
-                    borderColor: 'wheat',
+                    borderColor: 'orange',
                     backgroundColor: 'transparent',
                     yAxisID: 'B',
                 },

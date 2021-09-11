@@ -165,11 +165,6 @@ Download nltk data for sentiment analysis. Type the following in console:
 #### Run scheduled tasks
 - Please refer to [Scheduled Tasks Guide](https://github.com/spartan737/Stocksera/tree/master/scheduled_tasks) for more information on how to run scheduled tasks.
 
-#### Setting up news sentiment
-- Go to ViewStocks/urls.py and uncomment 'sub_news/' and 'latest_news/'.
-- Go to templates/format.html and uncomment line 33.
-- Go to templates/ticker_price.html and uncomment line 122-125.
-
 #### Running the application
 You can run run_app.bat.
 

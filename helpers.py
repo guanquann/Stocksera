@@ -34,18 +34,10 @@ def default_ticker(request):
     return ticker_selected
 
 
-def check_img(ticker_selected, information):
-    if ticker_selected == "TSLA":
-        return "https://logo.clearbit.com/tesla.cn"
-    elif ticker_selected == "BABA":
-        return "https://logo.clearbit.com/alibaba.com"
-    elif ticker_selected == "MRNA":
-        return "https://g.foolcdn.com/art/companylogos/mark/mrna.png"
-    else:
-        return information["logo_url"]
-
-
 def get_all_tickers():
+    """
+    Get full ticker list for dropdown box
+    """
     all_ticker_list = pd.read_csv(r"database/all_tickers.csv")
     symbol_list = all_ticker_list["SYMBOL"].to_list()
     description = all_ticker_list["DESCRIPTION"].to_list()
@@ -53,6 +45,9 @@ def get_all_tickers():
 
 
 def check_json(r):
+    """
+    Sometimes when updating json file, there would be an error raised. This function fix this problem
+    """
     try:
         data = json.load(r)
     except JSONDecodeError as e:
@@ -63,10 +58,9 @@ def check_json(r):
 
 def check_market_hours(ticker_selected):
     """
-    Cache ticker information into a json file to speed up rendering time
-    Criteria for update:
-        1. When market is open (data is updated every 15 minutes to prevent excessive API call)
-        2. When a new ticker is mentioned
+    1. Cache ticker information into a json file to speed up rendering time.
+    2. Insert ticker symbol into Stocksera trending table in db
+    3. Find related tickers to ticker selected
     Parameters
     ----------
     ticker_selected: str
@@ -105,11 +99,9 @@ def check_market_hours(ticker_selected):
         #            (ticker_selected, information["longName"], count))
 
         # Comment this if you face an error. Uncomment the top instead.
-        # db.execute("INSERT INTO stocksera_trending (symbol, name, count) VALUES (?, ?, 1) ON CONFLICT (symbol) "
-        #            "DO UPDATE SET count=count+1", (ticker_selected, information["longName"]))
-        #
-        # # db.execute("UPDATE stocksera_trending SET next_update=?", (next_update_time, ))
-        # conn.commit()
+        db.execute("INSERT INTO stocksera_trending (symbol, name, count) VALUES (?, ?, 1) ON CONFLICT (symbol) "
+                   "DO UPDATE SET count=count+1", (ticker_selected, information["longName"]))
+        conn.commit()
 
         db.execute("SELECT * FROM related_tickers WHERE ticker=?", (ticker_selected, ))
         related_tickers = db.fetchall()
@@ -120,7 +112,8 @@ def check_market_hours(ticker_selected):
             upload_to_db = related_tickers.copy()
             while len(upload_to_db) <= 8:
                 upload_to_db += [""]
-            db.execute("INSERT INTO related_tickers VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", tuple([ticker_selected] + upload_to_db[:8]))
+            db.execute("INSERT INTO related_tickers VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                       tuple([ticker_selected] + upload_to_db[:8]))
             conn.commit()
         else:
             related_tickers = list(related_tickers[0])[1:]
@@ -133,6 +126,9 @@ def check_market_hours(ticker_selected):
 
 
 def check_financial_data(ticker_selected, ticker, data, r):
+    """
+    Get financial data of ticker selected and save to json file
+    """
     print("Getting financial data for {}".format(ticker_selected))
     balance_sheet = ticker.quarterly_balance_sheet
     balance_sheet = balance_sheet.replace(np.nan, 0)[balance_sheet.columns[::-1]]
@@ -237,6 +233,9 @@ def get_sec_fillings(ticker_selected):
 
 
 def get_ticker_news(ticker_selected):
+    """
+    Get news article of ticker selected and find the news sentiment of the news title
+    """
     try:
         ticker_fin = finvizfinance(ticker_selected)
         news_df = ticker_fin.TickerNews()
@@ -269,6 +268,9 @@ def get_ticker_news(ticker_selected):
 
 
 def get_insider_trading(ticker_selected):
+    """
+    Get insider trading of ticker selected
+    """
     try:
         ticker_fin = finvizfinance(ticker_selected)
         inside_trader_df = ticker_fin.TickerInsideTrader()
@@ -283,6 +285,9 @@ def get_insider_trading(ticker_selected):
 
 
 def long_number_format(num):
+    """
+    Convert long number to short form (e.g: 1000000 to 1M)
+    """
     if isinstance(num, float):
         magnitude = 0
         while abs(num) >= 1000:
@@ -305,6 +310,9 @@ def long_number_format(num):
 
 
 def download_file(df, file_name):
+    """
+    Allow users to download data as CSV
+    """
     df.to_csv(file_name, index=False)
     with open(file_name) as to_download:
         response = HttpResponse(to_download, content_type='text/csv')

@@ -113,6 +113,7 @@ new_words = {
     "underperforming": -2,
     "pop": 1.5,
     "jump": 2,
+    "supercharge": 2.5,
     "jumped": 2,
     "popped": 1.5,
     "tank": -1.5,

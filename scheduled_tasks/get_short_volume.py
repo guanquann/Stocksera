@@ -18,35 +18,6 @@ db = conn.cursor()
 current_date = datetime.utcnow().date()
 
 
-def short_volume(symbol):
-    """
-    Get short volume data from http://shortvolumes.com
-    Parameters
-    ----------
-    symbol: str
-        ticker symbol (e.g: AAPL)
-    """
-    url = "http://shortvolumes.com/?t={}".format(symbol)
-    table = pd.read_html(url)
-    print("-" * 100)
-    print(f"Getting short volume data for {symbol} now ...")
-    try:
-        shorted_vol_daily = table[3].iloc[2:]
-
-        ticker = yf.Ticker(symbol)
-        history = ticker.history(period="1mo", interval="1d")
-
-        for index, row in shorted_vol_daily.iterrows():
-            date = datetime.strptime(row[0], "%Y-%m-%d")
-            close_price = round(history.loc[date]["Close"], 2)
-            db.execute("INSERT OR IGNORE INTO short_volume VALUES (?, ?, ?, ?, ?, ?)",
-                       (symbol, row[0], close_price, row[1], row[2], row[3]))
-            conn.commit()
-        print("Short volume data for {} collected successfully!".format(symbol))
-    except IndexError:
-        print("Short volume data for {} not found!".format(symbol))
-
-
 def get_30d_data_finra():
     """
     Get short volume data from https://cdn.finra.org/
@@ -128,5 +99,5 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date
 
 
 if __name__ == '__main__':
-    # get_30d_data_finra()
+    get_30d_data_finra()
     get_daily_data_finra()

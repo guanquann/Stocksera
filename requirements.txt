@@ -12,6 +12,7 @@ DateTime==4.3
 distro==1.6.0
 Django==3.1.6
 feedparser==6.0.2
+finnhub-python
 finvizfinance==0.9.7
 gast==0.3.3
 grpcio==1.37.1

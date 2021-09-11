@@ -20,6 +20,7 @@ import scheduled_tasks.miscellaneous as miscellaneous
 import scheduled_tasks.economy.get_reverse_repo as get_reverse_repo
 import scheduled_tasks.economy.get_inflation as get_inflation
 import scheduled_tasks.economy.get_daily_treasury as get_daily_treasury
+import scheduled_tasks.economy.get_retail_sales as get_retail_sales
 import scheduled_tasks.economy.get_upcoming_events_date as get_upcoming_events_date
 
 # Best to run 1 hour before market opens daily to get trending tickers and subreddit count
@@ -65,6 +66,9 @@ INFLATION = False
 
 # If you want to get daily treasury data
 TREASURY = False
+
+# If you want to compare retail sale vs covid cases
+RETAIL_SALES = False
 
 
 if __name__ == '__main__':
@@ -130,6 +134,9 @@ if __name__ == '__main__':
 
     if TREASURY:
         get_daily_treasury.download_json()
+
+    if RETAIL_SALES:
+        get_retail_sales.retail_sales()
 
     get_upcoming_events_date.main()
     shutil.make_archive(r'graph_chart', 'zip', 'static/graph_chart')

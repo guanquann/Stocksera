@@ -1,4 +1,3 @@
-
 # StocksEra Developers Guide
 
 ### Scheduled Tasks to run 
@@ -74,6 +73,8 @@ You can view a sample of the database in <a href="https://drive.google.com/drive
 #### scheduled_tasks/economy/get_retail_sales.py
 - Get monthly retail sales and compare it with the number of Covid-19 cases
 
+#### scheduled_tasks/economy/get_upcoming_events_date.py
+
 #### scheduled_tasks/get_financial.py
 - Get financial data for companies.
 
@@ -84,3 +85,6 @@ You can view a sample of the database in <a href="https://drive.google.com/drive
 - Get Failure to Deliver data from [SEC](https://www.sec.gov/data/foiadocsfailsdatahtm).
 - Download the txt file. You do not need to convert it to csv. The script automatically does it for you.
 - Run this script once every few weeks.
+
+#### scheduled_tasks/reset_stocksera_trending.py
+- Reset Stocksera trending table in database

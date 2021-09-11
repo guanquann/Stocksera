@@ -116,13 +116,12 @@ def subreddit_count():
     """
     Get number of redditors, percentage of active redditors and growth in new redditors
     """
-    print("-" * 100)
     print("Getting Subreddit Stats now ...")
     for key, subreddit_names in {**interested_stocks_subreddits, **interested_crypto_subreddits}.items():
         for subreddit_name in subreddit_names:
             subreddit = reddit.subreddit(subreddit_name)
-            print("Looking at r/{} now with {} subscribers.".format(subreddit, subscribers))
             subscribers = subreddit.subscribers
+            print("Looking at r/{} now with {} subscribers.".format(subreddit, subscribers))
             active = subreddit.accounts_active
             percentage_active = round((active / subscribers)*100, 2)
 

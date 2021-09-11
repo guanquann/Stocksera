@@ -12,7 +12,6 @@ def database():
                "symbol TEXT, "
                "name TEXT, "
                "count INTEGER, "
-               "next_update TEXT, "
                "UNIQUE('symbol'))")
 
     subreddits = ["wallstreetbets", "stocks", "options", "pennystocks", "investing", "shortsqueeze",

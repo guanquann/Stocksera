@@ -120,7 +120,7 @@ def ticker_institutional_holders(request):
 
 def ticker_mutual_fund_holders(request):
     """
-        Show mutual funds holders of ticker. Data from yahoo finance
+    Show mutual funds holders of ticker. Data from yahoo finance
     """
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected, session=session)
@@ -142,7 +142,7 @@ def ticker_mutual_fund_holders(request):
 
 def dividend_and_split(request):
     """
-        Show dividend and split of ticker. Data from yahoo finance
+    Show dividend and split of ticker. Data from yahoo finance
     """
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected, session=session)
@@ -191,6 +191,9 @@ def ticker_earnings(request):
 
 
 def sec_fillings(request):
+    """
+    Get SEC filling from Finviz of ticker selected
+    """
     ticker_selected = default_ticker(request)
     db.execute("SELECT * FROM sec_fillings WHERE ticker=?", (ticker_selected, ))
     sec = db.fetchall()
@@ -208,7 +211,7 @@ def sec_fillings(request):
     return render(request, 'sec_fillings.html', {"sec_fillings_df": df})
 
 
-def sub_news(request):
+def news_sentiment(request):
     """
     Show news and sentiment of ticker in /ticker?quote={TICKER}. Data from Finviz
     Note: News are only available if hosted locally. Read README.md for more details
@@ -225,84 +228,10 @@ def sub_news(request):
     return render(request, 'recent_news.html', {"title": "News", "recent_news_df": news_df})
 
 
-def latest_news(request):
-    """
-    Show news and sentiment of ticker in /latest_news?quote={TICKER}. Data from Finviz
-    This is more detailed (graphs included) than sub_news()
-    Note: News are only available if hosted locally. Read README.md for more details
-    """
-    ticker_selected = default_ticker(request)
-    information, related_tickers = check_market_hours(ticker_selected)
-
-    # To check if input is a valid ticker
-    if "symbol" in information:
-        ticker_fin = finvizfinance(ticker_selected)
-
-        news_df = ticker_fin.TickerNews()
-        news_df["Date"] = news_df["Date"].dt.date
-        link = news_df["Link"].to_list()
-        del news_df["Link"]
-
-        sentiment_list = list()
-        all_news = news_df['Title'].tolist()
-        for title in all_news:
-            vs = analyzer.polarity_scores(title)
-            sentiment_score = vs['compound']
-            if sentiment_score > 0.25:
-                sentiment = "Bullish"
-            elif sentiment_score < -0.25:
-                sentiment = "Bearish"
-            else:
-                sentiment = "Neutral"
-            sentiment_list.append(sentiment)
-
-        news_df["Sentiment"] = sentiment_list
-
-        num_rows = 0
-        total_score = 0
-        latest_date = news_df["Date"].unique()[0]
-        today_news = news_df[news_df['Date'] == latest_date]['Title'].tolist()
-        for title in today_news:
-            vs = analyzer.polarity_scores(title)
-            sentiment_score = vs['compound']
-            if sentiment_score != 0:
-                num_rows += 1
-                total_score += sentiment_score
-
-        if num_rows == 0:
-            avg_score = 25
-        else:
-            avg_score = round((total_score / num_rows) * 100, 2)
-
-        db.execute("UPDATE news_sentiment SET sentiment=? WHERE ticker=? AND date_updated=?",
-                   (avg_score, ticker_selected, str(datetime.now()).split()[0]))
-        conn.commit()
-
-        db.execute("SELECT * FROM news_sentiment WHERE date_updated=?", (str(datetime.now()).split()[0],))
-        ticker_sentiment = db.fetchall()
-        days = 1
-        while not ticker_sentiment:
-            db.execute("SELECT * FROM news_sentiment WHERE date_updated=?", (str(datetime.now()-timedelta(days=days)).split()[0],))
-            ticker_sentiment = db.fetchall()
-            days += 1
-        ticker_sentiment = list(map(list, ticker_sentiment))
-
-        return render(request, 'news_sentiment.html', {"ticker_selected": ticker_selected,
-                                                       "information": information,
-                                                       "related_tickers": related_tickers,
-                                                       "news_df": news_df.to_html(index=False),
-                                                       "link": link,
-                                                       "ticker_sentiment": ticker_sentiment,
-                                                       "latest_date": latest_date,
-                                                       "avg_score": avg_score})
-    else:
-        included_list = ", ".join(sorted(full_ticker_list()))
-        return render(request, 'news_sentiment.html', {"ticker_selected": ticker_selected,
-                                                       "included_list": included_list,
-                                                       "error": "error_true"})
-
-
 def insider_trading(request):
+    """
+    Get insider trading data from Finviz
+    """
     pd.options.display.float_format = '{:.2f}'.format
     ticker_selected = default_ticker(request)
     db.execute("SELECT * FROM insider_trading WHERE Ticker=?", (ticker_selected,))
@@ -531,14 +460,14 @@ def options(request):
                         option_market_open_time <= current_str_time <= option_market_close_time:
                     print("Ticker {} present, same date but outdated".format(ticker_selected))
                     options_info = save_options_to_json([ticker_selected], int(datetime.timestamp(
-                        datetime.strptime(date_selected, "%Y-%m-%d") + timedelta(seconds=60 * 60 * 8))))[
+                        datetime.strptime(date_selected, "%Y-%m-%d") + timedelta(seconds=0))))[
                         ticker_selected]["CurrentDate"][date_selected]
 
             else:
                 if (current_datetime.weekday() < 5 and option_market_open_time <= current_str_time <=
                         option_market_close_time) or current_datetime.weekday() >= 5:
                     print("Ticker {} present, but not same date".format(ticker_selected))
-                    options_info = save_options_to_json([ticker_selected], int(datetime.timestamp(datetime.strptime(date_selected, "%Y-%m-%d") + timedelta(seconds=60*60*8))))[ticker_selected]["CurrentDate"][date_selected]
+                    options_info = save_options_to_json([ticker_selected], int(datetime.timestamp(datetime.strptime(date_selected, "%Y-%m-%d") + timedelta(seconds=0))))[ticker_selected]["CurrentDate"][date_selected]
                 else:
                     return render(request, 'options.html', {"ticker_selected": ticker_selected,
                                                             "error": "error_true",
@@ -604,9 +533,7 @@ def short_volume(request):
 
         if short_volume_data.empty or len(short_volume_data) < 30:
             short_volume_data = pd.read_csv("database/short_volume.csv")[::-1]
-            print("reading csv instead")
             short_volume_data = short_volume_data[short_volume_data["ticker"] == ticker_selected]
-            print(short_volume_data)
             history = pd.DataFrame(yf.Ticker(ticker_selected).history(interval="1d", period="1y")["Close"])
             history.reset_index(inplace=True)
             history["Date"] = history["Date"].astype(str)
@@ -909,6 +836,9 @@ def ark_trades(request):
 
 
 def amd_xlnx_ratio(request):
+    """
+    Get latest ratio of AMD-XLNX (1.7234 if merger is successful)
+    """
     pd.options.display.float_format = '{:.4f}'.format
     combined_df = pd.DataFrame()
     amd_df = yf.Ticker("AMD").history(interval="1d", period="1y")
@@ -926,6 +856,9 @@ def amd_xlnx_ratio(request):
 
 
 def beta(request):
+    """
+    Compare beta between any 2 tickers
+    """
     pd.options.display.float_format = '{:.3f}'.format
     ticker_interested = default_ticker(request)
     if request.GET.get("quote2"):
@@ -967,6 +900,9 @@ def beta(request):
 
 
 def covid_beta(request):
+    """
+    Compare performance of ticker with covid cases
+    """
     pd.options.display.float_format = '{:.3f}'.format
     ticker_interested = default_ticker(request)
     print(ticker_interested)

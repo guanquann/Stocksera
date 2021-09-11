@@ -205,8 +205,8 @@ def get_financial_data(stats_table, crypto_id, symbol):
     while True:
         try:
             market_data = client.get_coin_by_id(crypto_id)['market_data']
-        except requests.exceptions.RequestException as e:
-            print(e, "errors")
+        except:
+            print("errors")
             time.sleep(15)
         else:
             break
@@ -241,8 +241,7 @@ def get_graph_chart(crypto_id, symbol):
     while True:
         try:
             prices = client.get_coin_market_chart_by_id(crypto_id, vs_currency="USD", days=30)
-        except requests.exceptions.RequestException as e:
-            print(e, "errors")
+        except:
             time.sleep(15)
         else:
             break
@@ -285,8 +284,7 @@ def main():
     while True:
         try:
             coingecko_coin_list = client.get_coins_list()
-        except requests.exceptions.RequestException as e:
-            print("errors", e)
+        except:
             time.sleep(15)
         else:
             break

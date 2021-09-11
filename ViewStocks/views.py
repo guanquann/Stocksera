@@ -1,23 +1,14 @@
-import math
-
-from custom_extensions.custom_words import *
 from custom_extensions.stopwords import *
-from scheduled_tasks.get_popular_tickers import full_ticker_list
 from scheduled_tasks.reddit.get_subreddit_count import *
 from email_server import *
-from helpers import *
+from fast_yahoo_options import *
 
 import requests_cache
 import pandas as pd
 import yfinance as yf
 from pytrends.request import TrendReq
-from finvizfinance.quote import finvizfinance
 
 from django.shortcuts import render
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
-
-analyzer = SentimentIntensityAnalyzer()
-analyzer.lexicon.update(new_words)
 
 trends = TrendReq(hl='en-US', tz=360)
 
@@ -32,6 +23,15 @@ def main(request):
     db.execute("SELECT * FROM stocksera_trending ORDER BY count DESC LIMIT 10")
     trending = db.fetchall()
     trending = list(map(list, trending))
+
+    if request.GET.get("quote"):
+        ticker_selected = request.GET['quote'].upper().replace(" ", "")
+        information, related_tickers = check_market_hours(ticker_selected)
+        if "longName" in information and information["regularMarketPrice"] != "N/A":
+            return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
+                                                         "information": information,
+                                                         "related_tickers": related_tickers
+                                                         })
     return render(request, "home.html", {"trending": trending})
 
 
@@ -40,14 +40,15 @@ def stock_price(request):
     Get price and key statistics of a ticker. Data from yahoo finance
     """
     ticker_selected = default_ticker(request)
-    information = check_market_hours(ticker_selected)
+    information, related_tickers = check_market_hours(ticker_selected)
     if "longName" in information and information["regularMarketPrice"] != "N/A":
         return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
                                                      "information": information,
+                                                     "related_tickers": related_tickers
                                                      })
     else:
         return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
-                                                     "errors": "error_true"})
+                                                     "error": "error_true"})
 
 
 def ticker_recommendations(request):
@@ -189,37 +190,39 @@ def ticker_earnings(request):
                                                     "ticker_next_earnings": next_df.to_html(index=False)})
 
 
+def sec_fillings(request):
+    ticker_selected = default_ticker(request)
+    db.execute("SELECT * FROM sec_fillings WHERE ticker=?", (ticker_selected, ))
+    sec = db.fetchall()
+    if not sec:
+        df = get_sec_fillings(ticker_selected)
+        for index, row in df.iterrows():
+            db.execute("INSERT INTO sec_fillings VALUES (?, ?, ?, ?, ?)",
+                       (ticker_selected, row[0], row[1], row[2], row[3]))
+            conn.commit()
+    else:
+        df = pd.read_sql_query("SELECT * FROM sec_fillings WHERE ticker='{}' ".format(ticker_selected), conn)
+        del df["ticker"]
+        df.rename(columns={"fillings": "Fillings", "description": "Description", "filling_date": "Filling Date"}, inplace=True)
+    df = df.to_html(index=False)
+    return render(request, 'sec_fillings.html', {"sec_fillings_df": df})
+
+
 def sub_news(request):
     """
     Show news and sentiment of ticker in /ticker?quote={TICKER}. Data from Finviz
     Note: News are only available if hosted locally. Read README.md for more details
     """
     ticker_selected = default_ticker(request)
-    ticker_fin = finvizfinance(ticker_selected)
-
-    news_df = ticker_fin.TickerNews()
-    news_df["Date"] = news_df["Date"].dt.date
-    link = news_df["Link"].to_list()
-    del news_df["Link"]
-
-    # Get sentiment of each news title and add it to a new column in news_df
-    sentiment_list = list()
-    all_titles = news_df['Title'].tolist()
-    for title in all_titles:
-        vs = analyzer.polarity_scores(title)
-        sentiment_score = vs['compound']
-        if sentiment_score > 0.25:
-            sentiment = "Bullish"
-        elif sentiment_score < -0.25:
-            sentiment = "Bearish"
-        else:
-            sentiment = "Neutral"
-        sentiment_list.append(sentiment)
-    news_df["Sentiment"] = sentiment_list
+    db.execute("SELECT * FROM daily_ticker_news WHERE ticker=?", (ticker_selected,))
+    news = db.fetchall()
+    if not news:
+        news_df = get_ticker_news(ticker_selected)
+    else:
+        news_df = pd.read_sql_query("SELECT * FROM daily_ticker_news WHERE ticker='{}' ".format(ticker_selected), conn)
+        del news_df["Ticker"]
     news_df = news_df.to_html(index=False)
-
-    return render(request, 'iframe_format.html', {"title": "News", "table": news_df, "link": link,
-                                                  "class": "ticker_news"})
+    return render(request, 'recent_news.html', {"title": "News", "recent_news_df": news_df})
 
 
 def latest_news(request):
@@ -229,7 +232,7 @@ def latest_news(request):
     Note: News are only available if hosted locally. Read README.md for more details
     """
     ticker_selected = default_ticker(request)
-    information = check_market_hours(ticker_selected)
+    information, related_tickers = check_market_hours(ticker_selected)
 
     # To check if input is a valid ticker
     if "symbol" in information:
@@ -286,6 +289,7 @@ def latest_news(request):
 
         return render(request, 'news_sentiment.html', {"ticker_selected": ticker_selected,
                                                        "information": information,
+                                                       "related_tickers": related_tickers,
                                                        "news_df": news_df.to_html(index=False),
                                                        "link": link,
                                                        "ticker_sentiment": ticker_sentiment,
@@ -295,7 +299,26 @@ def latest_news(request):
         included_list = ", ".join(sorted(full_ticker_list()))
         return render(request, 'news_sentiment.html', {"ticker_selected": ticker_selected,
                                                        "included_list": included_list,
-                                                       "errors": "error_true"})
+                                                       "error": "error_true"})
+
+
+def insider_trading(request):
+    pd.options.display.float_format = '{:.2f}'.format
+    ticker_selected = default_ticker(request)
+    db.execute("SELECT * FROM insider_trading WHERE Ticker=?", (ticker_selected,))
+    transactions = db.fetchall()
+    if not transactions:
+        inside_trader_df = get_insider_trading(ticker_selected)
+        for index, row in inside_trader_df.iterrows():
+            db.execute("INSERT INTO insider_trading VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                       (ticker_selected, row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]))
+            conn.commit()
+    else:
+        inside_trader_df = pd.read_sql_query("SELECT * FROM insider_trading WHERE Ticker='{}' ".format(ticker_selected), conn)
+        del inside_trader_df["Ticker"]
+        inside_trader_df.rename(columns={"TransactionDate": "Date", "TransactionType": "Transaction", "Value": "Value ($)", "SharesLeft": "#Shares Total"}, inplace=True)
+    inside_trader_df = inside_trader_df.to_html(index=False)
+    return render(request, 'insider_trading.html', {"inside_trader_df": inside_trader_df})
 
 
 def historical_data(request):
@@ -392,10 +415,7 @@ def google_trends(request):
     region_count_list = interest_by_region[ticker_selected].to_list()
 
     # Map api variable to clearer format
-    mapping_dict = {"now 1-H": "Past hour",
-                    "now 4-H": "Past 4 hours",
-                    "now 1-d": "Past day",
-                    "now 7-d": "Past 7 days",
+    mapping_dict = {"now 7-d": "Past 7 days",
                     "today 1-m": "Past 30 days",
                     "today 3-m": "Past 90 days",
                     "today 12-m": "Past 12 months"}
@@ -415,7 +435,7 @@ def financial(request):
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected)
 
-    information = check_market_hours(ticker_selected)
+    information, related_tickers = check_market_hours(ticker_selected)
 
     # quarterly_cashflow = ticker.quarterly_cashflow
     # print(quarterly_cashflow)
@@ -425,7 +445,7 @@ def financial(request):
     if "longName" in information and information["regularMarketPrice"] != "N/A":
         current_datetime = str(datetime.utcnow().date())
         with open(r"database/financials.json", "r+") as r:
-            data = json.load(r)
+            data = check_json(r)
             if ticker_selected in data:
                 to_update_date = data[ticker_selected]["next_update"]
                 if current_datetime > to_update_date:
@@ -438,12 +458,13 @@ def financial(request):
                 date_list, balance_list, balance_col_list = check_financial_data(ticker_selected, ticker, data, r)
         return render(request, 'financial.html', {"ticker_selected": ticker_selected,
                                                   "information": information,
+                                                  "related_tickers": related_tickers,
                                                   "date_list": date_list,
                                                   "balance_list": balance_list,
                                                   "balance_col_list": balance_col_list})
     else:
         return render(request, 'financial.html', {"ticker_selected": ticker_selected,
-                                                  "errors": "error_true"})
+                                                  "error": "error_true"})
 
 
 def options(request):
@@ -452,98 +473,114 @@ def options(request):
     """
     pd.options.display.float_format = '{:.1f}'.format
     ticker_selected = default_ticker(request)
-    try:
-        ticker = yf.Ticker(ticker_selected)
 
-        information = check_market_hours(ticker_selected)
+    information, related_tickers = check_market_hours(ticker_selected)
+    if "longName" in information and information["regularMarketPrice"] != "N/A":
+        with open(r"database/yf_cached_options.json", "r+") as r:
+            # Update date if
+            #   1. Weekday
+            #   2. Current datetime > next update time
+            #   3. Market is open
+            current_datetime = datetime.utcnow()
+            current_str_time = str(current_datetime).split()[1].replace(":", "").split(".")[0]
+            print(current_str_time, "current_str_time")
+            # options market opens at 9.30AM NYSE time, closes at 4.15PM NYSE time
+            option_market_open_time = "133000"  #9.30PM - 2H30MIN = 7PM
+            option_market_close_time = "201500"  #4.15AM + 6H45MIN = 11AM
 
-        options_dates = ticker.options
-        if request.GET.get("date") not in ["", None]:
-            date_selected = request.GET["date"]
-        else:
-            date_selected = options_dates[0]
+            data = check_json(r)
+            if ticker_selected in data:
+                print("Using cached option data for {}. Looking for correct date now...".format(ticker_selected))
+                options_info = data[ticker_selected]
+            else:
+                # weekday and current time is in range and ticker not in db
+                if current_datetime.weekday() < 5 and option_market_open_time <= current_str_time <= \
+                        option_market_close_time:
+                    print("No option data/data expired for {}. Scraping data now".format(ticker_selected))
+                    options_info = save_options_to_json([ticker_selected])[ticker_selected]
+                # weekend ... ticker not in db
+                elif current_datetime.weekday() >= 5:
+                    print("No option data for {} and its the weekend. Scraping data now.".format(ticker_selected))
+                    options_info = save_options_to_json([ticker_selected])[ticker_selected]
 
-        calls = ticker.option_chain(date_selected).calls
+                # weekday and current time out of range (bug in YF) and ticker not in db
+                else:
+                    return render(request, 'options.html', {"ticker_selected": ticker_selected,
+                                                            "error": "error_true",
+                                                            "error_msg": "The market is closed & options data for {} "
+                                                                         "is currently unavailable. "
+                                                                         "Please come back nearing market open!".
+                                  format(ticker_selected)})
 
-        del calls["contractSize"]
-        del calls["currency"]
-        calls.columns = ["Contract Name", "Last Trade Date", "Strike", "Last Price", "Bid", "Ask", "Change",
-                         "% Change", "Volume", "Open Interest", "Implied Volatility", "ITM"]
+            options_dates = options_info["ExpirationDate"]
+            if request.GET.get("date") not in ["", None] and options_dates != []:
+                date_selected = request.GET["date"]
+            elif not options_dates:
+                return render(request, 'options.html', {"ticker_selected": ticker_selected,
+                                                        "error": "error_true",
+                                                        "error_msg": "There is no options data for {}.".
+                              format(ticker_selected)})
+            else:
+                date_selected = options_dates[0]
 
-        last_adj_close_price = float(information['previousClose'])
-        df_calls = calls.pivot_table(
-            index="Strike", values=["Volume", "Open Interest"], aggfunc="sum"
-        ).reindex()
-        df_calls["Strike"] = df_calls.index
-        df_calls["Type"] = "calls"
-        df_calls["Open Interest"] = df_calls["Open Interest"]
-        df_calls["Volume"] = df_calls["Volume"]
-        df_calls["oi+v"] = df_calls["Open Interest"] + df_calls["Volume"]
-        df_calls["Spot"] = round(last_adj_close_price, 2)
+            if date_selected in options_info["CurrentDate"]:
+                print("Ticker {} present, same date".format(ticker_selected))
+                options_info = options_info["CurrentDate"][date_selected]
 
-        calls["Bid"].fillna('-', inplace=True)
-        calls["Ask"].fillna('-', inplace=True)
-        calls["Volume"].fillna('-', inplace=True)
-        calls["Open Interest"].fillna(0, inplace=True)
-        calls["Implied Volatility"] = calls["Implied Volatility"].astype("float").multiply(100)
+                if str(current_datetime) > options_info["NextUpdate"] and current_datetime.weekday() < 5 and \
+                        option_market_open_time <= current_str_time <= option_market_close_time:
+                    print("Ticker {} present, same date but outdated".format(ticker_selected))
+                    options_info = save_options_to_json([ticker_selected], int(datetime.timestamp(
+                        datetime.strptime(date_selected, "%Y-%m-%d") + timedelta(seconds=60 * 60 * 8))))[
+                        ticker_selected]["CurrentDate"][date_selected]
 
-        calls["Change"] = calls["Change"].round(2)
-        calls["% Change"] = calls["% Change"].round(2).fillna("-")
-        calls["Implied Volatility"] = calls["Implied Volatility"].round(2)
+            else:
+                if (current_datetime.weekday() < 5 and option_market_open_time <= current_str_time <=
+                        option_market_close_time) or current_datetime.weekday() >= 5:
+                    print("Ticker {} present, but not same date".format(ticker_selected))
+                    options_info = save_options_to_json([ticker_selected], int(datetime.timestamp(datetime.strptime(date_selected, "%Y-%m-%d") + timedelta(seconds=60*60*8))))[ticker_selected]["CurrentDate"][date_selected]
+                else:
+                    return render(request, 'options.html', {"ticker_selected": ticker_selected,
+                                                            "error": "error_true",
+                                                            "error_msg": "The market is closed & options data for {} "
+                                                                         "on {} is currently unavailable. "
+                                                                         "Please come back nearing market open!".
+                                  format(ticker_selected, date_selected)})
+            max_pain = options_info["MaxPain"]
+            call_loss_list = options_info["CallLoss"]
+            put_loss_list = options_info["PutLoss"]
 
-        puts = ticker.option_chain(date_selected).puts
+        op_put = options_info["OptionChainPut"]
+        put_df = pd.DataFrame(op_put, columns=["Strike", "Volume", "OI"])
 
-        del puts["contractSize"]
-        del puts["currency"]
-        puts.columns = ["Contract Name", "Last Trade Date", "Strike", "Last Price", "Bid", "Ask", "Change",
-                        "% Change", "Volume", "Open Interest", "Implied Volatility", "ITM"]
+        op_call = options_info["OptionChainCall"]
+        call_df = pd.DataFrame(op_call, columns=["Strike", "Volume", "OI"])
 
-        df_puts = puts.pivot_table(
-            index="Strike", values=["Volume", "Open Interest"], aggfunc="sum"
-        ).reindex()
-        df_puts["Strike"] = df_puts.index
-        df_puts["Type"] = "puts"
-        df_puts["Open Interest"] = df_puts["Open Interest"]
-        df_puts["Volume"] = -df_puts["Volume"]
-        df_puts["Open Interest"] = -df_puts["Open Interest"]
-        df_puts["oi+v"] = df_puts["Open Interest"] + df_puts["Volume"]
-        df_puts["Spot"] = round(last_adj_close_price, 2)
-
-        puts["Bid"].fillna('-', inplace=True)
-        puts["Ask"].fillna('-', inplace=True)
-        puts["Volume"].fillna('-', inplace=True)
-        puts["Open Interest"].fillna(0, inplace=True)
-        puts["Implied Volatility"] = puts["Implied Volatility"].astype("float").multiply(100)
-
-        puts["Change"] = puts["Change"].round(2)
-        puts["% Change"] = puts["% Change"].round(2).fillna("-")
-        puts["Implied Volatility"] = puts["Implied Volatility"].round(2)
-
-        df_merge = pd.merge(calls, puts, on="Strike", how="outer")
+        df_merge = pd.merge(call_df, put_df, on="Strike", how="outer")
         df_merge.sort_values(by=["Strike"], inplace=True)
-        df_merge = df_merge[["Last Price_x", "Change_x", "% Change_x", "Volume_x", "Open Interest_x", "Strike",
-                             "Last Price_y", "Change_y", "% Change_y", "Volume_y", "Open Interest_y"]]
-        df_merge.columns = ["Last Price", "Change", "% Change", "Volume", "Open Interest", "Strike",
-                            "Last Price", "Change", "% Change", "Volume", "Open Interest"]
-        df_merge.fillna('-', inplace=True)
-
-        df_opt = pd.merge(df_calls, df_puts, left_index=True, right_index=True)
-        df_opt = df_opt[["Open Interest_x", "Open Interest_y"]].rename(
-            columns={"Open Interest_x": "OI Calls", "Open Interest_y": "OI Puts"})
-        max_pain, call_loss_list, put_loss_list = get_max_pain(df_opt)
+        df_merge["Strike"] = df_merge["Strike"].apply(lambda x: "$" + str(x))
+        df_merge = df_merge[["OI_x", "Volume_x", "Strike", "OI_y", "Volume_y"]]
+        df_merge.columns = ["OI", "Volume", "", "OI", "Volume"]
+        df_merge.replace(np.nan, 0, inplace=True)
+        df_merge["OI"] = df_merge["OI"].astype(int)
+        df_merge["Volume"] = df_merge["Volume"].astype(int)
 
         return render(request, 'options.html', {"ticker_selected": ticker_selected,
                                                 "information": information,
+                                                "related_tickers": related_tickers,
                                                 "options_dates": options_dates,
                                                 "date_selected": date_selected,
                                                 "max_pain": max_pain,
                                                 "call_loss_list": call_loss_list,
                                                 "put_loss_list": put_loss_list,
-                                                "calls": calls.to_html(index=False),
-                                                "puts": puts.to_html(index=False),
-                                                "merge": df_merge.to_html(index=False)})
-    except (IndexError, KeyError, Exception):
-        return render(request, 'options.html', {"ticker_selected": ticker_selected, "errors": "error_true"})
+                                                "merge": df_merge.to_html(index=False)
+                                                })
+    else:
+        return render(request, 'options.html', {"ticker_selected": ticker_selected,
+                                                "error": "error_true",
+                                                "error_msg": "There is no ticker named {} found! "
+                                                             "Please enter a ticker symbol (TSLA) "
+                                                             "instead of the name (Tesla).".format(ticker_selected)})
 
 
 def short_volume(request):
@@ -553,10 +590,11 @@ def short_volume(request):
     ticker_selected = default_ticker(request)
 
     if ticker_selected == "TOP_SHORT_VOLUME":
+        pd.options.display.float_format = '{:.2f}'.format
         highest_short_vol = pd.read_csv(r"database/highest_short_volume.csv")
         return render(request, 'top_short_volume.html', {"highest_short_vol": highest_short_vol.to_html(index=False)})
 
-    information = check_market_hours(ticker_selected)
+    information, related_tickers = check_market_hours(ticker_selected)
 
     if "longName" in information and information["regularMarketPrice"] != "N/A":
         sql_query = "SELECT * FROM short_volume WHERE ticker='{}' ORDER BY reported_date DESC".format(ticker_selected)
@@ -564,9 +602,11 @@ def short_volume(request):
         pd.options.display.float_format = '{:.2f}'.format
         short_volume_data = pd.read_sql_query(sql_query, conn)
 
-        if short_volume_data.empty:
+        if short_volume_data.empty or len(short_volume_data) < 30:
             short_volume_data = pd.read_csv("database/short_volume.csv")[::-1]
+            print("reading csv instead")
             short_volume_data = short_volume_data[short_volume_data["ticker"] == ticker_selected]
+            print(short_volume_data)
             history = pd.DataFrame(yf.Ticker(ticker_selected).history(interval="1d", period="1y")["Close"])
             history.reset_index(inplace=True)
             history["Date"] = history["Date"].astype(str)
@@ -588,11 +628,12 @@ def short_volume(request):
 
         return render(request, 'short_volume.html', {"ticker_selected": ticker_selected,
                                                      "information": information,
+                                                     "related_tickers": related_tickers,
                                                      "highest_short_vol": highest_short_vol,
                                                      "short_volume_data": short_volume_data.to_html(index=False)})
     else:
         return render(request, 'short_volume.html', {"ticker_selected": ticker_selected,
-                                                     "errors": "error_true"})
+                                                     "error": "error_true"})
 
 
 def failure_to_deliver(request):
@@ -606,7 +647,7 @@ def failure_to_deliver(request):
         top_ftd = top_ftd.replace(np.nan, "")
         return render(request, 'top_ftd.html', {"top_ftd": top_ftd.to_html(index=False)})
 
-    information = check_market_hours(ticker_selected)
+    information, related_tickers = check_market_hours(ticker_selected)
     if "longName" in information and information["regularMarketPrice"] != "N/A":
         ftd = pd.read_csv(r"database/failure_to_deliver/ftd.csv")
         ftd = ftd[ftd["Symbol"] == ticker_selected]
@@ -622,11 +663,12 @@ def failure_to_deliver(request):
 
         return render(request, 'ftd.html', {"ticker_selected": ticker_selected,
                                             "information": information,
+                                            "related_tickers": related_tickers,
                                             "90th_percentile": ftd["Amount (FTD x $)"].quantile(0.90),
                                             "ftd": ftd.to_html(index=False)})
     else:
         return render(request, 'ftd.html', {"ticker_selected": ticker_selected,
-                                            "errors": "error_true"})
+                                            "error": "error_true"})
 
 
 def earnings_calendar(request):
@@ -704,9 +746,10 @@ def reddit_ticker_analysis(request):
     ranking = db.fetchall()
 
     if subreddit != "cryptocurrency":
-        information = check_market_hours(ticker_selected)
+        information, related_tickers = check_market_hours(ticker_selected)
         return render(request, 'reddit_stocks_analysis.html', {"ticker_selected": ticker_selected,
                                                                "information": information,
+                                                               "related_tickers": related_tickers,
                                                                "ranking": ranking,
                                                                "subreddit": subreddit})
     else:
@@ -748,8 +791,9 @@ def subreddit_count(request):
         pd.options.display.float_format = '{:.2f}'.format
         stats = pd.read_sql_query("SELECT * FROM subreddit_count WHERE ticker='{}'".format(ticker_selected), conn)
         stats.rename(columns={"subscribers": "Redditors", "active": "Active", "updated_date": "Date",
-                              "percentage_active": "% Active", "growth": "% Growth"}, inplace=True)
-        information = check_market_hours(ticker_selected)
+                              "percentage_active": "% Active", "growth": "% Growth",
+                              "percentage_price_change": "% Price Change"}, inplace=True)
+        information, related_tickers = check_market_hours(ticker_selected)
         try:
             subreddit = stats.iloc[0][2]
             del stats["ticker"]

@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/ticker_price.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}display_data();restore_dark_mode();document.getElementsByClassName('show_more_btn')[0].form.submit();to_remove(document.getElementsByClassName('show_more_btn')[0], 'Historical Data'){% endblock %}
+{% block onload_properties%}display_data();restore_dark_mode();get_ssr();submit_onload('{{error}}');to_remove(document.getElementsByClassName('show_more_btn')[0], 'Historical Data'){% endblock %}
  
 {% block main_nav %}
     <a href="/">Stocksera</a> / <a href="/ticker/?quote={{ticker_selected}}">Analysis [{{ticker_selected}}]</a>
@@ -48,7 +48,7 @@
 
     <div class="contents_div">
         <div id="ticker_basic_stats"></div>
-
+        <div id="ssr_msg"></div>
         <div class="tradingview-widget-container">
             <div id="ticker_chart"></div>
                 <div class="tradingview-widget-copyright"></div>
@@ -115,18 +115,32 @@
                     </div>
 
                     <div class="btn_div">
+                        <form action="/sec_fillings" method="GET" autocomplete="off" target="SEC Fillings">
+                            <input style="display: none" name="quote" value="{{ticker_selected}}">
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'SEC Fillings')">SEC Fillings</button>
+                        </form>
+                    </div>
+
+                    <div class="btn_div">
+                        <form action="/sub_news" method="GET" autocomplete="off" target="News Sentiment">
+                            <input style="display: none" name="quote" value="{{ticker_selected}}">
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'News Sentiment')">News Sentiment</button>
+                        </form>
+                    </div>
+
+                    <div class="btn_div">
                         <form action="/google_trends" method="GET" autocomplete="off" target="Google Trends">
                             <input style="display: none" name="quote" value="{{ticker_selected}}">
                             <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Google Trends')">Google Trends</button>
                         </form>
                     </div>
 
-        <!--            <div class="btn_div">-->
-        <!--                <form action="/sub_news" method="GET" autocomplete="off" target="News Article">-->
-        <!--                    <input style="display: none" name="quote" value="{{ticker_selected}}">-->
-        <!--                    <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'News Article')">News Article</button>-->
-        <!--                </form>-->
-        <!--            </div>-->
+                    <div class="btn_div">
+                        <form action="/insider_trading" method="GET" autocomplete="off" target="Insider Trading">
+                            <input style="display: none" name="quote" value="{{ticker_selected}}">
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Insider Trading')">Insider Trading</button>
+                        </form>
+                    </div>
                 </div>
                 <iframe class="more_details" name="Historical Data" scrolling="no" onload="expand_iframe(this)"></iframe>
                 <iframe style="display: none" class="more_details" name="Major Holders" scrolling="no" onload="expand_iframe(this)"></iframe>
@@ -135,10 +149,17 @@
                 <iframe style="display: none" class="more_details" name="Dividend & Splits" scrolling="no" onload="expand_iframe(this)"></iframe>
                 <iframe style="display: none" class="more_details" name="Earnings" scrolling="no" onload="expand_iframe(this)"></iframe>
                 <iframe style="display: none" class="more_details" name="Upgrades & Downgrades" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe style="display: none" class="more_details" name="SEC Fillings" scrolling="no" onload="expand_iframe(this)"></iframe>
                 <iframe style="display: none" class="more_details" name="Google Trends" scrolling="no" onload="expand_iframe(this)"></iframe>
-        <!--        <iframe style="display: none" class="more_details" name="News Article" scrolling="no" onload="expand_iframe(this)"></iframe>-->
+                <iframe style="display: none" class="more_details" name="News Sentiment" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe style="display: none" class="more_details" name="Insider Trading" scrolling="no" onload="expand_iframe(this)"></iframe>
 
-                <p>Data from: <a href="https://finance.yahoo.com/" target="_blank">finance.yahoo.com</a></p>
+                <div style="margin-top: 30px">
+                    <p><b>Related tickers that you might be interested:</b></p>
+                    {% for i in related_tickers %}
+                        <a href="/ticker/?quote={{i}}" class="related_tickers">{{i}}</a>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
@@ -157,26 +178,22 @@ var quoteType = information["quoteType"]
 if (quoteType == "ETF") {
     var summary = check_stats("longBusinessSummary").replace(/[^\x00-\x7F]/g, "");
     var official_name = check_stats("longName");
-    var total_assets = check_if_num("totalAssets");
+    var total_assets = information["totalAssets"];
     var navPrice = check_stats("navPrice");
-    var three_year_return = check_stats("threeYearAverageReturn") * 100 + "%";
-    var five_year_return = check_stats("fiveYearAverageReturn") * 100 + "%";
+    var three_year_return = information["threeYearAverageReturn"];
+    var five_year_return = information["fiveYearAverageReturn"];
     var beta = check_stats("beta3Year");
     var yield = check_stats("Yield");
     var dividend_yield = information["trailingAnnualDividendYield"];
     var dividend_amount = information["trailingAnnualDividendRate"];
-    if (dividend_yield != "N/A") {
-        dividend_yield = String(Math.round(dividend_yield * 10000) / 100) + "%"
-        dividend_amount = "$" + String(dividend_amount)
-    }
     table_part_ii_code = `
         <tr>
             <td>Total Assets: ${total_assets}</td>
             <td>NAV: ${navPrice}</td>
         </tr>
         <tr>
-            <td>3Y Return: ${three_year_return}</td>
-            <td>5Y Return: ${five_year_return}</td>
+            <td>3Y Annual Return: ${three_year_return}</td>
+            <td>5Y Annual Return: ${five_year_return}</td>
         </tr>
         <tr>
             <td>Beta: ${beta}</td>
@@ -187,14 +204,22 @@ if (quoteType == "ETF") {
             <td>Dividend: ${dividend_amount}</td>
         </tr>`
     document.getElementById("more_info_div").style.removeProperty("display");
-    document.getElementsByClassName("more_info_btn")[0].style.display = "none";
+    document.getElementsByClassName("more_info_div")[1].style.display = "none";
+    btn_div = document.getElementsByClassName("btn_div")
+    btn_div[1].style.display = "none"
+    btn_div[2].style.display = "none"
+    btn_div[3].style.display = "none"
+    btn_div[5].style.display = "none"
+    btn_div[6].style.display = "none"
+    btn_div[7].style.display = "none"
+    btn_div[10].style.display = "none"
 }
 
 else if (quoteType == "CRYPTOCURRENCY") {
     var summary = check_stats("description").replace(/[^\x00-\x7F]/g, "");
     var official_name = check_stats("shortName");
-    var mkt_cap = check_if_num("marketCap");
-    var supply = check_if_num("circulatingSupply");
+    var mkt_cap = information["marketCap"];
+    var supply = information["circulatingSupply"];
     table_part_ii_code = `
         <tr>
             <td>Mkt Cap: ${mkt_cap}</td>
@@ -282,14 +307,14 @@ table_code = `
     <table>
         <tr>
             <td>Open: $${information["regularMarketOpen"]}</td>
-            <td>Prev Close: $${information["previousClose"]}</td>
+            <td id="previous_close">Prev Close: $${information["previousClose"]}</td>
         </tr>
         <tr>
             <td>High: $${information["dayHigh"]}</td>
             <td>52-wk High: $${information["fiftyTwoWeekHigh"]}</td>
         </tr>
         <tr>
-            <td>Low: $${information["regularMarketDayLow"]}</td>
+            <td id="low">Low: $${information["regularMarketDayLow"]}</td>
             <td>52-wk Low: $${information["fiftyTwoWeekLow"]}</td>
         </tr>
         <tr>

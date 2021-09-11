@@ -81,7 +81,7 @@
             <div id="11-filter" class="filter_contents" onclick="filter_table(this)">Volume &#x2716;</div>
             <div id="12-filter" class="filter_contents" onclick="filter_table(this)">Market Cap &#x2716;</div>
             <div id="13-filter" class="filter_contents" onclick="filter_table(this)">1D % Price Change &#x2716;</div>
-            <div id="14-filter" class="filter_contents" onclick="filter_table(this)">50D % Price Change &#x2716;</div>
+            <div id="14-filter" class="filter_contents" onclick="filter_table(this)">50D Average &#x2716;</div>
             <div id="15-filter" class="filter_contents" onclick="filter_table(this)">Floating Shares &#x2716;</div>
             <div id="16-filter" class="filter_contents" onclick="filter_table(this)">Beta &#x2716;</div>
             <div id="17-filter" class="filter_contents" onclick="filter_table(this)">Shares/Float &#x2716;</div>
@@ -111,7 +111,7 @@
                             <th onclick="sortTable(11)" class="th-sort-desc" id='11'>Volume</th>
                             <th onclick="sortTable(12)" class="th-sort-desc" id='12'>Mkt Cap</th>
                             <th onclick="sortTable(13)" class="th-sort-desc" id='13'>1D % Price Change</th>
-                            <th onclick="sortTable(14)" class="th-sort-desc" id='14'>50D % Price Change</th>
+                            <th onclick="sortTable(14)" class="th-sort-desc" id='14'>50D Average</th>
                             <th onclick="sortTable(15)" class="th-sort-desc" id='15'>Floating Shares</th>
                             <th onclick="sortTable(16)" class="th-sort-desc" id='16'>Beta</th>
                             <th onclick="sortTable(17)" class="th-sort-desc" id='17'>Shorts/Float</th>
@@ -124,7 +124,7 @@
                         {% for ticker in trending_tickers %}
                         <tr>
                             <td>{{ticker.0}}</td>
-                            <td><a href="{% url 'reddit_ticker_analysis' %}?quote={{ticker.1}}&subreddit={{subreddit_selected}}" target="_blank"><img class="table_ticker_logo" src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.1}}.png" onerror="this.error=null;load_table_error_img(this, '{{ticker.1}}')"><b>{{ticker.1}}</b></a></td>
+                            <td><a href="{% url 'reddit_ticker_analysis' %}?quote={{ticker.1}}&subreddit={{subreddit_selected}}" target="_blank"><img class="table_ticker_logo" src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.1}}.png" onerror="this.error=null;load_table_error_img(this, '{{ticker.1}}')"><u><b>{{ticker.1}}</b></u></a></td>
                             <td>{{ticker.2}}</td>
                             <td>{{ticker.3}}</td>
                             <td>{{ticker.4}}</td>

@@ -61,7 +61,7 @@
                         <tbody>
                             {% for ticker in open_trade %}
                                 <tr>
-                                    <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank"><img src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.0}}.png" class="table_ticker_logo" onerror="this.error=null;load_table_error_img(this, '{{ticker.0}}')">{{ticker.0}}</a></td>
+                                    <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank"><img src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.0}}.png" class="table_ticker_logo" onerror="this.error=null;load_table_error_img(this, '{{ticker.0}}')"><b>{{ticker.0}}</b></a></td>
                                     <td>{{ticker.1}}</td>
                                     <td>${{ticker.2}}</td>
                                     <td>{{ticker.3}}</td>
@@ -79,8 +79,7 @@
             <p class="table_title">Previous Trades (Realized PnL: <span>{{realized_PnL}}</span>)</p>
             <div class="previous_trades_stats"></div>
             <div class="search_bar">
-                <input type="text" class="ticker_input" placeholder="Ticker: " onkeyup="searchTicker(this)">
-                <button class="submit_btn" type="button"><img src="{% static 'images/search_icon.svg' %}"></button>
+                <input type="text" class="ticker_input" placeholder="Ticker: " onkeyup="searchTicker(this)" style="border: 1px solid gray; border-radius: 5px">
             </div>
             <div class="scrollable_div">
             <table id="previous_trades">
@@ -99,7 +98,7 @@
                     <tbody>
                         {% for ticker in close_trade %}
                             <tr>
-                                <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank"><img src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.0}}.png" class="table_ticker_logo" onerror="this.error=null;load_table_error_img(this, '{{ticker.0}}')">{{ticker.0}}</a></td>
+                                <td><a href="{% url 'ticker' %}?quote={{ticker.0}}" target="_blank"><img src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.0}}.png" class="table_ticker_logo" onerror="this.error=null;load_table_error_img(this, '{{ticker.0}}')"><b>{{ticker.0}}</b></a></td>
                                 <td>{{ticker.1}}</td>
                                 <td>${{ticker.2}}</td>
                                 <td>{{ticker.3}}</td>

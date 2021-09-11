@@ -59,7 +59,7 @@ def get_holidays():
     return holidays_df
 
 
-if __name__ == '__main__':
+def main():
     db.execute("SELECT record_date from reverse_repo ORDER BY record_date DESC LIMIT 1")
     record_date = db.fetchone()
     rrp_treasury_date = get_next_rrp_treasury_date(datetime.strptime(record_date[0], "%Y-%m-%d") + timedelta(days=1))
@@ -74,3 +74,7 @@ if __name__ == '__main__':
             "Reverse Repo": {"Release Date": rrp_treasury_date},
         }
         json.dump(information, r, indent=4)
+
+
+if __name__ == '__main__':
+    main()

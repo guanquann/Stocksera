@@ -52,6 +52,16 @@
 		height:calc(100vh - 30px);
 	}
 
+	.nav_bar_ticker_search_div {
+        padding: 6px;
+    }
+
+    .nav_bar_ticker_input {
+        padding: 7px;
+        text-transform: uppercase;
+        border:1px solid grey; border-radius: 5px;
+    }
+
 	.top_nav_directory {
 	    display: none;
 	}
@@ -327,6 +337,16 @@
         border-right: 1px solid darkgrey;
 	}
 
+    .nav_bar_ticker_search_div {
+        padding: 12px;
+    }
+
+    .nav_bar_ticker_input {
+        padding: 7px;
+        text-transform: uppercase;
+        border:1px solid grey; border-radius: 5px;
+    }
+
     .switch {
         margin-left: 72px;
         bottom: 1.5vh;
@@ -482,7 +502,7 @@
         border: 1px solid grey;
         border-left: 0;
         border-radius: 0 5px 5px 0;
-        padding: 7px;
+        padding: 6.94px;
         margin-left: -1px;
         text-transform: uppercase;
         min-width: 40px;
@@ -1067,6 +1087,12 @@ input[type=text] {
   appearance: none;
 }
 
+.instructions p a {
+    text-decoration: underline;
+    color: rgb(38, 166, 154);
+    font-weight: bold;
+}
+
 .error_page {
     margin: auto;
     text-align: center;
@@ -1085,4 +1111,11 @@ input[type=text] {
 
 .error_page_return_home:hover {
     background-color: grey;
+}
+
+.related_tickers {
+    border: 1.5px solid gray;
+    padding: 4px;
+    border-radius: 5px;
+    font-weight: bold;
 }

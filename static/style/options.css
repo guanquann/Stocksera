@@ -194,3 +194,11 @@
 .puts_symbol_background {
     background-color: red;
 }
+
+table {
+    text-align: center !important;
+}
+
+th {
+    text-align: center !important;
+}

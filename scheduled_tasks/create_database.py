@@ -15,7 +15,7 @@ def database():
                "next_update TEXT, "
                "UNIQUE('symbol'))")
 
-    subreddits = ["wallstreetbets", "stocks", "stockmarket", "options", "pennystocks", "investing", "shortsqueeze",
+    subreddits = ["wallstreetbets", "stocks", "options", "pennystocks", "investing", "shortsqueeze",
                   "spacs"]
     for subreddit in subreddits:
         db.execute("CREATE table IF NOT EXISTS {} ("
@@ -104,6 +104,7 @@ def database():
                "updated_date TEXT,"
                "percentage_active FLOAT, "
                "growth FLOAT, "
+               "percentage_price_change FLOAT, "
                "UNIQUE(ticker, subreddit, updated_date) )")
 
     db.execute("CREATE table IF NOT EXISTS twitter_followers ("
@@ -183,6 +184,42 @@ def database():
                "Nov FLOAT, "
                "Dec FLOAT, "
                "Avg FLOAT )")
+
+    db.execute("CREATE table IF NOT EXISTS sec_fillings ("
+               "ticker TEXT, "
+               "fillings TEXT, "
+               "description TEXT, "
+               "filling_date TEXT, "
+               "link TEXT )")
+
+    db.execute("CREATE table IF NOT EXISTS daily_ticker_news ("
+               "Ticker TEXT, "
+               "Date TEXT, "
+               "Title TEXT, "
+               "Link TEXT, "
+               "Sentiment TEXT )")
+
+    db.execute("CREATE table IF NOT EXISTS insider_trading ("
+               "Ticker TEXT, "
+               "Name TEXT, "
+               "Relationship TEXT, "
+               "TransactionDate TEXT, "
+               "TransactionType TEXT, "
+               "Cost FLOAT, "
+               "Shares INTEGER, "
+               "Value INTEGER, "
+               "SharesLeft INTEGER )")
+
+    db.execute("CREATE table IF NOT EXISTS related_tickers ("
+               "ticker TEXT, "
+               "ticker1 TEXT, "
+               "ticker2 TEXT, "
+               "ticker3 TEXT, "
+               "ticker4 TEXT, "
+               "ticker5 TEXT, "
+               "ticker6 TEXT, "
+               "ticker7 TEXT, "
+               "ticker8 TEXT )")
 
     print("Successfully created/updated database")
 

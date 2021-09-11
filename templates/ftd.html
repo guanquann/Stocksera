@@ -34,7 +34,7 @@
             for stocks that are heavily shorted such as AMC and GME, on T+35 date, stocks might experience a surge in price action.
             You can refer to <a href="https://www.reddit.com/r/amcstock/comments/o21ejs/amc_ftds_will_spike_amc_price_21st_22nd_23rd_25th/" target="_blank">this post</a> on Reddit for more information.
             <br><br>
-            High/Consistent FTD: <a href="/ticker/failure_to_deliver/?quote=top_ftd" target="_blank" style="color:rgb(38, 166, 154)">View More</a>
+            Stocks with High/Consistent FTD: <a href="/ticker/failure_to_deliver/?quote=top_ftd" target="_blank" style="color:rgb(38, 166, 154)">View More</a>
         </p>
         <form action="" method="GET" autocomplete="off">
             <div class="search_bar">
@@ -79,6 +79,13 @@
 
         <div class="scrollable_div">
             {{ftd|safe}}
+        </div>
+
+        <div style="margin-top: 30px">
+            <p><b>Related tickers that you might be interested:</b></p>
+            {% for i in related_tickers %}
+                <a href="/ticker/failure_to_deliver/?quote={{i}}" class="related_tickers">{{i}}</a>
+            {% endfor %}
         </div>
 
         <p>Data from: <a href="https://www.sec.gov/data/foiadocsfailsdatahtm" target="_blank">sec.gov</a></p>

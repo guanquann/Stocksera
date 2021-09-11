@@ -122,3 +122,12 @@ iframe {
     display:inline-block;
     vertical-align: middle;
 }
+
+#ssr_msg div {
+    text-align: center;
+    width: fit-content;
+    padding: 5px;
+    margin: 5px auto 5px auto;
+    font-weight: bold;
+    border-radius: 10px;
+}

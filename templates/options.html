@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="{% static 'style/options.css' %}">
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode();display_data();update_table();draw_open_interest_and_volume();draw_max_pain(){% endblock %}
+{% block onload_properties%}restore_dark_mode();display_data();update_table();options_summary(latest_price);draw_max_pain(strike_list, call_loss_list, put_loss_list);draw_open_interest_and_volume();{% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -21,7 +21,7 @@
     <div class="instructions">
         <h2>Options</h2>
         <p>View options chain of your favourite ticker and get the max pain price of the week! Data is updated real time. </p>
-        <form action="" method="GET" autocomplete="off">
+        <form action="" method="GET" autocomplete="off" onsubmit="reset_dropdown()">
             <div class="search_bar">
                 <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
                 <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;"><img src="{% static 'images/search_icon.svg' %}"></button>
@@ -40,7 +40,7 @@
     </div>
 
     <div id="error_msg" style="display:none;" class="instructions {{error}}">
-        <p>There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).</p>
+        <p>{{error_msg}}</p>
     </div>
 
     <div class="contents_div">
@@ -83,45 +83,22 @@
             <h2>Options Table</h2>
             <div class="navigation_menu">
                 <div class="show_selection">Show: </div>
-                <div class="choices choice_selected" onclick="show_choice('list')">List</div>
-                <div class="delimiter">|</div>
-                <div class="choices" onclick="show_choice('straddle')">Straddle</div>
+                <div class="choices choice_selected">Straddle</div>
             </div>
         </div>
 
-        <div id="list_format">
-            <div class="itm_description calls">
-                <div class="itm_date_description">Calls for {{date_selected}}</div>
-                <div class="itm_description_right">
-                    <div class="itm_symbol calls_symbol_background"></div>
-                    <div class="itm">ITM</div>
-                </div>
-            </div>
-            <div id="calls_div">
-                {{calls|safe}}
-            </div>
-
-            <div class="itm_description puts">
-                <div class="itm_date_description">Puts for {{date_selected}}</div>
-                <div class="itm_description_right">
-                    <div class="itm_symbol puts_symbol_background"></div>
-                    <div class="itm">ITM</div>
-                </div>
-            </div>
-            <div id="puts_div">
-                {{puts|safe}}
-            </div>
-        </div>
-
-        <div id="straddle_format" style="display:none">
+        <div id="straddle_format">
             <div id="straddle_div">
-                <div id="straddle_header">
-                    Options for {{date_selected}}
-                </div>
                 {{merge|safe}}
             </div>
         </div>
-        <p>Data from: <a href="https://finance.yahoo.com/" target="_blank">finance.yahoo.com</a></p>
+
+        <div style="margin-top: 30px">
+            <p><b>Related tickers that you might be interested:</b></p>
+            {% for i in related_tickers %}
+                <a href="/ticker/options/?quote={{i}}" class="related_tickers">{{i}}</a>
+            {% endfor %}
+        </div>
     </div>
 </form>
 {% endblock %}
@@ -137,83 +114,16 @@ show_ticker_price(information)
 
 var call_loss_list = {{ call_loss_list|safe }};
 var put_loss_list = {{ put_loss_list|safe }};
-var tr = document.getElementsByTagName("table")[2].querySelectorAll("tr");
+var tr = document.getElementsByTagName("table")[0].querySelectorAll("tr");
 var strike_list = [];
+var calls_itm = 0, calls_otm = 0, puts_itm = 0, puts_otm = 0;
+var next_itm_call_oi = 0, next_itm_call_strike = 0;
+var latest_price = information["regularMarketPrice"]
 
 for (row=1; row<=call_loss_list.length; row++) {
     var td = tr[row].querySelectorAll("td");
-    strike_price = td[5].innerHTML;
+    strike_price = td[2].innerHTML;
     strike_list.push(strike_price);
-}
-
-function draw_max_pain() {      
-    var max_pain_chart = document.getElementById('max_pain_chart');
-    var max_pain_chart = new Chart(max_pain_chart, {
-        type: 'bar',
-        data: {
-            labels: strike_list,
-            datasets: [{
-                label: 'Calls',
-                data: call_loss_list,
-                borderColor: "green",
-                backgroundColor: 'green',
-            },
-            {
-                label: 'Puts',
-                data: put_loss_list,
-                borderColor: "red",
-                backgroundColor: 'red', 
-            }]
-        },
-
-        
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: false,
-                        callback: function(value, index, values) {
-                            return "$" + value + "M";
-                        }
-                    }, 
-                    gridLines: {
-                        drawOnChartArea: false
-                    }   
-                }],
-
-                xAxes: [{
-                    ticks: {
-                        maxTicksLimit: 20,
-                        maxRotation: 45,
-                        minRotation: 0,
-                        callback: function(value, index, values) {
-                            return "$" + value;
-                        }
-                    },
-                    gridLines: {
-                        drawOnChartArea: false
-                    }   
-                }]
-            },
-            // To show value when hover on any part of the graph
-            tooltips: {
-                enabled: true,
-                mode: 'index',
-                intersect: false,
-                callbacks: {
-                    label: function(tooltipItems, data) {
-                        return tooltipItems.yLabel + ' M';
-                    }
-                }
-            },
-            hover: {
-                mode: 'index',
-                intersect: false
-            },
-        },
-    });
 }
 </script>
 {% endblock %}

@@ -20,6 +20,7 @@ Before continuing, register for an API in the links shown below.
 | -------------- |---------------------------------------------------- | ---------------------------------------- |
 | Reddit         | https://www.reddit.com/prefs/apps                   | scheduled_tasks/reddit/config.py         |
 | Twitter        | https://developer.twitter.com/en/portal/dashboard   | scheduled_tasks/get_twitter_followers.py |
+| Finnhub        | https://finnhub.io/                                 | helpers.py
 | Gmail -optional| https://realpython.com/python-send-email/           | email_server.py                          |
 
 You can view a sample of the database in <a href="https://drive.google.com/drive/folders/1qR7ssxnNzOUuvYCWR-kEajyoRoGKjbcT?usp=sharing">this</a> Google Drive link.

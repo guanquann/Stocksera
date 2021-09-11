@@ -34,3 +34,9 @@
     border-bottom: 2px solid wheat !important;
     color: wheat !important;
 }
+
+.ftd_ticker_link {
+    font-weight:bold;
+    color: inherit !important;
+    text-decoration: underline;
+}

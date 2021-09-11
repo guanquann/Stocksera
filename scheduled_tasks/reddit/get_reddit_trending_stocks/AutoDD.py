@@ -304,16 +304,6 @@ def get_quick_stats(ticker_list, min_vol, min_mkt_cap, threads=True):
             if day_change != 0:
                 valid = True
 
-        change_50day = 0
-        if price != "N/A" and price != 0:
-            if avg50day != "N/A" and avg50day > 0:
-                change_50day = ((float(price) - float(avg50day))/float(avg50day))*100
-            else:
-                change_50day = 0
-
-        if change_50day != 0:
-            change_50day = "{:.2f}".format(change_50day)
-
         if volume != "N/A":
             if volume <= 50000:
                 volume_text = volume
@@ -327,6 +317,9 @@ def get_quick_stats(ticker_list, min_vol, min_mkt_cap, threads=True):
         else:
             volume = 0
             volume_text = ""
+
+        if avg50day != "N/A":
+            avg50day = round(avg50day, 2)
 
         if mkt_cap != "N/A":
             if mkt_cap < 1000000000:
@@ -350,7 +343,7 @@ def get_quick_stats(ticker_list, min_vol, min_mkt_cap, threads=True):
 
         # if the ticker has any valid column, and mkt_cap is in the range, append
         if valid and mkt_cap >= min_mkt_cap and volume >= min_vol:
-            stat_list = [symbol, price, day_change, change_50day, volume_text, mkt_cap_text, stock_float, beta]
+            stat_list = [symbol, price, day_change, avg50day, volume_text, mkt_cap_text, stock_float, beta]
             processed_stats_table.append(stat_list)
 
     # construct dataframe

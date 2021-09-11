@@ -16,7 +16,6 @@ prev_bought = db.fetchall()
 prev_bought_ticker = []
 for bought in prev_bought:
     prev_bought_ticker.append(bought[0])
-print("Previously bought tickers: ", prev_bought_ticker)
 
 
 def buy_new_ticker(date):
@@ -128,6 +127,7 @@ def update_bought_ticker_price():
 
 
 if __name__ == '__main__':
+    print("Previously bought tickers: ", prev_bought_ticker)
     db.execute("SELECT date_updated FROM wallstreetbets ORDER BY ID DESC LIMIT 1")
     db_date = db.fetchone()[0]
     buy_new_ticker(db_date)

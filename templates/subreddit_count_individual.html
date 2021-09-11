@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/subreddit_count.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode();subreddit_individual(1){% endblock %}
+{% block onload_properties%}restore_dark_mode();subreddit_individual_table();subreddit_individual(48){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -26,7 +26,7 @@
             As this is meant to track stocks discussion & activity on Reddit, <b>stocks-related subreddit are preferred</b> (e.g: r/AMD_Stock instead of r/AMD).
             <br><br>
             We have now included data of more than 60 subreddits.
-            If you have a subreddit to share, click here to inform us.
+            If you have a subreddit to share, click <a href="/about/" target="_blank">here</a> to inform us.
             Do note that not all subreddits suggested will be included. The post frequency and number of redditors in that subreddit will be considered.
             <br><br>
             Note: If the number of active users in the subreddit is unusually low, it might be a bug on Reddit side. There is nothing we can do about it.
@@ -62,22 +62,21 @@
             <div style="width: max-content;margin: auto;" class="explore"><a href="https://www.reddit.com/r/{{subreddit}}" target="_blank">Explore ></a></div>
         </div>
 
-<!--        <div class="date_selector">-->
-<!--            <button name="date_range" onclick="btn_selected(this); subreddit_count(1)" class="selected">1 Month</button>-->
-<!--            <button name="date_range" onclick="btn_selected(this); subreddit_count(3)">3 Months</button>-->
-<!--            <button name="date_range" onclick="btn_selected(this); subreddit_count(48)">Max</button>-->
-<!--        </div>-->
+        <div class="date_selector" style="margin-top:15px">
+            <button name="date_range" id="1 Months" onclick="btn_selected(this); subreddit_individual(1)">1 Months</button>
+            <button name="date_range" id="3 Months" onclick="btn_selected(this); subreddit_individual(3)">3 Months</button>
+            <button name="date_range" id="Max" onclick="btn_selected(this); subreddit_individual(48)" class="selected">Max</button>
+        </div>
 
-<!--        <div class="chart-container">-->
-<!--            <canvas id="subreddit_chart"></canvas>-->
-<!--        </div>-->
         <div id="chart" class="chart"></div>
-        {{ stats|safe }}
+
+        <div class="scrollable_div">
+            {{ stats|safe }}
+        </div>
     </div>
 {% endblock %}
 
 {% block bottom_script %}
-<!--<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>-->
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script>
     <!--Hack to convert python variables to javascript-->

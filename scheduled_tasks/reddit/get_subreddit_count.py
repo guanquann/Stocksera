@@ -1,7 +1,11 @@
-from datetime import datetime
+import os
+import sys
 import sqlite3
 import praw
+import yfinance as yf
+from datetime import datetime
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..\\..'))
 from scheduled_tasks.reddit.config import *
 
 CLIENT_ID = API_REDDIT_CLIENT_ID
@@ -73,6 +77,8 @@ interested_stocks_subreddits = {
     "CTRM": ["CTRM"],
     "ATER": ["ATERstock"],
     "RKLB": ["RKLB"],
+    "BBIG": ["BBIG"],
+    "SAVA": ["SAVA_stock"]
 }
 
 interested_crypto_subreddits = {
@@ -115,9 +121,8 @@ def subreddit_count():
     for key, subreddit_names in {**interested_stocks_subreddits, **interested_crypto_subreddits}.items():
         for subreddit_name in subreddit_names:
             subreddit = reddit.subreddit(subreddit_name)
-            print("Looking at {} now.".format(subreddit))
+            print("Looking at r/{} now with {} subscribers.".format(subreddit, subscribers))
             subscribers = subreddit.subscribers
-            print(subscribers)
             active = subreddit.accounts_active
             percentage_active = round((active / subscribers)*100, 2)
 
@@ -129,10 +134,54 @@ def subreddit_count():
             except TypeError:
                 growth = 0
 
-            db.execute("INSERT INTO subreddit_count VALUES (?, ?, ?, ?, ?, ?, ?)",
-                       (date_updated, key, subreddit_name, subscribers, active, percentage_active, growth))
+            if key in interested_stocks_subreddits.keys() and key != "SUMMARY":
+                price_df = yf.Ticker(key).history(period="1y", interval="1d").reset_index().iloc[::-1]
+                price_df["% Price Change"] = price_df["Close"].shift(-1)
+                price_df["% Price Change"] = 100 * (price_df["Close"] - price_df["% Price Change"]) / price_df[
+                    "% Price Change"]
+                price_df["Date"] = price_df["Date"].astype(str)
+                price_df = price_df.round(2)
+                change_price = price_df[price_df['Date'] == date_updated]["% Price Change"].values
+                if len(change_price == 1):
+                    change_price = change_price[0]
+                else:
+                    change_price = 0
+            else:
+                change_price = 0
+
+            db.execute("INSERT OR IGNORE INTO subreddit_count VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                       (date_updated, key, subreddit_name, subscribers, active, percentage_active,
+                        growth, change_price))
             conn.commit()
 
 
+def update_last_price():
+    """
+    Update last close price of ticker after market close
+    """
+    db.execute("SELECT updated_date FROM subreddit_count WHERE ticker='AMC' ORDER BY updated_date DESC")
+    last_date = db.fetchone()[0]
+    print(last_date)
+    for key, subreddit_names in interested_stocks_subreddits.items():
+        for subreddit_name in subreddit_names:
+            if key != "SUMMARY":
+                price_df = yf.Ticker(key).history(period="1y", interval="1d").reset_index().iloc[::-1]
+                price_df["% Price Change"] = price_df["Close"].shift(-1)
+                price_df["% Price Change"] = 100 * (price_df["Close"] - price_df["% Price Change"]) / price_df[
+                    "% Price Change"]
+                price_df["Date"] = price_df["Date"].astype(str)
+                price_df = price_df.round(2)
+                # print(price_df)
+                change_price = price_df[price_df['Date'] == last_date]["% Price Change"].values
+                if len(change_price == 1):
+                    change_price = change_price[0]
+                else:
+                    change_price = 0
+                print(change_price, key)
+                db.execute("UPDATE subreddit_count SET percentage_price_change=? WHERE ticker=? AND updated_date=?",
+                           (change_price, key, last_date))
+                conn.commit()
+
+
 if __name__ == '__main__':
-    subreddit_count()
+    update_last_price()

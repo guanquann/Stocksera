@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>StocksEra | Recent News</title>
+    <link rel="stylesheet" href="{% static 'style/format.css' %}">
+    <link rel="stylesheet" href="{% static 'style/insider_trading.css' %}">
+    <script src="{% static 'javascript/format.js' %}"></script>
+    <script src="{% static 'javascript/insider_trading.js' %}"></script>
+</head>
+<body onload="load_table();restore_dark_mode();">
+    <script>restore_dark_mode()</script>
+    <div class="scrollable_div" style="max-height:450px">
+        {{inside_trader_df|safe}}
+    </div>
+</body>
+</html>

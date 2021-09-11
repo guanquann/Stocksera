@@ -15,7 +15,7 @@ import scheduled_tasks.reddit.get_reddit_trending_stocks.fast_yahoo as fast_yaho
 conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
 
-current_date = datetime.now().date()
+current_date = datetime.utcnow().date()
 
 
 def short_volume(symbol):
@@ -53,9 +53,9 @@ def get_30d_data_finra():
     This is an alternative source to shortsvolume.com because shortsvolume.com stopped updating for some reason
     But this is better in the sense that it gets all tickers short volume for the last 30 days and save them to csv
     """
-    last_date = datetime.now().date() - timedelta(days=30)
+    last_date = datetime.utcnow().date() - timedelta(days=30)
     combined_df = pd.DataFrame(columns=["Date", "Symbol", "ShortVolume", "ShortExemptVolume", "TotalVolume", "%Shorted"])
-    while current_date != last_date:
+    while current_date >= last_date:
         print("Looking at " + str(last_date))
         url = r"https://cdn.finra.org/equity/regsho/daily/CNMSshvol{}.txt".format(str(last_date).replace("-", ""))
         s = requests.get(url).content
@@ -76,7 +76,7 @@ def get_30d_data_finra():
     combined_df.to_csv("database/short_volume.csv", index=False)
 
 
-def get_daily_data_finra(date_to_process: datetime.date = datetime.now().date() - timedelta(days=1)):
+def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date()-timedelta(days=1)):
     """
     Get short volume data from https://cdn.finra.org/
     This function gets daily data for popular tickers in scheduled_tasks/get_popular_tickers.py and save them to db
@@ -128,5 +128,5 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.now().date() 
 
 
 if __name__ == '__main__':
-    get_30d_data_finra()
+    # get_30d_data_finra()
     get_daily_data_finra()

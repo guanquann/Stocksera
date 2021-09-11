@@ -189,7 +189,7 @@ def main():
     for symbol, account in interested_accounts.items():
         url = create_url(account)
         json_response = connect_to_endpoint(url)
-        print(symbol, json_response["followers_count"])
+        print("Twitter account of: ", symbol, json_response["followers_count"])
         db.execute("INSERT OR IGNORE INTO twitter_followers VALUES (?, ?, ?)",
                    (symbol, json_response["followers_count"], date_updated))
         conn.commit()

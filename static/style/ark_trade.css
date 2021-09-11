@@ -205,3 +205,8 @@ td div:hover {
 .read_more:hover {
     color: #26a69a;
 }
+
+#ticker_name {
+    border: 1px solid grey;
+    border-radius: 5px;
+}

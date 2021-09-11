@@ -177,3 +177,7 @@
     height: 70vh;
     overflow: scroll;
 }
+
+.no_img_table_img_symbol {
+    text-decoration: underline
+}

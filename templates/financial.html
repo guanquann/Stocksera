@@ -81,7 +81,13 @@
             </div>
             <div id="stockholders_equity_table" class="table_div scrollable_div" style="display: none;"></div>
         </div>
-        <p>Data from: <a href="https://finance.yahoo.com/" target="_blank">finance.yahoo.com</a></p>
+
+        <div style="margin-top: 30px">
+            <p><b>Related tickers that you might be interested:</b></p>
+            {% for i in related_tickers %}
+                <a href="/ticker/financial/?quote={{i}}" class="related_tickers">{{i}}</a>
+            {% endfor %}
+        </div>
     </div>
 
 {% endblock %}

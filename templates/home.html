@@ -30,6 +30,12 @@
                 </div>
             </div>
         </div>
+        <div class="nav_bar_ticker_search_div">
+            <form action="/ticker/" method="GET" autocomplete="off">
+                <input type="text" class="nav_bar_ticker_input" name="quote" placeholder="Ticker Search: ">
+                <input type="submit" hidden>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -146,6 +152,7 @@
             <button onclick="show_discover('low_float', this)">Low Float</button>
             <button onclick="show_discover('ark', this)">ARK Trades</button>
             <button onclick="show_discover('amd_xlnx_ratio', this)">AMD-XLNX Ratio</button>
+            <button onclick="show_discover('earnings', this)">Earnings</button>
         </div>
 
         <div class="section_div_description" id="discover_description">

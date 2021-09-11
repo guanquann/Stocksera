@@ -79,6 +79,10 @@ function show_discover(type, elem) {
         text = "View current AMD-XLNX Share Price Ratio and percentage upside for XLNX when the merger is complete."
         url = "/amd_xlnx_ratio/"
     }
+    else if (type == "earnings") {
+        text = "View earnings calendar of the week."
+        url = "/earnings_calendar/"
+    }
     document.getElementById("discover_description").innerHTML = `
         <div class="section_div_text">${text}</div><div class="href_btn"><a href="${url}">VIEW MORE</a></div>`
 }
@@ -123,7 +127,7 @@ function show_beta(type, elem) {
     }
     else if (type == "covid_beta") {
         text = "With the rise of Covid-19 cases, what are some of the best plays right now?"
-        url = "/beta_covid/"
+        url = "/covid_beta/"
     }
     document.getElementById("beta_description").innerHTML = `
         <div class="section_div_text">${text}</div><div class="href_btn"><a href="${url}">VIEW MORE</a></div>`

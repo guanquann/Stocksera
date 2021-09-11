@@ -12,16 +12,38 @@ Date.prototype.removeDays = function(days) {
 
 function display_top_ftd_table() {
     var tr = document.getElementsByTagName("table")[0].querySelectorAll("tr");
+    tr[0].innerHTML += `
+        <th>T+35 Date</th>`
     for (i=1; i<tr.length; i++) {
         var td = tr[i].querySelectorAll("td");
-        if (td[0].innerHTML != "") {
-            td[1].innerHTML = `<a href="/ticker/failure_to_deliver/?quote=${td[1].innerHTML}" target="_blank" style="font-weight:bold">${td[1].innerHTML}</a>`
+        var date_string = td[0].innerHTML
+        if (date_string != "") {
+            if (td[2].innerHTML >= 500000) {
+                tr[i].style.color = "red"
+                tr[i].style.fontWeight = "bold"
+            }
+
+            td[1].innerHTML = `<a href="/ticker/failure_to_deliver/?quote=${td[1].innerHTML}" target="_blank" class="ftd_ticker_link">${td[1].innerHTML}</a>`
             td[2].innerHTML = Number(td[2].innerHTML).toLocaleString()
             td[3].innerHTML = "$" + td[3].innerHTML
             td[4].innerHTML = "$" + Number(td[4].innerHTML).toLocaleString()
+
+            f35_date = new Date(date_string).addDays(36)
+            month = f35_date.getUTCMonth() + 1;
+            day = f35_date.getUTCDate();
+            year = f35_date.getUTCFullYear();
+            if (day < 10) {
+                day = "0" + day
+            }
+            if (month < 10) {
+                month = "0" + month
+            }
+            f35_date = year + "/" + month + "/" + day;
+            tr[i].innerHTML += `<td>${f35_date}</td>`
         }
         else {
             td[0].style.padding = "15px"
+            tr[i].innerHTML += `<td></td>`
         }
     }
 }
@@ -58,6 +80,12 @@ function display_table() {
         month = f35_date.getUTCMonth() + 1;
         day = f35_date.getUTCDate();
         year = f35_date.getUTCFullYear();
+        if (day < 10) {
+            day = "0" + day
+        }
+        if (month < 10) {
+            month = "0" + month
+        }
         f35_date = year + "/" + month + "/" + day;
         ftd[tr].innerHTML += `<td>${f35_date}</td>`
     }

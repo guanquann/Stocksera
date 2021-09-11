@@ -2,6 +2,7 @@
 Compilation of scheduled tasks to run
 """
 
+import shutil
 import sqlite3
 import scheduled_tasks.create_database as create_database
 import scheduled_tasks.reddit.get_reddit_trending_stocks.scrape_reddit as scrape_reddit_stocks
@@ -19,6 +20,7 @@ import scheduled_tasks.miscellaneous as miscellaneous
 import scheduled_tasks.economy.get_reverse_repo as get_reverse_repo
 import scheduled_tasks.economy.get_inflation as get_inflation
 import scheduled_tasks.economy.get_daily_treasury as get_daily_treasury
+import scheduled_tasks.economy.get_upcoming_events_date as get_upcoming_events_date
 
 # Best to run 1 hour before market opens daily to get trending tickers and subreddit count
 SCRAPE_REDDIT_STOCKS = True
@@ -128,3 +130,6 @@ if __name__ == '__main__':
 
     if TREASURY:
         get_daily_treasury.download_json()
+
+    get_upcoming_events_date.main()
+    shutil.make_archive(r'graph_chart', 'zip', 'static/graph_chart')

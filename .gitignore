@@ -12,3 +12,4 @@ db.sqlite3
 logging.log
 staticfiles
 yfinance.cache
+test.py

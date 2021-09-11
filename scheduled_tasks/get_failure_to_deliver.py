@@ -61,34 +61,44 @@ def get_top_ftd(filename):
     Criteria: more than 3 days of >500000 FTD in 2 weeks
     """
     df = pd.read_csv(filename)
-    df.sort_values(by=["SYMBOL", "SETTLEMENT DATE"], inplace=True)
+    df.sort_values(by=["SYMBOL", "SETTLEMENT DATE"], ascending=False, inplace=True)
     df["PRICE"] = df["PRICE"].apply(lambda x: pd.to_numeric(x, errors='coerce')).fillna(0)
+
+    original_df = df.copy()
+
+    # Criteria
     df = df[df["QUANTITY (FAILS)"] >= 500000]
     df = df[df["PRICE"] >= 5]
     df = df.groupby("SYMBOL").filter(lambda x: len(x) >= 3)
 
-    del df["CUSIP"]
-    del df["DESCRIPTION"]
-    df["SETTLEMENT DATE"] = df["SETTLEMENT DATE"].apply(lambda x: str(x[:4] + "/" + x[4:6] + "/" + x[6:]))
-    df["SETTLEMENT DATE"] = df["SETTLEMENT DATE"].astype(str)
-    df["Amount (FTD x $)"] = (df["QUANTITY (FAILS)"].astype(int) * df["PRICE"].astype(float)).astype(int)
+    # We want to extract all ftd quantities from original df
+    original_df = original_df[original_df["SYMBOL"].isin(df["SYMBOL"].unique())]
 
-    df.rename(columns={"SETTLEMENT DATE": "Date", "SYMBOL": "Symbol",
-                       "QUANTITY (FAILS)": "Failure to Deliver",
-                       "PRICE": "Price"}, inplace=True)
+    del original_df["CUSIP"]
+    del original_df["DESCRIPTION"]
 
-    combined_df = pd.DataFrame(columns=["Date", "Symbol", "Failure to Deliver", "Price", "Amount (FTD x $)"])
-    for i in df["Symbol"].value_counts().index:
-        individual_df = df[df["Symbol"] == i]
+    original_df["SETTLEMENT DATE"] = original_df["SETTLEMENT DATE"].apply(lambda x: str(x[:4] + "/" + x[4:6] + "/" + x[6:]))
+    original_df["SETTLEMENT DATE"] = original_df["SETTLEMENT DATE"].astype(str)
+    original_df["FTD x $"] = (original_df["QUANTITY (FAILS)"].astype(int) * original_df["PRICE"].astype(float)).astype(int)
+
+    original_df.rename(columns={"SETTLEMENT DATE": "Date", "SYMBOL": "Symbol",
+                                "QUANTITY (FAILS)": "FTD",
+                                "PRICE": "Price"}, inplace=True)
+
+    # Sort df based on number of FTD days that meet criteria and add new row between tickers
+    combined_df = pd.DataFrame(columns=["Date", "Symbol", "FTD", "Price", "FTD x $"])
+    for i in df["SYMBOL"].value_counts().index:
+        individual_df = original_df[original_df["Symbol"] == i]
         individual_df = individual_df.append([""])
         combined_df = combined_df.append(individual_df)
     del combined_df[0]
+    print(combined_df)
     combined_df.to_csv("database/failure_to_deliver/top_ftd.csv", index=False)
 
 
 if __name__ == '__main__':
     # convert_to_csv(r"C:\Users\Acer\PycharmProjects\StocksAnalysis\database\failure_to_deliver\cnsfails202108a.txt")
     FOLDER_PATH = r"C:\Users\Acer\PycharmProjects\StocksAnalysis\database\failure_to_deliver\csv"
-    combine_df(folder_path=FOLDER_PATH)
+    # combine_df(folder_path=FOLDER_PATH)
     get_top_ftd(os.path.join(FOLDER_PATH, os.listdir(FOLDER_PATH)[-1]))
 

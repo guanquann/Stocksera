@@ -3,6 +3,21 @@ function expand_iframe(elem) {
     elem.style.height = height + 'px';
 }
 
+function get_ssr() {
+    low_price = document.getElementById("low").innerHTML.replace("$", "").split(": ")[1]
+    previous_close = document.getElementById("previous_close").innerHTML.replace("$", "").split(": ")[1]
+    if (isNaN(low_price) == false & isNaN(previous_close) == false) {
+        difference = previous_close - low_price
+        percent_diff = difference / previous_close
+        if (percent_diff >= 0.10) {
+            document.getElementById("ssr_msg").innerHTML = "<div class='positive_price'>SSR On</div>"
+        }
+        else {
+            document.getElementById("ssr_msg").innerHTML = "<div class='negative_price'>SSR Off</div>"
+        }
+    }
+}
+
 function to_remove(elem, text) {
     parent = elem.parentElement
     elem.remove()
@@ -15,4 +30,10 @@ function to_remove(elem, text) {
     }
     document.getElementsByName(text)[0].style.removeProperty("display")
     parent.firstChild.classList.add("selected")
+}
+
+function submit_onload(elem) {
+    if (elem == "") {
+        document.getElementsByClassName('show_more_btn')[0].form.submit();
+    }
 }

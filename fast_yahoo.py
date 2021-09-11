@@ -10,6 +10,8 @@ from datetime import datetime, timedelta
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) '
                          'Chrome/50.0.2661.102 Safari/537.36'}
 
+# Refer to https://stackoverflow.com/questions/44030983/yahoo-finance-url-not-working for more configs
+# key is the website link, value is the part to extract
 config = {'summaryDetail': ['regularMarketOpen', 'previousClose', 'dayHigh', 'fiftyTwoWeekHigh', 'regularMarketDayLow',
                             'fiftyTwoWeekLow', 'regularMarketVolume', 'averageDailyVolume10Day', 'fiftyDayAverage',
                             'twoHundredDayAverage', 'trailingPE', 'forwardPE', 'marketCap', 'beta',
@@ -20,7 +22,8 @@ config = {'summaryDetail': ['regularMarketOpen', 'previousClose', 'dayHigh', 'fi
           'summaryProfile': ['industry', 'sector', 'website', 'longBusinessSummary'],
           'price': ['longName', 'symbol', 'regularMarketPrice', 'quoteType', 'marketState',
                     'regularMarketChangePercent', 'regularMarketChange',
-                    'postMarketChangePercent', 'postMarketChange', 'preMarketChangePercent', 'preMarketChange']}
+                    'postMarketChangePercent', 'postMarketChange', 'preMarketChangePercent', 'preMarketChange'],
+          'topHoldings': ['holdings', 'sectorWeightings']}
 
 
 def download_advanced_stats(symbol_list, threads=True):
@@ -59,10 +62,11 @@ def download_advanced_stats(symbol_list, threads=True):
                     stat_val = 'N/A'
                     if stat_name in retrieved_module_dict:
                         stat = retrieved_module_dict[stat_name]
+                        # print(stat)
                         if isinstance(stat, dict):
                             if stat:  # only if non-empty otherwise N/A
                                 stat_val = stat['fmt']
-                        elif isinstance(stat, str) or isinstance(stat, numbers.Number):
+                        elif isinstance(stat, str) or isinstance(stat, numbers.Number) or isinstance(stat, list):
                             stat_val = stat
                     stats_list.append(stat_val)
             else:
@@ -101,9 +105,6 @@ def get_ticker_stats(symbol, module_name_map):
         'modules': ','.join(module_list),
     }
     result = requests.get(url, params=params, headers=headers)
-    # if result.status_code != 200 and result.status_code != 404:
-    #     result.raise_for_status()
-
     json_dict = result.json()
     if "quoteSummary" not in json_dict:
         return None
@@ -112,29 +113,3 @@ def get_ticker_stats(symbol, module_name_map):
     module_dict = json_dict['quoteSummary']['result'][0]
 
     return module_dict
-
-
-@multitasking.task
-def quick_stats_request_threaded(request_idx, request_symbol_list, field_list):
-    shared.response_dict[request_idx] = quick_stats_request(request_symbol_list, field_list)
-
-
-def quick_stats_request(request_symbol_list, field_list):
-    """
-    Returns quick stats for up to 1000 tickers in one request. Only returns those tickers that are valid, thus can be
-    used to validate tickers efficiently.
-    """
-    params = {
-        'formatted': 'True',
-        'symbols': ','.join(request_symbol_list),
-        'fields': ','.join(field_list),
-    }
-    result = requests.get("https://query1.finance.yahoo.com/v7/finance/quote", params=params, headers=headers)
-    # if result.status_code != 200 and result.status_code != 404:
-    #     result.raise_for_status()
-
-    json_dict = result.json()
-    if "quoteResponse" not in json_dict:
-        return None
-    data_list = json_dict['quoteResponse']['result']
-    return data_list

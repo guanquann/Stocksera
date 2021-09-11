@@ -75,8 +75,14 @@ function restore_dark_mode() {
 }
 
 function load_error_img(elem, symbol) {
+    if (symbol.length >= 5) {
+        symbol_text = `<div style="font-size:inherit">${symbol}</div>`
+    }
+    else {
+        symbol_text = `<div>${symbol}</div>`
+    }
     document.getElementById("ticker_basic_stats").innerHTML = `<div id="no_img_div">
-    <div>${symbol}</div></div>` + document.getElementById("ticker_basic_stats").innerHTML
+    ${symbol_text}</div>` + document.getElementById("ticker_basic_stats").innerHTML
 }
 
 function load_table_error_img(elem, symbol) {
@@ -143,7 +149,7 @@ function show_ticker_price(information) {
     if (current_mkt_status == "PRE") {
         mkt_pre_post_code = `<div style="font-size:9px">Pre: $${Math.round((Number(latest_price.replace(",", "")) + Number(information["preMarketChange"])) * 100) / 100} (${information["preMarketChangePercent"]})</div> `
     }
-    else if (current_mkt_status == "PREPRE" || current_mkt_status == "POST" || current_mkt_status == "POSTPOST" || current_mkt_status == "CLOSED") {
+    else if ( (current_mkt_status == "PREPRE" || current_mkt_status == "POST" || current_mkt_status == "POSTPOST" || current_mkt_status == "CLOSED")) {
         mkt_pre_post_code = `<div style="font-size:9px">Post: $${Math.round((Number(latest_price.replace(",", "")) + Number(information["postMarketChange"])) * 100) / 100} (${information["postMarketChangePercent"]})</div> `
     }
     else {

@@ -1,7 +1,5 @@
 # StocksEra Developers Guide
 
-### Scheduled Tasks to run 
-
 <b>You should run all commands from the main parent directory</b>
 ```
 # Example of how you should run all the scheduled tasks
@@ -23,18 +21,18 @@ Before continuing, register for an API in the links shown below.
 | Gmail -optional| https://realpython.com/python-send-email/           | email_server.py                          |
 
 You can view a sample of the database in <a href="https://drive.google.com/drive/folders/1qR7ssxnNzOUuvYCWR-kEajyoRoGKjbcT?usp=sharing">this</a> Google Drive link.
-- Transfer graph_chart folder to static directory
-- Transfer database folder to the main parent directory
+- Transfer graph_chart folder to static directory.
+- Transfer database folder to the main parent directory.
 
 #### scheduled_tasks/reddit/get_reddit_trending_stocks/scrape_reddit.py
-- Script to scrape trending tickers in Reddit (r/wallstreetbets, r/StockMarket, r/stocks, r/options, r/pennystocks, r/investing).
+- Script to scrape trending tickers in Reddit (r/wallstreetbets, r/StockMarket, r/stocks, r/options, r/pennystocks...).
 - Additional information (beta, volume, industry, recommendation etc) of the ticker will be extracted from yahoo finance too.
 - Edit your config in scheduled_tasks/config.py. Make sure you have you PRAW API key first.
 - Extension of [https://github.com/kaito1410/AutoDD_Rev2](https://github.com/kaito1410/AutoDD_Rev2)
 
 #### scheduled_tasks/reddit/get_reddit_trending_crypto.py
-- Script to scrape trending crypto in Reddit (r/CryptoCurrenncy)
-- Additional information (circulating supply, max suply etc) will be extracted from CoinGeckoAPI
+- Script to scrape trending crypto in Reddit (r/CryptoCurrenncy).
+- Additional information (circulating supply, max suply etc) will be extracted from CoinGeckoAPI.
 
 #### scheduled_tasks/reddit/get_subreddit_count.py
 - Script to get total number of users and active users in popular subreddits on Reddit.
@@ -52,28 +50,29 @@ You can view a sample of the database in <a href="https://drive.google.com/drive
 - To add a new ticker, add it to list_of_tickers list in full_ticker_list().
 
 #### scheduled_tasks/get_ticker_info.py
-- Get ticker information to cache data in order to speed up rendering time
+- Get ticker information to cache data in order to speed up rendering time.
 
 #### scheduled_tasks/get_short_volume.py
-- Get short volume of ticker
+- Get short volume of ticker.
 
-#### scheduled_tasks/get_news_sentiment.py
-- Get news sentiment of ticker you are interested in.
-- Best to run this daily to identify the trending of news sentiment over time.
+#### scheduled_tasks/get_latest_insider_trading.py
+- Get latest insider trading from Finviz.
+- Note: You should run this script as often as possible (once every few hours) to get latest information.
 
 #### scheduled_tasks/economy/get_reverse_repo.py
-- Get reverse repo transaction
+- Get reverse repo transaction.
 
 #### scheduled_tasks/economy/get_daily_treasury.py
-- Get daily treasury
+- Get daily treasury.
 
 #### scheduled_tasks/economy/get_inflation.py
-- Get monthly inflation
+- Get monthly inflation.
 
 #### scheduled_tasks/economy/get_retail_sales.py
-- Get monthly retail sales and compare it with the number of Covid-19 cases
+- Get monthly retail sales and compare it with the number of Covid-19 cases.
 
 #### scheduled_tasks/economy/get_upcoming_events_date.py
+- Get nect release date for inflation, retail sales, RRP, daily treasury.
 
 #### scheduled_tasks/get_financial.py
 - Get financial data for companies.
@@ -83,8 +82,7 @@ You can view a sample of the database in <a href="https://drive.google.com/drive
 
 #### scheduled_tasks/get_failure_to_deliver.py
 - Get Failure to Deliver data from [SEC](https://www.sec.gov/data/foiadocsfailsdatahtm).
-- Download the txt file. You do not need to convert it to csv. The script automatically does it for you.
-- Run this script once every few weeks.
+- Run this script once every 2 weeks.
 
 #### scheduled_tasks/reset_stocksera_trending.py
-- Reset Stocksera trending table in database
+- Reset Stocksera trending table in database.

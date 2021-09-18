@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>StocksEra | Loading...</title>
+    <script src="{% static 'javascript/format.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'style/format.css' %}">
+</head>
+<body onload="restore_dark_mode();" style="overflow:hidden">
+    <script>restore_dark_mode()</script>
+    <div id="loadingDiv"><div class="loader">Loading...</div></div>
+</body>
+</html>

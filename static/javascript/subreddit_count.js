@@ -596,6 +596,6 @@ function subreddit_individual(duration) {
     };
 
     var data = [trace1, trace2, trace3, trace4];
-    Plotly.newPlot('chart', data, layout, {displayModeBar: false, showTips: true, responsive: true, });
+    Plotly.newPlot('chart', data, layout, {displayModeBar: false, showTips: false, responsive: true, });
 
 }

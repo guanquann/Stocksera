@@ -9,7 +9,7 @@
     <script src="{% static 'javascript/format.js' %}"></script>
     <script src="{% static 'javascript/sec_fillings.js' %}"></script>
 </head>
-<body onload="load_table_url();restore_dark_mode();">
+<body onload="load_table_url();remove_spinner();restore_dark_mode();">
     <script>restore_dark_mode()</script>
     <div class="scrollable_div" style="max-height:450px">
         {{sec_fillings_df|safe}}

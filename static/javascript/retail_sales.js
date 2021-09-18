@@ -115,11 +115,11 @@ function retail_sales(duration) {
                 mode: 'index',
                 intersect: false,
                 callbacks: {
-                    label: function(tooltipItem, data) {
-                        var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                        var label = data.datasets[tooltipItem.datasetIndex].label;
-                        return label + ': $' + value + 'B';
-                    }
+//                    label: function(tooltipItem, data) {
+//                        var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+//                        var label = data.datasets[tooltipItem.datasetIndex].label;
+//                        return label + ': $' + value + 'B';
+//                    }
                 },
             },
             elements: {

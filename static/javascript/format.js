@@ -146,10 +146,10 @@ function show_ticker_price(information) {
     if (current_mkt_status == "REGULAR") {
         mkt_pre_post_code = ""
     }
-    if (current_mkt_status == "PRE") {
+    if (current_mkt_status == "PRE" & information["preMarketChange"] != "N/A") {
         mkt_pre_post_code = `<div style="font-size:9px">Pre: $${Math.round((Number(latest_price.replace(",", "")) + Number(information["preMarketChange"])) * 100) / 100} (${information["preMarketChangePercent"]})</div> `
     }
-    else if ( (current_mkt_status == "PREPRE" || current_mkt_status == "POST" || current_mkt_status == "POSTPOST" || current_mkt_status == "CLOSED")) {
+    else if ( (current_mkt_status == "PREPRE" || current_mkt_status == "POST" || current_mkt_status == "POSTPOST" || current_mkt_status == "CLOSED") & information["postMarketChange"] != "N/A") {
         mkt_pre_post_code = `<div style="font-size:9px">Post: $${Math.round((Number(latest_price.replace(",", "")) + Number(information["postMarketChange"])) * 100) / 100} (${information["postMarketChangePercent"]})</div> `
     }
     else {
@@ -176,6 +176,44 @@ function btn_selected(elem) {
         date_range[i].classList.remove("selected")
     }
     elem.classList.add("selected")
+}
+
+function get_ssr(information) {
+    low_price = information["regularMarketDayLow"]
+    previous_close = information["previousClose"]
+    quote_type = information["quoteType"]
+    if (isNaN(low_price) == false & isNaN(previous_close) == false) {
+        difference = previous_close - low_price
+        percent_diff = difference / previous_close
+        if (quote_type == "EQUITY") {
+            quote_type = "Equity"
+        }
+        if (quote_type != "N/A") {
+            quote_type_div = `<div class='quote_type_color'>${quote_type}</div>`
+        }
+
+        if (percent_diff >= 0.10) {
+            class_type = "positive_price"
+            ssr = "On"
+        }
+        else {
+            class_type = "negative_price"
+            ssr = "Off"
+        }
+        document.getElementById("ssr_msg").innerHTML = `<div class=${class_type}>SSR ${ssr}</div>${quote_type_div}`
+    }
+}
+
+function check_if_us_stock(symbol) {
+    if (symbol.includes(".")) {
+        if (document.getElementById("ticker_chart") != null) {
+            document.getElementById("ticker_chart").style.display = "none"
+        }
+        more_info_div = document.getElementsByClassName("more_info_div")
+        more_info_div[2].style.display = "none"
+        more_info_div[3].style.display = "none"
+        more_info_div[4].style.display = "none"
+    }
 }
 
 function get_date_difference(duration, delimiter) {
@@ -247,6 +285,15 @@ function get_economic_releases(elem) {
                 ${retail_sales_code}
             </div>`
     document.getElementById("releases_div").innerHTML += code
+}
+
+function remove_spinner() {
+    parent.document.querySelector(".loading").style.display = "none"
+}
+
+function expand_iframe(elem) {
+    height = elem.contentWindow.document.body.scrollHeight
+    elem.style.height = height + 'px';
 }
 
 function clickAndDisable(link) {

@@ -14,13 +14,10 @@ analyzer.lexicon.update(new_words)
 
 # https://finnhub.io/
 finnhub_client = finnhub.Client(api_key="API_KEY_HERE")
+finnhub_client2 = finnhub.Client(api_key="API_KEY_HERE")
 
 conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
-
-# Time Format in UTC: HHMMSS.
-market_open_time = "080000"
-market_close_time = "200000"
 
 header = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/"
                         "50.0.2661.75 Safari/537.36", "X-Requested-With": "XMLHttpRequest"}
@@ -110,16 +107,16 @@ def check_market_hours(ticker_selected):
             if ticker_selected in related_tickers:
                 related_tickers.remove(ticker_selected)
             upload_to_db = related_tickers.copy()
-            while len(upload_to_db) <= 8:
+            while len(upload_to_db) <= 6:
                 upload_to_db += [""]
-            db.execute("INSERT INTO related_tickers VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                       tuple([ticker_selected] + upload_to_db[:8]))
+            db.execute("INSERT INTO related_tickers VALUES (?, ?, ?, ?, ?, ?, ?)",
+                       tuple([ticker_selected] + upload_to_db[:6]))
             conn.commit()
         else:
             related_tickers = list(related_tickers[0])[1:]
             related_tickers = [i for i in related_tickers if i != ""]
         if not related_tickers:
-            related_tickers = ["AAPL"]
+            related_tickers = ["AAPL", "TSLA", "NVDA"]
     else:
         related_tickers = []
     return information, related_tickers
@@ -214,22 +211,19 @@ def get_max_pain(chain):
 
 
 def get_sec_fillings(ticker_selected):
-    url = 'https://www.sec.gov/cgi-bin/browse-edgar?CIK={}&action=getcompany&count=100'.format(ticker_selected)
-    r = requests.get(url, headers=header)
-
-    df = pd.read_html(r.text)[-1]
-    if "Format" in df.columns:
-        del df["Format"]
-        del df["File/Film Number"]
-        df["Link"] = df["Description"].apply(lambda k: k.split("Acc-no: ")[-1].split("Size")[0])
-        df["Link"] = df["Link"].apply(
-            lambda l: "https://www.sec.gov/Archives/edgar/data/{}/{}/{}-index.htm".format(ticker_selected,
-                                                                                          l.replace("-", ""), l))
-        df["Description"] = df["Description"].apply(lambda x: x.split("Acc-no: ")[0])
-    else:
-        df = pd.DataFrame(columns=["Fillings", "Description", "Filling Date", "Link"])
-        df.loc[0] = ["N/A", "N/A", "N/A", "https://www.sec.gov/Archives/edgar/data/{}".format(ticker_selected)]
-    return df
+    current_date = datetime.utcnow().date()
+    sec_list = finnhub_client2.filings(symbol=ticker_selected, _from=str(current_date - timedelta(days=365*3)),
+                                       to=str(current_date))[:100]
+    for filling in sec_list:
+        ticker = filling["symbol"]
+        fillings = filling["form"]
+        description = ""
+        filling_date = filling["filedDate"].split()[0]
+        report_url = filling["reportUrl"]
+        filing_url = filling["filingUrl"]
+        db.execute("INSERT INTO sec_fillings VALUES (?, ?, ?, ?, ?, ?)", (ticker, fillings, description, filling_date,
+                                                                          report_url, filing_url))
+        conn.commit()
 
 
 def get_ticker_news(ticker_selected):

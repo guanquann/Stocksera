@@ -111,7 +111,7 @@ function amd_xlnx_ratio_graph() {
                     type: 'line',
                     data: xlnx_price_list,
                     backgroundColor: 'transparent',
-                    borderColor: 'wheat',
+                    borderColor: 'orange',
                 }]
         },
 

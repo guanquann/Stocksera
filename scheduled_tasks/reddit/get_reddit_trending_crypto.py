@@ -1,3 +1,5 @@
+import os
+import sys
 import math
 from collections import Counter
 
@@ -5,6 +7,7 @@ import praw
 from pycoingecko import CoinGeckoAPI
 import matplotlib.pyplot as plt
 
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 from helpers import *
 import scheduled_tasks.reddit.config as cfg
 
@@ -91,10 +94,8 @@ def get_submission_praw(n, sub):
     recent = {}
     subreddit = reddit.subreddit(sub)
     all_results = []
-    count = 0
     for post in subreddit.new(limit=1000):
-        print(count, ": ", datetime.fromtimestamp(post.created_utc), post.title)
-        count += 1
+        # print(count, ": ", datetime.fromtimestamp(post.created_utc), post.title)
         all_results.append([post.title, post.link_flair_text, post.selftext, post.score, post.num_comments,
                             post.created_utc])
 
@@ -310,7 +311,11 @@ def main():
     db.execute("SELECT DISTINCT (date_updated) FROM cryptocurrency")
     dates = db.fetchall()
 
-    db.execute("SELECT * FROM cryptocurrency WHERE date_updated LIKE '%{}%'".format(dates[-1][0].split()[0], ))
+    if dates:
+        last_date = dates[-1][0].split()[0]
+    else:
+        last_date = ""
+    db.execute("SELECT * FROM cryptocurrency WHERE date_updated LIKE '%{}%'".format(last_date, ))
     prev = db.fetchall()
 
     for index, row in results_df.iterrows():
@@ -351,3 +356,7 @@ def main():
             "(NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             tuple(results_df.loc[row_num].tolist()))
         conn.commit()
+
+
+if __name__ == '__main__':
+    main()

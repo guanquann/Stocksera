@@ -18,6 +18,9 @@ session = requests_cache.CachedSession('yfinance.cache')
 session.headers['User-agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) ' \
                                 'Chrome/91.0.4472.124 Safari/537.36'
 
+option_market_open_time = "110000"    # 9.30PM - 2H30MIN = 7PM   133000
+option_market_close_time = "030000"   # 4.15AM + 6H45MIN = 11AM   201500
+
 
 def main(request):
     db.execute("SELECT * FROM stocksera_trending ORDER BY count DESC LIMIT 10")
@@ -70,8 +73,7 @@ def ticker_recommendations(request):
         recommendations["To Grade"] = ["N/A"]
         recommendations["From Grade"] = ["N/A"]
         recommendations["Action"] = ["N/A"]
-    return render(request, 'iframe_format.html', {"title": "Recommendations",
-                                                  "table": recommendations[:100].to_html(index=False)})
+    return render(request, 'recommendations.html', {"table": recommendations[:100].to_html(index=False)})
 
 
 def ticker_major_holders(request):
@@ -99,7 +101,6 @@ def ticker_institutional_holders(request):
         try:
             institutional_holders.columns = (institutional_holders.columns.str.replace("% Out", "Stake"))
             institutional_holders["Stake"] = institutional_holders["Stake"].apply(lambda x: str(f"{100 * x:.2f}") + "%")
-            institutional_holders["Value"] = institutional_holders["Value"].apply(lambda x: "$" + str(x))
         except AttributeError:
             institutional_holders = pd.DataFrame()
             institutional_holders["Holder"] = ["N/A"]
@@ -114,8 +115,8 @@ def ticker_institutional_holders(request):
         institutional_holders["Date Reported"] = ["N/A"]
         institutional_holders["Stake"] = ["N/A"]
         institutional_holders["Value"] = ["N/A"]
-    return render(request, 'iframe_format.html', {"title": "Institutional Holders",
-                                                  "table": institutional_holders.to_html(index=False)})
+    return render(request, 'shareholders.html', {"title": "Institutional Holders",
+                                                 "table": institutional_holders.to_html(index=False)})
 
 
 def ticker_mutual_fund_holders(request):
@@ -128,7 +129,6 @@ def ticker_mutual_fund_holders(request):
     if mutual_fund_holders is not None:
         mutual_fund_holders.columns = (mutual_fund_holders.columns.str.replace("% Out", "Stake"))
         mutual_fund_holders["Stake"] = mutual_fund_holders["Stake"].apply(lambda x: str(f"{100 * x:.2f}") + "%")
-        mutual_fund_holders["Value"] = mutual_fund_holders["Value"].apply(lambda x: "$" + str(x))
     else:
         mutual_fund_holders = pd.DataFrame()
         mutual_fund_holders["Holder"] = ["N/A"]
@@ -136,7 +136,7 @@ def ticker_mutual_fund_holders(request):
         mutual_fund_holders["Date Reported"] = ["N/A"]
         mutual_fund_holders["Stake"] = ["N/A"]
         mutual_fund_holders["Value"] = ["N/A"]
-    return render(request, 'iframe_format.html', {"title": "MutualFund Holders",
+    return render(request, 'shareholders.html', {"title": "MutualFund Holders",
                                                   "table": mutual_fund_holders.to_html(index=False)})
 
 
@@ -150,10 +150,18 @@ def dividend_and_split(request):
     if df is not None:
         df["Dividends"] = "$" + df["Dividends"].astype(str)
         df.sort_values(by=["Date"], ascending=False, inplace=True)
-        df = df.reset_index().to_html(index=False)
+        df = df.reset_index()
     else:
-        df = "N/A"
-    return render(request, 'iframe_format.html', {"title": "Dividend & Split", "table": df})
+        df = pd.DataFrame()
+        df["Date"] = ["N/A"]
+        df["Dividends"] = ["N/A"]
+        df["Stock Splits"] = ["N/A"]
+    return render(request, 'iframe_format.html', {"title": "Dividend & Split", "table": df.to_html(index=False)})
+
+
+def discussion(request):
+    ticker_selected = default_ticker(request)
+    return render(request, 'discussion.html', {"ticker_selected": ticker_selected})
 
 
 def ticker_earnings(request):
@@ -182,8 +190,8 @@ def ticker_earnings(request):
         next_df.rename(columns={"index": "", 0: "Estimate"}, inplace=True)
     else:
         next_df = pd.DataFrame(columns=["Next Earning", "Estimate"])
-        next_df["Next Earning"] = ["Earning Date", "EPS Average", "EPS Low", "EPS High", "Revenue Average", "Revenue Low",
-                                   "Revenue High"]
+        next_df["Next Earning"] = ["Earning Date", "EPS Average", "EPS Low", "EPS High", "Revenue Average",
+                                   "Revenue Low", "Revenue High"]
         next_df["Estimate"] = ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
     return render(request, 'ticker_earnings.html', {"ticker_selected": ticker_selected,
                                                     "ticker_earnings": past_df.to_html(index=False),
@@ -192,21 +200,17 @@ def ticker_earnings(request):
 
 def sec_fillings(request):
     """
-    Get SEC filling from Finviz of ticker selected
+    Get SEC filling from Finnhub of ticker selected
     """
     ticker_selected = default_ticker(request)
     db.execute("SELECT * FROM sec_fillings WHERE ticker=?", (ticker_selected, ))
     sec = db.fetchall()
     if not sec:
-        df = get_sec_fillings(ticker_selected)
-        for index, row in df.iterrows():
-            db.execute("INSERT INTO sec_fillings VALUES (?, ?, ?, ?, ?)",
-                       (ticker_selected, row[0], row[1], row[2], row[3]))
-            conn.commit()
-    else:
-        df = pd.read_sql_query("SELECT * FROM sec_fillings WHERE ticker='{}' ".format(ticker_selected), conn)
-        del df["ticker"]
-        df.rename(columns={"fillings": "Fillings", "description": "Description", "filling_date": "Filling Date"}, inplace=True)
+        get_sec_fillings(ticker_selected)
+    df = pd.read_sql_query("SELECT * FROM sec_fillings WHERE ticker='{}' ".format(ticker_selected), conn)
+    del df["ticker"]
+    df.rename(columns={"filling": "Filling", "description": "Description", "filling_date": "Filling Date"},
+              inplace=True)
     df = df.to_html(index=False)
     return render(request, 'sec_fillings.html', {"sec_fillings_df": df})
 
@@ -250,6 +254,15 @@ def insider_trading(request):
     return render(request, 'insider_trading.html', {"inside_trader_df": inside_trader_df})
 
 
+def latest_insider(request):
+    last_date = str(datetime.utcnow().date() - timedelta(days=30))
+    insider_df = pd.read_sql_query("SELECT Ticker, SUM(Value) AS Amount, TransactionType AS Type "
+                                   "FROM latest_insider_trading WHERE DateFilled>='{}' "
+                                   "GROUP BY Ticker, TransactionType "
+                                   "ORDER BY SUM(Value) DESC LIMIT 50".format(last_date), conn)
+    return render(request, 'latest_insider_trading.html', {"insider_df": insider_df.to_html(index=False)})
+
+
 def historical_data(request):
     """
     Allow users to filter/sort historical data of ticker
@@ -271,7 +284,6 @@ def historical_data(request):
 
     del price_df["Dividends"]
     del price_df["Stock Splits"]
-
     # Add % Price Change, Amplitude, % Vol Change columns
     price_df["% Price Change"] = price_df["Close"].shift(-1)
     price_df["% Price Change"] = 100 * (price_df["Close"] - price_df["% Price Change"]) / price_df["% Price Change"]
@@ -289,11 +301,6 @@ def historical_data(request):
     else:
         order = "Descending"
 
-    if order == "Descending":
-        price_df.sort_values(by=[sort_by], inplace=True, ascending=False)
-    else:
-        price_df.sort_values(by=[sort_by], inplace=True)
-
     price_df = price_df.round(2)
     price_df = price_df.replace([np.inf, -np.inf], np.nan)
     price_df = price_df.fillna(0)
@@ -307,14 +314,27 @@ def historical_data(request):
     price_df.index = np.arange(1, len(price_df) + 1)
     price_df.reset_index(inplace=True)
     price_df.rename(columns={"index": "Rank"}, inplace=True)
+
+    summary_df = price_df.head(50).groupby(["Day"]).mean()
+    summary_df.reset_index(inplace=True)
+    summary_df = summary_df.groupby(['Day']).sum().reindex(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])
+    summary_df.reset_index(inplace=True)
+
+    if order == "Descending":
+        price_df.sort_values(by=[sort_by], inplace=True, ascending=False)
+    else:
+        price_df.sort_values(by=[sort_by], inplace=True)
     price_df = price_df.to_html(index=False)
+
+    summary_df = pd.DataFrame(summary_df[["Day", "% Price Change"]]).to_html(index=False)
 
     return render(request, 'historical_data.html', {"ticker_selected": ticker_selected,
                                                     "sort_by": sort_by,
                                                     "order": order,
                                                     "timeframe": timeframe,
                                                     "latest_date": latest_date,
-                                                    "price_df": price_df})
+                                                    "price_df": price_df,
+                                                    "summary_df": summary_df})
 
 
 def google_trends(request):
@@ -334,27 +354,32 @@ def google_trends(request):
         timeframe = "today 12-m"
 
     # cat=7 refers to finance and investing section in Google
-    trends.build_payload(kw_list=[ticker_selected], timeframe=timeframe, cat=7)
+    trends.build_payload(kw_list=[ticker_selected], timeframe=timeframe)  #  cat=7
     interest_over_time = trends.interest_over_time().reset_index()
 
-    # Sort trends by country level
-    interest_by_region = trends.interest_by_region(resolution='COUNTRY', inc_low_vol=False, inc_geo_code=False).\
-        reset_index().sort_values([ticker_selected], ascending=False).head(20).reset_index()
-    region_list = interest_by_region["geoName"].to_list()
-    region_count_list = interest_by_region[ticker_selected].to_list()
+    interest_over_time = interest_over_time.rename(columns={ticker_selected: "score"})
+
+    if interest_over_time.empty:
+        interest_over_time = pd.DataFrame(columns=["date", "score"])
+    if timeframe == "today 12-m":
+        interval = "1wk"
+        interest_over_time["date"] = interest_over_time["date"] + timedelta(days=1)
+    else:
+        interval = "1d"
+
+    history_df = yf.Ticker(ticker_selected).history(period="1y", interval=interval)
+    interest_over_time = pd.merge(interest_over_time, history_df, right_on=["Date"],
+                                  left_on=["date"])[["date", "score", "Close"]]
 
     # Map api variable to clearer format
-    mapping_dict = {"now 7-d": "Past 7 days",
-                    "today 1-m": "Past 30 days",
+    mapping_dict = {"today 1-m": "Past 30 days",
                     "today 3-m": "Past 90 days",
                     "today 12-m": "Past 12 months"}
     timeframe = mapping_dict[timeframe]
-
     return render(request, "google_trend.html", {"interest_over_time": interest_over_time.to_html(index=False),
                                                  "ticker_selected": ticker_selected,
                                                  "timing_selected": timeframe,
-                                                 "region_list": region_list,
-                                                 "region_count_list": region_count_list})
+                                                 })
 
 
 def financial(request):
@@ -412,20 +437,18 @@ def options(request):
             #   3. Market is open
             current_datetime = datetime.utcnow()
             current_str_time = str(current_datetime).split()[1].replace(":", "").split(".")[0]
-            print(current_str_time, "current_str_time")
-            # options market opens at 9.30AM NYSE time, closes at 4.15PM NYSE time
-            option_market_open_time = "133000"  #9.30PM - 2H30MIN = 7PM
-            option_market_close_time = "201500"  #4.15AM + 6H45MIN = 11AM
 
             data = check_json(r)
             if ticker_selected in data:
-                print("Using cached option data for {}. Looking for correct date now...".format(ticker_selected))
+                print("{} in option data. Looking for correct date now...".format(ticker_selected))
                 options_info = data[ticker_selected]
             else:
-                # weekday and current time is in range and ticker not in db
-                if current_datetime.weekday() < 5 and option_market_open_time <= current_str_time <= \
-                        option_market_close_time:
-                    print("No option data/data expired for {}. Scraping data now".format(ticker_selected))
+                # weekday, option mkt open and current time is in range and ticker not in db
+                # if current_datetime.weekday() < 5 and option_market_open_time <= current_str_time <= \
+                #         option_market_close_time:
+                if current_datetime.weekday() < 5 and (option_market_open_time <= current_str_time <= "235959"
+                                                       or current_str_time < option_market_close_time):
+                    print("No option data for {} & mkt open. Scraping data now".format(ticker_selected))
                     options_info = save_options_to_json([ticker_selected])[ticker_selected]
                 # weekend ... ticker not in db
                 elif current_datetime.weekday() >= 5:
@@ -453,19 +476,25 @@ def options(request):
                 date_selected = options_dates[0]
 
             if date_selected in options_info["CurrentDate"]:
-                print("Ticker {} present, same date".format(ticker_selected))
                 options_info = options_info["CurrentDate"][date_selected]
-
-                if str(current_datetime) > options_info["NextUpdate"] and current_datetime.weekday() < 5 and \
-                        option_market_open_time <= current_str_time <= option_market_close_time:
+                if str(current_datetime) > options_info["NextUpdate"] and \
+                        current_datetime.weekday() < 5 and \
+                        (option_market_open_time <= current_str_time <= "235959"
+                         or current_str_time < option_market_close_time):
                     print("Ticker {} present, same date but outdated".format(ticker_selected))
                     options_info = save_options_to_json([ticker_selected], int(datetime.timestamp(
                         datetime.strptime(date_selected, "%Y-%m-%d") + timedelta(seconds=0))))[
                         ticker_selected]["CurrentDate"][date_selected]
+                else:
+                    print("Ticker {} present, same date and not outdated".format(ticker_selected))
 
             else:
-                if (current_datetime.weekday() < 5 and option_market_open_time <= current_str_time <=
-                        option_market_close_time) or current_datetime.weekday() >= 5:
+                # if (current_datetime.weekday() < 5 and option_market_open_time <= current_str_time <=
+                #         option_market_close_time) or current_datetime.weekday() >= 5:
+                if (current_datetime.weekday() < 5 and
+                    (option_market_open_time <= current_str_time <= "235959" or
+                     current_str_time < option_market_close_time)) or \
+                        current_datetime.weekday() >= 5:
                     print("Ticker {} present, but not same date".format(ticker_selected))
                     options_info = save_options_to_json([ticker_selected], int(datetime.timestamp(datetime.strptime(date_selected, "%Y-%m-%d") + timedelta(seconds=0))))[ticker_selected]["CurrentDate"][date_selected]
                 else:
@@ -581,6 +610,7 @@ def failure_to_deliver(request):
         ftd = ftd[::-1]
         ftd["Amount (FTD x $)"] = (ftd["Failure to Deliver"].astype(int) * ftd["Price"].astype(float)).astype(int)
         del ftd["Symbol"]
+        ftd = ftd[['Date', 'Failure to Deliver', 'Price', 'Amount (FTD x $)', 'T+35 Date']]
 
         if "download_csv" in request.GET:
             file_name = "{}_ftd.csv".format(ticker_selected)
@@ -739,6 +769,19 @@ def subreddit_count(request):
         subscribers = list(map(list, subscribers))
     return render(request, 'subreddit_count.html', {"subscribers": subscribers,
                                                     "interested_subreddits": all_subreddits})
+
+
+def wsb_live(request):
+    db.execute("SELECT ticker FROM wsb_trending_24H GROUP BY ticker ORDER BY SUM(mentions) DESC LIMIT 10")
+    top_10 = db.fetchall()
+    trending_list = list()
+    for ticker in top_10:
+        db.execute("SELECT ticker, date_updated, SUM(mentions) OVER (ROWS UNBOUNDED PRECEDING) AS mentions FROM "
+                   "wsb_trending_24H where ticker=?", (ticker[0],))
+        running_sum = db.fetchall()
+        running_sum = list(map(list, running_sum))
+        trending_list.append(running_sum)
+    return render(request, 'wsb_live.html', {"trending_list": trending_list})
 
 
 def market_overview(request):
@@ -919,6 +962,10 @@ def about(request):
         suggestions = request.POST.get("suggestions")
         send_email(name, email, suggestions)
     return render(request, 'about.html')
+
+
+def loading_spinner(request):
+    return render(request, 'loading_spinner.html')
 
 
 def custom_page_not_found_view(request, exception):

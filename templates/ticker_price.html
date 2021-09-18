@@ -9,14 +9,14 @@
 <script src="{% static 'javascript/ticker_price.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}display_data();restore_dark_mode();get_ssr();submit_onload('{{error}}');to_remove(document.getElementsByClassName('show_more_btn')[0], 'Historical Data'){% endblock %}
+{% block onload_properties%}display_data();restore_dark_mode();check_if_us_stock('{{ticker_selected}}');submit_onload('{{error}}');to_remove(document.getElementsByClassName('show_more_btn')[0], 'Historical Data'){% endblock %}
  
 {% block main_nav %}
     <a href="/">Stocksera</a> / <a href="/ticker/?quote={{ticker_selected}}">Analysis [{{ticker_selected}}]</a>
 {% endblock %}
 
 {% block main_content %}
-<script>highlight_selected_nav('stocks_analysis')</script>
+<script>highlight_selected_nav('stocks_analysis');</script>
 <div>
     <div class="instructions">
         <h2>Ticker Analysis</h2>
@@ -64,11 +64,40 @@
 
                 <div class="ticker_summary"></div>
 
-                <div style="margin-top: 30px">
+                <div class="btn_div_reminder"><i>Scroll right to view more</i></div>
+                <div class="main_btn_div">
                     <div class="btn_div">
                         <form action="/historical_data" method="GET" autocomplete="off" target="Historical Data" >
                             <input style="display: none" name="quote" value="{{ticker_selected}}">
                             <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Historical Data')">Historical Data</button>
+                        </form>
+                    </div>
+
+                    <div class="btn_div">
+                        <form action="/insider_trading" method="GET" autocomplete="off" target="Insider Trading">
+                            <input style="display: none" name="quote" value="{{ticker_selected}}">
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Insider Trading')">Insider Trading</button>
+                        </form>
+                    </div>
+
+                    <div class="btn_div">
+                        <form action="/sub_news" method="GET" autocomplete="off" target="News Sentiment">
+                            <input style="display: none" name="quote" value="{{ticker_selected}}">
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'News Sentiment')">News Sentiment</button>
+                        </form>
+                    </div>
+
+                    <div class="btn_div">
+                        <form action="/google_trends" method="GET" autocomplete="off" target="Google Trends">
+                            <input style="display: none" name="quote" value="{{ticker_selected}}">
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Google Trends')">Google Trends</button>
+                        </form>
+                    </div>
+
+                    <div class="btn_div">
+                        <form action="/sec_fillings" method="GET" autocomplete="off" target="SEC Fillings">
+                            <input style="display: none" name="quote" value="{{ticker_selected}}">
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'SEC Fillings')">SEC Fillings</button>
                         </form>
                     </div>
 
@@ -94,13 +123,6 @@
                     </div>
 
                     <div class="btn_div">
-                        <form action="/dividend_and_split" method="GET" autocomplete="off" target="Dividend & Splits">
-                            <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Dividend & Splits')">Dividend & Splits</button>
-                        </form>
-                    </div>
-
-                    <div class="btn_div">
                         <form action="/ticker_earnings" method="GET" autocomplete="off" target="Earnings">
                             <input style="display: none" name="quote" value="{{ticker_selected}}">
                             <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Earnings')">Earnings</button>
@@ -115,33 +137,21 @@
                     </div>
 
                     <div class="btn_div">
-                        <form action="/sec_fillings" method="GET" autocomplete="off" target="SEC Fillings">
+                        <form action="/dividend_and_split" method="GET" autocomplete="off" target="Dividend & Splits">
                             <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'SEC Fillings')">SEC Fillings</button>
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Dividend & Splits')">Dividend & Splits</button>
                         </form>
                     </div>
 
                     <div class="btn_div">
-                        <form action="/sub_news" method="GET" autocomplete="off" target="News Sentiment">
+                        <form action="/discussion" method="GET" autocomplete="off" target="Discussion">
                             <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'News Sentiment')">News Sentiment</button>
-                        </form>
-                    </div>
-
-                    <div class="btn_div">
-                        <form action="/google_trends" method="GET" autocomplete="off" target="Google Trends">
-                            <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Google Trends')">Google Trends</button>
-                        </form>
-                    </div>
-
-                    <div class="btn_div">
-                        <form action="/insider_trading" method="GET" autocomplete="off" target="Insider Trading">
-                            <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Insider Trading')">Insider Trading</button>
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Discussion')">Discussion</button>
                         </form>
                     </div>
                 </div>
+
+                <iframe class="loading" src="/loading/"></iframe>
                 <iframe class="more_details" name="Historical Data" scrolling="no" onload="expand_iframe(this)"></iframe>
                 <iframe style="display: none" class="more_details" name="Major Holders" scrolling="no" onload="expand_iframe(this)"></iframe>
                 <iframe style="display: none" class="more_details" name="Institutional Holders" scrolling="no" onload="expand_iframe(this)"></iframe>
@@ -152,7 +162,8 @@
                 <iframe style="display: none" class="more_details" name="SEC Fillings" scrolling="no" onload="expand_iframe(this)"></iframe>
                 <iframe style="display: none" class="more_details" name="Google Trends" scrolling="no" onload="expand_iframe(this)"></iframe>
                 <iframe style="display: none" class="more_details" name="News Sentiment" scrolling="no" onload="expand_iframe(this)"></iframe>
-                <iframe style="display: none" class="more_details" name="Insider Trading" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe style="display: none" class="more_details" name="Insider Trading" id="insider_trading" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe style="display: none" class="more_details" name="Discussion" scrolling="no" onload="expand_iframe(this)"></iframe>
 
                 <div style="margin-top: 30px">
                     <p><b>Related tickers that you might be interested:</b></p>
@@ -161,15 +172,6 @@
                     {% endfor %}
                 </div>
                 <br>
-
-<!--                <div style="margin-top: 30px">
-                    <p><b>Related tickers that you might be interested:</b></p>
-                    <div style="display: flex">
-                        {% for i in related_tickers %}
-                            <div><a href="/ticker/?quote={{i}}" class="related_tickers">{{i}}</a></div>
-                        {% endfor %}
-                    </div>
-                </div>-->
             </div>
         </div>
     </div>
@@ -182,160 +184,7 @@
 var None = "N/A", False = false; True = true;
 var information = {{information|safe}};
 show_ticker_price(information)
-
-<!--Check if input is an ETF/Crypto/Stock and display information to user accordingly-->
-var quoteType = information["quoteType"]
-if (quoteType == "ETF") {
-    var summary = check_stats("longBusinessSummary").replace(/[^\x00-\x7F]/g, "");
-    var official_name = check_stats("longName");
-    var total_assets = information["totalAssets"];
-    var navPrice = check_stats("navPrice");
-    var three_year_return = information["threeYearAverageReturn"];
-    var five_year_return = information["fiveYearAverageReturn"];
-    var beta = check_stats("beta3Year");
-    var yield = check_stats("Yield");
-    var dividend_yield = information["trailingAnnualDividendYield"];
-    var dividend_amount = information["trailingAnnualDividendRate"];
-    table_part_ii_code = `
-        <tr>
-            <td>Total Assets: ${total_assets}</td>
-            <td>NAV: ${navPrice}</td>
-        </tr>
-        <tr>
-            <td>3Y Annual Return: ${three_year_return}</td>
-            <td>5Y Annual Return: ${five_year_return}</td>
-        </tr>
-        <tr>
-            <td>Beta: ${beta}</td>
-            <td>Yield: ${yield}</td>
-        </tr>
-        <tr>
-            <td>Div. Yield: ${dividend_yield}</td>
-            <td>Dividend: ${dividend_amount}</td>
-        </tr>`
-    document.getElementById("more_info_div").style.removeProperty("display");
-    document.getElementsByClassName("more_info_div")[1].style.display = "none";
-    btn_div = document.getElementsByClassName("btn_div")
-    btn_div[1].style.display = "none"
-    btn_div[2].style.display = "none"
-    btn_div[3].style.display = "none"
-    btn_div[5].style.display = "none"
-    btn_div[6].style.display = "none"
-    btn_div[7].style.display = "none"
-    btn_div[10].style.display = "none"
-}
-
-else if (quoteType == "CRYPTOCURRENCY") {
-    var summary = check_stats("description").replace(/[^\x00-\x7F]/g, "");
-    var official_name = check_stats("shortName");
-    var mkt_cap = information["marketCap"];
-    var supply = information["circulatingSupply"];
-    table_part_ii_code = `
-        <tr>
-            <td>Mkt Cap: ${mkt_cap}</td>
-            <td>Circulating Supply: ${supply}</td>
-        </tr>
-    `
-}
-
-else {
-    var summary = check_stats("longBusinessSummary").replace(/[^\x00-\x7F]/g, "");
-    var official_name = check_stats("longName");
-    var beta = check_stats("beta")
-    var eps = check_stats("trailingEps")
-    var p_e_ratio = check_stats("trailingPE")
-    var forward_p_e = check_stats("forwardPE")
-
-    var outstanding_shares = information["sharesOutstanding"]
-    var floating_shares = information["floatShares"]
-    var short_ratio = information["shortRatio"]
-    var peg_ratio = information["pegRatio"]
-    var enterpriseToRevenue = information["enterpriseToRevenue"]
-    var income = information["netIncomeToCommon"]
-    var mkt_cap = information["marketCap"];
-    var short_percent = information["shortPercentOfFloat"]
-    var dividend_yield = information["trailingAnnualDividendYield"]
-    var dividend_amount = information["trailingAnnualDividendRate"]
-    if (dividend_yield != "N/A") {
-        dividend_amount = "$" + String(dividend_amount)
-    }
-    table_part_ii_code = `
-        <tr>
-            <td>Outstanding Shares: ${outstanding_shares}</td>
-            <td>Floating Shares: ${floating_shares}</td>
-        </tr>
-        <tr>
-            <td>Short Ratio: ${short_ratio}</td>
-            <td>Short % of Float: ${short_percent}</td>
-        </tr>
-        <tr>
-            <td>P/E: ${p_e_ratio}</td>
-            <td>Forward P/E: ${forward_p_e}</td>
-        </tr>
-        <tr>
-            <td>PEG Ratio: ${peg_ratio}</td>
-            <td>Enterprise value / Revenue: ${enterpriseToRevenue}</td>
-        </tr>
-        <tr>
-            <td>Income: ${income}</td>
-            <td>Mkt Cap: ${mkt_cap}</td>
-        </tr>
-        <tr>
-            <td>Beta: ${beta}</td>
-            <td>EPS: ${eps}</td>
-        </tr>
-        <tr>
-            <td>Div. Yield: ${dividend_yield}</td>
-            <td>Dividend: ${dividend_amount}</td>
-        </tr>`
-    document.getElementById("more_info_div").style.removeProperty("display");
-}
-
-<!--Code to display image, full name, symbol, industry and sector-->
-var sector = check_stats("sector")
-var industry = check_stats("industry")
-
-<!--If ticker does not have a website, bring users to Yahoo Finance-->
-if (information.hasOwnProperty("website") == true && information["website"] != "N/A") {
-    var website = information["website"]
-}
-else {
-    var website = `https://finance.yahoo.com/quote/${information["symbol"]}`
-}
-
-<!--Code to show summary of ticker-->
-var summary_code = `
-    <p class="header">
-        <b>Summary</b>
-    </p>${summary}<br>
-    <a href=${website} target="_blank" class="read_more"><i>${website}</i></a>`
-document.getElementsByClassName("ticker_summary")[0].innerHTML = summary_code;
-
-
-<!--Code to show basic statistics of ticker-->
-table_code = `
-    <table>
-        <tr>
-            <td>Open: $${information["regularMarketOpen"]}</td>
-            <td id="previous_close">Prev Close: $${information["previousClose"]}</td>
-        </tr>
-        <tr>
-            <td>High: $${information["dayHigh"]}</td>
-            <td>52-wk High: $${information["fiftyTwoWeekHigh"]}</td>
-        </tr>
-        <tr>
-            <td id="low">Low: $${information["regularMarketDayLow"]}</td>
-            <td>52-wk Low: $${information["fiftyTwoWeekLow"]}</td>
-        </tr>
-        <tr>
-            <td>Volume: ${information["regularMarketVolume"]}</td>
-            <td>10D Avg Vol: ${information["averageDailyVolume10Day"]}</td>
-        </tr>
-        <tr>
-            <td>50D SMA: $${information["fiftyDayAverage"]}</td>
-            <td>200D SMA: $${information["twoHundredDayAverage"]}</td>
-        </tr>`
-table_code += table_part_ii_code + "</table>";
-document.getElementsByClassName("scrollable_div")[0].innerHTML = table_code;
+get_ssr(information)
+show_ticker_table(information)
 </script>
 {% endblock %}

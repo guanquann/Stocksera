@@ -2,20 +2,21 @@
 Compilation of scheduled tasks to run
 """
 
-import shutil
+import os
 import sqlite3
+from pathlib import Path
 import scheduled_tasks.create_database as create_database
 import scheduled_tasks.reddit.get_reddit_trending_stocks.scrape_reddit as scrape_reddit_stocks
 import scheduled_tasks.reddit.get_reddit_trending_crypto as scrape_reddit_crypto
 import scheduled_tasks.reddit.get_subreddit_count as get_subreddit_count
 import scheduled_tasks.reddit.buy_trending_tickers as buy_trending_tickers
 import scheduled_tasks.get_twitter_followers as get_twitter_followers
-import scheduled_tasks.get_news_sentiment as get_news_sentiment
 import scheduled_tasks.get_short_volume as get_short_volume
 import scheduled_tasks.get_ticker_info as get_ticker_info
 import scheduled_tasks.get_financial as get_financial
 import scheduled_tasks.get_earnings_calendar as get_earnings_calendar
 import scheduled_tasks.get_failure_to_deliver as get_failure_to_deliver
+import scheduled_tasks.get_latest_insider_trading as get_latest_insider_trading
 import scheduled_tasks.miscellaneous as miscellaneous
 import scheduled_tasks.economy.get_reverse_repo as get_reverse_repo
 import scheduled_tasks.economy.get_inflation as get_inflation
@@ -43,9 +44,6 @@ TICKER_FINANCIAL = False
 # If you want to get short volume of individual tickers
 SHORT_VOL = False
 
-# If you want to get news sentiment from Finviz
-NEWS_SENTIMENT = True
-
 # If you want to get tickers with low float
 LOW_FLOAT = True
 
@@ -57,6 +55,9 @@ EARNINGS_CALENDAR = False
 
 # If you want to update Failure to Deliver
 FTD = False
+
+# Get latest insider trading from Finviz
+LATEST_INSIDER_TRADING = False
 
 # If you want to get reverse repo data
 RRP = False
@@ -108,9 +109,6 @@ if __name__ == '__main__':
         get_short_volume.get_30d_data_finra()
         get_short_volume.get_daily_data_finra()
 
-    if NEWS_SENTIMENT:
-        get_news_sentiment.news_sentiment()
-
     if LOW_FLOAT:
         miscellaneous.get_low_float()
 
@@ -121,13 +119,16 @@ if __name__ == '__main__':
         get_earnings_calendar.insert_earnings_into_db(get_earnings_calendar.get_earnings(7, forward=True))
 
     if FTD:
-        # Uncomment this if there is not new FTD txt file from SEC
-        # get_failure_to_deliver.convert_to_csv(ftd_txt_file_name="INSERT_FTD_TXT_FILE_PATH")
+        get_failure_to_deliver.download_ftd()
         FOLDER_PATH = r"C:\Users\Acer\PycharmProjects\StocksAnalysis\database\failure_to_deliver\csv"
         get_failure_to_deliver.combine_df(folder_path=FOLDER_PATH)
+        get_failure_to_deliver.get_top_ftd(sorted(Path(FOLDER_PATH).iterdir(), key=os.path.getmtime)[0])
 
     if RRP:
         get_reverse_repo.reverse_repo()
+
+    if LATEST_INSIDER_TRADING:
+        get_latest_insider_trading.latest_insider_trading()
 
     if INFLATION:
         get_inflation.inflation()
@@ -139,4 +140,3 @@ if __name__ == '__main__':
         get_retail_sales.retail_sales()
 
     get_upcoming_events_date.main()
-    shutil.make_archive(r'graph_chart', 'zip', 'static/graph_chart')

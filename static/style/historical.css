@@ -21,5 +21,19 @@ select {
 }
 
 #general_stats {
-    margin-bottom: 15px;
+    text-align: center;
+}
+
+.chart-container {
+    position: relative;
+    width:98%;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.avg_price_change {
+    text-align:center;
+    margin-bottom: 3px;
+    font-weight: bold;
 }

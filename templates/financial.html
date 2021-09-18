@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/financial.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}display_data();restore_dark_mode(){% endblock %}
+{% block onload_properties%}display_data();check_if_us_stock('{{ticker_selected}}');restore_dark_mode(){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -47,6 +47,7 @@
 
     <div class="contents_div">
         <div id="ticker_basic_stats"></div>
+        <div id="ssr_msg"></div>
 
         <div><i>Note: All numbers are in millions</i></div>
 
@@ -100,6 +101,7 @@
 var None = "N/A", False = false; True = true;
 var information = {{information|safe}};
 show_ticker_price(information)
+get_ssr(information)
 
 var date_list = {{date_list|safe}};
 var balance_list = {{balance_list|safe}};

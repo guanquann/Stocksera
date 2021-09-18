@@ -17,6 +17,10 @@
 
     .main_logo {
         margin: 12px auto;
+        width: 80%;
+        border-radius: 0;
+        border: 0;
+        display: inherit;
     }
 
     #top_nav_bar {
@@ -51,6 +55,13 @@
 		font-size: 11px;
 		height:calc(100vh - 30px);
 	}
+
+	.hamburger {
+        padding: 6px 3px 10px 10px;
+        display: inline-block;
+        vertical-align: middle;
+        transform: scale(.7);
+    }
 
 	.nav_bar_ticker_search_div {
         padding: 6px;
@@ -130,7 +141,7 @@
         position: fixed;
         width: 100%;
         overflow: hidden;
-        height: 35px;
+        height: 40px;
         box-sizing: content-box;
         z-index: 999;
         border-bottom: 1px solid darkgrey;
@@ -148,6 +159,16 @@
         padding: 4.5px;
         text-transform: uppercase;
         max-width: 70px;
+    }
+
+    #ssr_msg div {
+        text-align: center;
+        width: fit-content;
+        padding: 3px;
+        margin: 3px;
+        font-weight: bold;
+        border-radius: 7px;
+        display: inline-block
     }
 
     #no_img_div {
@@ -293,6 +314,10 @@
         padding: 5px;
         border-radius: 5px
     }
+
+    .loader {
+        font-size: 2px !important;
+    }
 }
 
 @media only screen and (min-width: 900px) {
@@ -307,6 +332,10 @@
 
     .main_logo {
         margin: 10px auto;
+        width: 65%;
+        border-radius: 0;
+        border: 0;
+        display: inherit;
     }
 
     #top_nav_bar {
@@ -336,6 +365,13 @@
 		bottom:0;
         border-right: 1px solid darkgrey;
 	}
+
+	.hamburger {
+        padding: 1px 3px 10px 10px;
+        display: inline-block;
+        vertical-align: middle;
+        transform: scale(.7);
+    }
 
     .nav_bar_ticker_search_div {
         padding: 12px;
@@ -429,6 +465,16 @@
         padding: 7px;
         text-transform: uppercase;
         max-width: 90px;
+    }
+
+    #ssr_msg div {
+        text-align: center;
+        width: fit-content;
+        padding: 5px;
+        margin: 5px;
+        font-weight: bold;
+        border-radius: 10px;
+        display: inline-block
     }
 
     #no_img_div {
@@ -595,13 +641,6 @@ select {
 
 input:focus, select:focus, button:focus, textarea:focus {
 	outline: none;
-}
-
-.main_logo {
-	width: 65%;
-	border-radius: 0;
-	border: 0;
-    display: inherit;
 }
 
 .nav_bar img {
@@ -861,6 +900,10 @@ input:focus + .slider {
     color: rgb(38, 166, 154);
 }
 
+#ssr_msg {
+    text-align: center;
+}
+
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
@@ -1014,6 +1057,11 @@ input:focus + .slider {
     color: white;
 }
 
+.quote_type_color {
+    background-color: grey;
+    color: white;
+}
+
 .table_ticker_logo {
     border-radius: 50%;
     margin-right: 6px;
@@ -1046,13 +1094,6 @@ input:focus + .slider {
 
 .hamburger_div {
     margin-left: auto;
-}
-
-.hamburger {
-    padding: 1px 3px 10px 10px;
-    display: inline-block;
-    vertical-align: middle;
-    transform: scale(.7);
 }
 
 .hamburger span {
@@ -1118,4 +1159,58 @@ input[type=text] {
     padding: 4px;
     border-radius: 5px;
     font-weight: bold;
+}
+
+.loader,
+.loader:after {
+    border-radius: 50%;
+    width: 10em;
+    height: 10em;
+}
+.loader {
+    margin: 70vh auto;
+    font-size: 3px;
+    position: relative;
+    text-indent: -9999em;
+    border-top: 1.3em solid grey;
+    border-right: 1.3em solid grey;
+    border-bottom: 1.3em solid grey;
+    border-left: 1.3em solid ;
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-animation: load8 1.1s infinite linear;
+    animation: load8 1.1s infinite linear;
+}
+@-webkit-keyframes load8 {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+@keyframes load8 {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+#loadingDiv {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background-color: white;
+}
+
+.dark_mode #loadingDiv {
+    background-color: black;
 }

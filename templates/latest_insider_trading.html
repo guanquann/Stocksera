@@ -1,0 +1,61 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Latest Insider{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/latest_insider_trading.css' %}">
+<script src="{% static 'javascript/latest_insider_trading.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}load_graph();load_table();restore_dark_mode();{% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/market_overview">Discover</a> /
+    <a href="/latest_insider">Recent Top Insider Trading</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('discover')</script>
+    <div class="instructions">
+        <h2>Recent Top Insider Trading</h2>
+        <p>The treemap below shows the top insider trading done in the last 1 month. </p>
+    </div>
+
+<!--    <div class="instructions">-->
+<!--        <h2>Other Datasets Available</h2>-->
+<!--        <div class="more_info_div_parent">-->
+<!--            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reverse_repo' %}" onclick="clickAndDisable(this);">Reverse Repo</a></div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <div class="contents_div">
+        <div id='top_insider'></div>
+
+        <h2 class="ticker_insider_header">Insider Trading of AAPL</h2>
+
+        <form action="/insider_trading" method="GET" autocomplete="off" target="Insider Trading" onsubmit="change_header_description()">
+            <div class="search_bar">
+                <input name="quote" value="AAPL" class="ticker_input" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="submit"><img src="{% static 'images/search_icon.svg' %}"></button>
+            </div>
+        </form>
+        <iframe style="display:none"></iframe>
+        <iframe src="/insider_trading/?quote=AAPL" name="Insider Trading" onload="expand_iframe(this)"></iframe>
+
+        <h2 class="ticker_insider_header">Top 50 Recent Insider Trading (last 30 days)</h2>
+        <div class="scrollable_div">
+            {{insider_df|safe}}
+        </div>
+
+        <p>Data is from <a href="https://finviz.com/insidertrading.ashx" target="_blank">finviz.com</a></p>
+    </div>
+{% endblock %}
+
+{% block bottom_script %}
+<script src='https://cdn.plot.ly/plotly-2.4.2.min.js'></script>
+<script>
+</script>
+{% endblock %}

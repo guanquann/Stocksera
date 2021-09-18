@@ -73,7 +73,7 @@ function load_beta_graph(beta_value) {
     };
 
     var data = [trace1, trace2];
-    Plotly.newPlot('beta_chart', data, layout, {displayModeBar: false, showTips: true, responsive: true});
+    Plotly.newPlot('beta_chart', data, layout, {displayModeBar: false, showTips: false, responsive: true});
 }
 
 function swap_ticker_position() {

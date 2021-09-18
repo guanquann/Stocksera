@@ -1,57 +1,89 @@
 # StocksEra
 
+![Stocksera](./static/images/logo.png)
+
 You can view the application in:
 - <a href="https://stocksera.pythonanywhere.com">stocksera.pythonanywhere.com </a>
 
 Alternatively, you can look at https://youtu.be/SEYXEcVKt38 for a live demo.
 
-But because I'm hosting it free on pythonanywhere, speed of website can be (very) slow when traffic is high. 
+Speed of website can be slow when traffic is high. 
 
 ![Web Traffic](./static/images/github/web_traffic.png)
 
 You are encouraged to host it locally on your computer, where the speed is much faster.
 
 ### Support:
-This website will be free forever! No subscription needed! But if you want to support me, please give me a star on Github or you can PayPal to <a href="https://www.paypal.me/stocksera">paypal.me/stocksera</a>. Patreon is also available <a href="https://www.patreon.com/stocksera" target="_blank">here</a>.
+This website is free for everyone. But if you want to support me, please give me a star on Github or you can PayPal to <a href="https://www.paypal.me/stocksera">paypal.me/stocksera</a>. Patreon is also available <a href="https://www.patreon.com/stocksera" target="_blank">here</a>.
 
 ### User Guide:
 
 #### /ticker/
-- View graph/historical data of your favourite ticker.
+- View graph of your favourite ticker.
 - Gather key statistics such as EPS, beta and SMA.
-- Proportion of stocks held by major holders and major institutions.
-- Google trending.
 - Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>
 ![Ticker Stats](./static/images/github/ticker_main.png)
 
+
+- Sort historical data based on % price change, volume, day and so on.
+![Sort Historical Data](./static/images/github/ticker_main1.png)
+
+
+- Get recent insider trading of a stock.
+![Insider Trading](./static/images/github/ticker_main2.png)
+
+
+- Get recent news and sentiment of a stock.
+![News Sentiment](./static/images/github/ticker_main3.png)
+
+
+- Google trend of a stock and compare it with it's closing price.
+![Google Trend](./static/images/github/ticker_main4.png)
+
+
+- Upgrades & Downgrades of a stock.
+![Recommendations](./static/images/github/ticker_main5.png)
+
+
+- Links to other social media platforms for discussion.
+- Stocktwits API.
+![Discussion](./static/images/github/ticker_main6.png)
+
 #### /ticker/options/
-- View options chain of your favourite ticker. Inspired from <a href="https://github.com/GamestonkTerminal/GamestonkTerminal/tree/main/gamestonk_terminal">Gamestonk Terminal</a>
+- View options chain of your favourite ticker. Inspired from <a href="https://github.com/GamestonkTerminal/GamestonkTerminal/tree/main/gamestonk_terminal">Gamestonk Terminal</a>.
 - Find out the max-pain price, OTM & ITM options and Call/Put ratio of the next few weeks.
-- NOTE: Options chain and max-pain price are updated real time. Hence, there may be a slight delay in rendering this page. 
-- Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>
+- Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>.
 ![Options](./static/images/github/options.png)
+![Option Chain](./static/images/github/options_chain.png)
 
 #### /ticker/short_volume/
 - View short volume and short percentage of some of the popular tickers.
-- Data is from <a href="http://shortvolumes.com/">shortvolumes.com</a>
+- Data is from <a href="https://cdn.finra.org/">Finra</a>.
 ![Short Volume](./static/images/github/short_volume.png)
 
 #### /ticker/failure_to_deliver/
 - View failure to deliver data of some of the popular tickers.
-- Data is from <a href="https://www.sec.gov/data/foiadocsfailsdatahtm">SEC.gov</a>
+- Data is from <a href="https://www.sec.gov/data/foiadocsfailsdatahtm">SEC.gov</a>.
 ![Failure to Deliver](./static/images/github/ftd.png)
 
 #### /earnings_calendar/
-- View all tickers earnings report for the week ahead 
-- Market Cap, EPS Estimate and EPS Actual
-- Sortable by market cap and day
-- Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>
+- View all tickers earnings report for the week ahead.
+- Market Cap, EPS Estimate and EPS Actual.
+- Sortable by market cap and day.
+- Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>.
 ![Earnings Calendar](./static/images/github/earnings_calendar.png)
 
 #### /reddit_analysis/
-- Find the most mentioned tickers with their sentiment level on different subreddits such as r/wallstreetbets, r/stockmarket and r/stocks. Inspired from <a href="https://github.com/kaito1410/AutoDD_Rev2/blob/main/AutoDD.py">Auto DD</a>
+- Find the most popular tickers with their sentiment level on different subreddits such as r/wallstreetbets, r/stockmarket and r/stocks. Inspired from <a href="https://github.com/kaito1410/AutoDD_Rev2/blob/main/AutoDD.py">Auto DD</a>.
+- Trending cryptocurrencies are also analysed in r/Cryptocurrency.
+- This only reads the post of the subreddit. The comments are not taken into account. 
 - Data is updated daily, around 1 hour before market open.
-![Reddit Analysis](./static/images/github/reddit_trending.png)
+![Reddit Analysis Stocks](./static/images/github/reddit_trending.png)
+![Reddit Analysis Crypto](./static/images/github/reddit_cryptocurrency.png)
+
+#### /wsb_live/
+- Tracks trending tickers and their sentiment level on r/wallstreetbets realtime.
+- STILL IN PROGRESS
 
 #### /reddit_etf/
 - Analyse the performance of trending tickers on r/wallstreetbets.
@@ -61,16 +93,20 @@ This website will be free forever! No subscription needed! But if you want to su
 
 #### /reddit_ticker_analysis/
 - View ranking of popular tickers in Reddit over time and compare it with its price.
-![Reddit Ranking](./static/images/github/reddit_ranking.png)
+![Reddit Ranking Stocks](./static/images/github/reddit_ranking.png)
 
 #### /subreddit_count/
-- Look at the increase in number of redditors on popular sub-reddits such as r/wallstreetbets, r/Superstonk and r/amcstock.
+- Look at the increase in number of redditors on popular subreddits such as r/wallstreetbets, r/Superstonk and r/amcstock.
 - Growth in number of new redditors and percentage of active redditors.
 ![Subreddit Stats](./static/images/github/subreddit_stats.png)
 
+#### /subreddit_count/?quote={{ticker}}
+- Look at the increase in number of redditors/active users/percentage growth on specific subreddits and compare it with the stock price.
+![Subreddit Stats Individual](./static/images/github/subreddit_stats_individual.png)
+
 #### /market_overview/
 - Overview of the performance of the entire market.
-- Data is from <a href="https://tradingview.com/">Trading View</a>
+- Data is from <a href="https://tradingview.com/">Trading View</a>.
 ![Market Overview](./static/images/github/market_overview.png)
 
 #### /short_interest/
@@ -88,6 +124,7 @@ This website will be free forever! No subscription needed! But if you want to su
 - View trades and ownership of a ticker.
 - Data is from <a href="https://arkfunds.io/api/">arkfunds.io/api</a>
 ![ARK Trades](./static/images/github/ark_trades.png)
+![ARK Trades Individual](./static/images/github/ark_trades_individual.png)
 
 #### /reverse_repo/
 - Daily reverse repo transactions (amount, number of parties, average)
@@ -108,6 +145,7 @@ This website will be free forever! No subscription needed! But if you want to su
 - Monthly retail sales and compare it with the number of covid-19 cases
 - Retail sales data is from <a href="https://ycharts.com/indicators/us_retail_and_food_services_sales">ycharts.com/indicators/us_retail_and_food_services_sales</a>
 - Covid-19 data is from <a href="https://covid.ourworldindata.org/data/owid-covid-data.csv">covid.ourworldindata.org/data/owid-covid-data.csv</a>
+![Retail Sales](./static/images/github/retail_sales.png)
 
 #### /beta/
 - Calculate the true beta value of any stock real-time.
@@ -118,19 +156,7 @@ This website will be free forever! No subscription needed! But if you want to su
 - Percentage upside when buying XLNX
 ![AMD-XLNX Ratio](./static/images/github/amd_xlnx_ratio.PNG)
 
-#### /latest_news/
-- View latest news of your favorite ticker
-- Get their overall news sentiment and their sentiment level over time
-- Compare the sentiment level with other popular tickers such as GME, AAPL, TSLA.
-- NOTE: This feature is not available on pythonanywhere. To use this feature, you have to host the application locally. Please refer to the Developers section for more details
-- Data is from <a href="https://finviz.com/">finviz</a>
-![News Sentiment](./static/images/github/news_sentiment.png)
-
 ### For developers:
-- Advantages of hosting it locally on your computer:
-    - Faster rendering time
-    - Customise your own ticker
-    - Access to news sentiment
 
 #### Setting up and installing dependencies
 ```
@@ -175,12 +201,7 @@ activate
 cd ../..
 py manange.py runserver
 ```
-You can view the application in 127.0.0.1:8000 and you are ready to explore!
-
-### Future improvements:
-- [ ] Income Statement and Cash Flow for Financial data
-- [ ] Show theta, delta, gamma in Options data
-- [ ] Show performance of Reddit ETF vs SPY
+You can view the application in 127.0.0.1:8000.
 
 ### License:
 This project is under the <a href="https://github.com/spartan737/stocksera/blob/master/LICENSE">MIT</a> license.

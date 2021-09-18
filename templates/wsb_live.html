@@ -1,0 +1,59 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | WSB Live {% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/wsb_live.css' %}">
+<script src="{% static 'javascript/wsb_live.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}load_graph({{trending_list}});restore_dark_mode();{% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/wsb_live/">WSB Live</a>
+{% endblock %}
+
+{% block main_content %}
+<script>highlight_selected_nav('stocks_analysis')</script>
+<div>
+    <div class="instructions">
+        <h2>r/WSB Realtime Trending</h2>
+        <p></p>
+        <form action="" method="GET" autocomplete="off">
+            <div class="search_bar">
+                <input type="text" class="ticker_input" name="quote" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;"><img src="{% static 'images/search_icon.svg' %}"></button>
+            </div>
+        </form>
+    </div>
+
+<!--    <div class="instructions">-->
+<!--        <h2>Other Datasets Available</h2>-->
+<!--        <div class="more_info_div_parent">-->
+<!--            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}" onclick="clickAndDisable(this);">Analysis</a></div>-->
+<!--            <div class="more_info_div"><a class="more_info_btn" href="{% url 'financial' %}" onclick="clickAndDisable(this);">Financials</a></div>-->
+<!--            <div class="more_info_div"><a class="more_info_btn" href="{% url 'options' %}" onclick="clickAndDisable(this);">Options</a></div>-->
+<!--            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_volume' %}" onclick="clickAndDisable(this);">Short Vol</a></div>-->
+<!--            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'failure_to_deliver' %}" onclick="clickAndDisable(this);">FTD</a></div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <div class="contents_div">
+        <div id="chart" class="chart"></div>
+    </div>
+
+    <div class="contents_div">
+        <div class="scrollable_div">
+            {{top_ftd|safe}}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block bottom_script %}
+<script src='https://cdn.plot.ly/plotly-2.3.1.min.js'></script>
+{% endblock %}
+

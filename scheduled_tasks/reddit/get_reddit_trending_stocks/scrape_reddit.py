@@ -1,5 +1,9 @@
-from scheduled_tasks.reddit.get_reddit_trending_stocks.AutoDD import *
+import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 from scheduled_tasks.reddit.config import *
+from scheduled_tasks.reddit.get_reddit_trending_stocks.AutoDD import *
 
 
 def main():

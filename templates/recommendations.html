@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>StocksEra | Recommendations</title>
+    <link rel="stylesheet" href="{% static 'style/format.css' %}">
+    <script src="{% static 'javascript/format.js' %}"></script>
+    <script src="{% static 'javascript/recommendations.js' %}"></script>
+</head>
+<body onload="load_table();remove_spinner()">
+    <script>restore_dark_mode()</script>
+    <div class="{{class}}">
+        <div class="scrollable_div" style="max-height:450px">
+            {{table|safe}}
+        </div>
+    </div>
+</body>
+</html>

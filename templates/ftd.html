@@ -60,6 +60,8 @@
     </div>
     <div class="contents_div">
         <div id="ticker_basic_stats"></div>
+        <div id="ssr_msg"></div>
+
         <div class="date_selector">
             <button name="date_range" id="3 Months" onclick="btn_selected(this); ftd_graph(3)">3 Months</button>
             <button name="date_range" id="6 Months" onclick="btn_selected(this); ftd_graph(6)">6 Months</button>
@@ -100,5 +102,6 @@
     var None = "N/A", False = false; True = true;
     var information = {{information|safe}};
     show_ticker_price(information)
+    get_ssr(information)
 </script>
 {% endblock %}

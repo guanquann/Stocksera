@@ -16,6 +16,7 @@ function update_table() {
 }
 
 function options_summary(latest_price) {
+    latest_price = latest_price.replace(",", "")
     var tr = document.getElementsByTagName("table")[0].querySelectorAll("tr");
 
     var calls_itm = 0, calls_otm = 0, puts_itm = 0, puts_otm = 0;
@@ -212,7 +213,7 @@ function draw_max_pain(strike_list, call_loss_list, put_loss_list) {
                         maxRotation: 45,
                         minRotation: 0,
                         callback: function(value, index, values) {
-                            return "$" + value;
+                            return value;
                         }
                     },
                     gridLines: {

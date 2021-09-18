@@ -19,7 +19,7 @@ config = {'summaryDetail': ['regularMarketOpen', 'previousClose', 'dayHigh', 'fi
           'defaultKeyStatistics': ['sharesOutstanding', 'floatShares', 'shortRatio', 'shortPercentOfFloat',
                                    'trailingEps', 'pegRatio', 'enterpriseToRevenue', 'netIncomeToCommon',
                                    'threeYearAverageReturn', 'fiveYearAverageReturn'],
-          'summaryProfile': ['industry', 'sector', 'website', 'longBusinessSummary'],
+          'summaryProfile': ['industry', 'sector', 'website', 'longBusinessSummary', 'fullTimeEmployees', 'country'],
           'price': ['longName', 'symbol', 'regularMarketPrice', 'quoteType', 'marketState',
                     'regularMarketChangePercent', 'regularMarketChange',
                     'postMarketChangePercent', 'postMarketChange', 'preMarketChangePercent', 'preMarketChange'],
@@ -62,7 +62,6 @@ def download_advanced_stats(symbol_list, threads=True):
                     stat_val = 'N/A'
                     if stat_name in retrieved_module_dict:
                         stat = retrieved_module_dict[stat_name]
-                        # print(stat)
                         if isinstance(stat, dict):
                             if stat:  # only if non-empty otherwise N/A
                                 stat_val = stat['fmt']

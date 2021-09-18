@@ -58,6 +58,7 @@
 
     <div class="contents_div">
         <div id="ticker_basic_stats"></div>
+        <div id="ssr_msg"></div>
 
         <div id="summary"></div>
 
@@ -102,5 +103,6 @@
     var None = "N/A", False = false; True = true;
     var information = {{information|safe}};
     show_ticker_price(information)
+    get_ssr(information)
 </script>
 {% endblock %}

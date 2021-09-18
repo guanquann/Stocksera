@@ -47,7 +47,7 @@ def get_30d_data_finra():
     combined_df.to_csv("database/short_volume.csv", index=False)
 
 
-def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date()-timedelta(days=1)):
+def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date()):
     """
     Get short volume data from https://cdn.finra.org/
     This function gets daily data for popular tickers in scheduled_tasks/get_popular_tickers.py and save them to db

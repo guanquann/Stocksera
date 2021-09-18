@@ -12,8 +12,6 @@ Date.prototype.removeDays = function(days) {
 
 function display_top_ftd_table() {
     var tr = document.getElementsByTagName("table")[0].querySelectorAll("tr");
-    tr[0].innerHTML += `
-        <th>T+35 Date</th>`
     for (i=1; i<tr.length; i++) {
         var td = tr[i].querySelectorAll("td");
         var date_string = td[0].innerHTML
@@ -27,23 +25,9 @@ function display_top_ftd_table() {
             td[2].innerHTML = Number(td[2].innerHTML).toLocaleString()
             td[3].innerHTML = "$" + td[3].innerHTML
             td[4].innerHTML = "$" + Number(td[4].innerHTML).toLocaleString()
-
-            f35_date = new Date(date_string).addDays(36)
-            month = f35_date.getUTCMonth() + 1;
-            day = f35_date.getUTCDate();
-            year = f35_date.getUTCFullYear();
-            if (day < 10) {
-                day = "0" + day
-            }
-            if (month < 10) {
-                month = "0" + month
-            }
-            f35_date = year + "/" + month + "/" + day;
-            tr[i].innerHTML += `<td>${f35_date}</td>`
         }
         else {
             td[0].style.padding = "15px"
-            tr[i].innerHTML += `<td></td>`
         }
     }
 }
@@ -51,8 +35,8 @@ function display_top_ftd_table() {
 function display_table() {
     var ftd = document.getElementsByTagName("table")[0].querySelectorAll("tr");
     var threshold = document.getElementById("90th_percentile").innerHTML
-    ftd[0].innerHTML += `
-        <th>T+35 Date</th>`
+//    ftd[0].innerHTML += `
+//        <th>T+35 Date</th>`
     for (tr=ftd.length-1; tr>0; tr--) {
         var total_td = ftd[tr].querySelectorAll("td");
         date_string = total_td[0].innerHTML;
@@ -67,27 +51,22 @@ function display_table() {
         total_td[2].innerHTML = "$" + total_td[2].innerHTML
         total_td[3].innerHTML = "$" + Number(total_td[3].innerHTML).toLocaleString()
 
-        f35_date = new Date(date_string).addDays(36)
-//        if (f35_date > new Date("2021/07/05")) {
-//            f35_date = new Date(f35_date).addDays(1)
+//        f35_date = new Date(date_string).addDays(36)
+//        date_string = date_string.replaceAll("/", ",")
+//        console.log(date_string)
+//        f35_date = new Date(date_string).addDays(36).toUTCString()
+//        console.log(f35_date)
+//        month = f35_date.getMonth() + 1;
+//        day = f35_date.getUTCDate();
+//        year = f35_date.getUTCFullYear();
+//        if (day < 10) {
+//            day = "0" + day
 //        }
-
-        // because of US Independence Day
-//        if (f35_date >= new Date("2021/08/23")) {
-//            f35_date = new Date(f35_date).removeDays(1)
+//        if (month < 10) {
+//            month = "0" + month
 //        }
-
-        month = f35_date.getUTCMonth() + 1;
-        day = f35_date.getUTCDate();
-        year = f35_date.getUTCFullYear();
-        if (day < 10) {
-            day = "0" + day
-        }
-        if (month < 10) {
-            month = "0" + month
-        }
-        f35_date = year + "/" + month + "/" + day;
-        ftd[tr].innerHTML += `<td>${f35_date}</td>`
+//        f35_date = year + "/" + month + "/" + day;
+//        ftd[tr].innerHTML += `<td>${f35_date}</td>`
     }
 }
 

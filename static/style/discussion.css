@@ -1,0 +1,22 @@
+.more_discussion {
+    margin-bottom: 10px;
+}
+
+.more_discussion h2 {
+    margin-bottom: 0px
+}
+
+.more_discussion a {
+    color: rgb(38, 166, 154) !important;
+    text-decoration: underline;
+}
+
+.scrollable_div {
+    text-align: center;
+}
+
+.discussion_iframe {
+    border: 0px;
+    width: 1000px;
+    height: 1100px;
+}

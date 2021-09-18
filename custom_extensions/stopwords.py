@@ -32,4 +32,4 @@ stopwords_list = ['FDA', 'APE', 'MOON', 'HOLD', 'MERGE', 'ADS', 'FOMO', 'OTC', '
                   'FOLD', 'THO', 'POOL', 'WGO', 'PEAK', 'SHIP', 'LEG', 'RACE', 'LAWS', 'DASH', 'FAT', 'PUMP', 'DUMP',
                   'JOB', 'PPL', 'FT', 'AGE', 'GOGO', 'FROG', 'TD', 'CAKE', 'TEAM', 'RIG', 'FAM', 'EYES', 'TRIP',
                   'DARE', 'PLUS', 'IQ', 'DDS', 'ROCK', 'LAND', 'JACK', 'SI', 'GLAD', 'WOW', 'RC', 'CTO', 'PT', 'BOB',
-                  'TV', 'IP']
+                  'TV', 'IP', 'BRO', 'BAND', 'PAY']

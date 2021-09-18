@@ -42,7 +42,7 @@ def buy_new_ticker(date):
             if info["marketState"] != "REGULAR":
                 print("Market not open currently! {} not bought!".format(symbol))
                 continue
-            open_price = round(float(info["regularMarketOpen"]), 2)
+            open_price = round(float(info["regularMarketOpen"].replace(",", "")), 2)
             num_shares = round(10000 / open_price, 2)
             message = "Ticker {} to be bought on {} for ${}.".format(symbol, str(latest_date).split()[0], open_price)
             print(message)
@@ -85,7 +85,7 @@ def sell_ticker(date):
         if info["marketState"] != "REGULAR":
             print("Market not open currently! {} not sold!".format(symbol))
             continue
-        close_price = round(float(info["regularMarketOpen"]), 3)
+        close_price = round(float(info["regularMarketOpen"].replace(",", "")), 3)
         message = "Ticker {} to be sold on {} at ${} during market open.".format(symbol, str(latest_date).split()[0], close_price)
         print(message)
         logging.info(message)
@@ -116,7 +116,7 @@ def update_bought_ticker_price():
     for ticker in open_ticker_list:
         info = rows[ticker[0]]
         buy_price = ticker[2]
-        today_price = round(float(info["regularMarketPrice"]), 2)
+        today_price = round(float(info["regularMarketPrice"].replace(",", "")), 2)
         difference = today_price - buy_price
         PnL = round(difference * ticker[3], 2)
         percentage_diff = round((difference / buy_price) * 100, 2)

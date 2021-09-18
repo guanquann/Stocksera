@@ -5,7 +5,7 @@ headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleW
                          'Chrome/50.0.2661.102 Safari/537.36'}
 
 
-def download_options(symbol_list, timestamp="", threads=True):
+def download_options(symbol_list, timestamp="", threads=True, save_max_pain=False):
     """
     Downloads advanced yahoo stats for many tickers by doing one request per ticker.
     """
@@ -82,8 +82,12 @@ def download_options(symbol_list, timestamp="", threads=True):
                     merge_df["loss"] = loss_list
                     max_pain = merge_df["loss"].idxmin()
                     print(symbol, max_pain)
+                    if save_max_pain:
+                        print("Saving max pain to DB")
+                        db.execute("INSERT OR IGNORE INTO max_pain VALUES (?, ?, ?)", (symbol, str(datetime.utcnow().date()), max_pain))
+                        conn.commit()
                 else:
-                    print(symbol, "NOT PROCESS")
+                    print(symbol, "MAX PAIN NOT PROCESS")
                     max_pain = "N/A"
                     call_loss_list = []
                     put_loss_list = []
@@ -137,18 +141,18 @@ def get_ticker_stats(symbol, date_selected: str = ""):
     return module_dict
 
 
-def save_options_to_json(list_of_tickers, timestamp=""):
-    output = download_options(list_of_tickers, timestamp=timestamp)
+def save_options_to_json(list_of_tickers, timestamp="", save_max_pain=False):
+    output = download_options(list_of_tickers, timestamp=timestamp, save_max_pain=save_max_pain)
     if output == {}:
         output = {list_of_tickers[0]: {
             "ExpirationDate": [],
             "CurrentDate": {}
         }}
+
     with open(r"database/yf_cached_options.json", "r+") as r:
         data = json.load(r)
         for ticker in list_of_tickers:
-            if ticker in data:
-                # data[ticker].update(output[ticker]["ExpirationDate"])
+            if ticker in data and len(data[ticker]["ExpirationDate"]) > 4:
                 data[ticker]["CurrentDate"].update(output[ticker]["CurrentDate"])
             else:
                 data.update(output)
@@ -165,9 +169,4 @@ if __name__ == '__main__':
     # combined_symbols = list(set(snp_symbols + ticker_list))
     # save_options_to_json(list_of_tickers=combined_symbols)
     # print(combined_symbols)
-
-    save_options_to_json(list_of_tickers=ticker_list)
-
-
-# TODO: hourly update?
-# TODO: update expiry date
+    save_options_to_json(list_of_tickers=ticker_list, save_max_pain=True)

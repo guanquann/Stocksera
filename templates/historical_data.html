@@ -10,7 +10,7 @@
     <script src="{% static 'javascript/format.js' %}"></script>
     <script src="{% static 'javascript/historical.js' %}"></script>
 </head>
-<body onload="stats();display_data();restore_dark_mode()">
+<body onload="remove_spinner();stats();display_data();draw_graph();restore_dark_mode();">
     <script>restore_dark_mode()</script>
     <form action="" method="GET" autocomplete="off">
         <div class="select_div">
@@ -35,22 +35,32 @@
 
             <select name="timeframe" onchange="this.form.submit()">
                 <option>Timeframe: {{timeframe}}</option>
-                <option value="1Mo">1M</option>
                 <option value="1Y">1Y</option>
                 <option value="5Y">5Y</option>
                 <option value="Max">Max</option>
             </select>
         </div>
+
+        <p class="avg_price_change">Avg % Price Change (Last 50 trading days)</p>
+        <div id="general_stats"></div>
+        <div class="chart-container" style="min-height: 250px">
+            <canvas id="historical_chart"></canvas>
+        </div>
+
         <button type="submit" name="download_csv" class="download_btn"><u>➥ Download</u></button>
         <input id="latest_date" value="{{latest_date}}" style="display:none">
         <input name="quote" value="{{ticker_selected}}" style="display:none">
     </form>
     <div>
-        <div id="general_stats"></div>
-        <div>Note: Volume / % Price Ratio refers to the number of shares needed to move the price of stock by 1%</div>
-        <div class="scrollable_div" style="max-height:450px">
+        <span>Note: Volume / % Price Ratio = no. of shares to move the price by 1%</span>
+        <div class="scrollable_div" style="max-height:600px;">
             {{price_df|safe}}
+        </div>
+
+        <div style="display: none">
+            {{summary_df|safe}}
         </div>
     </div>
 </body>
 </html>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

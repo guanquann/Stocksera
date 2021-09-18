@@ -23,7 +23,7 @@ minimum_score = [5, 5, 5, 5, 5, 5, 5]
 # Number of posts to read from each subreddit. This depends on your time interval set above.
 # 300 should be more than enough
 # Type: list, where the index of num_posts correspond to subreddits list
-num_posts = [500, 500, 500, 500, 500, 500, 500]
+num_posts = [1000, 500, 500, 500, 500, 1000, 500]
 
 # Minimum volume of ticker
 # Type: list, where the index of minimum_volume correspond to subreddits list

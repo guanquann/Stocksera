@@ -599,3 +599,10 @@ function subreddit_individual(duration) {
     Plotly.newPlot('chart', data, layout, {displayModeBar: false, showTips: false, responsive: true, });
 
 }
+
+function check_subreddit(ticker, subreddit) {
+    if (subreddit == "N/A") {
+        document.querySelector(".contents_div").style.display = "none"
+        document.querySelector("#submit_subreddit").style.removeProperty("display")
+    }
+}

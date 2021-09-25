@@ -8,7 +8,12 @@ import pandas as pd
 import yfinance as yf
 from pytrends.request import TrendReq
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+
+try:
+    from admin import *
+except ModuleNotFoundError:
+    print("Not authorised to have access to admin functions")
 
 trends = TrendReq(hl='en-US', tz=360)
 
@@ -256,10 +261,13 @@ def insider_trading(request):
 
 def latest_insider(request):
     last_date = str(datetime.utcnow().date() - timedelta(days=30))
-    insider_df = pd.read_sql_query("SELECT Ticker, SUM(Value) AS Amount, TransactionType AS Type "
-                                   "FROM latest_insider_trading WHERE DateFilled>='{}' "
-                                   "GROUP BY Ticker, TransactionType "
-                                   "ORDER BY SUM(Value) DESC LIMIT 50".format(last_date), conn)
+
+    insider_df = pd.read_sql_query("SELECT Ticker, SUM(Value) AS Amount "
+                                   "FROM latest_insider_trading WHERE "
+                                   "DateFilled>='{}' GROUP BY Ticker ORDER BY "
+                                   "ABS(SUM(Value)) DESC LIMIT 50".format(last_date), conn)
+    print(insider_df)
+    # SELECT Ticker as ticker, SUM(Value), COUNT(TransactionType), (SELECT COUNT(TransactionType) FROM latest_insider_trading WHERE TransactionType="Sale" Ticker=ticker) AS Sales FROM latest_insider_trading GROUP BY Ticker ORder by ABS(SUM(Value)) DESC
     return render(request, 'latest_insider_trading.html', {"insider_df": insider_df.to_html(index=False)})
 
 
@@ -742,6 +750,12 @@ def subreddit_count(request):
     Get subreddit user count, growth, active users over time.
     """
     ticker_selected = request.GET.get("quote")
+
+    if request.POST.get("new_subreddit_name"):
+        send_email_to_self("Subreddit Alert", "",
+                           f"Ticker Name: {request.POST.get('quote')}, "
+                           f"Subreddit: r/{request.POST.get('new_subreddit_name')}")
+
     all_subreddits = sorted(interested_stocks_subreddits)
     if ticker_selected and ticker_selected.upper() != "SUMMARY":
         ticker_selected = ticker_selected.upper().replace(" ", "")
@@ -772,16 +786,73 @@ def subreddit_count(request):
 
 
 def wsb_live(request):
-    db.execute("SELECT ticker FROM wsb_trending_24H GROUP BY ticker ORDER BY SUM(mentions) DESC LIMIT 10")
-    top_10 = db.fetchall()
+    """
+    Get live sentiment from WSB discussion thread
+    """
+    pd.options.display.float_format = '{:.2f}'.format
+
+    # Get trending tickers in the past 24H
+    date_threshold = str(datetime.utcnow() - timedelta(hours=24))
+
+    query = "SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment FROM wsb_trending_24H " \
+            "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) DESC".format(date_threshold)
+
+    mentions_df = pd.read_sql_query(query, conn)
+    mentions_df.index += 1
+    mentions_df.reset_index(inplace=True)
+    mentions_df.rename(columns={"index": "Rank"}, inplace=True)
+
+    db.execute(query)
+    top_12 = db.fetchall()
     trending_list = list()
-    for ticker in top_10:
-        db.execute("SELECT ticker, date_updated, SUM(mentions) OVER (ROWS UNBOUNDED PRECEDING) AS mentions FROM "
-                   "wsb_trending_24H where ticker=?", (ticker[0],))
+    for ticker in top_12[:12]:
+        db.execute("SELECT ticker, date_updated, SUM(mentions) OVER (ROWS UNBOUNDED PRECEDING) FROM "
+                   "wsb_trending_24H WHERE ticker=? AND date_updated >= ?", (ticker[0], date_threshold))
         running_sum = db.fetchall()
         running_sum = list(map(list, running_sum))
         trending_list.append(running_sum)
-    return render(request, 'wsb_live.html', {"trending_list": trending_list})
+
+    # Get word cloud
+    db.execute("SELECT word, SUM(mentions) FROM wsb_word_cloud WHERE date_updated >= ? GROUP BY word ORDER BY "
+               "SUM(mentions) DESC LIMIT 50", (date_threshold, ))
+    wsb_word_cloud = db.fetchall()
+    wsb_word_cloud = list(map(list, wsb_word_cloud))
+
+    # Get trending tickers in the past 7 days
+    date_threshold = str(datetime.utcnow() - timedelta(hours=24*7))
+    query = "SELECT ticker AS Ticker, SUM(mentions) AS Mention, AVG(sentiment) AS Sentiment FROM wsb_trending_hourly " \
+            "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) DESC LIMIT 12".format(date_threshold)
+    db.execute(query)
+    top_12 = db.fetchall()
+    trending_list_by_hour = list()
+    for ticker in top_12[:12]:
+        db.execute("SELECT ticker, date_updated, SUM(mentions) OVER (ROWS UNBOUNDED PRECEDING) FROM "
+                   "wsb_trending_hourly WHERE ticker=? AND date_updated >= ?", (ticker[0], date_threshold))
+        running_sum = db.fetchall()
+        running_sum = list(map(list, running_sum))
+        trending_list_by_hour.append(running_sum)
+
+    # Get change in mentions
+    change_df = pd.read_sql_query("SELECT * FROM wsb_change", conn)
+
+    # Get market cap comparison
+    wsb_yf = pd.read_sql_query("SELECT * FROM wsb_yf", conn)
+    return render(request, 'wsb_live.html', {"trending_list": trending_list,
+                                             "trending_list_by_hour": trending_list_by_hour,
+                                             "wsb_word_cloud": wsb_word_cloud,
+                                             "mentions_df": mentions_df.to_html(index=False),
+                                             "change_df": change_df.to_html(index=False),
+                                             "wsb_yf_df": wsb_yf.to_html(index=False)})
+
+
+def wsb_live_ticker(request):
+    """
+    Get mentions and sentiment of tickers in WSB
+    """
+    ticker_selected = default_ticker(request)
+    df = pd.read_sql_query("SELECT * FROM wsb_trending_24H WHERE ticker='{}' ".format(ticker_selected), conn)
+    return render(request, 'wsb_live_ticker.html', {"ticker_selected": ticker_selected,
+                                                    "mentions_df": df.to_html(index=False)})
 
 
 def market_overview(request):
@@ -793,7 +864,7 @@ def market_overview(request):
 
 def reverse_repo(request):
     """
-    Get reverse repo. Data is from https://apps.newyorkfed.org/markets/autorates/tomo-results-display?SHOWMORE=TRUE&startDate=01/01/2000&enddate=01/01/2000
+    Get reverse repo. Data is from https://apps.newyorkfed.org/
     """
     pd.options.display.float_format = '{:.2f}'.format
     reverse_repo_stats = pd.read_sql_query("SELECT * FROM reverse_repo", conn)
@@ -948,7 +1019,6 @@ def covid_beta(request):
     """
     pd.options.display.float_format = '{:.3f}'.format
     ticker_interested = default_ticker(request)
-    print(ticker_interested)
     return render(request, 'beta_covid.html')
 
 
@@ -960,12 +1030,57 @@ def about(request):
         name = request.POST.get("name")
         email = request.POST.get("email")
         suggestions = request.POST.get("suggestions")
-        send_email(name, email, suggestions)
+        send_email_to_self(name, email, suggestions)
     return render(request, 'about.html')
 
 
 def loading_spinner(request):
+    """
+    Spinner display for iframe
+    """
     return render(request, 'loading_spinner.html')
+
+
+def subscribe_to_wsb_notifications(request):
+    """
+    Subscribe to Stocksera
+    """
+    if request.POST.get("name"):
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        freq = request.POST.get("frequency")
+        register_user(name, email, freq)
+    return render(request, "admin/subscription.html")
+
+
+def mailing_preference(request):
+    """
+    Change mailing preference
+    """
+    if request.POST.get("id"):
+        edit_mailing_pref(request.POST.get("frequency"), request.POST.get("id"))
+    if request.GET.get("id"):
+        stats = get_user_id(request.GET.get("id"))
+        if stats is not None:
+            name, email, freq, user_id = stats
+            return render(request, "admin/mailing_preference.html", {"name": name, "email": email,
+                                                                     "freq": freq, "user_id": user_id})
+
+    return redirect("/subscribe")
+
+
+def unsubscribe(request):
+    """
+    Unsubscribe from Stocksera
+    """
+    if request.POST.get("id"):
+        delete_user(request.POST.get("id"))
+    if request.GET.get("id"):
+        stats = get_user_id(request.GET.get("id"))
+        if stats is not None:
+            name, email, freq, user_id = stats
+            return render(request, "admin/unsubscribe.html", {"name": name, "email": email, "user_id": user_id})
+    return redirect("/subscribe")
 
 
 def custom_page_not_found_view(request, exception):

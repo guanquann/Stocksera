@@ -1,7 +1,4 @@
 function to_remove(elem, text) {
-    parent = elem.parentElement
-    elem.remove()
-    parent.innerHTML = `<button type="button" name="quote" class="show_more_btn submitted" onclick="to_remove(this, '${text}')">${text}</button>`
     var more_details = document.getElementsByClassName("more_details");
     var show_more_btn = document.getElementsByClassName("show_more_btn");
     for (i=0; i<more_details.length; i++) {
@@ -9,9 +6,9 @@ function to_remove(elem, text) {
         show_more_btn[i].classList.remove("selected")
     }
 
-    if (elem.className != "show_more_btn submitted") {
-        document.getElementsByClassName("loading")[0].style.removeProperty("display")
-    }
+    parent = elem.parentElement
+    elem.remove()
+    parent.innerHTML = `<button type="button" name="quote" class="show_more_btn submitted" onclick="to_remove(this, '${text}')">${text}</button>`
 
     document.getElementsByName(text)[0].style.removeProperty("display")
     parent.firstChild.classList.add("selected")
@@ -21,6 +18,10 @@ function submit_onload(elem) {
     if (elem == "") {
         document.getElementsByClassName('show_more_btn')[0].form.submit();
     }
+}
+
+function remove_glowing_border(elem) {
+    elem.classList.remove("glowing_border")
 }
 
 function show_ticker_table(information) {

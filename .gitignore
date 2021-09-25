@@ -7,9 +7,12 @@ venv/
 *.db
 database
 static/graph_chart
+scheduled_tasks/subscription
 *.zip
 db.sqlite3
 logging.log
 staticfiles
 yfinance.cache
 test.py
+admin.py
+templates/admin

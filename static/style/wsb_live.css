@@ -1,13 +1,37 @@
-@media only screen and (max-width: 900px) {
-    #chart {
-        margin-top: 30px;
-        max-height: 300px;
-    }
+.chart {
+    height: 320px;
 }
 
-@media only screen and (min-width: 900px) {
-    #chart {
-        margin-top: 30px;
-        max-height: 350px;
-    }
+.tree_chart {
+    height: 380px;
+}
+
+.sma_chart {
+    height: 420px;
+}
+
+#word_cloud {
+    height: 350px;
+    margin: 0;
+    padding: 0;
+}
+
+.anychart-credits {
+    display: none !important;
+}
+
+input {
+    margin-bottom: 5px;
+}
+
+.header {
+    margin: 10px 0 0px 0;
+    text-align: center;
+}
+
+iframe {
+    border: 0;
+    width: 100%;
+    height: 350px;
+    margin-top: 5px;
 }

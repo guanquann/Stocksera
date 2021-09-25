@@ -72,6 +72,32 @@ def database():
     db.execute("CREATE table IF NOT EXISTS wsb_trending_24H ("
                "ticker TEXT, "
                "mentions INTEGER, "
+               "sentiment FLOAT, "
+               "date_updated TEXT )")
+
+    db.execute("CREATE table IF NOT EXISTS wsb_trending_hourly ("
+               "ticker TEXT, "
+               "mentions INTEGER, "
+               "sentiment FLOAT, "
+               "date_updated TEXT )")
+
+    db.execute("CREATE table IF NOT EXISTS wsb_change ("
+               "ticker TEXT, "
+               "mentions INTEGER, "
+               "change FLOAT) ")
+
+    db.execute("CREATE table IF NOT EXISTS wsb_yf ("
+               "ticker TEXT, "
+               "mkt_cap TEXT, "
+               "price_change FLOAT, "
+               "difference_sma FLOAT, "
+               "difference_52w_high FLOAT, "
+               "difference_52w_low FLOAT, "
+               "mentions INTEGER )")
+
+    db.execute("CREATE table IF NOT EXISTS wsb_word_cloud ("
+               "word TEXT, "
+               "mentions INTEGER, "
                "date_updated TEXT )")
 
     db.execute("CREATE table IF NOT EXISTS reddit_etf ("

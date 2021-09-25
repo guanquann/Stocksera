@@ -2,7 +2,7 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | Subscribers{% endblock %}
+{% block title %}StocksEra | Subreddit{% endblock %}
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/subreddit_count.css' %}">
@@ -29,26 +29,24 @@
             As this is meant to track stocks discussion & activity on Reddit, <b>stocks-related subreddit are preferred</b> (e.g: r/AMD_Stock instead of r/AMD).
             <br><br>
             We have now included data of more than 60 subreddits.
-            If you have a subreddit to share, click <a href="/about/" target="_blank">here</a> to inform us.
+            If you have a subreddit to share, click <a href="mailto:stocksera@gmail.com" target="_blank">here</a> to inform us.
             Do note that not all subreddits suggested will be included. The post frequency and number of redditors in that subreddit will be considered.
             <br><br>
             Note: If the number of active users in the subreddit is unusually low, it might be a bug on Reddit side. There is nothing we can do about it.
+            <div class="subscribe_email_div"><a class="subscribe_email" href="/subscribe" target="_blank">Subscribe to Free WSB Notifications</a></div>
         </p>
         <form action="" method="GET" autocomplete="off">
-            <select onchange="this.form.submit()" name="quote">
-                <option>Subreddit: Overview</option>
-                {% for i in interested_subreddits %}
-                    {% if i != "SUMMARY" %}
-                        <option value="{{i}}">{{i}}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
+            <div class="search_bar">
+                <input type="text" class="ticker_input" name="quote" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="submit"><img src="{% static 'images/search_icon.svg' %}"></button>
+            </div>
         </form>
     </div>
 
     <div class="instructions">
         <h2>Other Datasets Available</h2>
         <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="/wsb_live" onclick="clickAndDisable(this);">WSB Live</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis" onclick="clickAndDisable(this);">Trending Stocks</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis/?subreddit=cryptocurrency" onclick="clickAndDisable(this);">Trending Crypto</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'reddit_etf' %}" onclick="clickAndDisable(this);">WSB ETF</a></div>

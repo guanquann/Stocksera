@@ -288,7 +288,7 @@ function get_economic_releases(elem) {
 }
 
 function remove_spinner() {
-    parent.document.querySelector(".loading").style.display = "none"
+//    parent.document.querySelector(".loading").style.display = "none"
 }
 
 function expand_iframe(elem) {

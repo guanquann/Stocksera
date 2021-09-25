@@ -2,16 +2,11 @@
 
 ![Stocksera](./static/images/logo.png)
 
-You can view the application in:
-- <a href="https://stocksera.pythonanywhere.com">stocksera.pythonanywhere.com </a>
+You can view the application in <a href="https://stocksera.pythonanywhere.com" target="_blank">stocksera.pythonanywhere.com</a>.
 
-Alternatively, you can look at https://youtu.be/SEYXEcVKt38 for a live demo.
+<a href="https://stocksera.pythonanywhere.com/subscribe/" target="_blank">![Subscribe](./static/images/github/subscribe.png)</a>
 
-Speed of website can be slow when traffic is high. 
-
-![Web Traffic](./static/images/github/web_traffic.png)
-
-You are encouraged to host it locally on your computer, where the speed is much faster.
+Live demo is available at https://youtu.be/SEYXEcVKt38.
 
 ### Support:
 This website is free for everyone. But if you want to support me, please give me a star on Github or you can PayPal to <a href="https://www.paypal.me/stocksera">paypal.me/stocksera</a>. Patreon is also available <a href="https://www.patreon.com/stocksera" target="_blank">here</a>.

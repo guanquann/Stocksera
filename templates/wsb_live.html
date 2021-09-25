@@ -7,9 +7,11 @@
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/wsb_live.css' %}">
 <script src="{% static 'javascript/wsb_live.js' %}"></script>
+<script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+<script src="https://cdn.anychart.com/releases/v8/js/anychart-tag-cloud.min.js"></script>
 {% endblock %}
 
-{% block onload_properties%}load_graph({{trending_list}});restore_dark_mode();{% endblock %}
+{% block onload_properties%}load_trending_over_time_chart({{trending_list}}, '24H');load_trending_over_time_chart({{trending_list_by_hour}}, '7d');load_change_chart();load_sentiment_chart();load_mkt_cap_chart();load_word_cloud({{wsb_word_cloud}});restore_dark_mode();{% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -17,37 +19,72 @@
 {% endblock %}
 
 {% block main_content %}
-<script>highlight_selected_nav('stocks_analysis')</script>
+<script>highlight_selected_nav('reddit')</script>
 <div>
     <div class="instructions">
-        <h2>r/WSB Realtime Trending</h2>
-        <p></p>
-        <form action="" method="GET" autocomplete="off">
+        <h2>Live Wallstreetbets Analysis</h2>
+        <p>This page tracks & analysis trending tickers realtime. Updates every 15 minutes.</p>
+        <div class="subscribe_email_div"><a class="subscribe_email" href="/subscribe" target="_blank">Subscribe to Free WSB Notifications</a></div>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn current_link" href="/wsb_live" onclick="clickAndDisable(this);">WSB Live</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis" onclick="clickAndDisable(this);">Trending Stocks</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis/?subreddit=cryptocurrency" onclick="clickAndDisable(this);">Trending Crypto</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reddit_etf' %}" onclick="clickAndDisable(this);">WSB ETF</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'subreddit_count' %}" onclick="clickAndDisable(this);">Subreddit Stats</a></div>
+        </div>
+    </div>
+
+    <div class="contents_div">
+        <h2 class="header">Trending Last 24H</h2>
+        <div id="trending_over_time_chart_24H" class="chart"></div>
+
+        <h2 class="header">Trending Last 7 Days</h2>
+        <div id="trending_over_time_chart_7d" class="chart"></div>
+
+        <h2 class="header">Change in Mentions Last 24H</h2>
+        <div style="text-align: center"><i>% Change capped at 1000%</i></div>
+        <div id="change_mentions" class="tree_chart"></div>
+
+        <h2 class="header">Sentiment Last 24H</h2>
+        <div id="sentiment_chart" class="chart"></div>
+
+        <h2 class="header">Market Cap vs Mentions Last 24H</h2>
+        <div id="mkt_cap_chart" class="chart"></div>
+
+        <h2 class="header">Latest Price Change Comparison</h2>
+        <div id="price_change_chart" class="tree_chart"></div>
+
+        <h2 class="header">Current Price vs Diff. 50SMA | 52W High-Low</h2>
+        <div id="50SMA_chart" class="sma_chart"></div>
+
+        <h2 class="header">Most Mentioned Words Last 24H</h2>
+        <div id="word_cloud"></div>
+
+        <h2 class="header sentiment_ticker">Sentiment of SPY</h2>
+        <form action="/wsb_live_ticker" method="GET" autocomplete="off" target="wsb_live_ticker" onsubmit="change_header_description()">
             <div class="search_bar">
-                <input type="text" class="ticker_input" name="quote" placeholder="Ticker:" autocomplete="off">
-                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;"><img src="{% static 'images/search_icon.svg' %}"></button>
+                <input type="text" name="quote" value="SPY" class="ticker_input" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="submit"><img src="{% static 'images/search_icon.svg' %}"></button>
             </div>
         </form>
-    </div>
+        <iframe style="display:none"></iframe>
+        <iframe src="/wsb_live_ticker/?quote=SPY" name="wsb_live_ticker"></iframe>
 
-<!--    <div class="instructions">-->
-<!--        <h2>Other Datasets Available</h2>-->
-<!--        <div class="more_info_div_parent">-->
-<!--            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}" onclick="clickAndDisable(this);">Analysis</a></div>-->
-<!--            <div class="more_info_div"><a class="more_info_btn" href="{% url 'financial' %}" onclick="clickAndDisable(this);">Financials</a></div>-->
-<!--            <div class="more_info_div"><a class="more_info_btn" href="{% url 'options' %}" onclick="clickAndDisable(this);">Options</a></div>-->
-<!--            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_volume' %}" onclick="clickAndDisable(this);">Short Vol</a></div>-->
-<!--            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'failure_to_deliver' %}" onclick="clickAndDisable(this);">FTD</a></div>-->
-<!--        </div>-->
-<!--    </div>-->
-
-    <div class="contents_div">
-        <div id="chart" class="chart"></div>
-    </div>
-
-    <div class="contents_div">
-        <div class="scrollable_div">
-            {{top_ftd|safe}}
+        <h2 class="header">No. of Mentions Last 24H</h2>
+        <div class="search_bar">
+            <input type="text" class="ticker_input" placeholder="Ticker: " onkeyup="searchTicker(this)" autocomplete="off">
+            <button class="submit_btn" type="submit"><img src="{% static 'images/search_icon.svg' %}"></button>
+        </div>
+        <div class="scrollable_div" style="max-height: 450px">
+            {{mentions_df|safe}}
+        </div>
+        <div style="display:none">
+            {{change_df|safe}}
+            {{wsb_yf_df|safe}}
         </div>
     </div>
 </div>

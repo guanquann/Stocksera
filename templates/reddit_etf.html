@@ -28,12 +28,14 @@
             Starting from 2021-09-01, the ETFs listed: SPY, QQQ, TQQQ, DIA <b>will no longer be purchased by Reddit ETF</b>.
             <br><br>
             <b>Do note that this is not financial advice.</b> All "trades" are conducted solely based on tickers' popularity in r/wallstreetbets.
+            <div class="subscribe_email_div"><a class="subscribe_email" href="/subscribe" target="_blank">Subscribe to Free WSB Notifications</a></div>
         </p>
     </div>
 
     <div class="instructions">
         <h2>Other Datasets Available</h2>
         <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="/wsb_live" onclick="clickAndDisable(this);">WSB Live</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis" onclick="clickAndDisable(this);">Trending Stocks</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis/?subreddit=cryptocurrency" onclick="clickAndDisable(this);">Trending Crypto</a></div>
             <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'reddit_etf' %}" onclick="clickAndDisable(this);">WSB ETF</a></div>
@@ -79,7 +81,8 @@
             <p class="table_title">Previous Trades (Realized PnL: <span>{{realized_PnL}}</span>)</p>
             <div class="previous_trades_stats"></div>
             <div class="search_bar">
-                <input type="text" class="ticker_input" placeholder="Ticker: " onkeyup="searchTicker(this)" style="border: 1px solid gray; border-radius: 5px">
+                <input type="text" class="ticker_input" placeholder="Ticker:" onkeyup="searchTicker(this)" autocomplete="off">
+                <button class="submit_btn" type="button"><img src="{% static 'images/search_icon.svg' %}"></button>
             </div>
             <div class="scrollable_div">
             <table id="previous_trades">

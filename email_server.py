@@ -8,7 +8,7 @@ import smtplib
 from datetime import datetime
 
 
-def send_email(name, email, feedback):
+def send_email_to_self(name, email, feedback):
     port = 465
     smtp_server = "smtp.gmail.com"
     sender_email = os.environ.get("EMAIL_SENDER") or "Enter your address"

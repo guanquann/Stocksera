@@ -13,6 +13,7 @@ import scheduled_tasks.reddit.buy_trending_tickers as buy_trending_tickers
 import scheduled_tasks.get_twitter_followers as get_twitter_followers
 import scheduled_tasks.get_short_volume as get_short_volume
 import scheduled_tasks.get_ticker_info as get_ticker_info
+import scheduled_tasks.reset_options_cache as reset_options_cache
 import scheduled_tasks.get_financial as get_financial
 import scheduled_tasks.get_earnings_calendar as get_earnings_calendar
 import scheduled_tasks.get_failure_to_deliver as get_failure_to_deliver
@@ -37,6 +38,9 @@ UPDATE_TWITTER = True
 
 # If you want to update the cached ticker info for faster processing time
 TICKER_INFO = True
+
+# If you want to remove old dates in options data
+RESET_TICKER_OPTIONS = True
 
 # IF you want to update the cached ticker financial data for faster processing time
 TICKER_FINANCIAL = False
@@ -100,6 +104,9 @@ if __name__ == '__main__':
 
     if TICKER_INFO:
         get_ticker_info.ticker_info(get_ticker_info.full_ticker_list())
+
+    if RESET_TICKER_OPTIONS:
+        reset_options_cache.reset_options()
 
     if TICKER_FINANCIAL:
         for i in get_ticker_info.full_ticker_list():

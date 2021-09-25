@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="format-detection" content="telephone=no">
+    <title>StocksEra | WSB Live ({{ticker_selected}})</title>
+    <link rel="stylesheet" href="{% static 'style/format.css' %}">
+    <link rel="stylesheet" href="{% static 'style/wsb_live.css' %}">
+    <script src="{% static 'javascript/format.js' %}"></script>
+    <script src="{% static 'javascript/wsb_live.js' %}"></script>
+</head>
+<body onload="load_ticker_graph();restore_dark_mode();">
+    <script>restore_dark_mode()</script>
+
+    <div id="ticker_chart" class="chart"></div>
+    <div style="display:none">
+        {{mentions_df|safe}}
+    </div>
+</body>
+</html>
+
+{% block bottom_script %}
+<script src='https://cdn.plot.ly/plotly-2.3.1.min.js'></script>
+{% endblock %}

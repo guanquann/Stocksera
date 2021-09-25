@@ -9,7 +9,7 @@ function load_trending_graph(timing) {
     }
 
     if (timing == "Past 12 months") {
-        document.querySelector(".reminder").innerHTML = `Note: Last score point (Week of ${date_list[date_list.length-1]}) is currently incomplete.`
+        document.querySelector(".reminder").innerHTML = `Note: Last data point (Week of ${date_list[date_list.length-1]}) is currently incomplete.`
     }
 
     var trending = document.getElementById('trending');
@@ -18,7 +18,7 @@ function load_trending_graph(timing) {
         data: {
             labels: date_list,
             datasets: [{
-                label: 'Score',
+                label: 'Interest',
                 lineTension: 0,
                 data: score_list,
                 borderColor: "orange",
@@ -52,7 +52,7 @@ function load_trending_graph(timing) {
                     },
                     scaleLabel: {
                         display: true,
-                        labelString: 'Score [%]',
+                        labelString: 'Interest [%]',
                         beginAtZero: true,
                     },
                     id: "A",

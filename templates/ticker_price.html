@@ -65,18 +65,18 @@
                 <div class="ticker_summary"></div>
 
                 <div class="btn_div_reminder"><i>Scroll right to view more</i></div>
-                <div class="main_btn_div">
+                <div class="main_btn_div glowing_border" onscroll="remove_glowing_border(this)">
                     <div class="btn_div">
                         <form action="/historical_data" method="GET" autocomplete="off" target="Historical Data" >
                             <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Historical Data')">Historical Data</button>
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Historical Data');">Historical Data</button>
                         </form>
                     </div>
 
                     <div class="btn_div">
                         <form action="/insider_trading" method="GET" autocomplete="off" target="Insider Trading">
                             <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Insider Trading')">Insider Trading</button>
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Insider Trading');">Insider Trading</button>
                         </form>
                     </div>
 
@@ -90,80 +90,79 @@
                     <div class="btn_div">
                         <form action="/google_trends" method="GET" autocomplete="off" target="Google Trends">
                             <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Google Trends')">Google Trends</button>
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Google Trends');">Google Trends</button>
                         </form>
                     </div>
 
                     <div class="btn_div">
                         <form action="/sec_fillings" method="GET" autocomplete="off" target="SEC Fillings">
                             <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'SEC Fillings')">SEC Fillings</button>
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'SEC Fillings');">SEC Fillings</button>
                         </form>
                     </div>
 
                     <div class="btn_div">
                         <form action="/major_holders" method="GET" autocomplete="off" target="Major Holders">
                             <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Major Holders')">Major Holders</button>
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Major Holders');">Major Holders</button>
                         </form>
                     </div>
 
                     <div class="btn_div">
                         <form action="/institutional_holders" method="GET" autocomplete="off" target="Institutional Holders">
                             <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Institutional Holders')">Institutional Holders</button>
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Institutional Holders');">Institutional Holders</button>
                         </form>
                     </div>
 
                     <div class="btn_div">
                         <form action="/mutual_fund_holders" method="GET" autocomplete="off" target="Mutual-Fund Holders">
                             <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Mutual-Fund Holders')">Mutual-Fund Holders</button>
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Mutual-Fund Holders');">Mutual-Fund Holders</button>
                         </form>
                     </div>
 
                     <div class="btn_div">
                         <form action="/ticker_earnings" method="GET" autocomplete="off" target="Earnings">
                             <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Earnings')">Earnings</button>
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Earnings');">Earnings</button>
                         </form>
                     </div>
 
                     <div class="btn_div">
                         <form action="/recommendations" method="GET" autocomplete="off" target="Upgrades & Downgrades">
                             <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Upgrades & Downgrades')">Upgrades & Downgrades</button>
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Upgrades & Downgrades');">Upgrades & Downgrades</button>
                         </form>
                     </div>
 
                     <div class="btn_div">
                         <form action="/dividend_and_split" method="GET" autocomplete="off" target="Dividend & Splits">
                             <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Dividend & Splits')">Dividend & Splits</button>
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Dividend & Splits');">Dividend & Splits</button>
                         </form>
                     </div>
 
                     <div class="btn_div">
                         <form action="/discussion" method="GET" autocomplete="off" target="Discussion">
                             <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Discussion')">Discussion</button>
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Discussion');">Discussion</button>
                         </form>
                     </div>
                 </div>
 
-                <iframe class="loading" src="/loading/"></iframe>
-                <iframe class="more_details" name="Historical Data" scrolling="no" onload="expand_iframe(this)"></iframe>
-                <iframe style="display: none" class="more_details" name="Major Holders" scrolling="no" onload="expand_iframe(this)"></iframe>
-                <iframe style="display: none" class="more_details" name="Institutional Holders" scrolling="no" onload="expand_iframe(this)"></iframe>
-                <iframe style="display: none" class="more_details" name="Mutual-Fund Holders" scrolling="no" onload="expand_iframe(this)"></iframe>
-                <iframe style="display: none" class="more_details" name="Dividend & Splits" scrolling="no" onload="expand_iframe(this)"></iframe>
-                <iframe style="display: none" class="more_details" name="Earnings" scrolling="no" onload="expand_iframe(this)"></iframe>
-                <iframe style="display: none" class="more_details" name="Upgrades & Downgrades" scrolling="no" onload="expand_iframe(this)"></iframe>
-                <iframe style="display: none" class="more_details" name="SEC Fillings" scrolling="no" onload="expand_iframe(this)"></iframe>
-                <iframe style="display: none" class="more_details" name="Google Trends" scrolling="no" onload="expand_iframe(this)"></iframe>
-                <iframe style="display: none" class="more_details" name="News Sentiment" scrolling="no" onload="expand_iframe(this)"></iframe>
-                <iframe style="display: none" class="more_details" name="Insider Trading" id="insider_trading" scrolling="no" onload="expand_iframe(this)"></iframe>
-                <iframe style="display: none" class="more_details" name="Discussion" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" class="more_details" name="Historical Data" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Major Holders" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Institutional Holders" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Mutual-Fund Holders" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Dividend & Splits" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Earnings" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Upgrades & Downgrades" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="SEC Fillings" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Google Trends" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="News Sentiment" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Insider Trading" id="insider_trading" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Discussion" scrolling="no" onload="expand_iframe(this)"></iframe>
 
                 <div style="margin-top: 30px">
                     <p><b>Related tickers that you might be interested:</b></p>

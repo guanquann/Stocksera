@@ -4,7 +4,7 @@
 
 <html lang="en">
 <head>
-    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
     <meta name="format-detection" content="telephone=no">
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'style/format.css' %}">
@@ -84,7 +84,7 @@
                         <img class="nav_bar_logo" src="{% static 'images/nav_bar/ticker_analysis.svg' %}">Stock
                     </li>
                 </a>
-                <a href="{% url 'reddit_analysis' %}">
+                <a href="{% url 'wsb_live' %}">
                     <li id="reddit" class="nav_bar">
                         <img class="nav_bar_logo" src="{% static 'images/nav_bar/reddit.svg' %}">Reddit
                     </li>
@@ -130,14 +130,15 @@
         </div>
 
         <div class="footer">
-                <ul>
-                    <li id="disclaimer">Disclaimer</li>
-                    <li id="contact">Contact</li>
-                    <li id="privacy">Privacy</li>
-                    <li id="support">Support</li>
-                    <li id="share">Share</li>
-                </ul>
-                <div>&copy; 2021 Stocksera</div>
+            <div class="subscribe_email_div" style="padding: 15px 0 0px 0px"><a class="subscribe_email" href="/subscribe" target="_blank">Subscribe to Free WSB Notifications</a></div>
+            <ul>
+                <li id="disclaimer">Disclaimer</li>
+                <li id="contact">Contact</li>
+                <li id="privacy">Privacy</li>
+                <li id="support">Support</li>
+                <li id="share">Share</li>
+            </ul>
+            <div>&copy; 2021 Stocksera</div>
         </div>
 
             <div id="disclaimer_model" class="modal">
@@ -166,7 +167,7 @@
                         <h4>Contact</h4>
                     </div>
                     <div class="modal-body">
-                        <p>If you have any questions or suggestions regarding Stockera, please drop me a message in the <a href="{% url 'about' %}" target="_blank">About</a> section or email me at stocksera@gmail.com</p>
+                        <p>If you have any questions or suggestions regarding Stocksera, please drop me a message in the <a href="{% url 'about' %}" target="_blank">About</a> section or email me at <a href="mailto:stocksera@gmail.com">stocksera@gmail.com</a></p>
                     </div>
                 </div>
             </div>

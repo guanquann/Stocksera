@@ -78,7 +78,8 @@ interested_stocks_subreddits = {
     "ATER": ["ATERstock"],
     "RKLB": ["RKLB"],
     "BBIG": ["BBIG"],
-    "SAVA": ["SAVA_stock"]
+    "SAVA": ["SAVA_stock"],
+    "GREE": ["gree"]
 }
 
 interested_crypto_subreddits = {

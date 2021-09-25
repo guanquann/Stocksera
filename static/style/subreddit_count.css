@@ -178,3 +178,35 @@
 .dark_mode .individual_subreddit_description {
     background-color: #505050;
 }
+
+#submit_subreddit {
+    text-align: center
+}
+
+.input_div {
+    margin-top: 10px
+}
+
+#captcha {
+    width: fit-content;
+    margin: 5px auto;
+}
+
+.new_subreddit_input {
+    border: 1px solid grey;
+    border-radius: 4px;
+    padding: 7px;
+    margin: 5px 0;
+    text-transform: uppercase;
+    width: 287px;
+    max-width: 95%;
+}
+
+.new_subreddit_btn {
+    border: 1px solid grey;
+    border-radius: 4px;
+    padding: 7px;
+    margin: 5px 0;
+    width: 304px;
+    max-width: 100%
+}

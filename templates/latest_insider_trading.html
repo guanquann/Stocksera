@@ -38,14 +38,15 @@
 
         <form action="/insider_trading" method="GET" autocomplete="off" target="Insider Trading" onsubmit="change_header_description()">
             <div class="search_bar">
-                <input name="quote" value="AAPL" class="ticker_input" placeholder="Ticker:" autocomplete="off">
+                <input type="text" name="quote" value="AAPL" class="ticker_input" placeholder="Ticker:" autocomplete="off">
                 <button class="submit_btn" type="submit"><img src="{% static 'images/search_icon.svg' %}"></button>
             </div>
         </form>
+
         <iframe style="display:none"></iframe>
         <iframe src="/insider_trading/?quote=AAPL" name="Insider Trading" onload="expand_iframe(this)"></iframe>
 
-        <h2 class="ticker_insider_header">Top 50 Recent Insider Trading (last 30 days)</h2>
+        <h2 class="ticker_insider_header">Top 50 Net Recent Insider Trading Amount (last 30 days)</h2>
         <div class="scrollable_div">
             {{insider_df|safe}}
         </div>

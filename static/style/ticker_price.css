@@ -122,6 +122,10 @@ iframe {
     min-height: 150px;
 }
 
+.extra {
+    min-height: 450px;
+}
+
 .btn_div_reminder {
     margin-top: 30px;
     float: right;
@@ -138,6 +142,21 @@ iframe {
 .btn_div {
     margin-right: 13px;
 }
+
+.glowing_border {
+    -webkit-animation: glow 1s ease-in-out infinite alternate;
+    -moz-animation: glow 1s ease-in-out infinite alternate;
+    animation: glow 1s ease-in-out infinite alternate;
+}
+
+@-webkit-keyframes glow {
+  from {
+    box-shadow: 5px 0 0px -2px #26a69aa8 ;
+  }
+  to {
+  }
+}
+
 
 ::-webkit-scrollbar {
     width: 3px;

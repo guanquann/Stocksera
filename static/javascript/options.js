@@ -27,6 +27,8 @@ function options_summary(latest_price) {
         strike_price = Number(td[2].innerHTML.replace("$", ""))
         if (latest_price >= strike_price) {
             calls_itm += Number(td[0].innerHTML)
+            td[0].classList.add("itm")
+            td[1].classList.add("itm")
         }
         else {
             calls_otm += Number(td[0].innerHTML)
@@ -37,6 +39,8 @@ function options_summary(latest_price) {
         }
         if (latest_price <= strike_price) {
             puts_itm += Number(td[3].innerHTML)
+            td[3].classList.add("itm")
+            td[4].classList.add("itm")
         }
         else {
             puts_otm += Number(td[3].innerHTML)

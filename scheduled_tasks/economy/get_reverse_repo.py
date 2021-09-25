@@ -6,37 +6,36 @@ conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
 
 
-def reverse_repo(start_date="01022014", end_date=None):
+def reverse_repo(start_date="2014-01-01", end_date=None):
     """
     Get reverse repo by downloading csv file online and dump into database
     Parameters
     ----------
     start_date : str
-        format: DDMMYYYY
+        format: YYYY-MM-DD
     end_date : str
-        format: DDMMYYYY
+        format: YYYY-MM-DD
     """
 
     if end_date is None:
-        current_date = str(datetime.now().date()).replace("-", "")
-        end_date = current_date[4:6] + current_date[-2:] + current_date[:4]
+        end_date = str(datetime.utcnow().date())
 
-    url = "https://websvcgatewayx2.frbny.org/autorates_tomo_external/services/v1_0/tomo/retrieveHistoricalExcel?f=" \
-          "{}&t={}&ctt=true&&cta=true&ctm=true".format(start_date, end_date)
-    print(url)
-    df = pd.read_excel(url)
-    df = df[df["Op Type"] == "RRP"]
+    url = "https://markets.newyorkfed.org/read?startDt={}&endDt={}&productCode=70&eventCodes=730&format=csv".format(start_date, end_date)
 
-    df["Total-Submit"] = df["Total-Submit"].astype(str).str.replace(",", "").astype(float)
-    df["Average"] = df["Total-Submit"] / df["Participating Counterparties"].astype(float)
+    df = pd.read_csv(url)
+    df = df[df["Operation Type"] == "Reverse Repo"]
+
+    df["Total Amt Submitted ($Billions)"] = df["Total Amt Submitted ($Billions)"].astype(float)
+    df["Average"] = df["Total Amt Submitted ($Billions)"] / df["Participating Counterparties"].astype(float)
     df["Average"] = df["Average"].round(2)
     df.fillna(0, inplace=True)
     for index, row in df[::-1].iterrows():
-        date = row["Deal Date"]
+        date = row["Operation Date"]
         date = date[-4:] + "-" + date[:2] + "-" + date[3:5]
-        amount = row["Total-Submit"]
+        amount = row["Total Amt Submitted ($Billions)"]
         participants = row["Participating Counterparties"]
         avg = row["Average"]
+        print(date, amount, participants, avg)
         db.execute("INSERT OR IGNORE INTO reverse_repo VALUES (?, ?, ?, ?)", (date, amount, participants, avg))
         conn.commit()
 

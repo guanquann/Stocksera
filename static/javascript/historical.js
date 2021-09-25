@@ -96,11 +96,12 @@ function stats() {
 
 
 function draw_graph() {
+    day_mapping = {"Monday": "Mon", "Tuesday": "Tue", "Wednesday": "Wed", "Thursday": "Thur", "Friday": "Fri"}
     tr = document.querySelectorAll("table")[1].querySelectorAll("tr")
     day_list = [], percent_change_list = []
     for (i=1; i<tr.length; i++) {
         td = tr[i].querySelectorAll("td")
-        day_list.push(td[0].innerHTML)
+        day_list.push(day_mapping[td[0].innerHTML])
         percent_change_list.push(td[1].innerHTML)
     }
 

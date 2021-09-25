@@ -6,6 +6,15 @@
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/about.css' %}">
+<script type="text/javascript">
+    var onloadCallback = function() {
+        grecaptcha.render('captcha', {
+            'sitekey' : '6Ldyh4gcAAAAAEaQgaZAmPxMLuXoOlPnsNis85XA'
+        });
+    var response = grecaptcha.getResponse();
+    };
+</script>
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
 {% endblock %}
 
 {% block onload_properties%};restore_dark_mode(){% endblock %}
@@ -19,7 +28,7 @@
     <script>highlight_selected_nav('about')</script>
     <div class="instructions">
         <h2>About</h2>
-        <p>Welcome to StocksEra! Do contact us if you have any feedbacks or suggestions. We will get to you as soon as possible!</p>
+        <p>Welcome to Stocksera! Do contact us if you have any feedbacks or suggestions. We will get to you as soon as possible!</p>
     </div>
     <div class="contents_div">
         <div class="about_div">
@@ -47,16 +56,18 @@
             <div>
                 Do feel free to drop me a message if you have any comments or suggestions to improve the website.
                 Any advice would be appreciated.
-                Feel free to email me at stocksera@gmail.com for collaborations too.
+                Feel free to email me at <a href="mailto:stocksera@gmail.com" class="email">stocksera@gmail.com</a> for collaborations too.
             </div>
             <div class="input_section">
-                <form action="" method="POST" autocomplete="off" onsubmit="alert('Thank you for your suggestion! We will get back to you as soon as possible.');"> {% csrf_token %}
-                    <input type="text" placeholder="Name:" name="name" style="margin-right:3%;" required>
+                <form action="" method="POST" autocomplete="off" onsubmit="return validateRecaptcha();"> {% csrf_token %}
+                    <input type="text" placeholder="Name:" name="name" required>
+                    <br>
                     <input type="email" placeholder="Email Address:" name="email" required>
                     <br>
                     <textarea placeholder="Suggestions or improvements to the website:" name="suggestions" required></textarea>
+                    <div id="captcha"></div>
                     <div>
-                        <button type="submit">Submit</button>
+                        <button type="submit" class="submit_btn">Submit</button>
                     </div>
                 </form>
             </div>
@@ -69,6 +80,13 @@
                     <tr>
                         <th>Date</th>
                         <th>Major Updates</th>
+                    </tr>
+                    <tr>
+                        <td>30 Sep 2021</td>
+                        <td>
+                            <li>Launch of WSB Live</li>
+                            <li>Daily notifications of trending tickers on WSB via email</li>
+                        </td>
                     </tr>
                     <tr>
                         <td>12 Sep 2021</td>
@@ -127,4 +145,19 @@
             <a href="https://github.com/spartan737/Stocksera" target="_blank"><img src="{% static 'images/github.svg' %}"></a>
         </div>
     </div>
+{% endblock %}
+
+{% block bottom_script %}
+<script type="text/javascript">
+    function validateRecaptcha() {
+        var response = grecaptcha.getResponse();
+        if (response.length === 0) {
+            alert("Not verified! Please check the checkbox.");
+            return false;
+        } else {
+            alert('Thank you for your suggestion! We will get back to you as soon as possible.');
+            return true;
+        }
+    }
+</script>
 {% endblock %}

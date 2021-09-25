@@ -48,12 +48,6 @@
     }
 }
 
-.navigation_menu {
-    display: flex;
-    padding-top: 3px;
-    width: fit-content;
-}
-
 .options_summary .header {
     text-align: center;
     font-size: large;
@@ -70,30 +64,6 @@
 
 .options_summary_sub span {
     font-size: larger;
-}
-
-.show_selection {
-    margin-right: 4%;
-    margin-top: 1%;
-}
-
-.choices {
-    margin-top: 1%;
-}
-
-.choices:hover {
-    cursor: pointer;
-}
-
-.choice_selected {
-    color: rgb(38, 166, 154);
-    font-weight: bold;
-}
-
-.delimiter {
-    padding-left: 5px; 
-    padding-right: 5px;
-    margin-top: 1%;
 }
 
 .chart-container {
@@ -120,85 +90,22 @@
     color: black;
 }
 
-#calls_div, #puts_div, #straddle_div {
-    overflow-x: scroll; 
-    overflow-y: auto;
+table, th {
+    text-align: center !important;
 }
 
-#calls_div table th {
-    background-color: #26a69a;
+tr td:nth-child(3) {
+    background-color: #E9EAEA;
 }
 
-#puts_div table th {
-    background-color: red;
-}
-
-#straddle_header {
-    display: flex;
-    justify-content: space-around;
-    font-size: 15px;
-    font-weight: bold;
-}
-
-.straddle_strike {
-    background-color: rgb(179, 179, 179);
-}
-
-.dark_mode .straddle_strike {
+.dark_mode tr td:nth-child(3) {
     background-color: #505050;
 }
 
-.itm_description {
-    display: flex;
-    justify-content: space-between;
-    padding-top: 5px;
-    padding-bottom: 1.5px;
-    font-size: 15px;
-}
-
-.calls {
-    color: rgb(38, 166, 154);
-}
-
-.puts {
-    color: red;
-}
-
-.itm_description_right {
-    display:flex;
-    margin-right: 10px
-}
-
 .itm {
-    margin-left: 7px;
+    background-color: #E9EAEA;
 }
 
-.itm_date_description {
-    margin-bottom: 0px;
-    margin-top: 0;
-    font-weight: bold;
-}
-
-.itm_symbol {
-    opacity: 0.65;
-    padding-left: 12px;
-    padding-right: 12px;
-    border: 1px solid grey;
-    border-radius: 3px
-}
-
-.calls_symbol_background {
-    background-color: rgb(38, 166, 154);
-}
-
-.puts_symbol_background {
-    background-color: red;
-}
-
-table {
-    text-align: center !important;
-}
-
-th {
-    text-align: center !important;
+.dark_mode .itm {
+    background-color: #505050;
 }

@@ -34,6 +34,7 @@ function amd_xlnx_ratio_graph() {
                     data: ratio_list,
                     backgroundColor: 'transparent',
                     borderColor: 'red',
+                    borderWidth: 2,
                 },
                 {
                     label: 'Deal Exchange Ratio',
@@ -41,6 +42,7 @@ function amd_xlnx_ratio_graph() {
                     data: deal_exr_list,
                     backgroundColor: 'transparent',
                     borderColor: '#39a6a6',
+                    borderWidth: 2,
                 }]
         },
 
@@ -58,18 +60,20 @@ function amd_xlnx_ratio_graph() {
                         type: "linear",
                         position:"left",
                         gridLines: {
-                            display: false
+                            drawOnChartArea: false,
+                            color: "grey",
                         },
                     }],
 
                 xAxes: [{
                     ticks: {
                       maxTicksLimit: 10,
-                      maxRotation: 45,
+                      maxRotation: 30,
                       minRotation: 0,
                     },
                     gridLines: {
-                        drawOnChartArea: false
+                        drawOnChartArea: false,
+                        color: "grey",
                     },
                 }],
             },
@@ -105,6 +109,7 @@ function amd_xlnx_ratio_graph() {
                     data: amd_price_list,
                     backgroundColor: 'transparent',
                     borderColor: 'green',
+                    borderWidth: 2,
                 },
                 {
                     label: 'XLNX',
@@ -112,6 +117,7 @@ function amd_xlnx_ratio_graph() {
                     data: xlnx_price_list,
                     backgroundColor: 'transparent',
                     borderColor: 'orange',
+                    borderWidth: 2,
                 }]
         },
 
@@ -123,29 +129,26 @@ function amd_xlnx_ratio_graph() {
                     {
                         scaleLabel: {
                             display: true,
-                            labelString: 'Price',
+                            labelString: 'Price [$]',
                             beginAtZero: false,
                         },
                         type: "linear",
                         position:"left",
                         gridLines: {
-                            display: false
-                        },
-                        ticks: {
-                            callback: function(value, index, values) {
-                                return "$" + value;
-                            }
+                            drawOnChartArea: false,
+                            color: "grey",
                         },
                     }],
 
                 xAxes: [{
                     ticks: {
                       maxTicksLimit: 10,
-                      maxRotation: 45,
+                      maxRotation: 30,
                       minRotation: 0,
                     },
                     gridLines: {
-                        drawOnChartArea: false
+                        drawOnChartArea: false,
+                        color: "grey",
                     },
                     stacked: true
                 }],

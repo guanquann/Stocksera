@@ -67,7 +67,6 @@ def get_topics():
         'SHIB': {'SHIBA', 'SHIB', 'SHIBA INU'},
         'IOTA': {'IOTA', 'MIOTA'},
         'LTO': {'LTO NETWORK', 'LTO'},
-        'MOON': {'MOONS', 'MOON'},
         'THETA': {'THETA'},
         'KSM': {'KUSAMA', 'KSM'},
         'CAKE': {'PANCAKESWAP', 'PANCAKE', 'CAKE'},

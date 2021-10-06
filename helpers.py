@@ -23,11 +23,11 @@ header = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHT
                         "50.0.2661.75 Safari/537.36", "X-Requested-With": "XMLHttpRequest"}
 
 
-def default_ticker(request):
+def default_ticker(request, ticker="AAPL"):
     if request.GET.get("quote"):
         ticker_selected = request.GET['quote'].upper().replace(" ", "")
     else:
-        ticker_selected = "AAPL"
+        ticker_selected = ticker
     return ticker_selected
 
 
@@ -84,21 +84,23 @@ def check_market_hours(ticker_selected):
 
     if "longName" in information and information["regularMarketPrice"] != "N/A":
         # Uncomment this if the bottom does not work!
-        # db.execute("SELECT * FROM stocksera_trending WHERE symbol=?", (ticker_selected,))
-        # count = db.fetchone()
-        # if count is None:
-        #     count = 1
-        # else:
-        #     count = count[2] + 1
+        # if "." not in ticker_selected:
+        #     db.execute("SELECT * FROM stocksera_trending WHERE symbol=?", (ticker_selected,))
+        #     count = db.fetchone()
+        #     if count is None:
+        #         count = 1
+        #     else:
+        #         count = count[2] + 1
         #
-        # db.execute("DELETE from stocksera_trending WHERE symbol=?", (ticker_selected,))
-        # db.execute("INSERT INTO stocksera_trending (symbol, name, count) VALUES (?, ?, ?) ",
-        #            (ticker_selected, information["longName"], count))
+        #     db.execute("DELETE from stocksera_trending WHERE symbol=?", (ticker_selected,))
+        #     db.execute("INSERT INTO stocksera_trending (symbol, name, count) VALUES (?, ?, ?) ",
+        #                (ticker_selected, information["longName"], count))
 
         # Comment this if you face an error. Uncomment the top instead.
-        db.execute("INSERT INTO stocksera_trending (symbol, name, count) VALUES (?, ?, 1) ON CONFLICT (symbol) "
-                   "DO UPDATE SET count=count+1", (ticker_selected, information["longName"]))
-        conn.commit()
+        if "." not in ticker_selected:
+            db.execute("INSERT INTO stocksera_trending (symbol, name, count) VALUES (?, ?, 1) ON CONFLICT (symbol) "
+                       "DO UPDATE SET count=count+1", (ticker_selected, information["longName"]))
+            conn.commit()
 
         db.execute("SELECT * FROM related_tickers WHERE ticker=?", (ticker_selected, ))
         related_tickers = db.fetchall()

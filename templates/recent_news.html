@@ -9,7 +9,7 @@
     <script src="{% static 'javascript/format.js' %}"></script>
     <script src="{% static 'javascript/recent_news.js' %}"></script>
 </head>
-<body onload="remove_spinner();load_table_url();restore_dark_mode()">
+<body onload="load_table_url();restore_dark_mode()">
     <script>restore_dark_mode()</script>
     <div class="scrollable_div" style="max-height:450px">
         {{recent_news_df|safe}}

@@ -75,10 +75,18 @@ function subreddit_count(duration) {
                 ticks: {
                     beginAtZero: false,
                     maxTicksLimit: 6,
+                    callback: function(value, index, values) {
+                        return value / 1000;
+                    }
                 },
                 gridLines: {
-                    drawOnChartArea: false
-                }
+                    drawOnChartArea: false,
+                    color: "grey",
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Number Redditors [K]',
+                },
             }],
             xAxes: [{
                 ticks: {
@@ -87,7 +95,8 @@ function subreddit_count(duration) {
                   minRotation: 0,
                 },
                 gridLines: {
-                    drawOnChartArea: false
+                    drawOnChartArea: false,
+                    color: "grey",
                 }
             }]
         },
@@ -102,7 +111,7 @@ function subreddit_count(duration) {
             mode: 'index',
             intersect: false,
             callbacks: {
-                label: (item) => `${item.yLabel} subscribers`,
+                label: (item) => `${Number(item.yLabel).toLocaleString()} subscribers`,
             },
         },
         hover: {
@@ -283,8 +292,14 @@ function subreddit_count(duration) {
                     maxTicksLimit: 6,
                 },
                 gridLines: {
-                    drawOnChartArea: false
-                }
+                    drawOnChartArea: false,
+                    color: "grey",
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Daily Growth [%]',
+                    beginAtZero: true,
+                },
             }],
             xAxes: [{
                 ticks: {
@@ -293,7 +308,8 @@ function subreddit_count(duration) {
                   minRotation: 0,
                 },
                 gridLines: {
-                    drawOnChartArea: false
+                    drawOnChartArea: false,
+                    color: "grey",
                 }
             }]
         },
@@ -377,8 +393,14 @@ function subreddit_count(duration) {
                     maxTicksLimit: 6,
                 },
                 gridLines: {
-                    drawOnChartArea: false
-                }
+                    drawOnChartArea: false,
+                    color: "grey",
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Active Users [%]',
+                    beginAtZero: true,
+                },
             }],
             xAxes: [{
                 ticks: {
@@ -387,7 +409,8 @@ function subreddit_count(duration) {
                   minRotation: 0,
                 },
                 gridLines: {
-                    drawOnChartArea: false
+                    drawOnChartArea: false,
+                    color: "grey",
                 }
             }]
         },

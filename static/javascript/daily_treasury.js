@@ -1,6 +1,7 @@
 function display_table() {
     var table = document.getElementsByTagName("table")[0];
     var tr = table.querySelectorAll("tr");
+    tr[0].querySelectorAll("th")[5].style.display = "none"
     var consecutive_num = 0
     var consecutive = true
     for (i=1; i<tr.length; i++) {
@@ -18,6 +19,7 @@ function display_table() {
             consecutive = false
         }
         td[4].innerHTML = td[4].innerHTML + "%"
+        td[5].style.display = "none"
     }
     document.getElementById("consecutive_text").innerHTML =
     `As of ${tr[1].querySelector("td").innerHTML}, ${consecutive_num} consecutive days of decrease in daily treasury.`
@@ -28,7 +30,14 @@ var daily_treasury_chart = null;
 function treasury(duration) {
     var date_threshold = get_date_difference(duration, "-")
 
-    var date_list = [], close_list = []
+    if (duration <= 6) {
+        date_unit = "day"
+    }
+    else {
+        date_unit = "month"
+    }
+
+    var date_list = [], close_list = [], moving_avg_list = []
     var table = document.getElementsByTagName("table")[0];
     var tr = table.querySelectorAll("tr");
     for (i=tr.length-1; i>0; i--) {
@@ -37,6 +46,7 @@ function treasury(duration) {
         if (date_string >= date_threshold) {
             date_list.push(date_string)
             close_list.push(td[1].innerHTML.replace("$", "").replace("B", ""))
+            moving_avg_list.push(td[5].innerHTML)
             tr[i].style.removeProperty("display")
         }
         else {
@@ -54,13 +64,22 @@ function treasury(duration) {
             labels: date_list,
             datasets: [
                 {
+                    label: 'Moving Avg (7D)',
+                    type: 'line',
+                    data: moving_avg_list,
+                    pointRadius: 0,
+                    borderWidth: 2,
+                    borderColor: 'red',
+                    backgroundColor: 'transparent',
+                },
+                {
                     label: 'Close Balance',
                     type: 'bar',
                     data: close_list,
                     borderColor: 'rgb(38, 166, 154)',
                     backgroundColor: 'rgb(38, 166, 154)',
-                }
-                ]
+                },
+            ]
         },
 
         options: {
@@ -73,7 +92,8 @@ function treasury(duration) {
                 yAxes: [
                     {
                         gridLines: {
-                            display: false
+                            drawOnChartArea: false,
+                            color: "grey",
                         },
                         type: "linear",
                         scaleLabel: {
@@ -85,19 +105,28 @@ function treasury(duration) {
                     ],
 
                 xAxes: [{
-                    offset: true,
-                    ticks: {
-                      maxTicksLimit: 10,
-                      maxRotation: 45,
-                      minRotation: 0,
+                    type: "time",
+                    distribution: 'series',
+                    time: {
+                        unit: date_unit
                     },
+                    offset: true,
                     gridLines: {
-                        drawOnChartArea: false
+                        drawOnChartArea: false,
+                        color: "grey",
+                    },
+                    ticks: {
+                        maxTicksLimit: 10,
+                        maxRotation: 30,
+                        minRotation: 0,
                     },
                 }],
             },
-
-            // To show value when hover on any part of the graph
+            elements: {
+                line: {
+                    tension: 0
+                }
+            },
             tooltips: {
                 mode: 'index',
                 intersect: false,

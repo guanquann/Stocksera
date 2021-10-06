@@ -74,7 +74,7 @@ function draw_open_interest_and_volume() {
         calls_oi_list.push(td[0].innerHTML);
         calls_vol_list.push(td[1].innerHTML);
 
-        strike_list.push(td[2].innerHTML);
+        strike_list.push(td[2].innerHTML.replace("$", ""));
 
         puts_oi_list.push(td[3].innerHTML);
         puts_vol_list.push(td[4].innerHTML);
@@ -85,15 +85,16 @@ function draw_open_interest_and_volume() {
         maintainAspectRatio: false,
         scales: {
             yAxes: [{
-                ticks: {
-                    beginAtZero: false
-                },
                 gridLines: {
-                    drawOnChartArea: false
+                    drawOnChartArea: false,
+                    color: "grey",
                 },
-
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Volume',
+                    beginAtZero: false,
+                },
             }],
-
             xAxes: [{
                 ticks: {
                     maxTicksLimit: 20,
@@ -101,21 +102,31 @@ function draw_open_interest_and_volume() {
                     minRotation: 0,
                 },
                 gridLines: {
-                    drawOnChartArea: false
+                    drawOnChartArea: false,
+                    color: "grey",
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Strike [$]',
+                    beginAtZero: true,
                 },
             }]
         },
-        // To remove the point of each label
         elements: {
             point: {
                 radius: 0
             }
         },
-
-        // To show value when hover on any part of the graph
         tooltips: {
             mode: 'index',
             intersect: false,
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                    var label = data.datasets[tooltipItem.datasetIndex].label;
+                    return label + ': ' + Number(value).toLocaleString();
+                }
+            }
         },
         hover: {
             mode: 'index',
@@ -201,14 +212,17 @@ function draw_max_pain(strike_list, call_loss_list, put_loss_list) {
             scales: {
                 yAxes: [{
                     ticks: {
-                        beginAtZero: false,
-                        callback: function(value, index, values) {
-                            return "$" + value + "M";
-                        }
+                        beginAtZero: false
                     },
                     gridLines: {
-                        drawOnChartArea: false
-                    }
+                        drawOnChartArea: false,
+                        color: "grey",
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Amount [$B]',
+                        beginAtZero: false,
+                    },
                 }],
 
                 xAxes: [{
@@ -216,13 +230,16 @@ function draw_max_pain(strike_list, call_loss_list, put_loss_list) {
                         maxTicksLimit: 20,
                         maxRotation: 45,
                         minRotation: 0,
-                        callback: function(value, index, values) {
-                            return value;
-                        }
                     },
                     gridLines: {
-                        drawOnChartArea: false
-                    }
+                        drawOnChartArea: false,
+                        color: "grey",
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Strike [$]',
+                        beginAtZero: false,
+                    },
                 }]
             },
             // To show value when hover on any part of the graph

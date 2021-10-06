@@ -8,7 +8,7 @@ function color_table(is_checked) {
             for (k=1; k<td.length; k++) {
                 const value = td[k].innerHTML
                 if (value != "N/A") {
-                    const l = 100 - (value * 12);
+                    const l = 100 - (value * 11);
                     const textColor = l < 60 ? 'white' : '#000';
                     td[k].style.backgroundColor = 'hsl(10, 70%, ' + l + '%)'
                     td[k].style.color = textColor
@@ -24,6 +24,17 @@ function color_table(is_checked) {
                 td[k].style.removeProperty("color");
             }
         }
+    }
+}
+
+function show_reference() {
+    var tds = document.getElementById("heatmap_reference").querySelector("tr").querySelectorAll("td")
+    for (k=0; k<tds.length; k++) {
+        const value = tds[k].innerHTML
+        const l = 100 - (value * 11);
+        const textColor = l < 60 ? 'white' : '#000';
+        tds[k].style.backgroundColor = 'hsl(10, 70%, ' + l + '%)'
+        tds[k].style.color = textColor
     }
 }
 
@@ -93,7 +104,8 @@ function inflation(duration) {
                     data: avg_inflation,
                     borderColor: 'rgb(38, 166, 154)',
                     backgroundColor: 'transparent',
-                    lineTension: 0,  // straight line instead of curve
+                    lineTension: 0,
+                    borderWidth: 2,
                 }
                 ]
         },
@@ -102,7 +114,7 @@ function inflation(duration) {
             responsive: true,
             maintainAspectRatio: false,
             legend: {
-                display: true
+                display: true,
             },
             elements: {
                 point:{
@@ -114,33 +126,34 @@ function inflation(duration) {
                     {
                         display: true,
                         gridLines: {
-                            color: 'transparent',
-                            zeroLineColor: '#505050'
+                            drawOnChartArea: false,
+                            color: "grey"
                         },
                         position: 'left',
                         type: "linear",
                         scaleLabel: {
                             display: true,
                             labelString: 'Inflation [%]',
-                            beginAtZero: true,
+                            beginAtZero: false,
+                        }
+                    }
+                ],
+                xAxes: [
+                    {
+                        offset: true,
+                        ticks: {
+                            maxTicksLimit: 10,
+                            maxRotation: 30,
+                            minRotation: 0,
+                        },
+                        gridLines: {
+                            drawOnChartArea: false,
+                            color: 'grey',
                         },
                     }
-                    ],
-
-                xAxes: [{
-                    offset: true,
-                    ticks: {
-                      maxTicksLimit: 10,
-                      maxRotation: 45,
-                      minRotation: 0,
-                    },
-                    gridLines: {
-                        drawOnChartArea: false
-                    },
-                }],
+                ],
             },
 
-            // To show value when hover on any part of the graph
             tooltips: {
                 mode: 'index',
                 intersect: false,

@@ -30,8 +30,8 @@ stopwords_list = ['FDA', 'APE', 'MOON', 'HOLD', 'MERGE', 'ADS', 'FOMO', 'OTC', '
                   'THREE', 'CARS', 'MC', 'VS', 'PS', 'JOBS', 'BIDEN', 'FUSE', 'DUDE', 'L', 'PAYS', 'HEAR', 'CO',
                   'LOOP', 'KEY', 'PDT', 'SITE', 'MIN', 'CAT', 'MAX', 'FDS', 'TEN', 'BILL', 'W', 'ONTO', 'FAST', 'TEN'
                   'FOLD', 'THO', 'POOL', 'WGO', 'PEAK', 'SHIP', 'LEG', 'RACE', 'LAWS', 'DASH', 'FAT', 'PUMP', 'DUMP',
-                  'JOB', 'PPL', 'FT', 'AGE', 'GOGO', 'FROG', 'TD', 'CAKE', 'TEAM', 'RIG', 'FAM', 'EYES', 'TRIP',
+                  'JOB', 'PPL', 'FT', 'AGE', 'FROG', 'TD', 'CAKE', 'TEAM', 'RIG', 'FAM', 'EYES', 'TRIP',
                   'DARE', 'PLUS', 'IQ', 'DDS', 'ROCK', 'LAND', 'JACK', 'SI', 'GLAD', 'WOW', 'RC', 'CTO', 'PT', 'BOB',
                   'TV', 'IP', 'BRO', 'BAND', 'PAY', "CUZ", "COZ", "ACT", "TGT", "HAHA", "HA", "STEP", "PRO", "COOK",
                   "APP", "APPS", "SON", "TIP", "BOX", "NET", "EH", "EW", "A", "I", "U", "E", "R", "FOMC", "DOC", "MOD",
-                  "MODS", "WAT", "MINE", "CC", "DTE", "K", "V", "F", "CRY"]
+                  "MODS", "WAT", "MINE", "CC", "DTE", "K", "V", "F", "CRY", "DOG"]

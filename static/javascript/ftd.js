@@ -35,8 +35,6 @@ function display_top_ftd_table() {
 function display_table() {
     var ftd = document.getElementsByTagName("table")[0].querySelectorAll("tr");
     var threshold = document.getElementById("90th_percentile").innerHTML
-//    ftd[0].innerHTML += `
-//        <th>T+35 Date</th>`
     for (tr=ftd.length-1; tr>0; tr--) {
         var total_td = ftd[tr].querySelectorAll("td");
         date_string = total_td[0].innerHTML;
@@ -51,22 +49,6 @@ function display_table() {
         total_td[2].innerHTML = "$" + total_td[2].innerHTML
         total_td[3].innerHTML = "$" + Number(total_td[3].innerHTML).toLocaleString()
 
-//        f35_date = new Date(date_string).addDays(36)
-//        date_string = date_string.replaceAll("/", ",")
-//        console.log(date_string)
-//        f35_date = new Date(date_string).addDays(36).toUTCString()
-//        console.log(f35_date)
-//        month = f35_date.getMonth() + 1;
-//        day = f35_date.getUTCDate();
-//        year = f35_date.getUTCFullYear();
-//        if (day < 10) {
-//            day = "0" + day
-//        }
-//        if (month < 10) {
-//            month = "0" + month
-//        }
-//        f35_date = year + "/" + month + "/" + day;
-//        ftd[tr].innerHTML += `<td>${f35_date}</td>`
     }
 }
 
@@ -74,6 +56,13 @@ var ftd_chart = null
 
 function ftd_graph(duration) {
     var date_threshold = get_date_difference(duration, "/")
+
+    if (duration <= 6) {
+        date_unit = "day"
+    }
+    else {
+        date_unit = "month"
+    }
 
     var ftd = document.getElementsByTagName("table")[0].querySelectorAll("tr");
     var date_list = [], price_list = [], vol_list = []
@@ -83,7 +72,7 @@ function ftd_graph(duration) {
         if (date_string >= date_threshold) {
             ftd[tr].style.removeProperty("display");
             date_list.push(date_string);
-            vol_list.push(Number(total_td[1].innerHTML.replace(/[^0-9-.]/g, "")))
+            vol_list.push(Number(total_td[1].innerHTML.replace(/[^0-9-.]/g, "") / 1000000))
             price_list.push(Number(total_td[2].innerHTML.replace("$", "")));
         }
         else {
@@ -94,6 +83,7 @@ function ftd_graph(duration) {
     if (ftd_chart != null){
         ftd_chart.destroy();
     }
+
     ftd_chart = document.getElementById('ftd_chart');
     ftd_chart = new Chart(ftd_chart, {
         data: {
@@ -104,6 +94,7 @@ function ftd_graph(duration) {
                     type: 'line',
                     data: vol_list,
                     borderColor: 'orange',
+                    borderWidth: 2,
                     backgroundColor: 'transparent',
                     yAxisID: 'B',
                 },
@@ -113,6 +104,7 @@ function ftd_graph(duration) {
                     data: price_list,
                     backgroundColor: 'transparent',
                     borderColor: 'rgb(38, 166, 154)',
+                    borderWidth: 2,
                     yAxisID: 'A',
                 }]
         },
@@ -124,53 +116,76 @@ function ftd_graph(duration) {
                 yAxes: [{
                         position: 'left',
                         gridLines: {
-                            display: false
+                            drawOnChartArea: false,
+                            color: "grey",
                         },
                         type: "linear",
                         id: "A",
                         scaleLabel: {
                             display: true,
-                            labelString: 'Price',
+                            labelString: 'Price [$]',
                         },
                         ticks: {
                             callback: function(value, index, values) {
-                                return "$" + value;
+                                return value;
                             }
                         },
                     },
                     {
                         scaleLabel: {
                             display: true,
-                            labelString: 'FTD',
+                            labelString: 'FTD [M]',
                         },
                         type: "linear",
                         id: "B",
                         position:"right",
                         gridLines: {
-                            display: false
+                            drawOnChartArea: false,
+                            color: "grey",
+                        },
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return value;
+                            }
                         },
                     }],
 
                 xAxes: [{
-                    ticks: {
-                      maxTicksLimit: 10,
-                      maxRotation: 45,
-                      minRotation: 0,
+                    type: "time",
+                    distribution: 'series',
+                    time: {
+                        unit: date_unit
                     },
+                    offset: true,
                     gridLines: {
-                        drawOnChartArea: false
+                        drawOnChartArea: false,
+                        color: "grey",
                     },
-                    stacked: true
+                    ticks: {
+                        maxTicksLimit: 10,
+                        maxRotation: 30,
+                        minRotation: 0,
+                    },
                 }],
             },
 
-            // To show value when hover on any part of the graph
             tooltips: {
                 mode: 'index',
                 intersect: false,
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                        var label = data.datasets[tooltipItem.datasetIndex].label;
+                        if (label == "Price") {
+                            return label + ': $' + value;
+                        }
+                        else {
+                            return label + ': ' + Number(value*1000000).toLocaleString();
+                        }
+                    }
+                }
             },
 
-            // To remove the point of each label
             elements: {
                 line: {
                     tension: 0

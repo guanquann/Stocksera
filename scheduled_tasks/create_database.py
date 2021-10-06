@@ -73,12 +73,16 @@ def database():
                "ticker TEXT, "
                "mentions INTEGER, "
                "sentiment FLOAT, "
+               "calls TEXT, "
+               "puts TEXT, "
                "date_updated TEXT )")
 
     db.execute("CREATE table IF NOT EXISTS wsb_trending_hourly ("
                "ticker TEXT, "
                "mentions INTEGER, "
                "sentiment FLOAT, "
+               "calls TEXT, "
+               "puts TEXT, "
                "date_updated TEXT )")
 
     db.execute("CREATE table IF NOT EXISTS wsb_change ("

@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/inflation.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode();color_table('checked');inflation('max');get_economic_releases({{next_date}}){% endblock %}
+{% block onload_properties%}restore_dark_mode();color_table('checked');inflation('max');show_reference();get_economic_releases({{next_date}}){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -57,6 +57,24 @@
         </div>
         <div class="scrollable_div">
             {{inflation_stats|safe}}
+        </div>
+
+        <div class="scrollable_div" style="margin-top: 15px">
+            <div style="text-align: center">Colourbar (for reference):</div>
+            <table id="heatmap_reference">
+                <tr>
+                    <td>0.0</td>
+                    <td>1.0</td>
+                    <td>2.0</td>
+                    <td>3.0</td>
+                    <td>4.0</td>
+                    <td>5.0</td>
+                    <td>6.0</td>
+                    <td>7.0</td>
+                    <td>8.0</td>
+                    <td>9.0</td>
+                </tr>
+            </table>
         </div>
     </div>
 {% endblock %}

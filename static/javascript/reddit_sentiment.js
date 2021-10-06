@@ -89,7 +89,8 @@ function load_graph() {
             scales: {
                 yAxes: [{
                         gridLines: {
-                            display: false
+                            drawOnChartArea: false,
+                            color: "grey",
                         },
                         type: "linear",
                         stacked: true,
@@ -103,7 +104,8 @@ function load_graph() {
                 xAxes: [{
                     offset: true,
                     gridLines: {
-                        drawOnChartArea: false
+                        drawOnChartArea: false,
+                        color: "grey",
                     },
                     stacked: true
                 }],

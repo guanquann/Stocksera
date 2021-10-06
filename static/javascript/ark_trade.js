@@ -158,7 +158,8 @@ function load_graph(ticker_list, weight_list, top_10_weight, top_20_weight) {
             scales: {
                 yAxes: [{
                         gridLines: {
-                            display: false
+                            drawOnChartArea: false,
+                            color: "grey",
                         },
                         type: "linear",
                         stacked: true,
@@ -167,17 +168,13 @@ function load_graph(ticker_list, weight_list, top_10_weight, top_20_weight) {
                             labelString: 'Weightage [%]',
                             beginAtZero: true,
                         },
-                        ticks: {
-                            callback: function(value, index, values) {
-                                return value + "%";
-                            }
-                        },
                     }],
 
                 xAxes: [{
                     offset: true,
                     gridLines: {
-                        drawOnChartArea: false
+                        drawOnChartArea: false,
+                        color: "grey",
                     },
                     stacked: true
                 }],

@@ -356,8 +356,8 @@ function load_mkt_cap_chart() {
     mentions_list_sm = mentions_list.map(bb_size)
     function bb_size(num) {
         num = num / 10
-        if (num < 7) {
-            num = 7
+        if (num < 8) {
+            num = 8
         }
         return num
     }
@@ -582,14 +582,98 @@ function load_mkt_cap_chart() {
     Plotly.newPlot('50SMA_chart', data, layout, {displayModeBar: false, showTips: false, responsive: true});
 }
 
+function load_options_chart() {
+    call_list = [], put_list = []
+    tr = document.getElementsByTagName("table")[3].querySelectorAll("tr")
+    for (i=1; i<tr.length; i++) {
+        td = tr[i].querySelectorAll("td")
+        ticker_list.push(td[0].innerHTML)
+        call_list.push(td[1].innerHTML)
+        put_list.push(td[2].innerHTML)
+    }
+    var trace1 = {
+        x: ticker_list,
+        y: call_list,
+        name: 'Calls',
+        marker: {
+            color: 'darkgreen',
+        },
+        hovertemplate:
+                `<b>$%{x}</b><br>` +
+                "Calls: %{y}<br>" +
+                "<extra></extra>",
+        type: 'bar',
+    };
+
+    var trace2 = {
+        x: ticker_list,
+        y: put_list,
+        name: 'Puts',
+        marker: {
+            color: 'darkred',
+        },
+        hovertemplate:
+                `<b>$%{x}</b><br>` +
+                "Puts: %{y}<br>" +
+                "<extra></extra>",
+        type: 'bar',
+    };
+
+    var layout = {
+        barmode: 'stack',
+        autosize: true,
+        margin: {
+            t:0,
+            l:50,
+            r:50,
+            pad: 0
+        },
+        automargin: true,
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: 'transparent',
+        xaxis: {
+            showgrid: false,
+            showline: true,
+            color: "gray",
+            rangemode: 'tozero',
+        },
+        yaxis: {
+            showgrid: false,
+            showline: true,
+            rangemode: 'tozero',
+            color: "gray",
+            title: {
+                text: 'No. of Mentions',
+                font: {
+                    size: 12,
+                }
+            },
+        },
+        legend: {
+            x: 0.5,
+            xanchor: 'center',
+            y: 1.1,
+            orientation: 'h',
+        },
+    };
+
+    var data = [trace1, trace2]
+    Plotly.newPlot('options_chart', data, layout, {displayModeBar: false, showTips: false, responsive: true});
+}
+
 function load_sentiment_chart() {
     ticker_list = [], sentiment_list = [], mentions_list = []
     tr = document.getElementsByTagName("table")[0].querySelectorAll("tr")
-    for (i=1; i<25; i++) {
+    for (i=1; i<31; i++) {
         td = tr[i].querySelectorAll("td")
         ticker_list.push(td[1].innerHTML)
         mentions_list.push(td[2].innerHTML)
         sentiment_list.push(td[3].innerHTML)
+    }
+
+    for (i=1; i<tr.length; i++) {
+        td = tr[i].querySelectorAll("td")
+        td[1].innerHTML = `<a href="/wsb_live_ticker/?quote=${td[1].innerHTML}" target="_blank"><b>${td[1].innerHTML}</b></a>`
     }
 
     var trace1 = {
@@ -645,6 +729,7 @@ function load_sentiment_chart() {
             showline: true,
             color: "gray",
             rangemode: 'tozero',
+            range: [-0.5, 30]
         },
         yaxis: {
             showgrid: false,
@@ -692,7 +777,7 @@ function load_ticker_graph() {
         td = tr[i].querySelectorAll("td")
         mentions_list.push(td[1].innerHTML)
         sentiment_list.push(td[2].innerHTML)
-        date_list.push(td[3].innerHTML)
+        date_list.push(td[5].innerHTML)
     }
 
     var trace1 = {
@@ -787,6 +872,16 @@ function load_ticker_graph() {
     Plotly.newPlot('ticker_chart', data, layout, {displayModeBar: false, showTips: false, responsive: true});
 }
 
+function load_ticker_change() {
+    comparison_div = document.querySelectorAll(".comparison")
+    for (i=0; i<comparison_div.length; i++) {
+        recent = comparison_div[i].querySelector(".recent").innerHTML
+        prev = comparison_div[i].querySelector(".prev").innerHTML
+        change = Math.round(10000 * (recent - prev) / prev) / 100
+        comparison_div[i].querySelector(".change").innerHTML =isFinite(change) ? ` (${change}%)`: " (N/A)";
+    }
+}
+
 function load_word_cloud(word_list){
     data = []
     for (i in word_list) {
@@ -814,7 +909,7 @@ let filter = elem.value.toUpperCase();
 let filter_table = document.querySelector("table");
 let tr = filter_table.getElementsByTagName('tr');
 for (var i = 0; i < tr.length; i++){
-    let td = tr[i].getElementsByTagName('td')[0];
+    let td = tr[i].getElementsByTagName('td')[1];
     if(td) {
             let textValue = td.textContent || td.innerHTML;
             if (textValue.toUpperCase().indexOf(filter) > -1) {
@@ -827,7 +922,15 @@ for (var i = 0; i < tr.length; i++){
     }
 }
 
-function change_header_description() {
-    ticker_selected = document.querySelector(".ticker_input").value.toUpperCase()
-    document.querySelector(".sentiment_ticker").innerHTML = `Sentiment of ${ticker_selected}`
+function show_banned_words(elem) {
+    if (elem.className == "hidden") {
+        document.querySelector("#banned_words_div").style.removeProperty("display")
+        elem.classList.remove("hidden")
+        elem.innerHTML = "Hide"
+    }
+    else {
+        document.querySelector("#banned_words_div").style.display = "none"
+        elem.classList.add("hidden")
+        elem.innerHTML = "To see the list of excluded words, click here."
+    }
 }

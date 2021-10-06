@@ -825,23 +825,30 @@ def wsb_live(request):
     db.execute(query)
     top_12 = db.fetchall()
     trending_list_by_hour = list()
-    for ticker in top_12[:12]:
+    for ticker in top_12:
         db.execute("SELECT ticker, date_updated, SUM(mentions) OVER (ROWS UNBOUNDED PRECEDING) FROM "
                    "wsb_trending_hourly WHERE ticker=? AND date_updated >= ?", (ticker[0], date_threshold))
         running_sum = db.fetchall()
         running_sum = list(map(list, running_sum))
         trending_list_by_hour.append(running_sum)
 
+    # Get calls/puts mentions
+    trending_options = pd.read_sql_query("SELECT ticker, SUM(puts) AS Puts, SUM(calls) AS Calls FROM wsb_trending_24H "
+                                         "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(puts + calls) "
+                                         "DESC LIMIT 30".format(date_threshold), conn)
+
     # Get change in mentions
     change_df = pd.read_sql_query("SELECT * FROM wsb_change", conn)
 
-    # Get market cap comparison
+    # Get yahoo financial comparison
     wsb_yf = pd.read_sql_query("SELECT * FROM wsb_yf", conn)
+
     return render(request, 'wsb_live.html', {"trending_list": trending_list,
                                              "trending_list_by_hour": trending_list_by_hour,
                                              "wsb_word_cloud": wsb_word_cloud,
                                              "mentions_df": mentions_df.to_html(index=False),
                                              "change_df": change_df.to_html(index=False),
+                                             "trending_options": trending_options.to_html(index=False),
                                              "wsb_yf_df": wsb_yf.to_html(index=False)})
 
 
@@ -849,10 +856,42 @@ def wsb_live_ticker(request):
     """
     Get mentions and sentiment of tickers in WSB
     """
-    ticker_selected = default_ticker(request)
-    df = pd.read_sql_query("SELECT * FROM wsb_trending_24H WHERE ticker='{}' ".format(ticker_selected), conn)
+    ticker_selected = default_ticker(request, "SPY")
+    information, related_tickers = check_market_hours(ticker_selected)
+
+    df = pd.read_sql_query("SELECT * FROM wsb_trending_hourly WHERE ticker='{}' ".format(ticker_selected), conn)
+    current_time = datetime.utcnow()
+    last_24H = str(current_time - timedelta(days=1))
+    last_48H = str(current_time - timedelta(days=2))
+
+    recent_mention = df[df["date_updated"] >= last_24H]["mentions"].sum()
+    previous_mention = df[(df["date_updated"] >= last_48H) & (df["date_updated"] < last_24H)]["mentions"].sum()
+
+    recent_snt = round(df[df["date_updated"] >= last_24H]["sentiment"].mean(), 4)
+    previous_snt = round(df[(df["date_updated"] >= last_48H) & (df["date_updated"] < last_24H)]["sentiment"].mean(), 4)
+
+    recent_calls = df[df["date_updated"] >= last_24H]["calls"].sum().astype(int)
+    previous_calls = df[(df["date_updated"] >= last_48H) & (df["date_updated"] < last_24H)]["calls"].sum().astype(int)
+
+    recent_puts = df[df["date_updated"] >= last_24H]["puts"].sum().astype(int)
+    previous_puts = df[(df["date_updated"] >= last_48H) & (df["date_updated"] < last_24H)]["puts"].sum().astype(int)
+
     return render(request, 'wsb_live_ticker.html', {"ticker_selected": ticker_selected,
-                                                    "mentions_df": df.to_html(index=False)})
+                                                    "information": information,
+                                                    "mentions_df": df.to_html(index=False),
+                                                    "recent_mention": recent_mention,
+                                                    "previous_mention": previous_mention,
+                                                    "recent_snt": recent_snt,
+                                                    "previous_snt": previous_snt,
+                                                    "recent_calls": recent_calls,
+                                                    "previous_calls": previous_calls,
+                                                    "recent_puts": recent_puts,
+                                                    "previous_puts": previous_puts
+                                                    })
+
+
+def wsb_documentation(request):
+    return render(request, "wsb_documentation.html", {"banned_words": sorted(stopwords_list)})
 
 
 def market_overview(request):
@@ -868,8 +907,10 @@ def reverse_repo(request):
     """
     pd.options.display.float_format = '{:.2f}'.format
     reverse_repo_stats = pd.read_sql_query("SELECT * FROM reverse_repo", conn)
+    reverse_repo_stats['Moving Avg'] = reverse_repo_stats['amount'].rolling(window=7).mean()
     reverse_repo_stats.rename(columns={"record_date": "Date", "amount": "Amount", "parties": "Num Parties",
                                        "average": "Average"}, inplace=True)
+
     with open(r"database/economic_date.json", "r+") as r:
         data = json.load(r)
     return render(request, 'reverse_repo.html', {"reverse_repo_stats": reverse_repo_stats[::-1].to_html(index=False),
@@ -882,6 +923,7 @@ def daily_treasury(request):
     """
     pd.options.display.float_format = '{:.2f}'.format
     daily_treasury_stats = pd.read_sql_query("SELECT * FROM daily_treasury", conn)
+    daily_treasury_stats['Moving Avg'] = daily_treasury_stats['close_today_bal'].rolling(window=7).mean()
     daily_treasury_stats.rename(columns={"record_date": "Date", "close_today_bal": "Close Balance",
                                          "open_today_bal": "Open Balance", "amount_change": "Amount Change",
                                          "percent_change": "Percent Change"},
@@ -911,7 +953,7 @@ def retail_sales(request):
     pd.options.display.float_format = '{:.2f}'.format
     retail_stats = pd.read_sql_query("SELECT * FROM retail_sales", conn)
     retail_stats.rename(columns={"record_date": "Date", "value": "Amount", "percent_change": "Percent Change",
-                                 "covid_monthly_avg": "Covid Monthly Average Cases"}, inplace=True)
+                                 "covid_monthly_avg": "Monthly Avg Cases"}, inplace=True)
     with open(r"database/economic_date.json", "r+") as r:
         data = json.load(r)
     return render(request, 'retail_sales.html', {"retail_stats": retail_stats[::-1].to_html(index=False),
@@ -1081,6 +1123,10 @@ def unsubscribe(request):
             name, email, freq, user_id = stats
             return render(request, "admin/unsubscribe.html", {"name": name, "email": email, "user_id": user_id})
     return redirect("/subscribe")
+
+
+def sample_email(request):
+    return render(request, "admin/sample_email.html")
 
 
 def custom_page_not_found_view(request, exception):

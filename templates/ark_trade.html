@@ -59,9 +59,12 @@
             <button class="btn_type" onclick="load_trades(1)" type="button">Trades</button>
             <button class="btn_type" onclick="load_news(2)" type="button">News</button>
             <div class="search_bar">
-                <input type="text" class="ticker_input" placeholder="Ticker: " onkeyup="searchFun()" id="ticker_name">
+                <input type="text" class="ticker_input" placeholder="Ticker:" autocomplete="off" onkeyup="searchFun()" id="ticker_name">
+                <button class="submit_btn" type="button"><img src="{% static 'images/search_icon.svg' %}"></button>
             </div>
+            <span style="float: right" class="click_table_info"><b>Click on table row more info.</b></span>
         </div>
+
         <div class="scrollable_div"></div>
 
         <div id="ticker_model" class="modal">

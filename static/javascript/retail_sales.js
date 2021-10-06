@@ -25,7 +25,7 @@ function retail_sales(duration) {
             month = month_list[Number(date_string.slice(5,7)) - 1]
             date_list.push(month + " " + year)
             amount_list.push(td[1].innerHTML.replace("$", "").replace("B", ""))
-            covid_list.push(td[3].innerHTML)
+            covid_list.push(td[3].innerHTML / 1000)
             tr[i].style.removeProperty("display")
         }
         else {
@@ -48,14 +48,16 @@ function retail_sales(duration) {
                     data: amount_list,
                     borderColor: 'rgb(38, 166, 154)',
                     backgroundColor: 'transparent',
+                    borderWidth: 2,
                     yAxisID: 'A',
                 },
                 {
-                    label: 'Covid Monthly Avg',
+                    label: 'Monthly Avg Cases',
                     type: 'line',
                     data: covid_list,
                     borderColor: 'red',
                     backgroundColor: 'transparent',
+                    borderWidth: 2,
                     yAxisID: 'B',
                 }
                 ]
@@ -72,7 +74,8 @@ function retail_sales(duration) {
                     {
                         position: 'left',
                         gridLines: {
-                            display: false
+                            drawOnChartArea: false,
+                            color: "grey",
                         },
                         type: "linear",
                         id: "A",
@@ -85,13 +88,14 @@ function retail_sales(duration) {
                     {
                         position: 'right',
                         gridLines: {
-                            display: false
+                            drawOnChartArea: false,
+                            color: "grey",
                         },
                         type: "linear",
                         id: "B",
                         scaleLabel: {
                             display: true,
-                            labelString: 'Covid Monthly Avg',
+                            labelString: 'Covid Monthly Avg [K]',
                             beginAtZero: true,
                         },
                     },
@@ -101,11 +105,12 @@ function retail_sales(duration) {
                     offset: true,
                     ticks: {
                       maxTicksLimit: 10,
-                      maxRotation: 45,
+                      maxRotation: 30,
                       minRotation: 0,
                     },
                     gridLines: {
-                        drawOnChartArea: false
+                        drawOnChartArea: false,
+                        color: "grey",
                     },
                 }],
             },
@@ -115,11 +120,16 @@ function retail_sales(duration) {
                 mode: 'index',
                 intersect: false,
                 callbacks: {
-//                    label: function(tooltipItem, data) {
-//                        var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-//                        var label = data.datasets[tooltipItem.datasetIndex].label;
-//                        return label + ': $' + value + 'B';
-//                    }
+                    label: function(tooltipItem, data) {
+                        var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                        var label = data.datasets[tooltipItem.datasetIndex].label;
+                        if (label.includes("Sales")) {
+                            return label + ': ' + value + 'B';
+                        }
+                        else {
+                            return label + ': ' + Number(value).toLocaleString() + "K";
+                        }
+                    }
                 },
             },
             elements: {

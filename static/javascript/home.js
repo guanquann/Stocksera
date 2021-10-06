@@ -40,6 +40,10 @@ function show_reddit(type, elem) {
         text = "Get trending tickers on stocks & crypto-related subreddits based on sentiment, number of posts, comments and upvotes."
         url = "/reddit_analysis/"
     }
+    else if (type == "wsb_live") {
+        text = "Get live sentiment and analysis on most mentioned tickers in WSB discussion thread."
+        url = "/wsb_live/"
+    }
     else if (type == "reddit_etf") {
         text = "WSB ETF contains the top 10 trending tickers on r/wallstreetbets. Past performance included as well."
         url = "/reddit_etf/"

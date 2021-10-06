@@ -181,3 +181,8 @@
 .no_img_table_img_symbol {
     text-decoration: underline
 }
+
+.click_table_info {
+    text-align: right;
+    margin: 10px 0 0 0;
+}

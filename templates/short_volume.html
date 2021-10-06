@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/short_volume.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}display_data();display_table();short_vol_graph(48);restore_dark_mode(){% endblock %}
+{% block onload_properties%}display_data();display_table();short_vol_graph(6);restore_dark_mode(){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -65,7 +65,7 @@
         <div class="date_selector">
             <button name="date_range" id="1 Months" onclick="btn_selected(this); short_vol_graph(1)">1 Months</button>
             <button name="date_range" id="3 Months" onclick="btn_selected(this); short_vol_graph(3)">3 Months</button>
-            <button name="date_range" id="Max" onclick="btn_selected(this); short_vol_graph(48)" class="selected">Max</button>
+            <button name="date_range" id="Max" onclick="btn_selected(this); short_vol_graph(6)" class="selected">Max</button>
         </div>
 
         <div class="chart-container">

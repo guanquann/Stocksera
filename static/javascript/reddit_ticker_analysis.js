@@ -21,7 +21,7 @@ function rank_chart() {
                     label: 'Ranking',
                     type: 'line',
                     data: ranking_list,
-                    borderColor: 'wheat',
+                    borderColor: 'orange',
                     backgroundColor: 'transparent',
                     yAxisID: 'A',
                 },
@@ -55,7 +55,8 @@ function rank_chart() {
                     {
                         position: 'left',
                         gridLines: {
-                            display: false
+                            drawOnChartArea: false,
+                            color: "grey",
                         },
                         type: "linear",
                         id: "A",
@@ -64,21 +65,18 @@ function rank_chart() {
                             labelString: 'Ranking',
                             beginAtZero: true,
                         },
-                        ticks: {
-//                            max: 100,
-//                            min: 1,
-                        },
                     },
                     {
                         position: 'right',
                         gridLines: {
-                            display: false
+                            drawOnChartArea: false,
+                            color: "grey",
                         },
                         type: "linear",
                         id: "B",
                         scaleLabel: {
                             display: true,
-                            labelString: 'Price',
+                            labelString: 'Price [$]',
                             beginAtZero: false,
                         },
                     }
@@ -87,19 +85,31 @@ function rank_chart() {
                 xAxes: [{
                     ticks: {
                       maxTicksLimit: 10,
-                      maxRotation: 45,
+                      maxRotation: 30,
                       minRotation: 0,
                     },
                     gridLines: {
-                        drawOnChartArea: false
+                        drawOnChartArea: false,
+                        color: "grey",
                     },
                 }],
             },
 
-            // To show value when hover on any part of the graph
             tooltips: {
                 mode: 'index',
                 intersect: false,
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                        var label = data.datasets[tooltipItem.datasetIndex].label;
+                        if (label.includes("Price")) {
+                            return label + ': $' + value;
+                        }
+                        else {
+                            return label + ': ' + value;
+                        }
+                    }
+                }
             },
             hover: {
                 mode: 'index',

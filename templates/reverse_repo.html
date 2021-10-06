@@ -61,12 +61,12 @@
             <canvas id="reverse_repo_chart"></canvas>
         </div>
 
+        <div class="chart-container" style="margin-top: 30px">
+            <canvas id="avg_participants_chart"></canvas>
+        </div>
+
         <div class="scrollable_div">
             {{reverse_repo_stats|safe}}
         </div>
     </div>
-{% endblock %}
-
-{% block bottom_script %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 {% endblock %}

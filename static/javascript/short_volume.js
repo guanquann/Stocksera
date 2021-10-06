@@ -42,6 +42,13 @@ var price_chart = null
 function short_vol_graph(duration) {
     var date_threshold = get_date_difference(duration, "-")
 
+    if (duration <= 6) {
+        date_unit = "day"
+    }
+    else {
+        date_unit = "month"
+    }
+
     var shorted_vol_daily = document.getElementsByTagName("table")[0].querySelectorAll("tr");
     var date_list = [], price_list = [], short_vol_list = [], long_vol_list = [], percentage_list = []
     for (tr=shorted_vol_daily.length-1; tr>0; tr--) {
@@ -52,8 +59,8 @@ function short_vol_graph(duration) {
             price_list.push(total_td[5].innerHTML.replace("$", ""));
             short_vol_num = Number(total_td[1].innerHTML.replace(/[^0-9-.]/g, ""))
             long_vol_num = Number(total_td[3].innerHTML.replace(/[^0-9-.]/g, ""))
-            short_vol_list.push(short_vol_num);
-            long_vol_list.push(long_vol_num - short_vol_num);
+            short_vol_list.push(Math.round(short_vol_num) / 1000000);
+            long_vol_list.push(Math.round(long_vol_num - short_vol_num) / 1000000);
             percentage_list.push(total_td[4].innerHTML.replace("%", ""));
             shorted_vol_daily[tr].style.removeProperty("display");
         }
@@ -77,6 +84,7 @@ function short_vol_graph(duration) {
                     type: 'line',
                     data: percentage_list,
                     borderColor: 'blue',
+                    borderWidth: 2,
                     backgroundColor: 'transparent',
                     yAxisID: 'B',
                 },
@@ -108,56 +116,80 @@ function short_vol_graph(duration) {
                 yAxes: [{
                         position: 'left',
                         gridLines: {
-                            display: false
+                            drawOnChartArea: false,
+                            color: "grey",
                         },
                         type: "linear",
                         id: "A",
                         stacked: true,
                         scaleLabel: {
                             display: true,
-                            labelString: 'Volume',
+                            labelString: 'Volume [M]',
                             beginAtZero: true,
                         },
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return value;
+                            },
+                        }
                     },
                     {
                         scaleLabel: {
                             display: true,
-                            labelString: 'Short Percentage',
+                            labelString: 'Short Percentage [%]',
                             beginAtZero: true,
                         },
                         type: "linear",
                         id: "B",
                         position:"right",
                         gridLines: {
-                            display: false
+                            drawOnChartArea: false,
+                            color: "grey",
                         },
                         ticks: {
                             max: 100,
                             min: 0,
                             callback: function(value, index, values) {
-                                return value + "%";
+                                return value;
                             }
                         },
                     }],
 
                 xAxes: [{
-                    offset: true,
-                    ticks: {
-                      maxTicksLimit: 10,
-                      maxRotation: 45,
-                      minRotation: 0,
+                    type: "time",
+                    distribution: 'series',
+                    time: {
+                        unit: date_unit
                     },
+                    offset: true,
                     gridLines: {
-                        drawOnChartArea: false
+                        drawOnChartArea: false,
+                        color: "grey",
+                    },
+                    ticks: {
+                        maxTicksLimit: 10,
+                        maxRotation: 30,
+                        minRotation: 0,
                     },
                     stacked: true
                 }],
             },
 
-            // To show value when hover on any part of the graph
             tooltips: {
                 mode: 'index',
                 intersect: false,
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                        var label = data.datasets[tooltipItem.datasetIndex].label;
+                        if (label.includes("Volume")) {
+                            return label + ': ' + Number(value * 1000000).toLocaleString();
+                        }
+                        else {
+                            return label + ': ' + value + "%";
+                        }
+                    }
+                }
             },
             hover: {
                 mode: 'index',
@@ -184,6 +216,7 @@ function short_vol_graph(duration) {
                     type: 'line',
                     data: price_list,
                     borderColor: 'orange',
+                    borderWidth: 2,
                     backgroundColor: 'transparent',
                     yAxisID: 'A',
                 },
@@ -192,6 +225,7 @@ function short_vol_graph(duration) {
                     type: 'line',
                     data: percentage_list,
                     borderColor: 'blue',
+                    borderWidth: 2,
                     backgroundColor: 'transparent',
                     yAxisID: 'B',
                 }]
@@ -208,59 +242,79 @@ function short_vol_graph(duration) {
                     {
                         position: 'left',
                         gridLines: {
-                            display: false
+                            drawOnChartArea: false,
+                            color: "grey",
                         },
                         type: "linear",
                         id: "A",
                         scaleLabel: {
                             display: true,
-                            labelString: 'Close Price',
+                            labelString: 'Close Price [$]',
                             beginAtZero: false,
                         },
                         ticks: {
                             callback: function(value, index, values) {
-                                return "$" + value;
+                                return value;
                             },
                         }
                     },
                     {
                         scaleLabel: {
                             display: true,
-                            labelString: 'Short Percentage',
+                            labelString: 'Short Percentage [%]',
                             beginAtZero: true,
                         },
                         type: "linear",
                         id: "B",
                         position:"right",
                         gridLines: {
-                            display: false
+                            drawOnChartArea: false,
+                            color: "grey",
                         },
                         ticks: {
                             max: 100,
                             min: 0,
                             callback: function(value, index, values) {
-                                return value + "%";
+                                return value;
                             }
                         },
                     }],
 
                 xAxes: [{
-                    ticks: {
-                      maxTicksLimit: 10,
-                      maxRotation: 45,
-                      minRotation: 0,
+                    type: "time",
+                    distribution: 'series',
+                    time: {
+                        unit: date_unit
                     },
+                    offset: true,
                     gridLines: {
-                        drawOnChartArea: false
+                        drawOnChartArea: false,
+                        color: "grey",
+                    },
+                    ticks: {
+                        maxTicksLimit: 10,
+                        maxRotation: 30,
+                        minRotation: 0,
                     },
                     stacked: true
                 }],
             },
 
-            // To show value when hover on any part of the graph
             tooltips: {
                 mode: 'index',
                 intersect: false,
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                        var label = data.datasets[tooltipItem.datasetIndex].label;
+                        if (label.includes("Price")) {
+                            return label + ': $' + value;
+                        }
+                        else {
+                            return label + ': ' + value + '%';
+                        }
+                    }
+                }
             },
             hover: {
                 mode: 'index',

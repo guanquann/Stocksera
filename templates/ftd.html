@@ -65,8 +65,7 @@
         <div class="date_selector">
             <button name="date_range" id="3 Months" onclick="btn_selected(this); ftd_graph(3)">3 Months</button>
             <button name="date_range" id="6 Months" onclick="btn_selected(this); ftd_graph(6)">6 Months</button>
-            <button name="date_range" id="1 Year" onclick="btn_selected(this); ftd_graph(12)">1 Year</button>
-            <button name="date_range" id="Max" onclick="btn_selected(this); ftd_graph(48)" class="selected">Max</button>
+            <button name="date_range" id="1 Year" onclick="btn_selected(this); ftd_graph(12)" class="selected">1 Year</button>
         </div>
 
         <div class="chart-container">
@@ -74,10 +73,14 @@
         </div>
 
         <div id="90th_percentile" style="display: none">{{90th_percentile}}</div>
-        <form action="" method="GET" autocomplete="off">
-            <button type="submit" name="download_csv" class="download_btn"><u>➥ Download</u></button>
-            <input name="quote" value="{{ticker_selected}}" style="display:none">
-        </form>
+
+        <div style="display: flex;justify-content: space-between;">
+            <span><b>Red colored rows means higher FTD</b></span>
+            <form action="" method="GET" autocomplete="off">
+                <button type="submit" name="download_csv" class="download_btn"><u>➥ Download</u></button>
+                <input name="quote" value="{{ticker_selected}}" style="display:none">
+            </form>
+        </div>
 
         <div class="scrollable_div">
             {{ftd|safe}}

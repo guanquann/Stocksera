@@ -118,7 +118,7 @@ var latest_price = information["regularMarketPrice"]
 for (row=1; row<=call_loss_list.length; row++) {
     var td = tr[row].querySelectorAll("td");
     strike_price = td[2].innerHTML;
-    strike_list.push(strike_price);
+    strike_list.push(strike_price.replace("$", ""));
 }
 </script>
 {% endblock %}

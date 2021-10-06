@@ -245,7 +245,7 @@ var options_dict = {
                 label: function(tooltipItem, data) {
                     var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
                     var label = data.datasets[tooltipItem.datasetIndex].label;
-                    return label + ': ' + value + 'M USD';
+                    return label + ': ' + Number(value).toLocaleString() + 'M USD';
                 }
             },
         },

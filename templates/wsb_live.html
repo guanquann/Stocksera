@@ -11,7 +11,7 @@
 <script src="https://cdn.anychart.com/releases/v8/js/anychart-tag-cloud.min.js"></script>
 {% endblock %}
 
-{% block onload_properties%}load_trending_over_time_chart({{trending_list}}, '24H');load_trending_over_time_chart({{trending_list_by_hour}}, '7d');load_change_chart();load_sentiment_chart();load_mkt_cap_chart();load_word_cloud({{wsb_word_cloud}});restore_dark_mode();{% endblock %}
+{% block onload_properties%}load_trending_over_time_chart({{trending_list}}, '24H');load_trending_over_time_chart({{trending_list_by_hour}}, '7d');load_change_chart();load_sentiment_chart();load_mkt_cap_chart();load_options_chart();load_word_cloud({{wsb_word_cloud}});restore_dark_mode();{% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -25,6 +25,12 @@
         <h2>Live Wallstreetbets Analysis</h2>
         <p>This page tracks & analysis trending tickers realtime. Updates every 15 minutes.</p>
         <div class="subscribe_email_div"><a class="subscribe_email" href="/subscribe" target="_blank">Subscribe to Free WSB Notifications</a></div>
+        <form action="/wsb_live_ticker" method="GET" autocomplete="off" target="wsb_live_ticker">
+            <div class="search_bar">
+                <input type="text" name="quote" value="{{ticker_selected}}" class="ticker_input" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="submit"><img src="{% static 'images/search_icon.svg' %}"></button>
+            </div>
+        </form>
     </div>
 
     <div class="instructions">
@@ -39,6 +45,9 @@
     </div>
 
     <div class="contents_div">
+        <div id="tips_btn">
+            <a href="/wsb_documentation" target="_blank">Guide when using WSB Live</a>
+        </div>
         <h2 class="header">Trending Last 24H</h2>
         <div id="trending_over_time_chart_24H" class="chart"></div>
 
@@ -48,6 +57,9 @@
         <h2 class="header">Change in Mentions Last 24H</h2>
         <div style="text-align: center"><i>% Change capped at 1000%</i></div>
         <div id="change_mentions" class="tree_chart"></div>
+
+        <h2 class="header">Call/Put Mentions Last 7 Days</h2>
+        <div id="options_chart" class="chart"></div>
 
         <h2 class="header">Sentiment Last 24H</h2>
         <div id="sentiment_chart" class="chart"></div>
@@ -64,27 +76,20 @@
         <h2 class="header">Most Mentioned Words Last 24H</h2>
         <div id="word_cloud"></div>
 
-        <h2 class="header sentiment_ticker">Sentiment of SPY</h2>
-        <form action="/wsb_live_ticker" method="GET" autocomplete="off" target="wsb_live_ticker" onsubmit="change_header_description()">
-            <div class="search_bar">
-                <input type="text" name="quote" value="SPY" class="ticker_input" placeholder="Ticker:" autocomplete="off">
-                <button class="submit_btn" type="submit"><img src="{% static 'images/search_icon.svg' %}"></button>
-            </div>
-        </form>
-        <iframe style="display:none"></iframe>
-        <iframe src="/wsb_live_ticker/?quote=SPY" name="wsb_live_ticker"></iframe>
-
         <h2 class="header">No. of Mentions Last 24H</h2>
-        <div class="search_bar">
+        <div class="search_bar" style="margin-top: 1px;">
             <input type="text" class="ticker_input" placeholder="Ticker: " onkeyup="searchTicker(this)" autocomplete="off">
             <button class="submit_btn" type="submit"><img src="{% static 'images/search_icon.svg' %}"></button>
         </div>
+        <span class="click_table_info"><b>Click on ticker symbol for more info.</b></span>
+
         <div class="scrollable_div" style="max-height: 450px">
             {{mentions_df|safe}}
         </div>
         <div style="display:none">
             {{change_df|safe}}
             {{wsb_yf_df|safe}}
+            {{trending_options|safe}}
         </div>
     </div>
 </div>

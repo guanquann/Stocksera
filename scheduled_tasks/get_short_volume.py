@@ -47,7 +47,7 @@ def get_30d_data_finra():
     combined_df.to_csv("database/short_volume.csv", index=False)
 
 
-def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date()):
+def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date()-timedelta(days=1)):
     """
     Get short volume data from https://cdn.finra.org/
     This function gets daily data for popular tickers in scheduled_tasks/get_popular_tickers.py and save them to db
@@ -62,6 +62,13 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date
         df["Date"] = df["Date"].astype(str).apply(lambda x: x[0:4] + "-" + x[4:6] + "-" + x[6:])
         df["%Shorted"] = 100 * (df["ShortVolume"] / df["TotalVolume"])
         df["%Shorted"] = df["%Shorted"].round(2)
+
+        # del df["Market"]
+        # df.columns = ["Date", "ticker", "short_vol", "short_exempt_vol", "total_vol", "percent"]
+        #
+        # original_df = pd.read_csv("database/short_volume.csv")
+        # original_df = original_df.append(df)
+        # original_df.to_csv("database/short_volume.csv")
 
         highest_shorted = df[df["ShortVolume"] >= 3000000].nlargest(50, "%Shorted")
         del highest_shorted["Date"]

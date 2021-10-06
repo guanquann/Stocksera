@@ -30,3 +30,12 @@
     border-bottom: 2px solid wheat !important;
     color: wheat !important;
 }
+
+#heatmap_reference {
+    width: 50%;
+    border: 1.5px solid #EAE9E9;
+}
+
+.dark_mode #heatmap_reference {
+    border-color: wheat;
+}

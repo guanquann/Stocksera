@@ -48,7 +48,8 @@ function load_trending_graph(timing) {
                         beginAtZero: false,
                     },
                     gridLines: {
-                        drawOnChartArea: false
+                        drawOnChartArea: false,
+                        color: "grey",
                     },
                     scaleLabel: {
                         display: true,
@@ -62,7 +63,8 @@ function load_trending_graph(timing) {
                         beginAtZero: false,
                     },
                     gridLines: {
-                        drawOnChartArea: false
+                        drawOnChartArea: false,
+                        color: "grey",
                     },
                     scaleLabel: {
                         display: true,
@@ -79,7 +81,8 @@ function load_trending_graph(timing) {
                       minRotation: 0,
                     },
                     gridLines: {
-                        drawOnChartArea: false
+                        drawOnChartArea: false,
+                        color: "grey",
                     }
                 }]
             },
@@ -94,6 +97,18 @@ function load_trending_graph(timing) {
             tooltips: {
                 mode: 'index',
                 intersect: false,
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                        var label = data.datasets[tooltipItem.datasetIndex].label;
+                        if (label.includes("Price")) {
+                            return label + ': $' + value;
+                        }
+                        else {
+                            return label + ': ' + value + '%';
+                        }
+                    }
+                }
             },
             hover: {
                 mode: 'index',

@@ -39,22 +39,9 @@
     </div>
 </div>
 
-<div class="section_div">
-    <div class="section_div_left">
-        <h1>New Updates!</h1>
-        <div class="section_div_description">
-            <div class="section_div_text">
-                Get real-time trending tickers based on wallstreetbets discussion thread.
-            </div>
-            <div class="href_btn"><a href="/wsb_live/">VIEW MORE</a></div>
-        </div>
-    </div>
-    <div class="section_div_right"><img src="{% static 'images/homepage/wsb.png' %}"></div>
-</div>
-
 <div class="ranking_div">
     <div class="section_div_left">
-        <h1>Stocksera Trending</h1>
+        <h1>Stocksera Trending Tickers</h1>
         <div class="ranking">
             <div class="ranking_num"><b>Rank</b></div>
             <div class="ranking_symbol"><b>Symbol</b></div>
@@ -101,17 +88,17 @@
     <div class="section_div_left">
         <h1>Reddit Analysis</h1>
         <div class="reddit_btn">
-            <button onclick="show_reddit('reddit_trending', this)" class="selected">Trending</button>
+            <button onclick="show_reddit('wsb_live', this)" class="selected">WSB Live</button>
+            <button onclick="show_reddit('reddit_trending', this)">Trending</button>
             <button onclick="show_reddit('reddit_etf', this)">WSB ETF</button>
             <button onclick="show_reddit('subreddit', this)">Subreddit</button>
         </div>
 
         <div class="section_div_description" id="reddit_description">
             <div class="section_div_text">
-                Get trending tickers on stocks & crypto-related subreddits based on sentiment,
-                number of posts, comments and upvotes.
+                Get live sentiment and analysis on most mentioned tickers in WSB discussion thread.
             </div>
-            <div class="href_btn"><a href="/reddit_analysis/">VIEW MORE</a></div>
+            <div class="href_btn"><a href="/wsb_live/">VIEW MORE</a></div>
         </div>
     </div>
     <div class="section_div_right"><img src="{% static 'images/homepage/reddit.png' %}"></div>

@@ -10,7 +10,7 @@
 <script src="{% static 'javascript/home.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode(){% endblock %}
+{% block onload_properties%}restore_dark_mode();restore_dark_mode_img(){% endblock %}
 
 {% block main_nav %}
 {% endblock %}
@@ -19,23 +19,53 @@
 <script>highlight_selected_nav('home')</script>
 <div class="section_1">
     <div class="main_div">
-        <img class="logo" src="{% static 'images/logo.png' %}">
-        <h2>StocksEra</h2>
         <div>
-            <p>We track trending tickers on social media and provide free data for easy due-diligence & analysis.</p>
-            <div class="featured_div">
-                <div class="featured_div_txt">Featured On | </div>
-                <div class="featured_div_img_div">
-                    <img src="{% static 'images/homepage/seeking_alpha.svg' %}">
-                </div>
+            <h1>Stocksera</h1>
+            <div>
+                We track trending tickers on social media and provide free data for easy due-diligence & analysis.
+            </div>
+            <div class="nav_bar_ticker_search_div">
+                <form action="/ticker/" method="GET" autocomplete="off">
+                    <input type="text" class="nav_bar_ticker_input" name="quote" placeholder="Ticker Search: ">
+                    <input type="submit" hidden>
+                </form>
+            </div>
+
+        </div>
+        <div id="intro_images">
+            <div class="introSlides fade">
+                <a href="/ticker/failure_to_deliver"><img src="{% static 'images/homepage/introduction/light_mode/ftd.png' %}"></a>
+            </div>
+            <div class="introSlides fade">
+                <a href="/inflation"><img src="{% static 'images/homepage/introduction/light_mode/inflation.png' %}"></a>
+            </div>
+            <div class="introSlides fade">
+                <a href="/ticker/options"><img src="{% static 'images/homepage/introduction/light_mode/options.png' %}"></a>
+            </div>
+            <div class="introSlides fade">
+                <a href="/reverse_repo"><img src="{% static 'images/homepage/introduction/light_mode/rrp.png' %}"></a>
+            </div>
+            <div class="introSlides fade">
+                <a href="/ticker/short_volume"><img src="{% static 'images/homepage/introduction/light_mode/short_volume.png' %}"></a>
+            </div>
+            <div class="introSlides fade">
+                <a href="/wsb_live"><img src="{% static 'images/homepage/introduction/light_mode/wsb_live.png' %}"></a>
+            </div>
+            <div class="introSlides fade">
+                <a href="/wsb_live"><img src="{% static 'images/homepage/introduction/light_mode/wsb_live2.png' %}"></a>
             </div>
         </div>
-        <div class="nav_bar_ticker_search_div">
-            <form action="/ticker/" method="GET" autocomplete="off">
-                <input type="text" class="nav_bar_ticker_input" name="quote" placeholder="Ticker Search: ">
-                <input type="submit" hidden>
-            </form>
+
+        <div>
+            <span class="introDot"></span>
+            <span class="introDot"></span>
+            <span class="introDot"></span>
+            <span class="introDot"></span>
+            <span class="introDot"></span>
+            <span class="introDot"></span>
+            <span class="introDot"></span>
         </div>
+
     </div>
 </div>
 
@@ -61,7 +91,6 @@
     <div class="section_div_right ranking_img"><img src="{% static 'images/homepage/trending.png' %}"></div>
 </div>
 
-<div id="contents_title"></div>
 <div class="section_div">
     <div class="section_div_left">
         <h1>Due-Diligence</h1>
@@ -189,6 +218,22 @@
 
 <div class="section_div">
     <div class="section_div_left">
+        <h1>Find out trending tickers real-time</h1>
+        <div class="section_div_description">
+            <div class="section_div_text">
+                <p class="experience_text">
+                    Follow <a href="https://twitter.com/stocksera_bot" target="_blank" style="color: rgb(38, 166, 154); text-decoration: underline">@stocksera_bot</a> on Twitter, or
+                    <a href="subscribe" target="_blank" style="color: rgb(38, 166, 154); text-decoration: underline">subscribe to our pre-market notifcations</a> to receive trending tickers in WSB real-time,
+                    free of charge.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="section_div_right"><img src="{% static 'images/homepage/subscribe.png' %}"></div>
+</div>
+
+<div class="section_div">
+    <div class="section_div_left">
         <h1>Your Experience Matters</h1>
         <div class="section_div_description">
             <div class="section_div_text">
@@ -201,7 +246,6 @@
     </div>
     <div class="section_div_right"><img src="{% static 'images/homepage/responsive.png' %}"></div>
 </div>
-
 
 <div class="showcase_div">
     <div class="slideshow-container">
@@ -227,15 +271,45 @@
     </div>
 
     <div class="dot_div">
-        <span class="dot" onclick="currentSlide(1)"></span>
-        <span class="dot" onclick="currentSlide(2)"></span>
-        <span class="dot" onclick="currentSlide(3)"></span>
-        <span class="dot" onclick="currentSlide(4)"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
     </div>
 </div>
 {% endblock %}
 
 {% block bottom_script %}
+<script>
+var introSlideIndex = 0;
+showIntroSlides(introSlideIndex);
+
+function plusSlides(n) {
+  showIntroSlides(introSlideIndex += n);
+}
+
+function currentSlide(n) {
+  showIntroSlides(introSlideIndex = n);
+}
+
+function showIntroSlides(n) {
+    var i;
+    var introSlides = document.getElementsByClassName("introSlides");
+    var introDots = document.getElementsByClassName("introDot");
+
+    for (i = 0; i < introSlides.length; i++) {
+        introSlides[i].style.display = "none";
+    }
+    introSlideIndex++;
+    if (introSlideIndex > introSlides.length) {introSlideIndex = 1}
+    for (i = 0; i < introDots.length; i++) {
+        introDots[i].className = introDots[i].className.replace(" active", "");
+    }
+    introSlides[introSlideIndex-1].style.display = "table-cell";
+    introDots[introSlideIndex-1].className += " active";
+    setTimeout(showIntroSlides, 3000);
+}
+</script>
 <script>
 var slideIndex = 0;
 showSlides();

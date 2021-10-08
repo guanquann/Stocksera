@@ -54,6 +54,10 @@ def latest_insider_trading_analysis():
     print(insider_df)
 
 
-if __name__ == '__main__':
-    # latest_insider_trading()
+def main():
+    latest_insider_trading()
     latest_insider_trading_analysis()
+
+
+if __name__ == '__main__':
+    main()

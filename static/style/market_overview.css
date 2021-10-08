@@ -41,15 +41,15 @@
 
 .chart-container {
     height: 70vh;
-    min-width: 650px;
+    /*min-width: 650px;
     max-height: 1800px;
     margin-left: auto;
-    margin-right: auto;
+    margin-right: auto;*/
 }
 
-.chart-container div {
+/*.chart-container div {
     margin:auto;
-}
+}*/
 
 ::-webkit-scrollbar-thumb {
     background: transparent;

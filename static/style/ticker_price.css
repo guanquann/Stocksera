@@ -1,10 +1,4 @@
 @media only screen and (max-width: 900px) {
-    #ticker_table, .ticker_news {
-        margin-left: auto;
-        margin-right: auto;
-        width: 90vw;
-    }
-
     #ticker_chart {
         width: 98% !important;
         margin: auto !important;
@@ -16,16 +10,18 @@
         height: 24px;
         width: max-content;
     }
+
+    .scroll_horizontal_btn {
+        height: 24px;
+    }
+
+    .main_btn_div {
+        width: 120%;
+    }
 }
 
 @media only screen and (min-width: 900px) {
-    #ticker_table, .ticker_news {
-        margin-left: auto;
-        margin-right: auto;
-        width: 98%;
-    }
-
-    #ticker_chart {
+   #ticker_chart {
         width: 96% !important;
         margin: auto !important;
         height: 600px;
@@ -35,6 +31,10 @@
     .show_more_btn {
         height: 32px;
         width: max-content;
+    }
+
+    .scroll_horizontal_btn {
+        height: 32px;
     }
 }
 
@@ -67,9 +67,13 @@
     line-height: 1.5;
 }
 
-.dark_mode #ticker_table button:hover {
-    background-color: transparent;
-    color: #ffba39;
+.dark_mode .btn_div button:hover {
+    color: black;
+}
+
+.btn_div_reminder {
+    margin-top: 12px;
+    text-align: right;
 }
 
 .show_more_btn {
@@ -82,7 +86,6 @@
 
 .selected {
     background-color: #eae9e9;
-    border-bottom: 2px solid grey;
 }
 
 .dark_mode .selected {
@@ -126,37 +129,37 @@ iframe {
     min-height: 450px;
 }
 
-.btn_div_reminder {
-    margin-top: 30px;
-    float: right;
-}
-
 .main_btn_div {
     display: flex;
-    border-bottom: 1.5px solid gray;
-    width: 100%;
     overflow-x: scroll;
-    margin-bottom: 10px;
 }
 
 .btn_div {
     margin-right: 13px;
 }
 
-.glowing_border {
-    -webkit-animation: glow 1s ease-in-out infinite alternate;
-    -moz-animation: glow 1s ease-in-out infinite alternate;
-    animation: glow 1s ease-in-out infinite alternate;
+.scroll_horizontal_btn {
+    border: 0;
+    padding: 0;
+    background: #EAE9E9;
+    max-width: 26px
 }
 
-@-webkit-keyframes glow {
-  from {
-    box-shadow: 5px 0 0px -2px #26a69aa8 ;
-  }
-  to {
-  }
+.scroll_horizontal_btn img {
+    width:100%;
+    height:100%;
 }
 
+.scroll_horizontal_btn:hover {
+    color: var(--dark);
+    background-color: #dce8f3;
+    border: #dce8f3
+}
+
+.dark_mode .scroll_horizontal_btn:hover {
+    background: #ffba39;
+    border: #ffba39;
+}
 
 ::-webkit-scrollbar {
     width: 3px;

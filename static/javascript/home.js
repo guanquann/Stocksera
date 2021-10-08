@@ -146,7 +146,7 @@ function show_op(type, elem) {
 
     if (type == "video") {
         text = "Watch out for new videos in our YouTube Channel for new updates in the future!"
-        url = "https://www.youtube.com/watch?v=SEYXEcVKt38"
+        url = "https://youtu.be/jkAZu7DvhvY"
     }
     else if (type == "donate") {
         text = `Stocksera is an open-source application.
@@ -160,4 +160,13 @@ function show_op(type, elem) {
     }
     document.getElementById("op_description").innerHTML = `
         <div class="section_div_text">${text}</div><div class="href_btn"><a href="${url}" target="_blank">VIEW MORE</a></div>`
+}
+
+function restore_dark_mode_img() {
+    if (localStorage.getItem("mode") == "dark") {
+        img = document.querySelector("#intro_images").querySelectorAll("img")
+        for (i=0; i<img.length; i++) {
+            img[i].src = img[i].src.replace("light", "dark")
+        }
+    }
 }

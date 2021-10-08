@@ -183,5 +183,10 @@ def update_last_price():
                 conn.commit()
 
 
-if __name__ == '__main__':
+def main():
+    subreddit_count()
     update_last_price()
+
+
+if __name__ == '__main__':
+    main()

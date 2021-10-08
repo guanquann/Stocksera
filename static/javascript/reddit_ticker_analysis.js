@@ -22,6 +22,7 @@ function rank_chart() {
                     type: 'line',
                     data: ranking_list,
                     borderColor: 'orange',
+                    borderWidth: 2,
                     backgroundColor: 'transparent',
                     yAxisID: 'A',
                 },
@@ -30,6 +31,7 @@ function rank_chart() {
                     type: 'line',
                     data: price_list,
                     borderColor: 'rgb(38, 166, 154)',
+                    borderWidth: 2,
                     backgroundColor: 'transparent',
                     yAxisID: 'B',
                 }

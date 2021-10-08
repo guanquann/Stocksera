@@ -1,27 +1,24 @@
+@media only screen and (max-width: 450px) {
+    .introSlides {
+        height: 220px !important;
+    }
+}
+
 @media only screen and (max-width: 900px) {
     .top_nav div {
         margin: auto;
     }
 
-    .top_nav .top_logo {
-        width: 120px;
-        margin-top: 2px;
-    }
-
     .section_1 img {
         width: 90%;
-        max-width: 500px;
-        border-radius: 10px;
-    }
-
-    .logo {
-        width: 70% !important;
+        max-width: 470px;
     }
 
     .ranking_div {
         background-color: #eae9e9;
-        width: 80vw;
+        width: 85vw;
         border-radius: 10px;
+        box-shadow: 0 3px 3px -3px #333;
         display: flex;
         margin: auto;
         margin-bottom: 15px;
@@ -62,13 +59,14 @@
         text-align: center;
         margin: auto;
         background-color: #eae9e9;
-        width: 80vw;
+        width: 85vw;
         min-width: 250px;
         border-radius: 10px;
         margin: auto;
         margin-bottom: 15px;
         align-items: center;
         justify-content: center;
+        box-shadow: 0 3px 3px -3px #333;
     }
 
     .section_div_left {
@@ -103,11 +101,6 @@
     }
 
 
-    h2 {
-        padding: 0;
-        margin:2px;
-    }
-
     .img_div img {
         width: 85%;
         max-width: 600px;
@@ -118,21 +111,16 @@
 
     .section_1 .main_div {
         text-align: center;
-        width: 80vw;
+        width: 85vw;
         margin: auto;
         margin-top: 30px
-    }
-
-    .featured_div_img_div img {
-        min-width: 0px;
-        width: 100px;
-        height: 26px;
     }
 
     .showcase_div {
         text-align: center;
         background-color: #eae9e9;
-        width: 80vw;
+        box-shadow: 0 3px 3px -3px #333;
+        width: 85vw;
         min-width: 250px;
         height: 250px;
         border-radius: 10px;
@@ -161,8 +149,12 @@
     }
 
     .dot {
-        height: 9px;
-        width: 9px;
+        height: 8px;
+        width: 8px;
+    }
+
+    .introSlides {
+        height: 350px;
     }
 }
 
@@ -171,28 +163,17 @@
         margin: auto;
     }
 
-    .top_nav .top_logo {
-        width: 150px;
-        margin-top: 6px;
-    }
-
     .section_1 img {
         width: 80%;
         min-width: 400px;
         max-width: 600px;
-        border-radius: 10px;
-    }
-
-    .logo {
-        width: 60% !important;
-        min-width: 200px !important;
-        max-width: 400px !important;
     }
 
     .ranking_div {
         background-color: #eae9e9;
         width: 94%;
         border-radius: 10px;
+        box-shadow: 0 3px 3px -3px #333;
         display: flex;
         margin: auto;
         margin-bottom: 15px;
@@ -228,6 +209,7 @@
         margin-bottom: 15px;
         align-items: center;
         justify-content: center;
+        box-shadow: 0 3px 3px -3px #333;
     }
 
     .section_div_left {
@@ -266,11 +248,6 @@
         text-align: center;
     }
 
-    h2 {
-        padding: 0;
-        margin:5px;
-    }
-
     .img_div img {
         width: 85%;
         max-width: 600px;
@@ -285,14 +262,9 @@
         margin: auto;
     }
 
-    .featured_div_img_div img {
-        min-width: 0px;
-        width: 120px;
-        height: 26px;
-    }
-
     .showcase_div {
         background-color: #eae9e9;
+        box-shadow: 0 3px 3px -3px #333;
         width: 94%;
         height: 355px;
         border-radius: 10px;
@@ -319,23 +291,18 @@
     }
 
     .dot {
-        height: 12px;
-        width: 12px;
+        height: 10px;
+        width: 10px;
     }
-}
 
-.section_1 {
-    width: 100%;
-    height: 100%;
+    .introSlides {
+        height: 430px;
+    }
 }
 
 .main_div a {
     color: rgb(38, 166, 154);
     text-decoration: underline;
-}
-
-.dark_mode .main_div img {
-    opacity: 1
 }
 
 .dark_mode .main_div a, .dark_mode .ranking a {
@@ -344,11 +311,6 @@
 
 .github_div {
     padding-bottom: 0 !important;
-}
-
-#contents_title {
-    margin-top: 15px;
-    text-align: center;
 }
 
 .dark_mode .href_btn {
@@ -388,7 +350,7 @@ h1 {
 
 .section_div_left button:hover, .section_div_left .ranking:not(:first-of-type):hover, .selected {
     background-color: gray;
-    color: white;
+    color: #eae9e9;
 }
 
 .dark_mode .section_div_left button:hover, .dark_mode .selected {
@@ -407,16 +369,16 @@ h1 {
 }
 
 .ranking:not(:first-of-type):hover {
-        cursor: pointer;
-        transition: 0.5s;
-    }
+    cursor: pointer;
+    transition: 0.5s;
+}
 
 .ranking a {
     display: inherit;
     width: 100%;
 }
 .ranking a:hover {
-    color: white
+    color: #eae9e9
 }
 
 .dark_mode .ranking a {
@@ -427,37 +389,17 @@ h1 {
     color: rgb(38, 166, 154);
 }
 
-.featured_div {
-    display: flex;
-    justify-content: center;
-}
-
-.featured_div_txt {
-    height: 30px;
-    line-height: 30px;
-}
-
-.featured_div_img_div {
-    padding-bottom:0;
-}
-
 .slideshow-container {
     max-width: 1000px;
     position: relative;
     margin: 10px auto;
 }
 
-.slides {
+.introSlides, .slides {
     display: none;
     text-align: center;
     vertical-align: middle;
     width:100vw;
-}
-
-.text {
-    padding: 8px 12px;
-    bottom: 8px;
-    text-align: center;
 }
 
 .dot_div {
@@ -476,19 +418,7 @@ h1 {
     background-color: #717171;
 }
 
-.fade {
-    -webkit-animation-name: fade;
-    -webkit-animation-duration: 1.5s;
-    animation-name: fade;
-    animation-duration: 1.5s;
-}
-
-@-webkit-keyframes fade {
-    from {opacity: .4}
-    to {opacity: 1}
-}
-
-@keyframes fade {
-    from {opacity: .4}
-    to {opacity: 1}
+.section_1 img:hover {
+   transform: perspective(1px) scale3d(1.022, 1.022, 1) translateZ(0px) !important;
+   transition: 1s;
 }

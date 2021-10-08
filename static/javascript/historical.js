@@ -107,7 +107,7 @@ function draw_graph() {
 
     var historical_chart = document.getElementById('historical_chart');
     var historical_chart = new Chart(historical_chart, {
-        type: 'bar',
+        type: 'horizontalBar',
         data: {
             labels: day_list,
             datasets: [{
@@ -132,22 +132,37 @@ function draw_graph() {
                 },
             },
             scales: {
-                 x: {
-                    grid: {
+                 xAxes: [{
+                    offset: true,
+                    gridLines: {
+                        drawOnChartArea: false,
+                        color: "grey",
+                    },
+                    scaleLabel: {
                         display: true,
-                    }
-                 },
-                 y: {
-                    grid: {
-                        display: true,
-                    }
-                 }
+                        labelString: 'Price Change [%]',
+                    },
+                }],
+                yAxes: [{
+                    offset: true,
+                    gridLines: {
+                        drawOnChartArea: false,
+                        color: "grey",
+                    },
+                }],
             },
 
             // To show value when hover on any part of the graph
             tooltips: {
                 mode: 'index',
                 intersect: false,
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                        var label = data.datasets[tooltipItem.datasetIndex].label;
+                        return label + ': ' + value + '%';
+                    }
+                }
             },
             hover: {
                 mode: 'index',

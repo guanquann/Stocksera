@@ -111,9 +111,12 @@ def get_top_ftd(filename):
     combined_df.to_csv("database/failure_to_deliver/top_ftd.csv", index=False)
 
 
-if __name__ == '__main__':
+def main():
     download_ftd()
     FOLDER_PATH = r"database/failure_to_deliver/csv"
     combine_df(FOLDER_PATH)
     get_top_ftd(sorted(Path(FOLDER_PATH).iterdir(), key=os.path.getmtime)[0])
 
+
+if __name__ == '__main__':
+    main()

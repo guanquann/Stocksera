@@ -105,6 +105,10 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date
                 print("No data for ", symbol)
 
 
-if __name__ == '__main__':
+def main():
     get_30d_data_finra()
     get_daily_data_finra()
+
+
+if __name__ == '__main__':
+    main()

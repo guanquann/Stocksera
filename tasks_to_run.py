@@ -7,6 +7,7 @@ import sqlite3
 from pathlib import Path
 import scheduled_tasks.create_database as create_database
 import scheduled_tasks.reddit.get_reddit_trending_stocks.scrape_reddit as scrape_reddit_stocks
+import scheduled_tasks.reddit.get_reddit_trending_stocks.scrape_reddit_discussion_thread as scrape_discussion_thread
 import scheduled_tasks.reddit.get_reddit_trending_crypto as scrape_reddit_crypto
 import scheduled_tasks.reddit.get_subreddit_count as get_subreddit_count
 import scheduled_tasks.reddit.buy_trending_tickers as buy_trending_tickers
@@ -25,22 +26,27 @@ import scheduled_tasks.economy.get_daily_treasury as get_daily_treasury
 import scheduled_tasks.economy.get_retail_sales as get_retail_sales
 import scheduled_tasks.economy.get_upcoming_events_date as get_upcoming_events_date
 
-# Best to run 1 hour before market opens daily to get trending tickers and subreddit count
-SCRAPE_REDDIT_STOCKS = True
-SCRAPE_REDDIT_CRYPTO = True
+# Get real time trending tickers from WSB
+SCRAPE_WSB = False
+
+# Get trending tickers/crypto posts
+SCRAPE_REDDIT_STOCKS_POSTS = True
+SCRAPE_REDDIT_CRYPTO_POSTS = True
+
+# Get subreddit count
 SCRAPE_SUBREDDIT_STATS = True
 
-# Update latest price of Reddit ETF. Run this WHEN MARKET OPENS to get latest price
-UPDATE_REDDIT_ETF = True
+# Update latest price of Reddit ETF.
+UPDATE_REDDIT_ETF = False
 
 # Update number of followers of company in Twitter
-UPDATE_TWITTER = True
+UPDATE_TWITTER = False
 
 # If you want to update the cached ticker info for faster processing time
-TICKER_INFO = True
+TICKER_INFO = False
 
 # If you want to remove old dates in options data
-RESET_TICKER_OPTIONS = True
+RESET_TICKER_OPTIONS = False
 
 # IF you want to update the cached ticker financial data for faster processing time
 TICKER_FINANCIAL = False
@@ -49,10 +55,10 @@ TICKER_FINANCIAL = False
 SHORT_VOL = False
 
 # If you want to get tickers with low float
-LOW_FLOAT = True
+LOW_FLOAT = False
 
 # If you want to get tickers with high short interest
-SHORT_INT = True
+SHORT_INT = False
 
 # If you want to get upcoming earnings calendar
 EARNINGS_CALENDAR = False
@@ -78,13 +84,16 @@ RETAIL_SALES = False
 
 if __name__ == '__main__':
     # Create/update database. It is okay to run this even though you have an existing database.
-    # Data will not be over-written.
     create_database.database()
 
-    if SCRAPE_REDDIT_STOCKS:
+    if SCRAPE_WSB:
+        scrape_discussion_thread.wsb_live()
+        scrape_discussion_thread.wsb_change()
+        scrape_discussion_thread.get_mkt_cap()
+    if SCRAPE_REDDIT_STOCKS_POSTS:
         scrape_reddit_stocks.main()
 
-    if SCRAPE_REDDIT_CRYPTO:
+    if SCRAPE_REDDIT_CRYPTO_POSTS:
         scrape_reddit_crypto.main()
 
     if SCRAPE_SUBREDDIT_STATS:
@@ -113,8 +122,7 @@ if __name__ == '__main__':
             get_financial.financial(i)
 
     if SHORT_VOL:
-        get_short_volume.get_30d_data_finra()
-        get_short_volume.get_daily_data_finra()
+        get_short_volume.main()
 
     if LOW_FLOAT:
         miscellaneous.get_low_float()
@@ -124,10 +132,11 @@ if __name__ == '__main__':
 
     if EARNINGS_CALENDAR:
         get_earnings_calendar.insert_earnings_into_db(get_earnings_calendar.get_earnings(7, forward=True))
+        get_earnings_calendar.update_previous_earnings(get_earnings_calendar.get_earnings(7, forward=False))
 
     if FTD:
         get_failure_to_deliver.download_ftd()
-        FOLDER_PATH = r"C:\Users\Acer\PycharmProjects\StocksAnalysis\database\failure_to_deliver\csv"
+        FOLDER_PATH = r"INSERT_PATH_HERE"
         get_failure_to_deliver.combine_df(folder_path=FOLDER_PATH)
         get_failure_to_deliver.get_top_ftd(sorted(Path(FOLDER_PATH).iterdir(), key=os.path.getmtime)[0])
 

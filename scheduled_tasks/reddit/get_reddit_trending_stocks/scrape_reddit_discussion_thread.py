@@ -144,7 +144,7 @@ def wsb_live():
     for post in subreddit.hot(limit=10):
         try:
             # Ensure that post is stickied and the post is not an image
-            if post.stickied and ".jpg" not in post.url:
+            if post.stickied and ".jpg" not in post.url and ".png" not in post.url:
                 print(post.url)
                 submission = reddit.submission(url=post.url)
 
@@ -222,11 +222,10 @@ def wsb_live():
     quick_stats_df = download_quick_stats(list(tickers_dict.keys()), quick_stats, threads=True)
 
     # Ticker must be active in order to be valid
-    # quick_stats_df = quick_stats_df[quick_stats_df["volume"] != "N/A"]
     quick_stats_df["volume"] = pd.to_numeric(quick_stats_df["volume"], errors='coerce')
     quick_stats_df["price"] = pd.to_numeric(quick_stats_df["price"], errors='coerce')
     quick_stats_df.dropna(inplace=True)
-    quick_stats_df = quick_stats_df[quick_stats_df["price"] >= 4]
+    quick_stats_df = quick_stats_df[quick_stats_df["price"] >= 1]
     quick_stats_df = quick_stats_df[quick_stats_df["volume"] >= 500000]
     valid_ticker_list = list(quick_stats_df.index.values)
 
@@ -317,13 +316,7 @@ def get_mkt_cap():
     for row in x:
         ticker_list.append(row[0])
         mentions_list.append(row[1])
-    # quick_stats_dict = {'marketCap': 'mkt_cap',
-    #                     'regularMarketChangePercent': 'price_change',
-    #                     'regularMarketPrice': 'current_price',
-    #                     'fiftyDayAverage': 'avg_price',
-    #                     'fiftyTwoWeekHigh': '52w_high',
-    #                     'fiftyTwoWeekLow': '52w_low'}
-    # quick_stats_df = download_quick_stats(ticker_list, quick_stats_dict)
+
     quick_stats_dict = {'summaryDetail': {"fiftyDayAverage": "avg_price",
                                           "fiftyTwoWeekHigh": "52w_high",
                                           "fiftyTwoWeekLow": "52w_low",
@@ -351,15 +344,12 @@ def get_mkt_cap():
     del quick_stats_df["avg_price"]
     del quick_stats_df["52w_high"]
     del quick_stats_df["52w_low"]
-    # quick_stats_df["mentions"] = mentions_list
-    #     quick_stats_df.reset_index(inplace=True)
-    #     quick_stats_df.rename(columns={"Symbol": "ticker"}, inplace=True)
-    # quick_stats_df["price_change"] = quick_stats_df["price_change"].apply(lambda k: round(k*100, 2))
+
     quick_stats_df = quick_stats_df.reindex(ticker_list)
     quick_stats_df["mentions"] = mentions_list
     quick_stats_df.reset_index(inplace=True)
     quick_stats_df.rename(columns={"Symbol": "ticker"}, inplace=True)
-    # quick_stats_df.to_sql("wsb_yf", conn, if_exists="replace", index=False)
+    quick_stats_df.to_sql("wsb_yf", conn, if_exists="replace", index=False)
     print(quick_stats_df)
 
 

@@ -24,4 +24,4 @@ def reset_options(date_to_remove: str = str(datetime.utcnow().date())):
 
 
 if __name__ == '__main__':
-    reset_options(date_to_remove="2021-09-17")
+    reset_options()

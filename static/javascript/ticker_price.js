@@ -20,10 +20,6 @@ function submit_onload(elem) {
     }
 }
 
-function remove_glowing_border(elem) {
-    elem.classList.remove("glowing_border")
-}
-
 function show_ticker_table(information) {
     <!--Check if input is an ETF/Crypto/Stock and display information to user accordingly-->
     var quoteType = information["quoteType"]
@@ -192,3 +188,13 @@ function show_ticker_table(information) {
     table_code += table_part_ii_code + "</table>";
     document.getElementsByClassName("scrollable_div")[0].innerHTML = table_code;
 }
+
+const buttonRight = document.getElementById('slideRight');
+const buttonLeft = document.getElementById('slideLeft');
+
+buttonRight.onclick = function () {
+  document.getElementsByClassName('main_btn_div')[0].scrollLeft += 100;
+};
+buttonLeft.onclick = function () {
+  document.getElementsByClassName('main_btn_div')[0].scrollLeft -= 100;
+};

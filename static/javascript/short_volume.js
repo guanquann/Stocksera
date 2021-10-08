@@ -340,7 +340,11 @@ function short_vol_graph(duration) {
         percentage_change = "+" + String(percentage_change)
     }
 
-    var summary_code = `<p>The short volume for $${document.getElementById("quote").value} is ${percentage_list[percentage_list.length-1]}% on ${date_list[date_list.length-1]}. The short sale volume is ${short_vol}, long sale volume is ${long_vol}. The total volume is ${total_vol}. The short sale volume is ${percentage_change}% compared to ${date_list[date_list.length-2]}.</p>`
+    var summary_code = `<p>The short volume for $${document.getElementById("quote").value} is ${percentage_list[percentage_list.length-1]}% on ${date_list[date_list.length-1]}.
+                           The short sale volume is ${Math.round(short_vol * 100) / 100}M,
+                           long sale volume is ${Math.round(long_vol * 100) / 100}M.
+                           The total volume is ${Math.round(total_vol * 100) / 100}M.
+                           The short sale volume is ${percentage_change}% compared to ${date_list[date_list.length-2]}.</p>`
 
     document.getElementById("summary").innerHTML = summary_code
 }

@@ -6,7 +6,6 @@
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/ticker_price.css' %}">
-<script src="{% static 'javascript/ticker_price.js' %}"></script>
 {% endblock %}
 
 {% block onload_properties%}display_data();restore_dark_mode();check_if_us_stock('{{ticker_selected}}');submit_onload('{{error}}');to_remove(document.getElementsByClassName('show_more_btn')[0], 'Historical Data'){% endblock %}
@@ -23,8 +22,14 @@
         <p>
             Enter a ticker symbol you are interested to view!
         </p>
-        <form action="" method="GET" autocomplete="off">
+        <form action="" method="GET" autocomplete="off" name="form">
             <div class="search_bar">
+<!--                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" list="list-language" placeholder="Ticker: ">-->
+<!--                <div list="list-language">-->
+<!--                    {% for i in all_ticker %}-->
+<!--                        <span onclick="form.submit()">{{i}}</span>-->
+<!--                    {% endfor %}-->
+<!--                </div>-->
                 <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
                 <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;"><img src="{% static 'images/search_icon.svg' %}"></button>
             </div>
@@ -34,11 +39,11 @@
     <div class="instructions">
         <h2>Other Datasets Available</h2>
         <div class="more_info_div_parent" id="more_info_div">
-            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'ticker' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Analysis</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'financial' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Financials</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Options</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">Short Vol</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}" onclick="clickAndDisable(this);">FTD</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'ticker' %}?quote={{ticker_selected}}">Analysis</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'financial' %}?quote={{ticker_selected}}">Financials</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}">Options</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}">Short Vol</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}">FTD</a></div>
         </div>
     </div>
 
@@ -58,97 +63,106 @@
                 </script>
             </div>
 
-            <div id="ticker_table">
+            <div>
                 <p class="header"><b>Key Statistics</b></p>
                 <div class="scrollable_div"></div>
 
                 <div class="ticker_summary"></div>
 
                 <div class="btn_div_reminder"><i>Scroll right to view more</i></div>
-                <div class="main_btn_div glowing_border" onscroll="remove_glowing_border(this)">
-                    <div class="btn_div">
-                        <form action="/historical_data" method="GET" autocomplete="off" target="Historical Data" >
-                            <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Historical Data');">Historical Data</button>
-                        </form>
-                    </div>
+                <div style="display: flex; border-bottom: 1.5px solid grey; margin-bottom: 10px;">
+                    <button id="slideLeft" type="button" class="scroll_horizontal_btn">
+                        <img src="{% static 'images/left_arrow.svg' %}">
+                    </button>
 
-                    <div class="btn_div">
-                        <form action="/insider_trading" method="GET" autocomplete="off" target="Insider Trading">
-                            <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Insider Trading');">Insider Trading</button>
-                        </form>
-                    </div>
+                    <div class="main_btn_div">
+                        <div class="btn_div">
+                            <form action="/historical_data" method="GET" autocomplete="off" target="Historical Data" >
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Historical Data');">Historical Data</button>
+                            </form>
+                        </div>
 
-                    <div class="btn_div">
-                        <form action="/sub_news" method="GET" autocomplete="off" target="News Sentiment">
-                            <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'News Sentiment')">News Sentiment</button>
-                        </form>
-                    </div>
+                        <div class="btn_div">
+                            <form action="/insider_trading" method="GET" autocomplete="off" target="Insider Trading">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Insider Trading');">Insider Trading</button>
+                            </form>
+                        </div>
 
-                    <div class="btn_div">
-                        <form action="/google_trends" method="GET" autocomplete="off" target="Google Trends">
-                            <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Google Trends');">Google Trends</button>
-                        </form>
-                    </div>
+                        <div class="btn_div">
+                            <form action="/sub_news" method="GET" autocomplete="off" target="News Sentiment">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'News Sentiment')">News Sentiment</button>
+                            </form>
+                        </div>
 
-                    <div class="btn_div">
-                        <form action="/sec_fillings" method="GET" autocomplete="off" target="SEC Fillings">
-                            <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'SEC Fillings');">SEC Fillings</button>
-                        </form>
-                    </div>
+                        <div class="btn_div">
+                            <form action="/google_trends" method="GET" autocomplete="off" target="Google Trends">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Google Trends');">Google Trends</button>
+                            </form>
+                        </div>
 
-                    <div class="btn_div">
-                        <form action="/major_holders" method="GET" autocomplete="off" target="Major Holders">
-                            <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Major Holders');">Major Holders</button>
-                        </form>
-                    </div>
+                        <div class="btn_div">
+                            <form action="/sec_fillings" method="GET" autocomplete="off" target="SEC Fillings">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'SEC Fillings');">SEC Fillings</button>
+                            </form>
+                        </div>
 
-                    <div class="btn_div">
-                        <form action="/institutional_holders" method="GET" autocomplete="off" target="Institutional Holders">
-                            <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Institutional Holders');">Institutional Holders</button>
-                        </form>
-                    </div>
+                        <div class="btn_div">
+                            <form action="/major_holders" method="GET" autocomplete="off" target="Major Holders">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Major Holders');">Major Holders</button>
+                            </form>
+                        </div>
 
-                    <div class="btn_div">
-                        <form action="/mutual_fund_holders" method="GET" autocomplete="off" target="Mutual-Fund Holders">
-                            <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Mutual-Fund Holders');">Mutual-Fund Holders</button>
-                        </form>
-                    </div>
+                        <div class="btn_div">
+                            <form action="/institutional_holders" method="GET" autocomplete="off" target="Institutional Holders">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Institutional Holders');">Institutional Holders</button>
+                            </form>
+                        </div>
 
-                    <div class="btn_div">
-                        <form action="/ticker_earnings" method="GET" autocomplete="off" target="Earnings">
-                            <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Earnings');">Earnings</button>
-                        </form>
-                    </div>
+                        <div class="btn_div">
+                            <form action="/mutual_fund_holders" method="GET" autocomplete="off" target="Mutual-Fund Holders">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Mutual-Fund Holders');">Mutual-Fund Holders</button>
+                            </form>
+                        </div>
 
-                    <div class="btn_div">
-                        <form action="/recommendations" method="GET" autocomplete="off" target="Upgrades & Downgrades">
-                            <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Upgrades & Downgrades');">Upgrades & Downgrades</button>
-                        </form>
-                    </div>
+                        <div class="btn_div">
+                            <form action="/ticker_earnings" method="GET" autocomplete="off" target="Earnings">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Earnings');">Earnings</button>
+                            </form>
+                        </div>
 
-                    <div class="btn_div">
-                        <form action="/dividend_and_split" method="GET" autocomplete="off" target="Dividend & Splits">
-                            <input style="display: none" name="quote" value="{{ticker_selected}}">
-                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Dividend & Splits');">Dividend & Splits</button>
-                        </form>
-                    </div>
+                        <div class="btn_div">
+                            <form action="/recommendations" method="GET" autocomplete="off" target="Upgrades & Downgrades">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Upgrades & Downgrades');">Upgrades & Downgrades</button>
+                            </form>
+                        </div>
 
-                    <div class="btn_div">
+                        <div class="btn_div">
+                            <form action="/dividend_and_split" method="GET" autocomplete="off" target="Dividend & Splits">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Dividend & Splits');">Dividend & Splits</button>
+                            </form>
+                        </div>
+
+                        <div class="btn_div">
                         <form action="/discussion" method="GET" autocomplete="off" target="Discussion">
                             <input style="display: none" name="quote" value="{{ticker_selected}}">
                             <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Discussion');">Discussion</button>
                         </form>
                     </div>
+                    </div>
+                    <button id="slideRight" type="button" class="scroll_horizontal_btn">
+                        <img src="{% static 'images/right_arrow.svg' %}">
+                    </button>
                 </div>
 
                 <iframe src="/loading/" class="more_details" name="Historical Data" scrolling="no" onload="expand_iframe(this)"></iframe>
@@ -178,6 +192,7 @@
 
 {% block bottom_script %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script src="{% static 'javascript/ticker_price.js' %}"></script>
 <script type="text/javascript">
     <!--Hack to convert python variables to javascript-->
     var None = "N/A", False = false; True = true;

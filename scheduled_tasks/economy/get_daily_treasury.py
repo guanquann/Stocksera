@@ -20,7 +20,7 @@ def download_json(date_to_start: str = str(datetime.utcnow().date() - timedelta(
           "filter=record_date:gte:{}".format(date_to_start)
     data = requests.get(url).json()['data']
     for i in data:
-        if i["account_type"] == "Federal Reserve Account":
+        if i["account_type"] == "Treasury General Account (TGA)":
             record_date = i['record_date']
             close_today = int(i['close_today_bal']) / 1000
             open_today = int(i['open_today_bal']) / 1000

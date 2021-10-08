@@ -9,6 +9,7 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'style/format.css' %}">
     <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="{% static 'javascript/format.js' %}"></script>
     <script>
         function load_td_graph() {
@@ -45,7 +46,6 @@
     </script>
     {% block additional_script %}{% endblock %}
 </head>
-
 <body onload="update_price_color();{% block onload_properties%}{% endblock %}">
 <script>restore_dark_mode()</script>
 <div>
@@ -133,12 +133,16 @@
         <div class="footer">
             <ul>
                 <li id="disclaimer">Disclaimer</li>
-                <li id="contact">Contact</li>
                 <li id="privacy">Privacy</li>
                 <li id="support">Support</li>
-                <li id="share">Share</li>
                 <li id="advertisement" style="display: none">Advertise</li>
             </ul>
+            <div class="footer_share">
+                <a href="https://twitter.com/stocksera_bot" target="_blank"><img src="{% static 'images/footer/twitter.png' %}"></a>
+                <a href="https://reddit.com/r/stocksera" target="_blank"><img src="{% static 'images/footer/reddit.png' %}"></a>
+                <a href="https://github.com/spartan737/Stocksera" target="_blank"><img src="{% static 'images/footer/github.png' %}" style="background: white"></a>
+                <a href="mailto:stocksera@gmail.com" target="_blank"><img src="{% static 'images/footer/email.png' %}"></a>
+            </div>
             <div>&copy; 2021 Stocksera</div>
         </div>
 
@@ -157,18 +161,6 @@
                             Do note that the price of tickers are delayed. You should depend on your broker for latest
                             price changes instead.
                         </p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="contact_model" class="modal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <span class="close">&times;</span>
-                        <h4>Contact</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>If you have any questions or suggestions regarding Stocksera, please drop me a message in the <a href="{% url 'about' %}" target="_blank">About</a> section or email me at <a href="mailto:stocksera@gmail.com">stocksera@gmail.com</a></p>
                     </div>
                 </div>
             </div>
@@ -205,27 +197,6 @@
                 </div>
             </div>
 
-            <div id="share_model" class="modal">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <span class="close">&times;</span>
-                    <h4>Share</h4>
-                </div>
-                <div class="modal-body">
-                    <div style="margin-top: 25px">
-                        <div class="a2a_kit a2a_kit_size_32 a2a_default_style" data-a2a-url="https://stocksera.pythonanywhere.com/" data-a2a-title="StocksEra">
-                        <a class="a2a_button_whatsapp"></a>
-                        <a class="a2a_button_telegram"></a>
-                        <a class="a2a_button_facebook"></a>
-                        <a class="a2a_button_twitter"></a>
-                        <a class="a2a_button_reddit"></a>
-                    </div>
-                    </div>
-                    <script async src="https://static.addtoany.com/menu/page.js"></script>
-                </div>
-                </div>
-            </div>
-
             <div id="advertisement_model" class="modal">
                 <div class="modal-content">
                 <div class="modal-header">
@@ -235,14 +206,6 @@
                     <p style="font-size: larger; font-weight: bold">
                         WSB Live Sentiment is now available! Have you subscribe to our FREE pre-market notifications?
                     </p>
-                    <img src="{% static 'images/advertisements/mentions.png' %}">
-                    <br><br><br>
-                    <img src="{% static 'images/advertisements/change.png' %}">
-                    <br><br><br>
-                    <img src="{% static 'images/advertisements/price_change.png' %}">
-                    <br><br><br>
-                    <img src="{% static 'images/advertisements/ticker.png' %}">
-
                     <div class="buttons_div">
                         <div>
                             <a href="/wsb_live" target="_blank">
@@ -258,16 +221,24 @@
                             <span class="adv_close">Next Time</span>
                         </div>
                     </div>
+                    <img src="{% static 'images/advertisements/mentions.png' %}">
+                    <br><br><br>
+                    <img src="{% static 'images/advertisements/change.png' %}">
+                    <br><br><br>
+                    <img src="{% static 'images/advertisements/price_change.png' %}">
+                    <br><br><br>
+                    <img src="{% static 'images/advertisements/ticker.png' %}">
                 </div>
                 </div>
             </div>
+
     </div>
 </div>
 </body>
 <script src="{% static 'javascript/load_footer.js' %}"></script>
 <script>
     if (localStorage.getItem("advertisement") == null) {
-        show_msg_time = new Date().getTime() + (10000000);
+        show_msg_time = new Date().getTime() + (30000000);
         localStorage.setItem("advertisement", show_msg_time);
     }
     else {

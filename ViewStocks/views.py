@@ -31,14 +31,13 @@ def main(request):
     db.execute("SELECT * FROM stocksera_trending ORDER BY count DESC LIMIT 10")
     trending = db.fetchall()
     trending = list(map(list, trending))
-
     if request.GET.get("quote"):
         ticker_selected = request.GET['quote'].upper().replace(" ", "")
         information, related_tickers = check_market_hours(ticker_selected)
         if "longName" in information and information["regularMarketPrice"] != "N/A":
             return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
                                                          "information": information,
-                                                         "related_tickers": related_tickers
+                                                         "related_tickers": related_tickers,
                                                          })
     return render(request, "home.html", {"trending": trending})
 
@@ -52,7 +51,7 @@ def stock_price(request):
     if "longName" in information and information["regularMarketPrice"] != "N/A":
         return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
                                                      "information": information,
-                                                     "related_tickers": related_tickers
+                                                     "related_tickers": related_tickers,
                                                      })
     else:
         return render(request, 'ticker_price.html', {"ticker_selected": ticker_selected,
@@ -319,22 +318,22 @@ def historical_data(request):
         response = download_file(price_df, file_name)
         return response
 
-    price_df.index = np.arange(1, len(price_df) + 1)
-    price_df.reset_index(inplace=True)
-    price_df.rename(columns={"index": "Rank"}, inplace=True)
-
     summary_df = price_df.head(50).groupby(["Day"]).mean()
     summary_df.reset_index(inplace=True)
     summary_df = summary_df.groupby(['Day']).sum().reindex(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])
     summary_df.reset_index(inplace=True)
+    summary_df = pd.DataFrame(summary_df[["Day", "% Price Change"]]).to_html(index=False)
 
     if order == "Descending":
         price_df.sort_values(by=[sort_by], inplace=True, ascending=False)
     else:
         price_df.sort_values(by=[sort_by], inplace=True)
-    price_df = price_df.to_html(index=False)
 
-    summary_df = pd.DataFrame(summary_df[["Day", "% Price Change"]]).to_html(index=False)
+    price_df.reset_index(inplace=True, drop=True)
+    price_df.index = np.arange(1, len(price_df) + 1)
+    price_df.reset_index(inplace=True)
+    price_df.rename(columns={"index": "Rank"}, inplace=True)
+    price_df = price_df.to_html(index=False)
 
     return render(request, 'historical_data.html', {"ticker_selected": ticker_selected,
                                                     "sort_by": sort_by,

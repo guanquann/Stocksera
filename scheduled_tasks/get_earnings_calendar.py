@@ -154,5 +154,5 @@ def delete_old_earnings(last_date):
 
 if __name__ == '__main__':
     insert_earnings_into_db(get_earnings(1, forward=True))
-    # update_previous_earnings(get_earnings(7, forward=False))
-    # delete_old_earnings("2021-07-13")
+    update_previous_earnings(get_earnings(7, forward=False))
+    delete_old_earnings("2021-10-01")

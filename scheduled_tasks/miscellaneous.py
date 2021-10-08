@@ -108,6 +108,10 @@ def get_low_float():
         conn.commit()
 
 
-if __name__ == '__main__':
+def main():
     get_high_short_interest()
     get_low_float()
+
+
+if __name__ == '__main__':
+    main()

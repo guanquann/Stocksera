@@ -43,15 +43,27 @@ def latest_insider_trading():
 def latest_insider_trading_analysis():
     last_date = str(datetime.utcnow().date() - timedelta(days=30))
 
-    insider_df = pd.read_sql_query("SELECT Ticker, SUM(Value) AS Amount "
-                                   "FROM latest_insider_trading WHERE "
-                                   "DateFilled>='{}' GROUP BY Ticker ORDER BY "
-                                   "ABS(SUM(Value)) DESC LIMIT 50".format(last_date), conn)
-    quick_stats = {'marketCap': 'mkt_cap'}
-    quick_stats_df = download_quick_stats(insider_df["Ticker"].to_list(), quick_stats, threads=True)
-    insider_df["MktCap"] = quick_stats_df["mkt_cap"].to_list()
+    insider_df = pd.read_sql_query("SELECT * FROM latest_insider_trading", conn)
+    insider_df = insider_df.drop_duplicates(subset=["Ticker", "TransactionDate", "Cost", "Shares", "Value",
+                                                    "DateFilled"], keep='first')
+    insider_df = insider_df[insider_df["DateFilled"] > last_date]
+    insider_df = pd.DataFrame(insider_df.groupby(["Ticker"])['Value'].agg('sum'))
+
+    insider_df = insider_df.reindex(insider_df["Value"].abs().sort_values(ascending=False).index).head(50)
+    insider_df.reset_index(inplace=True)
+    insider_df.rename(columns={"Ticker": "Symbol", "Value": "Amount"}, inplace=True)
+
+    # insider_df = pd.read_sql_query("SELECT Ticker AS Symbol, SUM(Value) AS Amount "
+    #                                "FROM latest_insider_trading WHERE "
+    #                                "DateFilled>='{}' GROUP BY Ticker ORDER BY "
+    #                                "ABS(SUM(Value)) DESC LIMIT 50".format(last_date), conn)
+    quick_stats = {'marketCap': 'MktCap'}
+    quick_stats_df = download_quick_stats(insider_df["Symbol"].to_list(), quick_stats, threads=True).reset_index()
+    quick_stats_df = quick_stats_df[quick_stats_df["MktCap"] != "N/A"]
+    insider_df = insider_df.merge(quick_stats_df, on="Symbol")
     insider_df["Proportion"] = (insider_df["Amount"].abs() / insider_df["MktCap"]) * 100
-    print(insider_df)
+    insider_df["Proportion"] = insider_df["Proportion"].astype(float).round(3)
+    insider_df.to_sql("latest_insider_trading_analysis", conn, if_exists="replace", index=False)
 
 
 def main():

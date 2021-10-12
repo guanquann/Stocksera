@@ -32,11 +32,11 @@
 <div class="instructions">
     <h2>Other Datasets Available</h2>
     <div class="more_info_div_parent">
-        <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_overview' %}">Market Overview</a></div>
-        <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_interest' %}">Short Interest</a></div>
-        <div class="more_info_div"><a class="more_info_btn" href="{% url 'low_float' %}">Low Float</a></div>
+        <div class="more_info_div"><a class="more_info_btn" href="{% url 'latest_insider' %}">Latest Insider</a></div>
         <div class="more_info_div"><a class="more_info_btn" href="{% url 'ark_trades' %}">ARK Fund</a></div>
         <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'amd_xlnx_ratio' %}">AMD-XLNX Ratio</a></div>
+        <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_interest' %}">Short Interest</a></div>
+        <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_overview' %}">Market Overview</a></div>
     </div>
 </div>
 
@@ -53,8 +53,4 @@
         {{combined_df|safe}}
     </div>
 </div>
-{% endblock %}
-
-{% block bottom_script %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 {% endblock %}

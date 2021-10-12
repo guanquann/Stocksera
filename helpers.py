@@ -243,9 +243,9 @@ def get_ticker_news(ticker_selected):
         for index, row in news_df.iterrows():
             vs = analyzer.polarity_scores(row["Title"])
             sentiment_score = vs['compound']
-            if sentiment_score > 0.25:
+            if sentiment_score > 0.2:
                 sentiment = "Bullish"
-            elif sentiment_score < -0.25:
+            elif sentiment_score < -0.2:
                 sentiment = "Bearish"
             else:
                 sentiment = "Neutral"

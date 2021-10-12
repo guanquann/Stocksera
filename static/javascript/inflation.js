@@ -1,4 +1,4 @@
-function color_table(is_checked) {
+function color_table(is_checked, whether_drs) {
     var date_list = [], avg_inflation = [];
     var table = document.getElementsByTagName("table")[0];
     var tr = table.querySelectorAll("tr");
@@ -10,7 +10,12 @@ function color_table(is_checked) {
                 if (value != "N/A") {
                     const l = 100 - (value * 11);
                     const textColor = l < 60 ? 'white' : '#000';
-                    td[k].style.backgroundColor = 'hsl(10, 70%, ' + l + '%)'
+                    if (whether_drs == "DRS") {
+                        td[k].style.backgroundColor = 'hsl(330, 70%, ' + l + '%)'
+                    }
+                    else {
+                        td[k].style.backgroundColor = 'hsl(10, 70%, ' + l + '%)'
+                    }
                     td[k].style.color = textColor
                 }
             }
@@ -27,24 +32,40 @@ function color_table(is_checked) {
     }
 }
 
-function show_reference() {
+function show_reference(whether_drs) {
     var tds = document.getElementById("heatmap_reference").querySelector("tr").querySelectorAll("td")
     for (k=0; k<tds.length; k++) {
         const value = tds[k].innerHTML
         const l = 100 - (value * 11);
         const textColor = l < 60 ? 'white' : '#000';
-        tds[k].style.backgroundColor = 'hsl(10, 70%, ' + l + '%)'
+        if (whether_drs == "normal") {
+            tds[k].style.backgroundColor = 'hsl(10, 70%, ' + l + '%)'
+        }
+        else {
+            tds[k].style.backgroundColor = 'hsl(330, 70%, ' + l + '%)'
+        }
         tds[k].style.color = textColor
     }
 }
 
-function change_color_table(elem) {
-    if (elem.checked == true) {
-        color_table("checked")
+function change_color_table(whether_drs) {
+    checkbox = document.getElementsByClassName(whether_drs)[0]
+    drs_your_shares = document.getElementsByClassName("drs_your_shares")[0]
+    if (checkbox.checked == true) {
+        color_table("checked", whether_drs)
     }
     else {
-        color_table("unchecked")
+        color_table("unchecked", whether_drs)
     }
+    if (whether_drs == "normal") {
+        document.querySelector(".DRS").checked = false
+        drs_your_shares.style.display = "none"
+    }
+    else {
+        document.querySelector(".normal").checked = false
+        drs_your_shares.style.removeProperty("display")
+    }
+    show_reference(whether_drs)
 }
 
 var inflation_chart = null

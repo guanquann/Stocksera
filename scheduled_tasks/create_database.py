@@ -167,13 +167,12 @@ def database():
                "industry TEXT )")
 
     db.execute("CREATE table IF NOT EXISTS short_volume ("
-               "reported_date TEXT, "
+               "Date TEXT, "
                "ticker TEXT, "
                "short_vol INTEGER, "
                "short_exempt_vol INTEGER, "
                "total_vol INTEGER, "
                "percent TEXT, "
-               "close_price FLOAT, "
                "UNIQUE('ticker', 'reported_date','short_vol','total_vol','percent'))")
 
     db.execute("CREATE table IF NOT EXISTS reverse_repo ("
@@ -253,6 +252,12 @@ def database():
                "DateFilled TEXT, "
                "UNIQUE ('Ticker', 'Name', 'Relationship', 'TransactionDate', 'TransactionType', 'Cost', 'Shares', "
                "'Value', 'SharesLeft', 'DateFilled') )")
+
+    db.execute("CREATE table IF NOT EXISTS latest_insider_trading_analysis ("
+               "Symbol TEXT, "
+               "Amount INTEGER, "
+               "MktCap INTEGER, "
+               "Proportion FLOAT) ")
 
     db.execute("CREATE table IF NOT EXISTS related_tickers ("
                "ticker TEXT, "

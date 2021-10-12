@@ -23,12 +23,11 @@
 
 .dark_mode .date_selector button {
     background-color: transparent;
-    color: wheat;
 }
 
 .dark_mode .selected {
-    border-bottom: 2px solid wheat !important;
-    color: wheat !important;
+    border-bottom: 2px solid rgb(38, 166, 154) !important;
+    color: rgb(38, 166, 154) !important;
 }
 
 #heatmap_reference {
@@ -37,5 +36,15 @@
 }
 
 .dark_mode #heatmap_reference {
-    border-color: wheat;
+    border-color: grey;
+}
+
+.drs_your_shares, .drs_your_shares a {
+    color: #93186c !important;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.drs_your_shares h1 {
+    margin-bottom: 0;
 }

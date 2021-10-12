@@ -42,9 +42,11 @@
         </p>
         <form action="" method="GET" autocomplete="off">
             <div class="search_bar">
-                <input type="text" class="ticker_input" name="quote" placeholder="Ticker:" value="{{ticker_selected}}" autocomplete="off">
+                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
                 <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
-                <button class="submit_btn" type="submit"><img src="{% static 'images/search_icon.svg' %}"></button>
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                    <span class="fa fa-search"></span>
+                </button>
             </div>
             <a href="/subreddit_count/" class="overview_btn">Overview</a>
         </form>
@@ -99,7 +101,6 @@
 {% endblock %}
 
 {% block bottom_script %}
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script type="text/javascript">
     function validateRecaptcha() {
         var response = grecaptcha.getResponse();

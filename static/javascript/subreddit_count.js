@@ -629,3 +629,7 @@ function check_subreddit(ticker, subreddit) {
         document.querySelector("#submit_subreddit").style.removeProperty("display")
     }
 }
+
+function resize_plotly_graph() {
+    Plotly.Plots.resize('chart')
+}

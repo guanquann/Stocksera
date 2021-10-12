@@ -36,9 +36,11 @@
             <div class="subscribe_email_div"><a class="subscribe_email" href="/subscribe" target="_blank">Subscribe to Free WSB Notifications</a></div>
         </p>
         <form action="" method="GET" autocomplete="off">
-            <div class="search_bar" style="margin-top: 1px">
-                <input type="text" class="ticker_input" name="quote" placeholder="Ticker:" autocomplete="off">
-                <button class="submit_btn" type="submit"><img src="{% static 'images/search_icon.svg' %}"></button>
+            <div class="search_bar">
+                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                    <span class="fa fa-search"></span>
+                </button>
             </div>
         </form>
     </div>
@@ -201,8 +203,4 @@
             <canvas id="crypto_chart"></canvas>
         </div>
     </div>
-{% endblock %}
-
-{% block bottom_script %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 {% endblock %}

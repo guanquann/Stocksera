@@ -82,3 +82,7 @@ function swap_ticker_position() {
     ticker_inputs[0].value = ticker_inputs[1].value
     ticker_inputs[1].value = tmp
 }
+
+function resize_plotly_graph() {
+    Plotly.Plots.resize('beta_chart')
+}

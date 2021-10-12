@@ -6,7 +6,7 @@ You can view the application in <a href="https://stocksera.pythonanywhere.com" t
 
 <a href="https://stocksera.pythonanywhere.com/subscribe/" target="_blank">![Subscribe](./static/images/github/subscribe.png)</a>
 
-Live demo is available at https://youtu.be/SEYXEcVKt38.
+Live demo is available at https://youtu.be/jkAZu7DvhvY.
 
 ### Support:
 This website is free for everyone. But if you want to support me, please give me a star on Github or you can PayPal to <a href="https://www.paypal.me/stocksera">paypal.me/stocksera</a>. Patreon is also available <a href="https://www.patreon.com/stocksera" target="_blank">here</a>.

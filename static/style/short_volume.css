@@ -21,7 +21,7 @@
 }
 
 .dark_mode #summary {
-    background-color: #505050;
+    background-color: #1c1f21;
 }
 
 .date_selector button {
@@ -39,10 +39,5 @@
 
 .dark_mode .date_selector button {
     background-color: transparent;
-    color: wheat;
-}
-
-.dark_mode .selected {
-    border-bottom: 2px solid wheat !important;
-    color: wheat !important;
+    color: #858585;
 }

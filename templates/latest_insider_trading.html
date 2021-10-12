@@ -21,42 +21,50 @@
     <script>highlight_selected_nav('discover')</script>
     <div class="instructions">
         <h2>Recent Top Insider Trading</h2>
-        <p>The treemap below shows the top insider trading done in the last 1 month. </p>
+        <p>
+            This section shows the top insider trading done in the last 1 month.
+            <i><b>There are many possible reasons to sell a stock, but only one reason to buy.</b></i>
+        </p>
     </div>
 
-<!--    <div class="instructions">-->
-<!--        <h2>Other Datasets Available</h2>-->
-<!--        <div class="more_info_div_parent">-->
-<!--            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reverse_repo' %}">Reverse Repo</a></div>-->
-<!--        </div>-->
-<!--    </div>-->
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'latest_insider' %}">Latest Insider</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ark_trades' %}">ARK Fund</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'amd_xlnx_ratio' %}">AMD-XLNX Ratio</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_interest' %}">Short Interest</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_overview' %}">Market Overview</a></div>
+        </div>
+    </div>
 
     <div class="contents_div">
+        <h2 class="header">Largest Net Insider Trading</h2>
         <div id='top_insider'></div>
 
-        <h2 class="ticker_insider_header">Insider Trading of AAPL</h2>
+        <h2 class="header">% of Market Cap</h2>
+        <div id='mkt_cap'></div>
+
+        <h2 class="header">Insider Trading of AAPL</h2>
 
         <form action="/insider_trading" method="GET" autocomplete="off" target="Insider Trading" onsubmit="change_header_description()">
             <div class="search_bar">
                 <input type="text" name="quote" value="AAPL" class="ticker_input" placeholder="Ticker:" autocomplete="off">
-                <button class="submit_btn" type="submit"><img src="{% static 'images/search_icon.svg' %}"></button>
+                <button class="submit_btn" type="submit">
+                    <span class="fa fa-search"></span>
+                </button>
             </div>
         </form>
 
         <iframe style="display:none"></iframe>
         <iframe src="/insider_trading/?quote=AAPL" name="Insider Trading" onload="expand_iframe(this)"></iframe>
 
-        <h2 class="ticker_insider_header">Top 50 Net Recent Insider Trading Amount (last 30 days)</h2>
+        <h2 class="header">Last 30 Days Largest Net Insider Trading</h2>
+        <span class="click_table_info"><b>Click on ticker symbol for more info.</b></span>
         <div class="scrollable_div">
             {{insider_df|safe}}
         </div>
 
         <p>Data is from <a href="https://finviz.com/insidertrading.ashx" target="_blank">finviz.com</a></p>
     </div>
-{% endblock %}
-
-{% block bottom_script %}
-<script src='https://cdn.plot.ly/plotly-2.4.2.min.js'></script>
-<script>
-</script>
 {% endblock %}

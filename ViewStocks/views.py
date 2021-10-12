@@ -15,7 +15,10 @@ try:
 except ModuleNotFoundError:
     print("Not authorised to have access to admin functions")
 
-trends = TrendReq(hl='en-US', tz=360)
+try:
+    trends = TrendReq(hl='en-US', tz=360)
+except:
+    print("Timeout for Google Trend")
 
 pd.options.display.float_format = '{:.1f}'.format
 
@@ -259,15 +262,18 @@ def insider_trading(request):
 
 
 def latest_insider(request):
-    last_date = str(datetime.utcnow().date() - timedelta(days=30))
-
-    insider_df = pd.read_sql_query("SELECT Ticker, SUM(Value) AS Amount "
-                                   "FROM latest_insider_trading WHERE "
-                                   "DateFilled>='{}' GROUP BY Ticker ORDER BY "
-                                   "ABS(SUM(Value)) DESC LIMIT 50".format(last_date), conn)
-    print(insider_df)
-    # SELECT Ticker as ticker, SUM(Value), COUNT(TransactionType), (SELECT COUNT(TransactionType) FROM latest_insider_trading WHERE TransactionType="Sale" Ticker=ticker) AS Sales FROM latest_insider_trading GROUP BY Ticker ORder by ABS(SUM(Value)) DESC
-    return render(request, 'latest_insider_trading.html', {"insider_df": insider_df.to_html(index=False)})
+    pd.options.display.float_format = '{:.2f}'.format
+    # last_date = str(datetime.utcnow().date() - timedelta(days=30))
+    # df = pd.read_sql_query("SELECT * FROM latest_insider_trading", conn)
+    # df = df.drop_duplicates(subset=["Ticker", "TransactionDate", "Cost", "Shares", "Value", "DateFilled"],
+    # keep='first')
+    # df = df[df["DateFilled"] > last_date]
+    # df = pd.DataFrame(df.groupby(["Ticker"])['Value'].agg('sum'))
+    # df = df.reindex(df["Value"].abs().sort_values(ascending=False).index)
+    # df.reset_index(inplace=True)
+    df = pd.read_sql_query("SELECT * FROM latest_insider_trading_analysis", conn)
+    df.rename(columns={"MktCap": "Market Cap", "Proportion": "% of Mkt Cap"}, inplace=True)
+    return render(request, 'latest_insider_trading.html', {"insider_df": df.to_html(index=False)})
 
 
 def historical_data(request):
@@ -550,7 +556,7 @@ def options(request):
 
 def short_volume(request):
     """
-    Get short volume of tickers (only popular ones). Data from shortvolumes.com
+    Get short volume of tickers (only popular ones). Data from Finra
     """
     ticker_selected = default_ticker(request)
 
@@ -562,18 +568,13 @@ def short_volume(request):
     information, related_tickers = check_market_hours(ticker_selected)
 
     if "longName" in information and information["regularMarketPrice"] != "N/A":
-        sql_query = "SELECT * FROM short_volume WHERE ticker='{}' ORDER BY reported_date DESC".format(ticker_selected)
-
         pd.options.display.float_format = '{:.2f}'.format
-        short_volume_data = pd.read_sql_query(sql_query, conn)
-
-        if short_volume_data.empty or len(short_volume_data) < 30:
-            short_volume_data = pd.read_csv("database/short_volume.csv")[::-1]
-            short_volume_data = short_volume_data[short_volume_data["ticker"] == ticker_selected]
-            history = pd.DataFrame(yf.Ticker(ticker_selected).history(interval="1d", period="1y")["Close"])
-            history.reset_index(inplace=True)
-            history["Date"] = history["Date"].astype(str)
-            short_volume_data = pd.merge(short_volume_data, history, on=["Date"], how="left")
+        short_volume_data = pd.read_sql_query("SELECT * FROM short_volume WHERE ticker='{}' ".format(ticker_selected), conn)
+        print(short_volume_data)
+        history = pd.DataFrame(yf.Ticker(ticker_selected).history(interval="1d", period="1y")["Close"])
+        history.reset_index(inplace=True)
+        history["Date"] = history["Date"].astype(str)
+        short_volume_data = pd.merge(short_volume_data, history, on=["Date"], how="left")
 
         if "download_csv" in request.GET:
             file_name = "{}_short_volume.csv".format(ticker_selected)

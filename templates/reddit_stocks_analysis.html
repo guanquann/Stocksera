@@ -33,8 +33,10 @@
                 <option value="pennystocks">Pennystocks</option>
             </select>
             <div class="search_bar">
-                <input type="text" class="ticker_input" name="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
-                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;"><img src="{% static 'images/search_icon.svg' %}"></button>
+                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                    <span class="fa fa-search"></span>
+                </button>
             </div>
         </form>
     </div>
@@ -84,7 +86,6 @@
 {% endblock %}
 
 {% block bottom_script %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script type="text/javascript">
 <!--Hack to convert python variables to javascript-->
 var None = "N/A", False = false; True = true;

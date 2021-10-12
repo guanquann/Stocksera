@@ -5,11 +5,9 @@ import sqlite3
 import requests
 import pandas as pd
 import numpy as np
-import yfinance as yf
 from datetime import datetime, timedelta
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from scheduled_tasks.get_popular_tickers import full_ticker_list
 import scheduled_tasks.reddit.get_reddit_trending_stocks.fast_yahoo as fast_yahoo
 
 conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
@@ -20,9 +18,7 @@ current_date = datetime.utcnow().date()
 
 def get_30d_data_finra():
     """
-    Get short volume data from https://cdn.finra.org/
-    This is an alternative source to shortsvolume.com because shortsvolume.com stopped updating for some reason
-    But this is better in the sense that it gets all tickers short volume for the last 30 days and save them to csv
+    Get short volume data from https://cdn.finra.org/ in the last 40 days
     """
     last_date = datetime.utcnow().date() - timedelta(days=30)
     combined_df = pd.DataFrame(columns=["Date", "Symbol", "ShortVolume", "ShortExemptVolume", "TotalVolume", "%Shorted"])
@@ -47,11 +43,13 @@ def get_30d_data_finra():
     combined_df.to_csv("database/short_volume.csv", index=False)
 
 
-def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date()-timedelta(days=1)):
+def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date()-timedelta(days=0)):
     """
     Get short volume data from https://cdn.finra.org/
-    This function gets daily data for popular tickers in scheduled_tasks/get_popular_tickers.py and save them to db
     """
+
+    original_df = pd.read_sql_query("SELECT * FROM short_volume", conn)
+
     url = r"https://cdn.finra.org/equity/regsho/daily/CNMSshvol{}.txt".format(str(date_to_process).replace("-", ""))
     print(url)
     s = requests.get(url).content
@@ -63,16 +61,15 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date
         df["%Shorted"] = 100 * (df["ShortVolume"] / df["TotalVolume"])
         df["%Shorted"] = df["%Shorted"].round(2)
 
-        # del df["Market"]
-        # df.columns = ["Date", "ticker", "short_vol", "short_exempt_vol", "total_vol", "percent"]
-        #
-        # original_df = pd.read_csv("database/short_volume.csv")
-        # original_df = original_df.append(df)
-        # original_df.to_csv("database/short_volume.csv")
+        del df["Market"]
+        df_copy = df.copy()
+        df_copy.columns = ["Date", "ticker", "short_vol", "short_exempt_vol", "total_vol", "percent"]
+        original_df = original_df.append(df_copy)
+        original_df.drop_duplicates(keep="first", inplace=True)
+        original_df.to_sql("short_volume", conn, if_exists="replace", index=False)
 
         highest_shorted = df[df["ShortVolume"] >= 3000000].nlargest(50, "%Shorted")
         del highest_shorted["Date"]
-        del highest_shorted["Market"]
         highest_shorted.index = np.arange(1, len(highest_shorted) + 1)
         highest_shorted.reset_index(inplace=True)
         highest_shorted.rename(columns={"index": "Rank",
@@ -90,23 +87,9 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date
         highest_shorted.replace(np.nan, "N/A", inplace=True)
         highest_shorted.to_csv("database/highest_short_volume.csv", index=False)
 
-        for symbol in full_ticker_list():
-            ticker = yf.Ticker(symbol)
-            history = ticker.history(period="1y", interval="1d")
-            row = df[df["Symbol"] == symbol]
-            if not row.empty:
-                date = row["Date"].values[0]
-                close_price = round(history.loc[date]["Close"], 2)
-                db.execute("INSERT OR IGNORE INTO short_volume VALUES (?, ?, ?, ?, ?, ?, ?)",
-                           (date, symbol, row["ShortVolume"].values[0], row["ShortExemptVolume"].values[0],
-                            row["TotalVolume"].values[0], row["%Shorted"].values[0], close_price))
-                conn.commit()
-            else:
-                print("No data for ", symbol)
-
 
 def main():
-    get_30d_data_finra()
+    # get_30d_data_finra()
     get_daily_data_finra()
 
 

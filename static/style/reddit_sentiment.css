@@ -10,7 +10,7 @@
         border-radius: 50%;
         width: 55px;
         height: 55px;
-        border: 1.2px solid wheat;
+        border: 1.2px solid black;
         background-color: black;
     }
 
@@ -35,7 +35,7 @@
         border-radius: 50%;
         width: 65px;
         height: 65px;
-        border: 1.2px solid wheat;
+        border: 1.2px solid black;
         background-color: black;
     }
 }
@@ -79,7 +79,7 @@
 }
 
 .dark_mode #filter_section {
-    background-color: #505050;
+    background-color: #1c1f21;
 }
 
 .filter_ticker {
@@ -96,7 +96,21 @@
 }
 
 .dark_mode .filter_ticker {
-    background-color: wheat;
+    background-color: rgb(38, 166, 154);
+    border-color: black;
+    color: black !important;
+}
+
+.dark_mode .filter_ticker::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #ccc;
+}
+
+.dark_mode .filter_ticker::-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #ccc;
+}
+
+.dark_mode .filter_ticker::-ms-input-placeholder { /* Microsoft Edge */
+  color: #ccc;
 }
 
 .filter_contents {
@@ -111,7 +125,7 @@
 }
 
 .dark_mode .filter_contents {
-    background-color: wheat;
+    background-color: rgb(38, 166, 154);
     color: black;
 }
 
@@ -176,10 +190,6 @@
     padding-top: 20px;
     height: 70vh;
     overflow: scroll;
-}
-
-.no_img_table_img_symbol {
-    text-decoration: underline
 }
 
 .click_table_info {

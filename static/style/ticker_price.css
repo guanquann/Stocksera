@@ -89,12 +89,12 @@
 }
 
 .dark_mode .selected {
-    background-color: #ffba39 !important;
+    background-color: rgb(38, 166, 154) !important;
     color: black !important;
 }
 
 .dark_mode .show_more_btn {
-    color: wheat;
+    color: #ccc;
     background-color: transparent;
 }
 
@@ -157,8 +157,8 @@ iframe {
 }
 
 .dark_mode .scroll_horizontal_btn:hover {
-    background: #ffba39;
-    border: #ffba39;
+    background: rgb(38, 166, 154);
+    border: rgb(38, 166, 154);
 }
 
 ::-webkit-scrollbar {

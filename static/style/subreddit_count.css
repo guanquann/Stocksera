@@ -23,7 +23,7 @@
         border-radius: 50%;
         width: 55px;
         height: 55px;
-        border: 1.2px solid wheat;
+        border: 1.2px solid black;
         background-color: black;
     }
 
@@ -66,7 +66,7 @@
         border-radius: 50%;
         width: 65px;
         height: 65px;
-        border: 1.2px solid wheat;
+        border: 1.2px solid black;
         background-color: black;
     }
 
@@ -156,12 +156,11 @@
 
 .dark_mode .date_selector button {
     background-color: transparent;
-    color: wheat;
 }
 
 .dark_mode .selected {
-    border-bottom: 2px solid wheat !important;
-    color: wheat !important;
+    border-bottom: 2px solid rgb(38, 166, 154) !important;
+    color: rgb(38, 166, 154) !important;
 }
 
 .individual_subreddit_description {
@@ -176,7 +175,7 @@
 }
 
 .dark_mode .individual_subreddit_description {
-    background-color: #505050;
+    background-color: #1c1f21;
 }
 
 #submit_subreddit {

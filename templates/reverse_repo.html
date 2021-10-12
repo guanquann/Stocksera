@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/reverse_repo.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode();display_table();reverse_repo(100);get_economic_releases({{next_date}}){% endblock %}
+{% block onload_properties%}display_table();reverse_repo(100);get_economic_releases({{next_date}}){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /

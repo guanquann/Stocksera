@@ -26,8 +26,11 @@
         <form action="/wsb_live_ticker" method="GET" autocomplete="off">
             <div class="search_bar">
                 <input type="text" name="quote" value="{{ticker_selected}}" class="ticker_input" placeholder="Ticker:" autocomplete="off">
-                <button class="submit_btn" type="submit"><img src="{% static 'images/search_icon.svg' %}"></button>
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                    <span class="fa fa-search"></span>
+                </button>
             </div>
+
             <a href="/wsb_live/" class="overview_btn">Overview</a>
         </form>
     </div>
@@ -89,7 +92,6 @@
 {% endblock %}
 
 {% block bottom_script %}
-<script src='https://cdn.plot.ly/plotly-2.3.1.min.js'></script>
 <script type="text/javascript">
 <!--Hack to convert python variables to javascript-->
 var None = "N/A", False = false; True = true;

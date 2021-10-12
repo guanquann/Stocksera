@@ -269,7 +269,7 @@ function load_change_chart() {
         td = tr[i].querySelectorAll("td")
         ticker_list.push(td[0].innerHTML)
         mentions_list.push(td[1].innerHTML)
-        change_list.push(td[2].innerHTML)
+        change_list.push(Math.floor(td[2].innerHTML))
         parent_list.push("")
     }
 
@@ -278,7 +278,7 @@ function load_change_chart() {
         values: mentions_list,
         labels: ticker_list,
         parents: parent_list,
-        customdata: mentions_list,
+        customdata: change_list,
         marker: {
             colorbar: {
                 title: {
@@ -310,8 +310,9 @@ function load_change_chart() {
             ],
             colors: change_list,
         },
-
-        hovertemplate: "<b>%{label}</b><br>Mentions: %{value}<br>Change: %{color:.2f}%<br><extra></extra>",
+        hovertemplate: "<b>%{label}</b><br>Mentions: %{value}<br>Change: %{customdata}%<br><extra></extra>",
+        textposition: "center",
+        texttemplate: "<b>%{label}</b><br>%{customdata}%",
     }]
 
     var layout = {
@@ -335,6 +336,9 @@ function load_change_chart() {
     }
 
     Plotly.newPlot('change_mentions', data, layout, {displayModeBar: false, showTips: false, responsive: true})
+        .then(gd => {
+            gd.on("plotly_treemapclick", () => false)
+        })
 }
 
 function load_mkt_cap_chart() {
@@ -434,7 +438,7 @@ function load_mkt_cap_chart() {
         values: mentions_list,
         labels: ticker_list,
         parents: parent_list,
-        customdata: mentions_list,
+        customdata: price_change_list,
         marker: {
             colorbar: {
                 title: {
@@ -465,8 +469,9 @@ function load_mkt_cap_chart() {
             ],
             colors: price_change_list,
         },
-
         hovertemplate: "<b>%{label}</b><br>Mentions: %{value}<br>Price Change: %{color:.2f}%<br><extra></extra>",
+        textposition: "center",
+        texttemplate: "<b>%{label}</b><br>%{customdata}%",
     }]
 
     var layout = {
@@ -490,6 +495,9 @@ function load_mkt_cap_chart() {
     }
 
     Plotly.newPlot('price_change_chart', data, layout, {displayModeBar: false, showTips: false, responsive: true})
+        .then(gd => {
+        gd.on("plotly_treemapclick", () => false)
+    })
 
     var trace1 = {
         x: difference_list.slice(0, 15).reverse(),
@@ -933,4 +941,16 @@ function show_banned_words(elem) {
         elem.classList.add("hidden")
         elem.innerHTML = "To see the list of excluded words, click here."
     }
+}
+
+function resize_plotly_graph() {
+    Plotly.Plots.resize('trending_over_time_chart_24H')
+    Plotly.Plots.resize('trending_over_time_chart_7d')
+    Plotly.Plots.resize('change_mentions')
+    Plotly.Plots.resize('mkt_cap_chart')
+    Plotly.Plots.resize('price_change_chart')
+    Plotly.Plots.resize('50SMA_chart')
+    Plotly.Plots.resize('50SMA_chart')
+    Plotly.Plots.resize('sentiment_chart')
+    Plotly.Plots.resize('ticker_chart')
 }

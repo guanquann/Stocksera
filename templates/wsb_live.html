@@ -27,8 +27,10 @@
         <div class="subscribe_email_div"><a class="subscribe_email" href="/subscribe" target="_blank">Subscribe to Free WSB Notifications</a></div>
         <form action="/wsb_live_ticker" method="GET" autocomplete="off" target="wsb_live_ticker">
             <div class="search_bar">
-                <input type="text" name="quote" value="{{ticker_selected}}" class="ticker_input" placeholder="Ticker:" autocomplete="off">
-                <button class="submit_btn" type="submit"><img src="{% static 'images/search_icon.svg' %}"></button>
+                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                    <span class="fa fa-search"></span>
+                </button>
             </div>
         </form>
     </div>
@@ -77,9 +79,11 @@
         <div id="word_cloud"></div>
 
         <h2 class="header">No. of Mentions Last 24H</h2>
-        <div class="search_bar" style="margin-top: 1px;">
+        <div class="search_bar">
             <input type="text" class="ticker_input" placeholder="Ticker: " onkeyup="searchTicker(this)" autocomplete="off">
-            <button class="submit_btn" type="submit"><img src="{% static 'images/search_icon.svg' %}"></button>
+            <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                <span class="fa fa-search"></span>
+            </button>
         </div>
         <span class="click_table_info"><b>Click on ticker symbol for more info.</b></span>
 
@@ -93,9 +97,5 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block bottom_script %}
-<script src='https://cdn.plot.ly/plotly-2.3.1.min.js'></script>
 {% endblock %}
 

@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/inflation.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode();color_table('checked');inflation('max');show_reference();get_economic_releases({{next_date}}){% endblock %}
+{% block onload_properties%}restore_dark_mode();color_table('checked', 'DRS');inflation('max');show_reference();get_economic_releases({{next_date}}){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -53,7 +53,14 @@
         </div>
 
         <div>
-            <input type="checkbox" onclick="change_color_table(this)" checked>Heat Map
+            <input type="checkbox" onclick="change_color_table('normal')" class="normal heat_map_selector">Normal Heat Map
+            <input type="checkbox" onclick="change_color_table('DRS')"  class="DRS heat_map_selector" checked>Apes Heat Map
+        </div>
+        <div class="drs_your_shares">
+            <h1>HAVE YOU DRS YOUR SHARES?</h1>
+            <a href="https://www.reddit.com/r/Superstonk/comments/ptvaka/when_you_wish_upon_a_star_a_complete_guide_to/" target="_blank">Reddit Guide</a>
+            <span> | </span>
+            <a href="https://www.computershare.com/us" target="_blank">Official Website</a>
         </div>
         <div class="scrollable_div">
             {{inflation_stats|safe}}
@@ -77,8 +84,4 @@
             </table>
         </div>
     </div>
-{% endblock %}
-
-{% block bottom_script %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 {% endblock %}

@@ -94,7 +94,7 @@ You can view a sample of the database in <a href="https://drive.google.com/drive
 - Reset Stocksera trending table in database.
 
 ## Frequency to run tasks
-- Do not that the frequency to run the files are for guidance only. You do not need to follow them strictly. Change according to your preference.
+- Do note that the frequency to run the files are for guidance only. You do not need to follow them strictly. Change according to your preference.
 
 | Script Name                                                                           | Functions                               | Frequency   |
 | ------------------------------------------------------------------------------------- |-----------------------------------------|-------------|

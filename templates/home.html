@@ -10,9 +10,11 @@
 <script src="{% static 'javascript/home.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode();restore_dark_mode_img(){% endblock %}
-
+{% block onload_properties%}restore_dark_mode();{% endblock %}
+<!--restore_dark_mode_img()-->
 {% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/">Home</a>
 {% endblock %}
 
 {% block main_content %}
@@ -20,7 +22,7 @@
 <div class="section_1">
     <div class="main_div">
         <div>
-            <h1>Stocksera</h1>
+            <h1 style="font-size: 30px">Stocksera</h1>
             <div>
                 We track trending tickers on social media and provide free data for easy due-diligence & analysis.
             </div>
@@ -30,9 +32,18 @@
                     <input type="submit" hidden>
                 </form>
             </div>
-
         </div>
         <div id="intro_images">
+<!--                                <div style="position:absolute; z-index: 99999;-->
+<!--    right: 250px;-->
+<!--background: rgb(38, 166, 154);-->
+<!--    padding: 10px 20px;-->
+<!--    border-radius: 50px;-->
+<!--    margin-top: 10px;-->
+<!--    color: white;-->
+<!--    font-weight: bold;">-->
+<!--            SHORT VOL.-->
+<!--        </div>-->
             <div class="introSlides fade">
                 <a href="/ticker/failure_to_deliver"><img src="{% static 'images/homepage/introduction/light_mode/ftd.png' %}"></a>
             </div>

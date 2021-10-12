@@ -34,7 +34,7 @@ function load_graph() {
                     label: 'Revenue',
                     type: 'bar',
                     data: revenue_list,
-                    backgroundColor: 'orange',
+                    backgroundColor: 'rgb(38, 166, 154)',
                 },
                 {
                     label: 'Earnings',

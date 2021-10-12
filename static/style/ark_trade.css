@@ -57,24 +57,10 @@
 }
 
 button {
-    border: 1.5px solid gray;
-    border-radius: 3px;
-    padding-top: 3px;
-    padding-left: 6px;
-    padding-right: 6px;
-    padding-bottom: 4px;
-    margin: 1.5px;
-}
-
-input {
-    border: 1.5px solid gray;
-    border-radius: 3px;
-    padding: 3.1px;
-    text-transform: uppercase;
+    margin: 5px 0 5px 0;
 }
 
 .dark_mode .fund_type, .dark_mode button {
-    background-color: wheat;
     color: black;
 }
 
@@ -106,7 +92,7 @@ input {
 }
 
 .dark_mode .selected {
-    background-color: #ffba39;
+    background-color: rgb(38, 166, 154);
 }
 
 .fund_type {
@@ -190,7 +176,7 @@ td div:hover {
 }
 
 .dark_mode #ticker_intro a {
-    color: wheat;
+    color: #ccc;
 }
 
 .ticker_summary {

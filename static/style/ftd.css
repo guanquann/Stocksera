@@ -27,12 +27,12 @@
 
 .dark_mode .date_selector button {
     background-color: transparent;
-    color: wheat;
+    color: #ccc;
 }
 
 .dark_mode .selected {
-    border-bottom: 2px solid wheat !important;
-    color: wheat !important;
+    border-bottom: 2px solid #ccc !important;
+    color: #ccc !important;
 }
 
 .ftd_ticker_link {

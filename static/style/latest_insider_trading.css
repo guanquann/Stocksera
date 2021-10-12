@@ -4,7 +4,20 @@ iframe {
     margin-top: 5px;
 }
 
-.ticker_insider_header {
-    margin: 35px 0 0 0;
+.header {
+    margin: 15px 0 0px 0;
     text-align: center;
+}
+
+.click_table_info {
+    float: right;
+    margin: 7px 0 7px 0;
+}
+
+#mkt_cap {
+    height: 320px;
+}
+
+#top_insider {
+    width: 100%;
 }

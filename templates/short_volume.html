@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/short_volume.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}display_data();display_table();short_vol_graph(6);restore_dark_mode(){% endblock %}
+{% block onload_properties%}display_data();display_table();short_vol_graph(60);restore_dark_mode(){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -36,7 +36,9 @@
         <form action="" method="GET" autocomplete="off">
             <div class="search_bar">
                 <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
-                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;"><img src="{% static 'images/search_icon.svg' %}"></button>
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                    <span class="fa fa-search"></span>
+                </button>
             </div>
         </form>
     </div>
@@ -45,7 +47,7 @@
         <h2>Other Datasets Available</h2>
         <div class="more_info_div_parent">
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}">Analysis</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'financial' %}?quote={{ticker_selected}}">Financials</a></div>
+<!--            <div class="more_info_div"><a class="more_info_btn" href="{% url 'financial' %}?quote={{ticker_selected}}">Financials</a></div>-->
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}">Options</a></div>
             <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'short_volume' %}?quote={{ticker_selected}}">Short Vol</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}">FTD</a></div>
@@ -65,7 +67,7 @@
         <div class="date_selector">
             <button name="date_range" id="1 Months" onclick="btn_selected(this); short_vol_graph(1)">1 Months</button>
             <button name="date_range" id="3 Months" onclick="btn_selected(this); short_vol_graph(3)">3 Months</button>
-            <button name="date_range" id="Max" onclick="btn_selected(this); short_vol_graph(6)" class="selected">Max</button>
+            <button name="date_range" id="Max" onclick="btn_selected(this); short_vol_graph(60)" class="selected">Max</button>
         </div>
 
         <div class="chart-container">
@@ -84,14 +86,6 @@
         <div class="scrollable_div" style="max-height: 800px">
             {{ short_volume_data|safe }}
         </div>
-    </div>
-
-    <div class="instructions">
-        <p>
-            You may realise that some tickers such as AAPL, GME, AMC, TSLA have more short volume data than others.
-            This is because we have identified a number of popular tickers, which we will collect more data. Short volume
-            data for tickers which are less popular will be limited to the past 1 month.
-        </p>
     </div>
 </div>
 {% endblock %}

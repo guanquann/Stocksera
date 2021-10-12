@@ -86,8 +86,8 @@
 }
 
 .dark_mode .max_pain_div, .dark_mode .options_summary, .dark_mode .options_summary_sub {
-    background-color: wheat;
-    color: black;
+    background-color: #1c1f21;
+    color: #ccc;
 }
 
 table, th {

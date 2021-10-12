@@ -306,7 +306,7 @@
 }
 
 .dark_mode .main_div a, .dark_mode .ranking a {
-    color: wheat;
+    color: #ccc;
 }
 
 .github_div {
@@ -314,7 +314,7 @@
 }
 
 .dark_mode .href_btn {
-    background-color: wheat;
+    background-color: #ccc;
 }
 
 .href_btn:hover {
@@ -324,7 +324,7 @@
 }
 
 .dark_mode .href_btn:hover {
-    background-color: #ffba39;
+    background-color: rgb(38, 166, 154);
 }
 
 .dark_mode a {
@@ -337,7 +337,7 @@ h1 {
 }
 
 .dark_mode .section_div, .dark_mode .ranking_div, .dark_mode .showcase_div {
-    background-color: #505050;
+    background-color: #1c1f21;
 }
 
 .section_div_left button {
@@ -354,7 +354,7 @@ h1 {
 }
 
 .dark_mode .section_div_left button:hover, .dark_mode .selected {
-    background-color: #ffba39;
+    background-color: rgb(38, 166, 154);
     color: black;
 }
 
@@ -382,7 +382,7 @@ h1 {
 }
 
 .dark_mode .ranking a {
-    color: wheat;
+    color: #ccc;
 }
 
 #op_description .section_div_text a {

@@ -113,8 +113,8 @@ function draw_graph() {
             datasets: [{
                 label: '% Price Change',
                 data: percent_change_list,
-                borderColor: "orange",
-                backgroundColor: 'orange',
+                borderColor: "rgb(38, 166, 154)",
+                backgroundColor: 'rgb(38, 166, 154)',
             }]
         },
         options: {

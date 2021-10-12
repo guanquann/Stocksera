@@ -26,7 +26,7 @@
 }
 
 .dark_mode .selector:hover {
-    color: #ffba39;
+    color: rgb(38, 166, 154);
 }
 
 .selected {
@@ -35,21 +35,21 @@
 }
 
 .dark_mode .selected {
-    color: #ffba39;
-    border-bottom: 2px solid #ffba39;
+    color: rgb(38, 166, 154);
+    border-bottom: 2px solid rgb(38, 166, 154);
 }
 
 .chart-container {
     height: 70vh;
-    /*min-width: 650px;
+    min-width: 650px;
     max-height: 1800px;
-    margin-left: auto;
+    /*margin-left: auto;
     margin-right: auto;*/
 }
 
-/*.chart-container div {
+.chart-container div {
     margin:auto;
-}*/
+}
 
 ::-webkit-scrollbar-thumb {
     background: transparent;

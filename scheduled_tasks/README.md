@@ -87,6 +87,9 @@ You can view a sample of the database in <a href="https://drive.google.com/drive
 #### scheduled_tasks/get_failure_to_deliver.py
 - Get Failure to Deliver data from SEC
 
+#### scheduled_tasks/get_stocks_summary.py 
+- Get heatmap of S&P 500 and Nasdaq 100.
+
 #### scheduled_tasks/reset_options_cache.py
 - Remove updated dates in database/yf_cached_options.json
 
@@ -98,10 +101,12 @@ You can view a sample of the database in <a href="https://drive.google.com/drive
 
 | Script Name                                                                           | Functions                               | Frequency   |
 | ------------------------------------------------------------------------------------- |-----------------------------------------|-------------|
-| scheduled_tasks/reddit/get_reddit_trending_stocks/scrape_reddit.py                    | main()                                  | Daily (PM)  |
-| scheduled_tasks/reddit/get_reddit_trending_stocks/scrape_reddit_discussion_thread.py  | wsb_live(), wsb_change(), get_mkt_cap() | 10 Mins     |
-| scheduled_tasks/reddit/get_reddit_trending_stocks/scrape_reddit_discussion_thread.py  | update_hourly()                         | Hourly      |
-| scheduled_tasks/reddit/get_reddit_trending_crypto.py                                  | main()                                  | Daily (PM)  |
+| scheduled_tasks/reddit/stocks/scrape_trending_posts.py                                | main()                                  | Daily (PM)  |
+| scheduled_tasks/reddit/stocks/scrape_discussion_thread.py                             | wsb_live(), wsb_change(), get_mkt_cap() | 10 Mins     |
+| scheduled_tasks/reddit/stocks/scrape_discussion_thread.py                             | update_hourly()                         | Hourly      |
+| scheduled_tasks/reddit/crypto/scrape_trending_posts.py                                | main()                                  | Daily (PM)  |
+| scheduled_tasks/reddit/crypto/scrape_discussion_thread.py                             | crypto_live(), crypto_change()          | 10 Mins     |
+| scheduled_tasks/reddit/crypto/scrape_discussion_thread.py                             | update_hourly()                         | Hourly      |
 | scheduled_tasks/reddit/get_subreddit_count.py                                         | main()                                  | Daily (MH)  |
 | scheduled_tasks/reddit/buy_trending_tickers.py                                        | main()                                  | Daily (MH)  |
 | scheduled_tasks/get_twitter_followers.py                                              | main()                                  | Daily (MH)  |
@@ -115,5 +120,8 @@ You can view a sample of the database in <a href="https://drive.google.com/drive
 | scheduled_tasks/miscellaneous.py                                                      | main()                                  | Daily (AH)  |
 | scheduled_tasks/get_earnings_calendar.py                                              | main()                                  | Daily (AH)  |
 | scheduled_tasks/get_failure_to_deliver.py                                             | main()                                  | 2 Weeks     |
+| scheduled_tasks/get_stocks_summary.py                                                 | main()                                  | 10 Mins     |
+| scheduled_tasks/get_stocktwits_summary.py                                             | main()                                  | 1 Hour      |
+| scheduled_tasks/get_senate_trading.py                                                 | main()                                  | Daily (AH)  |
 | scheduled_tasks/reset_options_cache.py                                                | reset_options()                         | Daily (AH)  |
-| scheduled_tasks/reset_stocksera_trending.py                                           | reset_trending_db()                     | 1/2 Hour    |
+| scheduled_tasks/reset_stocksera_trending.py                                           | reset_trending_db()                     | 30 Mins     |

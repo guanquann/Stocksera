@@ -14,50 +14,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="{% static 'javascript/format.js' %}"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J5Y69DW2CT"></script>
     <script>
-        function load_td_graph() {
-            var ticker = "{{ticker_selected}}".replace("-", "")
-            if (localStorage.getItem("mode") == "dark") {
-                var graph_mode = "dark";
-            }
-            else {
-                var graph_mode = "light"
-            }
-
-            new TradingView.widget(
-            {
-                "autosize": true,
-                "symbol": ticker,
-                "interval": "D",
-                "timezone": "Etc/UTC",
-                "theme": graph_mode,
-                "style": "1",
-                "locale": "en",
-                "toolbar_bg": "#f1f3f6",
-                "enable_publishing": false,
-                "allow_symbol_change": true,
-                "studies": [
-                    "MASimple@tv-basicstudies",
-                    "MASimple@tv-basicstudies",
-                    "RSI@tv-basicstudies",
-                    "MACD@tv-basicstudies"
-                ],
-                "container_id": "ticker_chart"
-            }
-            );
-        }
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-J5Y69DW2CT');
     </script>
-<!--    <script type="text/javascript">-->
-<!--    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();-->
-<!--    (function(){-->
-<!--    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];-->
-<!--    s1.async=true;-->
-<!--    s1.src='https://embed.tawk.to/615fc07f86aee40a5735814c/1fhf0fspb';-->
-<!--    s1.charset='UTF-8';-->
-<!--    s1.setAttribute('crossorigin','*');-->
-<!--    s0.parentNode.insertBefore(s1,s0);-->
-<!--    })();-->
-<!--    </script>-->
     {% block additional_script %}{% endblock %}
 </head>
 <body onload="update_price_color();restore_dark_mode();{% block onload_properties%}{% endblock %}">
@@ -112,10 +75,16 @@
                         <span>Economy</span>
                     </li>
                 </a>
-                <a href="{% url 'beta' %}">
-                    <li id="beta" class="nav_bar">
-                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/beta.svg' %}" style="display:none">
-                        <span>Stocks Beta</span>
+                <a href="{% url 'senate' %}">
+                    <li id="government" class="nav_bar">
+                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/government.png' %}" style="display:none">
+                        <span>Government</span>
+                    </li>
+                </a>
+                <a href="{% url 'market_summary' %}">
+                    <li id="market_summary" class="nav_bar">
+                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/treemap.png' %}" style="display:none">
+                        <span>Market Summary</span>
                     </li>
                 </a>
                 <a href="{% url 'latest_insider' %}">
@@ -140,7 +109,7 @@
                     <span class="slider round"></span>
                 </label>
                 <button id="resize_main_div_btn" onclick="activate_nav_bar()">
-                    <img src="{% static 'images/left_right_arrow.svg' %}" style="margin-top: 4px; width: 22px;">
+                    <img src="{% static 'images/left_right_arrow.svg' %}" style="vertical-align: bottom; width: 20px;">
                 </button>
             </div>
         </div>

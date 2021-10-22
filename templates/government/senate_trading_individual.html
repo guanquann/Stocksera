@@ -1,0 +1,63 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Senate Watcher{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/government/senate_trading.css' %}">
+<script src="{% static 'javascript/government/senate_trading.js' %}"></script>
+<script src="{% static 'javascript/government/senate_trading_individual.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}load_individual_table();{% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/senate">Senate</a> /
+    <a href="/senate/?senator={{senator}}">{{senator}}</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('government')</script>
+    <div class="instructions">
+        <h2>Senate Trading for {{senator}}</h2>
+        <p>
+            In recent days, there are many scrutiny on the trades made by government officials, as they seem to time their
+            buys & sells almost perfectly - with the help of insider information.
+            Analyse trades made by Senators in the past 5 years to keep track of their movements.
+        </p>
+        <div>
+            <form action="" method="GET" autocomplete="off" name="form">
+                <div class="search_bar">
+                    <input type="text" class="ticker_input datalist_input" name="senator" list="senator_list" value="{{senator}}" placeholder="Senator:" autocomplete="off" style="max-width: 200px;">
+                    <button class="search_btn">Search</button>
+                    <a href="/senate/" class="main_senator_pg">Overview</a>
+                </div>
+                <datalist id="senator_list" onchange="this.form.submit()">
+                    {% for senate in all_senators %}
+                        <option value="{{senate}}">{{senate}}</option>
+                    {% endfor %}
+                </datalist>
+            </form>
+        </div>
+    </div>
+
+    <div id="daily_statistics"></div>
+
+    <div class="contents_div">
+        <div id="graph_div"></div>
+
+        <div class="search_bar">
+            <input type="text" class="ticker_input" placeholder="Ticker:" onkeyup="searchSenator(this, 2)" autocomplete="off">
+            <button class="submit_btn" type="button">
+                <span class="fa fa-search"></span>
+            </button>
+        </div>
+        <span class="click_table_info"><b>Click on ticker for more info</b></span>
+        <div class="scrollable_div">
+            {{senator_df|safe}}
+        </div>
+
+    </div>
+{% endblock %}

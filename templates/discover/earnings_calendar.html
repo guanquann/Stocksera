@@ -1,0 +1,147 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Calendar{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/discover/earnings_calendar.css' %}">
+<script src="{% static 'javascript/discover/earnings_calendar.js' %}"></script>
+{% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/earnings_calendar">Earnings Calendar</a>
+{% endblock %}
+
+{% block main_content %}
+<script>highlight_selected_nav('discover')</script>
+<div id="top"></div>
+<div class="instructions">
+    <h2>Earnings Calendar</h2>
+    <p>View earnings for the week. There is usually a run-up to earning date. Good earning report often cause price to jump higher. Nonetheless, any downward revisions to future sales, earnings, cash flow could cause a tank instead! </p>
+    <div class="menu">
+        <button onclick="sortTicker(this, 0)" class="selected_btn">ALL</button>
+        <button onclick="sortTicker(this, 10000000000)">>$10B</button>
+        <button onclick="sortTicker(this, 20000000000)">>$20B</button>
+        <button onclick="sortTicker(this, 50000000000)">>$50B</button>
+        <input type="text" placeholder="Ticker:" autocomplete="off" class="filter_ticker" id="search_ticker" onkeyup="searchTicker()">
+        <span>Date: </span>
+    </div>
+</div>
+
+<div class="instructions">
+    <h2>Other Datasets Available</h2>
+    <div class="more_info_div_parent">
+        <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_overview' %}">Market Overview</a></div>
+        <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_interest' %}">Short Interest</a></div>
+        <div class="more_info_div"><a class="more_info_btn" href="{% url 'low_float' %}">Low Float</a></div>
+        <div class="more_info_div"><a class="more_info_btn" href="{% url 'ark_trades' %}">ARK Fund</a></div>
+        <div class="more_info_div"><a class="more_info_btn" href="{% url 'amd_xlnx_ratio' %}">AMD-XLNX Ratio</a></div>
+    </div>
+</div>
+
+<div class="earnings_calendar">
+    <div id="main"></div>
+</div>
+{% endblock %}
+
+{% block bottom_script %}
+<script>
+    // When the user scrolls the page, execute myFunction
+    window.onscroll = function() {stick_menu()};
+
+    // Get the header
+    var menu = document.getElementsByClassName("menu")[0];
+
+    // Get the offset position of the navbar
+    var sticky = menu.offsetTop-50;
+
+    // Add the sticky class to the menu when you reach its scroll position. Remove "sticky" when you leave the scroll position
+    function stick_menu() {
+      if (window.pageYOffset > sticky) {
+        menu.classList.add("sticky");
+      } else {
+        menu.classList.remove("sticky");
+      }
+}
+</script>
+<script type="text/javascript">
+    var None = "N/A"
+    var earnings_calendar = {{ earnings_calendar|safe }};
+
+    current_date = ""
+    earning_date_list = []
+    var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    html_string = "<div>"
+
+    for (earning=0; earning<earnings_calendar.length; earning++) {
+        earning_date = earnings_calendar[earning][6];
+
+        if (earning_date != current_date) {
+            current_date = earning_date;
+            earning_date_list.push(earning_date)
+            current_date_count = 0;
+            var d = new Date(current_date);
+            var dayName = days[d.getDay()];
+            html_string += `</div>
+                            <div class="daily_content ${earning_date}">
+                            <h2>${earning_date} (${dayName})</h2></div>
+                            <div class="earnings_div ${earning_date}">`
+        }
+
+        mkt_cap = Number(earnings_calendar[earning][2])
+        if (mkt_cap < 1000000000) {
+            // to round to 2dp
+            mkt_cap = String(Math.round(mkt_cap / 10000, 2)) / 100 + "M"
+        }
+        else if (mkt_cap >= 1000000000) {
+            mkt_cap = String(Math.round(mkt_cap / 10000000, 2)) / 100 + "B"
+        }
+
+        eps_est = earnings_calendar[earning][3]
+        if (! eps_est.includes("N/A")) {
+            if (eps_est.includes("-")) {
+                eps_est = eps_est.replace("-", "-$")
+            }
+            else {
+                eps_est = "$" + eps_est
+            }
+        }
+
+        eps_act = earnings_calendar[earning][4]
+        if (! eps_act.includes("N/A")) {
+            if (eps_act.includes("-")) {
+                eps_act = eps_act.replace("-", "-$")
+            }
+            else {
+                eps_act = "$" + eps_act
+            }
+        }
+
+        surprise = earnings_calendar[earning][5]
+        if (! surprise.includes("N/A")) {
+            surprise = surprise + "%"
+        }
+
+        html_string += ` <span class="earnings_container">
+                            <a href="{% url 'ticker' %}?quote=${earnings_calendar[earning][1]}" target="_blank"><img src="https://g.foolcdn.com/art/companylogos/mark/${earnings_calendar[earning][1]}.png" onerror=this.src="{% static 'images/not_available.svg' %}" class="company_img"></a>
+                            <p><span>Name: </span>${earnings_calendar[earning][0]}</p>
+                            <p><span>Ticker: </span>${earnings_calendar[earning][1]}</p>
+                            <p><span>Mkt Cap: </span>${mkt_cap}</p>
+                            <p><span>EPS Est: </span>${eps_est}</p>
+                            <p><span>EPS Act: </span>${eps_act}</p>
+                            <p><span>Surprise: </span>${surprise}</p>
+                         </span>`
+    }
+    html_string += `</div></div>`
+    document.getElementById("main").innerHTML += html_string;
+
+    earning_date_string = `<select onchange="date_filter(this)" id="select_date"><option>All</option>`
+    for (earning_date of earning_date_list) {
+        earning_date_string += `<option><a href="#${earning_date}">${earning_date}</a></option>`
+    }
+<!--    earning_date_string += `</select><span id="to_top"><a href="#top"><div class="triangle-up"></div></a></span>`-->
+    document.getElementsByClassName("menu")[0].innerHTML += earning_date_string;
+</script>
+{% endblock %}

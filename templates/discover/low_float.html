@@ -1,0 +1,43 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Low Float{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/discover/low_float.css' %}">
+<script src="{% static 'javascript/discover/low_float.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}update_table(){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/market_overview">Discover</a> /
+    <a href="/low_float">Low Float</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('discover')</script>
+    <div class="instructions">
+        <h2>Low Float</h2>
+        <p>Low float stocks are those with a low number of shares. Floating stock is calculated by subtracting closely-held shares and restricted stock from a firm’s total outstanding shares. A stock with a small float will generally be more volatile since it's harder to find a buyer/seller.</p>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_overview' %}">Market Overview</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_interest' %}">Short Interest</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'low_float' %}">Low Float</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ark_trades' %}">ARK Fund</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'amd_xlnx_ratio' %}">AMD-XLNX Ratio</a></div>
+        </div>
+    </div>
+
+    <div class="contents_div">
+        <div class="table_div" style="display: none">
+            {{ df_low_float|safe }}
+        </div>
+    </div>
+{% endblock %}

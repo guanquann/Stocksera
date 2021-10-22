@@ -4,8 +4,6 @@
 
 You can view the application in <a href="https://stocksera.pythonanywhere.com" target="_blank">stocksera.pythonanywhere.com</a>.
 
-<a href="https://stocksera.pythonanywhere.com/subscribe/" target="_blank">![Subscribe](./static/images/github/subscribe.png)</a>
-
 Live demo is available at https://youtu.be/jkAZu7DvhvY.
 
 ### Support:
@@ -77,8 +75,7 @@ This website is free for everyone. But if you want to support me, please give me
 ![Reddit Analysis Crypto](./static/images/github/reddit_cryptocurrency.png)
 
 #### /wsb_live/
-- Tracks trending tickers and their sentiment level on r/wallstreetbets realtime.
-- STILL IN PROGRESS
+- Tracks trending tickers and their sentiment level, puts/calls ratio on r/wallstreetbets realtime.
 
 #### /reddit_etf/
 - Analyse the performance of trending tickers on r/wallstreetbets.

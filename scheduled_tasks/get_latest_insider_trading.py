@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from finvizfinance.insider import Insider
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
-from scheduled_tasks.reddit.get_reddit_trending_stocks.fast_yahoo import download_quick_stats
+from scheduled_tasks.reddit.stocks.fast_yahoo import download_quick_stats
 
 conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
@@ -35,7 +35,7 @@ def latest_insider_trading():
 
         print(insider_trader)
         for index, row in insider_trader.iterrows():
-            db.execute("INSERT OR IGNORE INTO latest_insider_trading VALUES (? ,? ,? ,? ,? ,? ,? ,? ,? ,?)",
+            db.execute("INSERT OR IGNORE INTO latest_insider_trading VALUES (? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?)",
                        tuple(row))
             conn.commit()
 

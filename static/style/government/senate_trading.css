@@ -1,0 +1,238 @@
+@media only screen and (max-width: 580px) {
+    .chart-container {
+        height: 250px;
+        width: 90%;
+        max-height: 260px;
+    }
+}
+
+@media only screen and (min-width: 580px) {
+    .chart-container {
+        height: 250px;
+        width: 42%;
+        max-height: 260px;
+    }
+}
+
+@media only screen and (min-width: 800px) {
+    .chart-container {
+        height: 250px;
+        width: 48%;
+        max-height: 260px;
+    }
+}
+
+@media only screen and (max-width: 650px) {
+    .overall_statistics_div {
+        width: 100% !important;
+    }
+
+    #open_calendar {
+        display: block !important;
+        border: 1px solid grey;
+        border-radius: 5px;
+        padding: 3px;
+    }
+
+    .hide_calendar {
+        display: none
+    }
+
+    .calendar_div {
+        width: 100% !important;
+        margin: 5px auto !important;
+    }
+
+    .top_section {
+        display: block !important;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    #daily_statistics {
+        width: 90%;
+        margin: auto;
+    }
+
+    .overall_statistics_div {
+        width: 45%;
+    }
+
+    .calendar_div {
+        width: 50%;
+        margin: 40px auto 0;
+    }
+
+    .search_btn {
+        border: 1px solid grey;
+        border-radius: 5px;
+        padding: 4.5px;
+        min-width: 40px;
+        margin-left: 3px;
+    }
+
+    .main_senator_pg {
+        border: 1px solid grey;
+        border-radius: 5px;
+        padding: 4.5px;
+        min-width: 40px;
+        margin-left: 3px;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    #daily_statistics {
+        justify-content: space-around;
+        width: 97%;
+        margin: auto;
+    }
+
+    .search_btn {
+        border: 1px solid grey;
+        border-radius: 5px;
+        padding: 7px;
+        min-width: 40px;
+        margin-left: 3px;
+    }
+
+    .main_senator_pg {
+        border: 1px solid grey;
+        border-radius: 5px;
+        padding: 7px;
+        min-width: 40px;
+        margin-left: 3px;
+    }
+}
+
+@media only screen and (max-width: 1250px) {
+    .overall_statistics_div {
+        width: 45%;
+    }
+
+    .calendar_div {
+        width: 53%;
+        margin: 40px auto 0;
+    }
+}
+
+@media only screen and (min-width: 1250px) {
+    .overall_statistics_div {
+        width: 60%;
+    }
+
+    .calendar_div {
+        width: 35%;
+        max-width: 350px;
+        margin: 60px auto 0;
+    }
+}
+
+.top_section {
+    display: flex
+}
+
+.explore_btn {
+    background-color: rgb(38, 166, 154);
+    color: white !important;
+    padding: 4px;
+    border-radius: 5px;
+    margin: 2px 7px 2px 0;
+}
+
+#open_calendar {
+    display: none
+}
+
+#date_selected_from_calendar {
+    display: none
+}
+
+.contents_div h2 {
+    text-align: center;
+    margin-bottom: 0
+}
+
+input {
+    margin-bottom: 5px;
+}
+
+#graph_div {
+    display: flex;
+    flex-flow: row wrap;
+    border-radius: 10px;
+    margin: 0px auto 20px auto;
+}
+
+.hoverable:hover {
+    cursor: pointer;
+}
+
+.chart-container {
+    border-radius: 10px;
+    margin: 18px auto 18px auto !important;
+}
+
+.chart-container-summary {
+    height: 300px;
+    width: 65vw;
+    border-radius: 10px;
+    margin: 18px auto 18px auto !important;
+}
+
+@media only screen and (min-width: 2000px) {
+    .chart-container-summary {
+        width: 50vw;
+    }
+}
+
+.dark_mode #previous, .dark_mode #next {
+    filter: invert(1);
+    background: none;
+}
+
+.click_table_info {
+    float: right;
+    margin-top: 14px;
+}
+
+.in_a_nutshell {
+    width: 100px;
+    padding: 5px;
+}
+
+#daily_statistics {
+    display: flex;
+    padding: 5px 0px 5px 10px;
+    background: #EAE9E9;
+    border-radius: 10px;
+    border: 2px solid gray;
+    flex-flow: row wrap;
+}
+
+.dark_mode #daily_statistics {
+    background: #1c1f21
+}
+
+.in_a_nutshell h2 {
+    margin: 0;
+    text-align: left;
+}
+
+#price_chart {
+    height: 300px;
+    margin: 10px auto;
+}
+
+.datalist_input {
+    border: 1px solid grey !important;
+    border-radius: 5px;
+}
+
+.dark_mode .main_senator_pg {
+    background: #ccc;
+    color: black;
+}
+
+.dark_mode .main_senator_pg:hover {
+    background: rgb(38, 166, 154);
+}

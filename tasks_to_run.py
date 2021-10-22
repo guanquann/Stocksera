@@ -6,9 +6,9 @@ import os
 import sqlite3
 from pathlib import Path
 import scheduled_tasks.create_database as create_database
-import scheduled_tasks.reddit.get_reddit_trending_stocks.scrape_reddit as scrape_reddit_stocks
-import scheduled_tasks.reddit.get_reddit_trending_stocks.scrape_reddit_discussion_thread as scrape_discussion_thread
-import scheduled_tasks.reddit.get_reddit_trending_crypto as scrape_reddit_crypto
+import scheduled_tasks.reddit.stocks.scrape_trending_posts as scrape_reddit_stocks
+import scheduled_tasks.reddit.stocks.scrape_discussion_thread as scrape_discussion_thread
+import scheduled_tasks.reddit.crypto.scrape_trending_posts as scrape_reddit_crypto
 import scheduled_tasks.reddit.get_subreddit_count as get_subreddit_count
 import scheduled_tasks.reddit.buy_trending_tickers as buy_trending_tickers
 import scheduled_tasks.get_twitter_followers as get_twitter_followers

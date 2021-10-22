@@ -102,7 +102,6 @@ interested_accounts = {
     "CSCO": "Cisco",
     "JNJ": "JNJNews",
     "PFE": "pfizer_news",
-    "U": "unity3d",
     "ZM": "Zoom",
     "SPOT": "Spotify",
     "MSTR": "MicroStrategy",

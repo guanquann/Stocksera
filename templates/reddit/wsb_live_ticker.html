@@ -1,0 +1,101 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | WSB Live ({{ticker_selected}}){% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/reddit/wsb_live.css' %}">
+<script src="{% static 'javascript/reddit/wsb_live.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}load_ticker_graph();load_ticker_change(){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/wsb_live/">WSB Live</a> /
+    <a href="/wsb_live/ticker/?quote={{ticker_selected}}">{{ticker_selected}}</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('reddit')</script>
+    <div class="instructions">
+        <h2>Live Wallstreetbets Analysis</h2>
+        <p>This page tracks & analysis trending tickers realtime. Updates every 10 minutes.</p>
+        <div class="subscribe_email_div"><a class="subscribe_email" href="/subscribe" target="_blank">Subscribe to Free WSB Notifications</a></div>
+        <form action="/wsb_live_ticker" method="GET" autocomplete="off">
+            <div class="search_bar">
+                <input type="text" name="quote" value="{{ticker_selected}}" class="ticker_input" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                    <span class="fa fa-search"></span>
+                </button>
+            </div>
+
+            <a href="/wsb_live/" class="overview_btn">Overview</a>
+        </form>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent" id="more_info_div">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}">Analysis</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}">Options</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}">Short Vol</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}">FTD</a></div>
+        </div>
+    </div>
+
+    <div class="contents_div">
+        <div id="ticker_basic_stats"></div>
+        <div id="ssr_msg"></div>
+
+        <div style="display: flex; justify-content: center">
+            <div class="comparison">
+                <h2 class="comparison_title">Mentions 24H</h2>
+                <div class="recent">{{recent_mention}}</div>
+                <div class="change_div">
+                    <div class="prev">{{previous_mention}}</div>
+                    <div class="change"></div>
+                </div>
+            </div>
+            <div class="comparison">
+                <h2 class="comparison_title">Sentiment 24H</h2>
+                <div class="recent">{{recent_snt}}</div>
+                <div class="change_div">
+                    <div class="prev">{{previous_snt}}</div>
+                    <div class="change"></div>
+                </div>
+            </div>
+            <div class="comparison">
+                <h2 class="comparison_title">No. Calls 24H</h2>
+                <div class="recent">{{recent_calls}}</div>
+                <div class="change_div">
+                    <div class="prev">{{previous_calls}}</div>
+                    <div class="change"></div>
+                </div>
+            </div>
+            <div class="comparison">
+                <h2 class="comparison_title">No. Puts 24H</h2>
+                <div class="recent">{{recent_puts}}</div>
+                <div class="change_div">
+                    <div class="prev">{{previous_puts}}</div>
+                    <div class="change"></div>
+                </div>
+            </div>
+        </div>
+        <div id="ticker_chart" class="chart"></div>
+        <div style="display:none">
+            {{mentions_df|safe}}
+        </div>
+    </div>
+{% endblock %}
+
+{% block bottom_script %}
+<script type="text/javascript">
+<!--Hack to convert python variables to javascript-->
+var None = "N/A", False = false; True = true;
+var information = {{information|safe}};
+show_ticker_price(information)
+get_ssr(information)
+</script>
+{% endblock %}

@@ -1,0 +1,53 @@
+@media only screen and (max-width: 900px) {
+    .table_title {
+        text-align: center;
+        font-size: 15px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    .table_title {
+        text-align: center;
+        font-size: large;
+        font-weight: bold;
+        margin-bottom: 1px 0 5px 0;
+    }
+}
+
+.previous_stats_div {
+    display: flex;
+    justify-content: space-around;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px
+}
+
+.previous_stats_div > :first-child {
+    color: green;
+}
+
+.previous_stats_div > :nth-child(2) {
+    color: red;
+}
+
+input {
+    margin-bottom: 5px;
+}
+
+.submit_btn:hover {
+    cursor: auto;
+}
+
+table th {
+    cursor: pointer;
+}
+
+table .th-sort-asc::after {
+    content: "\25b4";
+}
+
+table .th-sort-desc::after {
+    content: "\25be";
+}

@@ -1,0 +1,46 @@
+.card {
+    width: fit-content;
+    border: 1px solid #ccc;
+    border-radius: .25rem;
+}
+
+.card-header:first-child {
+    border-radius: calc(.25rem - 1px) calc(.25rem - 1px) 0 0;
+}
+
+.card-header {
+    margin: 10px;
+}
+
+#calendar td, #calendar th {
+    text-align: center;
+}
+
+#calendar td, #calendar th {
+    padding: .75rem;
+    vertical-align: top;
+}
+
+.bg-info {
+    background-color: rgb(38, 166, 154) !important
+}
+
+.bg-today {
+    color: orange;
+    font-weight: bold;
+    font-size: larger;
+}
+
+.bg-selected {
+    text-decoration: underline;
+    font-weight: bold;
+    font-size: larger;
+}
+
+#calendar:last-child td {
+
+}
+
+#month, #year {
+    padding: 4px;
+}

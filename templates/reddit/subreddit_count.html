@@ -1,0 +1,206 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Subreddit{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/reddit/subreddit_count.css' %}">
+<script>
+    var subscribers_list = {{subscribers|safe}}
+</script>
+<script src="{% static 'javascript/reddit/subreddit_count.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}subreddit_count(1){% endblock %}
+ 
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/subreddit_count">Subreddit Statistics</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('reddit')</script>
+    <div class="instructions">
+        <h2>Subreddit Statistics</h2>
+        <p>
+            Identify your favourite subreddit statistics over time. Data is updated once daily at 8PM UTC.
+            <br><br>
+            As this is meant to track stocks discussion & activity on Reddit, <b>stocks-related subreddit are preferred</b> (e.g: r/AMD_Stock instead of r/AMD).
+            <br><br>
+            We have now included data of more than 60 subreddits.
+            If you have a subreddit to share, click <a href="mailto:stocksera@gmail.com" target="_blank">here</a> to inform us.
+            Do note that not all subreddits suggested will be included. The post frequency and number of redditors in that subreddit will be considered.
+            <br><br>
+            Note: If the number of active users in the subreddit is unusually low, it might be a bug on Reddit side. There is nothing we can do about it.
+            <div class="subscribe_email_div"><a class="subscribe_email" href="/subscribe" target="_blank">Subscribe to Free WSB Notifications</a></div>
+        </p>
+        <form action="" method="GET" autocomplete="off">
+            <div class="search_bar">
+                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                    <span class="fa fa-search"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="/wsb_live">WSB Live</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis">Trending Stocks</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis/?subreddit=cryptocurrency">Trending Crypto</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reddit_etf' %}">WSB ETF</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'subreddit_count' %}">Subreddit Stats</a></div>
+        </div>
+    </div>
+
+    <div class="contents_div">
+        <div class="date_selector">
+            <button name="date_range" onclick="btn_selected(this); subreddit_count(1)" class="selected">1 Month</button>
+            <button name="date_range" onclick="btn_selected(this); subreddit_count(3)">3 Months</button>
+            <button name="date_range" onclick="btn_selected(this); subreddit_count(48)">Max</button>
+        </div>
+
+        <h2 class="">% Growth in users over time</h2>
+        <div class="chart-container">
+            <canvas id="growth_chart"></canvas>
+        </div>
+
+        <h2>% Active Users</h2>
+        <div class="active_users_div">Data is collected from 2021-05-19 onwards, 1H before market open hours daily.</div>
+        <div class="chart-container">
+            <canvas id="active_chart"></canvas>
+        </div>
+
+        <div class="subreddit_intro">
+            <div><img src="{% static 'images/subreddit_icon/wallstreetbets.png' %}"></div>
+            <div class="main_div">
+                <div>
+                    <div class="lg">wallstreetbets</div>
+                    <div class="sm">r/wallstreetbets
+                        <div class="explore"><a href="https://www.reddit.com/r/wallstreetbets" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="wsb_diff"></div>
+                </div>
+            </div>
+        </div>
+        <div class="subreddit_summary">
+            <div></div>
+        </div>
+        <div class="chart-container">
+            <canvas id="wsb_chart"></canvas>
+        </div>
+
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/stocks.png' %}">
+            <div class="main_div">
+            <div>
+                <div class="lg">Stocks - Investing and trading for all</div>
+                <div class="sm">r/stocks
+                    <div class="explore"><a href="https://www.reddit.com/r/stocks" target="_blank">Explore ></a></div>
+                </div>
+            </div>
+            </div>
+            <div class="subreddit_diff">
+                <div id="stocks_diff"></div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="stocks_chart"></canvas>
+        </div>
+
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/superstonk.png' %}">
+            <div class="main_div">
+                <div>
+                    <div class="lg">🦍💎Superstonk✋🚀</div>
+                    <div class="sm">r/Superstonk
+                        <div class="explore"><a href="https://www.reddit.com/r/superstonk" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="superstonk_diff"></div>
+                </div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="superstonk_chart"></canvas>
+        </div>
+
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/amc.png' %}">
+            <div class="main_div">
+                <div>
+                    <div class="lg">amcstock</div>
+                    <div class="sm">r/amcstock
+                        <div class="explore"><a href="https://www.reddit.com/r/amcstock" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="amc_diff"></div>
+                </div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="amc_chart"></canvas>
+        </div>
+
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/options.png' %}">
+            <div class="main_div">
+                <div>
+                    <div class="lg">Options</div>
+                    <div class="sm">r/Options
+                        <div class="explore"><a href="https://www.reddit.com/r/options" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="options_diff"></div>
+                </div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="options_chart"></canvas>
+        </div>
+
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/pennystocks.png' %}">
+            <div class="main_div">
+                <div>
+                    <div class="lg">Pennystocks</div>
+                    <div class="sm">r/pennystocks
+                        <div class="explore"><a href="https://www.reddit.com/r/pennystocks" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="pennystocks_diff"></div>
+                </div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="pennystocks_chart"></canvas>
+        </div>
+
+        <div class="subreddit_intro">
+            <img src="{% static 'images/subreddit_icon/crypto_currency.png' %}">
+            <div class="main_div">
+                <div>
+                    <div class="lg">Cryptocurrency News & Discussion</div>
+                    <div class="sm">r/CryptoCurrency
+                        <div class="explore"><a href="https://www.reddit.com/r/CryptoCurrency" target="_blank">Explore ></a></div>
+                    </div>
+                </div>
+                <div class="subreddit_diff">
+                    <div id="crypto_diff"></div>
+                </div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="crypto_chart"></canvas>
+        </div>
+    </div>
+{% endblock %}

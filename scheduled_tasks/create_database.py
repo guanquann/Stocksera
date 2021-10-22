@@ -85,11 +85,6 @@ def database():
                "puts TEXT, "
                "date_updated TEXT )")
 
-    db.execute("CREATE table IF NOT EXISTS wsb_change ("
-               "ticker TEXT, "
-               "mentions INTEGER, "
-               "change FLOAT) ")
-
     db.execute("CREATE table IF NOT EXISTS wsb_yf ("
                "ticker TEXT, "
                "mkt_cap TEXT, "
@@ -99,10 +94,28 @@ def database():
                "difference_52w_low FLOAT, "
                "mentions INTEGER )")
 
-    db.execute("CREATE table IF NOT EXISTS wsb_word_cloud ("
-               "word TEXT, "
+    db.execute("CREATE table IF NOT EXISTS crypto_trending_24H ("
+               "ticker TEXT, "
                "mentions INTEGER, "
+               "sentiment FLOAT, "
                "date_updated TEXT )")
+
+    db.execute("CREATE table IF NOT EXISTS crypto_trending_hourly ("
+               "ticker TEXT, "
+               "mentions INTEGER, "
+               "sentiment FLOAT, "
+               "date_updated TEXT )")
+
+    for i in ["wsb", "crypto"]:
+        db.execute("CREATE table IF NOT EXISTS {}_change ("
+                   "ticker TEXT, "
+                   "mentions INTEGER, "
+                   "change FLOAT) ".format(i))
+
+        db.execute("CREATE table IF NOT EXISTS {}_word_cloud ("
+                   "word TEXT, "
+                   "mentions INTEGER, "
+                   "date_updated TEXT )".format(i))
 
     db.execute("CREATE table IF NOT EXISTS reddit_etf ("
                "ticker TEXT, "
@@ -144,15 +157,11 @@ def database():
 
     db.execute("CREATE table IF NOT EXISTS short_interest ("
                "ticker TEXT, "
-               "company TEXT, "
-               "exchange TEXT, "
-               "previous_close FLOAT, "
-               "one_day_change FLOAT, "
-               "short_int TEXT, "
-               "float TEXT, "
-               "outstanding_shares TEXT, "
-               "market_cap INTEGER, "
-               "industry TEXT )")
+               "date TEXT, "
+               "short_interest INTEGER, "
+               "average_vol INTEGER, "
+               "days_to_cover FLOAT, "
+               "percent_float_short FLOAT)")
 
     db.execute("CREATE table IF NOT EXISTS low_float ("
                "ticker TEXT, "
@@ -165,15 +174,6 @@ def database():
                "short_int TEXT, "
                "market_cap INTEGER, "
                "industry TEXT )")
-
-    db.execute("CREATE table IF NOT EXISTS short_volume ("
-               "Date TEXT, "
-               "ticker TEXT, "
-               "short_vol INTEGER, "
-               "short_exempt_vol INTEGER, "
-               "total_vol INTEGER, "
-               "percent TEXT, "
-               "UNIQUE('ticker', 'reported_date','short_vol','total_vol','percent'))")
 
     db.execute("CREATE table IF NOT EXISTS reverse_repo ("
                "record_date TEXT, "
@@ -237,7 +237,8 @@ def database():
                "Cost FLOAT, "
                "Shares INTEGER, "
                "Value INTEGER, "
-               "SharesLeft INTEGER )")
+               "SharesLeft INTEGER,"
+               "URL TEXT )")
 
     db.execute("CREATE table IF NOT EXISTS latest_insider_trading ("
                "Ticker TEXT, "
@@ -250,6 +251,7 @@ def database():
                "Value INTEGER, "
                "SharesLeft INTEGER,"
                "DateFilled TEXT, "
+               "URL TEXT, "
                "UNIQUE ('Ticker', 'Name', 'Relationship', 'TransactionDate', 'TransactionType', 'Cost', 'Shares', "
                "'Value', 'SharesLeft', 'DateFilled') )")
 
@@ -268,11 +270,16 @@ def database():
                "ticker5 TEXT, "
                "ticker6 TEXT )")
 
-    db.execute("CREATE table IF NOT EXISTS max_pain ("
+    db.execute("CREATE table IF NOT EXISTS stocktwits_trending ("
+               "rank INTEGER, "
                "symbol TEXT, "
-               "date_updated TEXT, "
-               "max_pain FLOAT ,"
-               "UNIQUE ('symbol', 'date_updated', 'max_pain') )")
+               "date_updated TEXT )")
+
+    # db.execute("CREATE table IF NOT EXISTS max_pain ("
+    #            "symbol TEXT, "
+    #            "date_updated TEXT, "
+    #            "max_pain FLOAT ,"
+    #            "UNIQUE ('symbol', 'date_updated', 'max_pain') )")
 
     print("Successfully created/updated database")
 

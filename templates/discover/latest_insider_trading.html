@@ -1,0 +1,86 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Latest Insider{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/stock/sec_fillings.css' %}">
+<link rel="stylesheet" href="{% static 'style/discover/latest_insider_trading.css' %}">
+<script src="{% static 'javascript/discover/latest_insider_trading.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}load_graph();load_table();{% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/market_overview">Discover</a> /
+    <a href="/latest_insider">Recent Top Insider Trading</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('discover')</script>
+    <div class="instructions">
+        <h2>Recent Top Insider Trading</h2>
+        <p>
+            This section shows the top insider trading done in the last 1 month.
+            <i><b>There are many possible reasons to sell a stock, but only one reason to buy.</b></i>
+        </p>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'latest_insider' %}">Latest Insider</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ark_trades' %}">ARK Fund</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'amd_xlnx_ratio' %}">AMD-XLNX Ratio</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_interest' %}">Short Interest</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'beta' %}">Beta</a></div>
+        </div>
+    </div>
+
+    <div class="contents_div">
+        <h2 class="header">Largest Net Insider Trading</h2>
+        <div id='top_insider'></div>
+
+        <br>
+        <h2 class="header">% of Market Cap</h2>
+        <div id='mkt_cap'></div>
+
+        <br>
+        <h2 class="header ticker_insider_header">Insider Trading of AAPL</h2>
+
+        <form action="/insider_trading" method="GET" autocomplete="off" target="Insider Trading" onsubmit="change_header_description()">
+            <div class="search_bar">
+                <input type="text" name="quote" value="AAPL" class="ticker_input" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="submit">
+                    <span class="fa fa-search"></span>
+                </button>
+            </div>
+        </form>
+
+        <iframe src="/insider_trading/?quote=AAPL" name="Insider Trading" onload="expand_iframe(this)"></iframe>
+
+        <br><br>
+        <h2 class="header">Recent Filled Fillings by Date</h2>
+        <div class="search_bar">
+            <input type="text" class="ticker_input" placeholder="Ticker:" autocomplete="off" onkeyup="searchFun()" id="ticker_name" style="margin-bottom: 5px;">
+            <button class="submit_btn" type="button">
+                <span class="fa fa-search"></span>
+            </button>
+        </div>
+        <span class="click_table_info"><b>Click on ticker symbol for more info.</b></span>
+        <div class="scrollable_div" style="max-height: 500px">
+            {{recent_activity|safe}}
+        </div>
+
+        <br>
+        <h2 class="header">Last 30 Days Largest Net Insider Trading</h2>
+        <span class="click_table_info"><b>Click on ticker symbol for more info.</b></span>
+        <div class="scrollable_div">
+            {{insider_analysis|safe}}
+        </div>
+
+        <p>Data is from <a href="https://finviz.com/insidertrading.ashx" target="_blank">finviz.com</a></p>
+    </div>
+{% endblock %}

@@ -1,0 +1,23 @@
+.table_div {
+    overflow-x: auto;
+    overflow-y: auto;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+th:hover {
+    cursor: pointer;
+}
+
+.th-sort-asc::after {
+    content: "\25b4";
+}
+
+.th-sort-desc::after {
+    content: "\25be";
+}
+
+.click_table_info {
+    float: right;
+    margin-top: 14px;
+}

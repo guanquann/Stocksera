@@ -1,0 +1,61 @@
+
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | FTD {% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/stock/ftd.css' %}">
+<script src="{% static 'javascript/stock/ftd.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}display_top_ftd_table();{% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/ticker/">Analysis</a> /
+    <a href="/ticker/options/?failure_to_deliver={{ticker_selected}}">Top FTD</a>
+{% endblock %}
+
+{% block main_content %}
+<script>highlight_selected_nav('stocks_analysis')</script>
+<div>
+    <div class="instructions">
+        <h2>Top Failure to Deliver</h2>
+        <p>
+            Failure to Deliver (FTD) data is retrieved from the US Securities and Exchange Commission (SEC).
+            <br><br>
+            The table below shows tickers with relatively and consistently high FTD for the latest FTD data released.
+            <br><br>
+            Criteria: FTD Quantity > 500000 daily for 3 or more days within 2 weeks.
+        </p>
+        <form action="" method="GET" autocomplete="off">
+            <div class="search_bar">
+                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                    <span class="fa fa-search"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}">Analysis</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'financial' %}">Financials</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'options' %}">Options</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_volume' %}">Short Vol</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'failure_to_deliver' %}">FTD</a></div>
+        </div>
+    </div>
+
+    <div class="contents_div">
+        <div class="scrollable_div">
+            {{top_ftd|safe}}
+        </div>
+        <p>Data from: <a href="https://www.sec.gov/data/foiadocsfailsdatahtm" target="_blank">sec.gov</a></p>
+    </div>
+</div>
+{% endblock %}

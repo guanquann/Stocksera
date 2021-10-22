@@ -1,0 +1,125 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Options{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/stock/options.css' %}">
+{% endblock %}
+
+{% block onload_properties%}restore_dark_mode();display_data();update_table();options_summary(latest_price);draw_max_pain(strike_list, call_loss_list, put_loss_list);draw_open_interest_and_volume();{% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/ticker/?quote={{ticker_selected}}">Analysis</a> /
+    <a href="/ticker/options/?quote={{ticker_selected}}">Options [{{ticker_selected}}]</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('stocks_analysis')</script>
+    <div class="instructions">
+        <h2>Options</h2>
+        <p>View options chain of your favourite ticker and get the max pain price of the week! Data is updated real time. </p>
+        <form action="" method="GET" autocomplete="off" onsubmit="reset_dropdown()">
+            <div class="search_bar">
+                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                    <span class="fa fa-search"></span>
+                </button>
+            </div>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}">Analysis</a></div>
+<!--            <div class="more_info_div"><a class="more_info_btn" href="{% url 'financial' %}?quote={{ticker_selected}}">Financials</a></div>-->
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'options' %}?quote={{ticker_selected}}">Options</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}">Short Vol</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}">FTD</a></div>
+        </div>
+    </div>
+
+    <div id="error_msg" style="display:none;" class="instructions {{error}}">
+        <p>{{error_msg}}</p>
+    </div>
+
+    <div class="contents_div">
+        <div id="ticker_basic_stats"></div>
+        <div id="ssr_msg"></div>
+
+        <div class="navigation_menu">
+            <div id="date_dropdown">
+                <select name="date" onchange="this.form.submit();this.disabled=true;">
+                    <option value="{{date_selected}}">Expiry Date: {{date_selected}}</option>
+                    {% for date in options_dates %}
+                        <option value="{{date}}">{{date}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="options_summary">
+            <div class="header">{{date_selected}}</div>
+        </div>
+
+        <div id="graph_section">
+            <h2>Max Pain</h2>
+            <div class="chart-container">
+                <canvas id="max_pain_chart"></canvas>
+            </div>
+            <div class="max_pain_div">Max Pain: ${{max_pain}}</div>
+
+            <h2>Volume</h2>
+            <div class="chart-container">
+                <canvas id="volume_chart"></canvas>
+            </div>
+
+            <h2>Open Interest</h2>
+            <div class="chart-container">
+                <canvas id="oi_chart"></canvas>
+            </div>
+        </div>
+
+        <h2>Options Table</h2>
+
+        <div>
+            {{merge|safe}}
+        </div>
+
+        <div style="margin-top: 30px">
+            <p><b>Related tickers that you might be interested:</b></p>
+            {% for i in related_tickers %}
+                <a href="/ticker/options/?quote={{i}}" class="related_tickers">{{i}}</a>
+            {% endfor %}
+        </div>
+        <br>
+    </div>
+</form>
+{% endblock %}
+
+{% block bottom_script %}
+<script src="{% static 'javascript/stock/options.js' %}"></script>
+<script type="text/javascript">
+<!--Hack to convert python variables to javascript-->
+var None = "N/A", False = false; True = true;
+var information = {{information|safe}};
+show_ticker_price(information)
+get_ssr(information)
+
+var call_loss_list = {{ call_loss_list|safe }};
+var put_loss_list = {{ put_loss_list|safe }};
+var tr = document.getElementsByTagName("table")[0].querySelectorAll("tr");
+var strike_list = [];
+var calls_itm = 0, calls_otm = 0, puts_itm = 0, puts_otm = 0;
+var next_itm_call_oi = 0, next_itm_call_strike = 0;
+var latest_price = information["regularMarketPrice"]
+
+for (row=1; row<=call_loss_list.length; row++) {
+    var td = tr[row].querySelectorAll("td");
+    strike_price = td[2].innerHTML;
+    strike_list.push(strike_price.replace("$", ""));
+}
+</script>
+{% endblock %}

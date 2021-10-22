@@ -1,0 +1,52 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Short Interest{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/discover/short_interest.css' %}">
+<script src="{% static 'javascript/discover/short_interest.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}update_table(){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/market_overview">Discover</a> /
+    <a href="/short_interest">Short Interest</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('discover')</script>
+    <div class="instructions">
+        <h2>High Short Interest</h2>
+        <p>Short interest (SI) is the number of shares that have been sold short but have not yet been covered.
+            The higher the SI, the higher probability of short squeezing as shortable shares reduce in number.
+            Stocks with high SI are highly volatile. Data is updated 2 times a month.</p>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'latest_insider' %}">Latest Insider</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ark_trades' %}">ARK Fund</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'amd_xlnx_ratio' %}">AMD-XLNX Ratio</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'short_interest' %}">Short Interest</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'beta' %}">Beta</a></div>
+        </div>
+    </div>
+
+    <div class="contents_div">
+        <div class="search_bar">
+            <input type="text" class="ticker_input" placeholder="Ticker:" onkeyup="searchTicker(this)" autocomplete="off">
+            <button class="submit_btn" type="button">
+                <span class="fa fa-search"></span>
+            </button>
+        </div>
+        <span class="click_table_info"><b>Click on ticker for more info</b></span>
+        <div class="table_div" style="display: none">
+            {{ df_high_short_interest|safe }}
+        </div>
+    </div>
+{% endblock %}

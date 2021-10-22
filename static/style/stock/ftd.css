@@ -1,0 +1,38 @@
+.chart-container {
+    height:55vh;
+    width:98%;
+    max-height:250px;
+}
+
+.instructions:first-child a {
+    text-decoration: underline;
+}
+
+.date_selector button {
+    border: 0px;
+    border-bottom: 2px solid #858585;
+    color: #858585;
+    padding: 0 2px 0 2px;
+    margin: 0 5px 0 5px
+}
+
+.selected {
+    border-bottom: 2px solid rgb(38, 166, 154) !important;
+    color: rgb(38, 166, 154) !important;
+}
+
+.dark_mode .date_selector button {
+    background-color: transparent;
+    color: #ccc;
+}
+
+.dark_mode .selected {
+    border-bottom: 2px solid #rgb(38, 166, 154) !important;
+    color: #rgb(38, 166, 154) !important;
+}
+
+.ftd_ticker_link {
+    font-weight:bold;
+    color: inherit !important;
+    text-decoration: underline;
+}

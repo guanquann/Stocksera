@@ -75,7 +75,7 @@
 
     .switch {
         margin-left: 32px;
-        top: 292px;
+        top: 317px;
         position: fixed;
         display: inline-block;
         width: 33px;
@@ -103,14 +103,14 @@
     .sun_icon {
         width: 13px;
         position: fixed;
-        top: 293px;
+        top: 318px;
         margin-left: 16px;
     }
 
     .night_icon {
         width: 11px;
         position: fixed;
-        top: 294px;
+        top: 319px;
         margin-left: 68px;
     }
 
@@ -378,6 +378,10 @@ input:focus + .slider {
 
 .dark_mode .sun_icon, .dark_mode .night_icon {
     filter: invert(1);
+}
+
+.hamburger:hover {
+    cursor: pointer;
 }
 
 .hamburger_div {

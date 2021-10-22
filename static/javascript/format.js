@@ -38,7 +38,7 @@ function top_right_nav(elem) {
     }
     else {
         elem.classList.add("opened")
-        nav_bar_div.style.height = "280px";
+        nav_bar_div.style.height = "305px";
         nav_bar_div.style.width = "100%";
         nav_bar_div.querySelector("ul").style.display = "block"
         dark_mode_btn.style.display = "block"
@@ -51,17 +51,15 @@ function activate_dark_mode() {
     if (document.getElementById("dark_mode").checked == true) {
         document.getElementsByTagName("body")[0].classList.add("dark_mode");
         localStorage.setItem("mode", "dark");
-        if (iframe.length > 1) {
-            for (i=1; i<iframe.length; i++) {
-                if (typeof(iframe[i].contentDocument) != null) {
-                    try {
-                        iframe[i].contentDocument.getElementsByTagName("body")[0].classList.add("dark_mode")
-                    }
-                    catch {
-                        console.log("error")
-                    }
-
+        for (i=iframe.length-1; i>=0; i--) {
+            if (typeof(iframe[i].contentDocument) != null) {
+                try {
+                    iframe[i].contentDocument.getElementsByTagName("body")[0].classList.add("dark_mode")
                 }
+                catch {
+                    console.log("error")
+                }
+
             }
         }
         if (document.querySelector("#intro_images") != null) {
@@ -74,15 +72,13 @@ function activate_dark_mode() {
     else {
         document.getElementsByTagName("body")[0].classList.remove("dark_mode");
         localStorage.setItem("mode", "light");
-        if (iframe.length > 1) {
-            for (i=1; i<iframe.length; i++) {
-                if (typeof(iframe[i].contentDocument) != null) {
-                    try {
-                        iframe[i].contentDocument.getElementsByTagName("body")[0].classList.remove("dark_mode")
-                    }
-                    catch {
-                        console.log("error")
-                    }
+        for (i=iframe.length-1; i>=0; i--) {
+            if (typeof(iframe[i].contentDocument) != null) {
+                try {
+                    iframe[i].contentDocument.getElementsByTagName("body")[0].classList.remove("dark_mode")
+                }
+                catch {
+                    console.log("error")
                 }
             }
         }

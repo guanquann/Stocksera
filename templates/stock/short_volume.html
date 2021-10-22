@@ -1,0 +1,102 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Short Volume{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/stock/short_volume.css' %}">
+<script src="{% static 'javascript/stock/short_volume.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}display_data();display_table();short_vol_graph(6){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/ticker/?quote={{ticker_selected}}">Analysis</a> /
+    <a href="/ticker/options/?short_volume={{ticker_selected}}">Short Volume [{{ticker_selected}}]</a>
+{% endblock %}
+
+{% block main_content %}
+<script>highlight_selected_nav('stocks_analysis')</script>
+<div>
+    <div class="instructions">
+        <h2>Short Volume</h2>
+        <p>
+            Short Volume measures the number of shares that have been shorted,  while Short Interest represents the number of shorted shares that have yet to be closed out or covered.
+            <br><br>
+            <b>Do note that the total and short volume data are limited. They do not represent the actual total volume as these are the volume that are reported to Finra.</b>
+            <br><br>
+            Highest Short Volume Today (Min. 3M Short Vol.):
+            {% for i in highest_short_vol %}
+                <a href="/ticker/short_volume/?quote={{i}}" class="highest_short_vol" target="_blank">{{i}}</a>
+            {% endfor %}
+            <a href="/ticker/short_volume/?quote=top_short_volume" class="highest_short_vol" target="_blank">View More</a>
+        </p>
+        <form action="" method="GET" autocomplete="off">
+            <div class="search_bar">
+                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                    <span class="fa fa-search"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}">Analysis</a></div>
+<!--            <div class="more_info_div"><a class="more_info_btn" href="{% url 'financial' %}?quote={{ticker_selected}}">Financials</a></div>-->
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}">Options</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'short_volume' %}?quote={{ticker_selected}}">Short Vol</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}">FTD</a></div>
+        </div>
+    </div>
+
+    <div id="error_msg" style="display:none;" class="instructions {{error}}">
+        <p>There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).</p>
+    </div>
+
+    <div class="contents_div">
+        <div id="ticker_basic_stats"></div>
+        <div id="ssr_msg"></div>
+
+        <div id="summary"></div>
+
+        <div class="date_selector">
+            <button name="date_range" id="1 Months" onclick="btn_selected(this); short_vol_graph(1)">1 Months</button>
+            <button name="date_range" id="3 Months" onclick="btn_selected(this); short_vol_graph(3)">3 Months</button>
+            <button name="date_range" id="6 Months" onclick="btn_selected(this); short_vol_graph(6)" class="selected">6 Months</button>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="vol_chart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="price_chart"></canvas>
+        </div>
+
+        <form action="" method="GET" autocomplete="off">
+            <button type="submit" name="download_csv" class="download_btn"><u>➥ Download</u></button>
+            <input name="quote" value="{{ticker_selected}}" style="display:none">
+        </form>
+
+        <div class="scrollable_div" style="max-height: 800px">
+            {{ short_volume_data|safe }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block bottom_script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.min.js"></script>
+<script>
+    <!--Hack to convert python variables to javascript-->
+    var None = "N/A", False = false; True = true;
+    var information = {{information|safe}};
+    show_ticker_price(information)
+    get_ssr(information)
+</script>
+{% endblock %}

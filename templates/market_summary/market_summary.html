@@ -1,0 +1,164 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Overview {% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/market_summary/market_summary.css' %}">
+<script src="{% static 'javascript/market_summary/market_summary.js' %}"></script>
+<script>
+    function load_td_graph() {
+        mapping_dict = {"S&P 500": "AMEX:SPY", "Nasdaq 100": "QQQ", "Cryptocurrency": "BTCUSD"}
+        var ticker = mapping_dict["{{title}}".replace(/&amp;/g, '&')]
+        if (localStorage.getItem("mode") == "dark") {
+            var graph_mode = "dark";
+        }
+        else {
+            var graph_mode = "light"
+        }
+
+        new TradingView.widget(
+        {
+            "autosize": true,
+            "symbol": ticker,
+            "interval": "D",
+            "timezone": "Etc/UTC",
+            "theme": graph_mode,
+            "style": "1",
+            "locale": "en",
+            "toolbar_bg": "#f1f3f6",
+            "enable_publishing": false,
+            "allow_symbol_change": false,
+            "hide_top_toolbar": true,
+            "studies": [
+                "MASimple@tv-basicstudies",
+                "MASimple@tv-basicstudies",
+            ],
+            "details": true,
+            "container_id": "ticker_chart"
+        }
+        );
+    }
+</script>
+<script>
+    function load_twitter_embed() {
+        if (localStorage.getItem("mode") == "dark") {
+            var graph_mode = "dark";
+        }
+        else {
+            var graph_mode = "light"
+        }
+        document.getElementById("twitter_embed").innerHTML += `<a class="twitter-timeline" data-theme="${graph_mode}" href="https://twitter.com/stocksera_bot/lists/1448875408477212675?ref_src=twsrc%5Etfw">A Twitter List by stocksera_bot</a>`
+    }
+</script>
+{% endblock %}
+
+{% block onload_properties%}load_heatmap('{{title}}'){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/market_summary/">Market Summary</a>
+{% endblock %}
+
+{% block main_content %}
+<script>highlight_selected_nav('market_summary')</script>
+<div>
+    <div class="instructions">
+        <h2>Market Summary</h2>
+        <p style="margin: 0">Summary of the performance of the stocks and cryptocurrency market.</p>
+        <div class="more_info_div_parent" id="more_info_div">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=snp500">S&P 500</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=nasdaq100">Nasdaq 100</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=crypto">Cryptocurrency</a></div>
+        </div>
+    </div>
+
+    <div class="contents_div">
+        <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+        <div class="tradingview-widget-copyright"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+            {
+                "symbols": [
+                    {
+                        "proName": "FOREXCOM:SPXUSD",
+                        "title": "S&P 500"
+                    },
+                    {
+                        "proName": "FOREXCOM:NSXUSD",
+                        "title": "Nasdaq 100"
+                    },
+                    {
+                        "proName": "NASDAQ:AAPL",
+                        "title": "Apple Inc"
+                    },
+                    {
+                        "proName": "NASDAQ:TSLA",
+                        "title": "Tesla Inc"
+                    },
+                    {
+                        "proName": "NASDAQ:MSFT",
+                        "title": "Microsoft"
+                    },
+                    {
+                        "proName": "BITSTAMP:BTCUSD",
+                        "title": "BTC/USD"
+                    },
+                    {
+                        "proName": "BITSTAMP:ETHUSD",
+                        "title": "ETH/USD"
+                    },
+                    {
+                        "proName": "BITFINEX:ADAUSD",
+                        "title": "ADA/USD"
+                    },
+                    {
+                        "proName": "FTX:BNBUSD",
+                        "title": "BNB/USD"
+                    },
+                    {
+                        "proName": "BITSTAMP:XRPUSD",
+                        "title": "XRP/USD"
+                    }
+                ],
+                "showSymbolLogo": true,
+                "colorTheme": "light",
+                "isTransparent": false,
+                "displayMode": "regular",
+                "locale": "en"
+            }
+        </script>
+        </div>
+
+        <button type="button" onclick="show_ticker_chart(this)" class="more_info_btn">View {{title}} Chart</button>
+
+        <div class="tradingview-widget-container" id="ticker_chart_div" style="display: none">
+            <div id="ticker_chart"></div>
+            <div class="tradingview-widget-copyright"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+            <script type="text/javascript">
+                load_td_graph()
+            </script>
+        </div>
+        <br>
+
+<!--        <iframe src="https://whale-alert.io/transaction-map-embed.shtml" height="500px" width="100%" style="border:0px #ffffff none;" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" allowfullscreen></iframe>-->
+        <h2 class="header">Heatmap of {{title}}</h2>
+        <div id="heatmap_chart" class="tree_chart"></div>
+
+        <div style="display: none">
+            {{summary_df|safe}}
+            {{sector_df|safe}}
+            {{industry_df|safe}}
+        </div>
+
+<!--        <div class="scrollable_div" style="width: 70%; max-height: 400px; margin: auto; min-width: 250px; max-width: 500px" id="twitter_embed">-->
+<!--            <script>load_twitter_embed()</script>-->
+<!--            <a class="twitter-timeline" data-theme="light" href="https://twitter.com/stocksera_bot/lists/1448875408477212675?ref_src=twsrc%5Etfw">A Twitter List by stocksera_bot</a>-->
+<!--            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>-->
+<!--        </div>-->
+    </div>
+</div>
+{% endblock %}
+

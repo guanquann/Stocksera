@@ -1,0 +1,77 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | WSB Guide {% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/reddit/wsb_live.css' %}">
+<script src="{% static 'javascript/reddit/wsb_live.js' %}"></script>
+{% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/wsb_live/">WSB Live</a> /
+    <a href="/wsb_documentation/">User Guide</a>
+{% endblock %}
+
+{% block main_content %}
+<script>highlight_selected_nav('reddit')</script>
+<div>
+    <div class="instructions">
+        <h2>WSB User Guide</h2>
+        <p>
+            A simple guide on how to make use of the graphs effectively and how do we get our information from.
+        </p>
+    </div>
+
+    <div class="contents_div">
+        <h2>How to use the graphs effectively?</h2>
+        <div class="graph_documentation description">
+            <img style="width: 100%" src="{% static 'images/graph_documentation.png' %}">
+        </div>
+
+        <h2>How we get tickers from WSB?</h2>
+        <div class="description">
+            Every 15 minutes, a script will be run to extract new comments in WSB Discussion Thread / Popular Tickers Thread.
+            Words that fulfil a certain criteria will be extracted and processed to see if it is a ticker or not.
+        </div>
+
+        <h2>Why are some tickers excluded?</h2>
+        <div class="description">
+            Stopwords such as I, me, we and commonly used words like YOLO, bulls etc are excluded because they are
+            most probably not related to any stock ticker discussion. In the event a ticker falls into the list of excluded
+            words in the future, we will adjust it accordingly as soon as possible.
+            <br>
+            <span id="expand_banned_words" onclick="show_banned_words(this)" class="hidden">To see the list of excluded words, click here.</span>
+            <div style="display: none" id="banned_words_div">
+                <ul>
+                    {% for i in banned_words %}
+                    <li>{{i}}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <h2>How we calculate sentiment?</h2>
+        <div class="description">
+            We used a library called NLTK to determine the sentiment of a comment.
+            However, the original library has its limitations. For example, it is not able to analyse stock-related words such
+            as "bulls", "bears", "to the moon" effectively. As such, we have adapted the library by adding these
+            stock-related words so that it is able to find the sentiment of a comment made in WSB accurately. The sentiment
+            score ranges from -1 to 0, where -1 is the most negative, 0 is neutral while 1 is the most positive.
+        </div>
+
+        <h2>How we get the number of calls & puts mentions?</h2>
+        <div class="description">
+            We will extract comments with "call(s)", "put(s)", "xxxC", "xxxY" (where x is a number) and match it to the
+            tickers mentioned in the comment.
+        </div>
+
+        <h2>Where is the financial data (market cap, price) from?</h2>
+        <div>
+            All financial data is extracted from Yahoo Finance. Data is updated every 15 minutes.
+        </div>
+    </div>
+</div>
+{% endblock %}

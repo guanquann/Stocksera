@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>StocksEra | Discussion</title>
+    <link rel="stylesheet" href="{% static 'style/format.css' %}">
+    <link rel="stylesheet" href="{% static 'style/stock/discussion.css' %}">
+    <script src="{% static 'javascript/format.js' %}"></script>
+    <script src="{% static 'javascript/stock/discussion.js' %}"></script>
+</head>
+<body onload="show_url_links('{{ticker_selected}}');restore_dark_mode();">
+    <script>restore_dark_mode()</script>
+</body>
+</html>

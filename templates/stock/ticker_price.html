@@ -1,0 +1,231 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Ticker{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/stock/ticker_price.css' %}">
+<script>
+    function load_td_graph() {
+        var ticker = "{{ticker_selected}}".replace("-", "")
+        if (localStorage.getItem("mode") == "dark") {
+            var graph_mode = "dark";
+        }
+        else {
+            var graph_mode = "light"
+        }
+
+        new TradingView.widget(
+        {
+            "autosize": true,
+            "symbol": ticker,
+            "interval": "D",
+            "timezone": "Etc/UTC",
+            "theme": graph_mode,
+            "style": "1",
+            "locale": "en",
+            "toolbar_bg": "#f1f3f6",
+            "enable_publishing": false,
+            "allow_symbol_change": true,
+            "studies": [
+                "MASimple@tv-basicstudies",
+                "MASimple@tv-basicstudies",
+                "RSI@tv-basicstudies",
+                "MACD@tv-basicstudies"
+            ],
+            "container_id": "ticker_chart"
+        }
+        );
+    }
+</script>
+{% endblock %}
+
+{% block onload_properties%}display_data();check_if_us_stock('{{ticker_selected}}');submit_onload('{{error}}');to_remove(document.getElementsByClassName('show_more_btn')[0], 'Historical Data'){% endblock %}
+ 
+{% block main_nav %}
+    <a href="/">Stocksera</a> / <a href="/ticker/?quote={{ticker_selected}}">Analysis [{{ticker_selected}}]</a>
+{% endblock %}
+
+{% block main_content %}
+<script>highlight_selected_nav('stocks_analysis');</script>
+<div>
+    <div class="instructions">
+        <h2>Ticker Analysis</h2>
+        <p>
+            Enter a ticker symbol you are interested to view!
+        </p>
+        <form action="" method="GET" autocomplete="off" name="form">
+            <div class="search_bar">
+                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                    <span class="fa fa-search"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent" id="more_info_div">
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'ticker' %}?quote={{ticker_selected}}">Analysis</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}">Options</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}">Short Vol</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}">FTD</a></div>
+        </div>
+    </div>
+
+    <div id="error_msg" style="display:none;" class="instructions {{error}}">
+            <p>There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).</p>
+    </div>
+
+    <div class="contents_div">
+        <div id="ticker_basic_stats"></div>
+        <div id="ssr_msg"></div>
+        <div class="tradingview-widget-container">
+            <div id="ticker_chart"></div>
+            <div class="tradingview-widget-copyright"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+            <script type="text/javascript">
+                load_td_graph()
+            </script>
+        </div>
+
+            <div>
+                <p class="header"><b>Key Statistics</b></p>
+                <div class="scrollable_div"></div>
+
+                <div class="ticker_summary"></div>
+
+                <div class="btn_div_reminder"><i>Scroll right to view more</i></div>
+                <div style="display: flex; border-bottom: 1.5px solid grey; margin-bottom: 10px;">
+                    <button id="slideLeft" type="button" class="scroll_horizontal_btn">
+                        <img src="{% static 'images/left_arrow.svg' %}">
+                    </button>
+
+                    <div class="main_btn_div">
+                        <div class="btn_div">
+                            <form action="/historical_data" method="GET" autocomplete="off" target="Historical Data" >
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Historical Data');">Historical Data</button>
+                            </form>
+                        </div>
+
+                        <div class="btn_div">
+                            <form action="/insider_trading" method="GET" autocomplete="off" target="Insider Trading">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Insider Trading');">Insider Trading</button>
+                            </form>
+                        </div>
+
+                        <div class="btn_div">
+                            <form action="/sub_news" method="GET" autocomplete="off" target="News Sentiment">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'News Sentiment')">News Sentiment</button>
+                            </form>
+                        </div>
+
+                        <div class="btn_div">
+                            <form action="/google_trends" method="GET" autocomplete="off" target="Google Trends">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Google Trends');">Google Trends</button>
+                            </form>
+                        </div>
+
+                        <div class="btn_div">
+                            <form action="/sec_fillings" method="GET" autocomplete="off" target="SEC Fillings">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'SEC Fillings');">SEC Fillings</button>
+                            </form>
+                        </div>
+
+                        <div class="btn_div">
+                            <form action="/major_holders" method="GET" autocomplete="off" target="Major Holders">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Major Holders');">Major Holders</button>
+                            </form>
+                        </div>
+
+                        <div class="btn_div">
+                            <form action="/institutional_holders" method="GET" autocomplete="off" target="Institutional Holders">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Institutional Holders');">Institutional Holders</button>
+                            </form>
+                        </div>
+
+                        <div class="btn_div">
+                            <form action="/mutual_fund_holders" method="GET" autocomplete="off" target="Mutual-Fund Holders">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Mutual-Fund Holders');">Mutual-Fund Holders</button>
+                            </form>
+                        </div>
+
+                        <div class="btn_div">
+                            <form action="/ticker_earnings" method="GET" autocomplete="off" target="Earnings">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Earnings');">Earnings</button>
+                            </form>
+                        </div>
+
+                        <div class="btn_div">
+                            <form action="/recommendations" method="GET" autocomplete="off" target="Upgrades & Downgrades">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Upgrades & Downgrades');">Upgrades & Downgrades</button>
+                            </form>
+                        </div>
+
+                        <div class="btn_div">
+                            <form action="/dividend_and_split" method="GET" autocomplete="off" target="Dividend & Splits">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Dividend & Splits');">Dividend & Splits</button>
+                            </form>
+                        </div>
+
+                        <div class="btn_div">
+                        <form action="/discussion" method="GET" autocomplete="off" target="Discussion">
+                            <input style="display: none" name="quote" value="{{ticker_selected}}">
+                            <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Discussion');">Discussion</button>
+                        </form>
+                    </div>
+                    </div>
+                    <button id="slideRight" type="button" class="scroll_horizontal_btn">
+                        <img src="{% static 'images/right_arrow.svg' %}">
+                    </button>
+                </div>
+
+                <iframe src="/loading/" class="more_details" name="Historical Data" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Major Holders" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Institutional Holders" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Mutual-Fund Holders" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Dividend & Splits" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Earnings" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Upgrades & Downgrades" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="SEC Fillings" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Google Trends" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="News Sentiment" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Insider Trading" id="insider_trading" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Discussion" scrolling="no" onload="expand_iframe(this)"></iframe>
+
+                <div style="margin-top: 30px">
+                    <p><b>Related tickers that you might be interested:</b></p>
+                    {% for i in related_tickers %}
+                        <a href="/ticker/?quote={{i}}" class="related_tickers">{{i}}</a>
+                    {% endfor %}
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block bottom_script %}
+<script src="{% static 'javascript/stock/ticker_price.js' %}"></script>
+<script type="text/javascript">
+    <!--Hack to convert python variables to javascript-->
+    var None = "N/A", False = false; True = true;
+    var information = {{information|safe}};
+    show_ticker_price(information)
+    get_ssr(information)
+    show_ticker_table(information)
+</script>
+{% endblock %}

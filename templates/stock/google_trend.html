@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>StocksEra | Google Trends</title>
+    <script src="{% static 'javascript/format.js' %}"></script>
+    <script src="{% static 'javascript/stock/google_trend.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'style/format.css' %}">
+    <link rel="stylesheet" href="{% static 'style/stock/google_trend.css' %}">
+</head>
+<body onload="load_trending_graph('{{timing_selected}}');restore_dark_mode();">
+    <script>restore_dark_mode()</script>
+    <div><i>- An increase in interest of a ticker may indicate an increase in retail investment.</i></div>
+    <div><i>- Filters used: Worldwide, all categories.</i></div>
+    <form action="" method="GET" autocomplete="off">
+        <select name="timing_selected" onchange="this.form.submit()">
+            <option>Selected: {{timing_selected}}</option>
+            <option value="today 1-m">Past 30 days</option>
+            <option value="today 3-m">Past 90 days</option>
+            <option value="today 12-m">Past 12 months</option>
+        </select>
+        <input style="display:none" value={{ticker_selected}} name="quote">
+    </form>
+
+    <h3>Interest of {{ticker_selected}} with closing price ({{timing_selected}})</h3>
+    <div class="reminder"><i></i></div>
+    <div class="chart-container">
+        <canvas id="trending"></canvas>
+    </div>
+
+    <div style="display: none">
+        {{interest_over_time|safe}}
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+</html>

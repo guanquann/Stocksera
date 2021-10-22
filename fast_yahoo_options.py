@@ -141,7 +141,7 @@ def get_ticker_stats(symbol, date_selected: str = ""):
     return module_dict
 
 
-def save_options_to_json(list_of_tickers, timestamp="", save_max_pain=False):
+def save_options_to_json(list_of_tickers, timestamp="", data=None, r=None, save_max_pain=False):
     output = download_options(list_of_tickers, timestamp=timestamp, save_max_pain=save_max_pain)
     if output == {}:
         output = {list_of_tickers[0]: {
@@ -149,16 +149,14 @@ def save_options_to_json(list_of_tickers, timestamp="", save_max_pain=False):
             "CurrentDate": {}
         }}
 
-    with open(r"database/yf_cached_options.json", "r+") as r:
-        data = json.load(r)
-        for ticker in list_of_tickers:
-            if ticker in data and len(data[ticker]["ExpirationDate"]) > 4:
-                data[ticker]["CurrentDate"].update(output[ticker]["CurrentDate"])
-            else:
-                data.update(output)
-        r.seek(0)
-        r.truncate()
-        json.dump(data, r, indent=4)
+    for ticker in list_of_tickers:
+        if ticker in data and len(data[ticker]["ExpirationDate"]) > 4:
+            data[ticker]["CurrentDate"].update(output[ticker]["CurrentDate"])
+        else:
+            data.update(output)
+    r.seek(0)
+    r.truncate()
+    json.dump(data, r, indent=4)
     return output
 
 

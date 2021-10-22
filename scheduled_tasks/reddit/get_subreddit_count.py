@@ -79,7 +79,8 @@ interested_stocks_subreddits = {
     "RKLB": ["RKLB"],
     "BBIG": ["BBIG"],
     "SAVA": ["SAVA_stock"],
-    "GREE": ["gree"]
+    "GREE": ["gree"],
+    "CEI": ["CEI_stock"]
 }
 
 interested_crypto_subreddits = {

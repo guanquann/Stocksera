@@ -1,0 +1,632 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+ 
+{% block title %}StocksEra | Financials{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/stock/financial.css' %}">
+<script src="{% static 'javascript/stock/financial.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}display_data();check_if_us_stock('{{ticker_selected}}'){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/ticker/?quote={{ticker_selected}}">Analysis</a> /
+    <a href="/ticker/financial/?quote={{ticker_selected}}">Financial [{{ticker_selected}}]</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('stocks_analysis')</script>
+    <div class="instructions">
+        <h2>Financials (Balance Sheet)</h2>
+        <p>This page is still in beta. Currently, only the Balance Sheet of the company is available. Income Statement and Cash Flow will be added in the next update.</p>
+        <form action="" method="GET" autocomplete="off">
+            <div class="search_bar">
+                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                    <span class="fa fa-search"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}">Analysis</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'financial' %}?quote={{ticker_selected}}">Financials</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}">Options</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}">Short Vol</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}">FTD</a></div>
+        </div>
+    </div>
+
+    <div id="error_msg" style="display:none;" class="instructions {{error}}">
+        <p>There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).</p>
+    </div>
+
+    <div class="contents_div">
+        <div id="ticker_basic_stats"></div>
+        <div id="ssr_msg"></div>
+
+        <div><i>Note: All numbers are in millions</i></div>
+
+        <div>
+            <h2>Current Assets<button type="button" onclick="show_graph(this)" class="selected_btn">Graph</button><button type="button" onclick="show_table(this)">Table</button></h2>
+            <div class="chart-container">
+                <canvas id="current_assets"></canvas>
+            </div>
+            <div id="current_assets_table" class="table_div scrollable_div" style="display: none;"></div>
+        </div>
+
+        <div>
+            <h2>Non Current Assets<button type="button" onclick="show_graph(this)" class="selected_btn">Graph</button><button type="button" onclick="show_table(this)">Table</button></h2>
+            <div class="chart-container">
+                <canvas id="non_current_assets"></canvas>
+            </div>
+            <div id="non_current_assets_table" class="table_div scrollable_div" style="display: none;"></div>
+        </div>
+
+        <div>
+            <h2>Liabilities<button type="button" onclick="show_graph(this)" class="selected_btn">Graph</button><button type="button" onclick="show_table(this)">Table</button></h2>
+            <div class="chart-container">
+                <canvas id="liabilities"></canvas>
+            </div>
+            <div id="liabilities_table" class="table_div scrollable_div" style="display: none;"></div>
+        </div>
+
+        <div>
+            <h2>Stockholders' Equity<button type="button" onclick="show_graph(this)" class="selected_btn">Graph</button><button type="button" onclick="show_table(this)">Table</button></h2>
+            <div class="chart-container">
+                <canvas id="stockholders_equity"></canvas>
+            </div>
+            <div id="stockholders_equity_table" class="table_div scrollable_div" style="display: none;"></div>
+        </div>
+
+        <div style="margin-top: 30px">
+            <p><b>Related tickers that you might be interested:</b></p>
+            {% for i in related_tickers %}
+                <a href="/ticker/financial/?quote={{i}}" class="related_tickers">{{i}}</a>
+            {% endfor %}
+        </div>
+        <br>
+    </div>
+
+{% endblock %}
+
+{% block bottom_script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.min.js"></script>
+<script type="text/javascript">
+<!--Hack to convert python variables to javascript-->
+var None = "N/A", False = false; True = true;
+var information = {{information|safe}};
+show_ticker_price(information)
+get_ssr(information)
+
+var date_list = {{date_list|safe}};
+var balance_list = {{balance_list|safe}};
+var balance_col_list = {{balance_col_list|safe}};
+
+var totalLiab=[], cash=[], shortTermInvestments=[], totalcash=[], netReceivables=[], inventory=[], otherCurrentAssets=[], totalCurrentAssets=[], propertyPlantEquipment=[], longTermInvestments=[], otherAssets=[], totalNonCurrentAssets=[], otherCurrentLiab=[], totalCurrentLiab=[], shortTermDebt=[], longTermDebt=[], commonStock=[], retainedEarnings=[], treasury=[], totalStockholderEquity=[], accountsPayable=[];
+
+function simplify_num(row) {
+    var new_list=[];
+    for (k=0; k<row.length; k++) {
+        new_list.push(row[k]/1000000)
+    }
+    return new_list
+}
+
+function replace_nan(x) {
+    if (typeof(x) == "undefined" || x == "NaN") {
+        return "N/A"
+    }
+    else {
+        return Number(x) + "M"
+    }
+}
+
+for (i=balance_col_list.length-1; i>=0; i--) {
+    if (balance_col_list[i] == "Total Assets") {
+        current_assets = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Cash") {
+        cash = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Short Term Investments") {
+        shortTermInvestments = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Net Receivables") {
+        netReceivables = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Inventory") {
+        inventory = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Other Current Assets") {
+        otherCurrentAssets = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Total Current Assets") {
+        totalCurrentAssets = simplify_num(balance_list[i])
+    }
+
+    else if (balance_col_list[i] == "Property Plant Equipment") {
+        propertyPlantEquipment = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Long Term Investments") {
+        longTermInvestments = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Other Assets") {
+        otherAssets = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Property Plant Equipment") {
+        propertyPlantEquipment = simplify_num(balance_list[i])
+    }
+
+    else if (balance_col_list[i] == "Accounts Payable") {
+        accountsPayable = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Short Long Term Debt") {
+        shortTermDebt = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Long Term Debt") {
+        longTermDebt = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Other Current Liab") {
+        otherCurrentLiab = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Total Current Liabilities") {
+        totalCurrentLiab = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Total Liab") {
+        totalLiab = simplify_num(balance_list[i])
+    }
+
+    else if (balance_col_list[i] == "Common Stock") {
+        commonStock = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Retained Earnings") {
+        retainedEarnings = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Treasury Stock") {
+        treasury = simplify_num(balance_list[i])
+    }
+    else if (balance_col_list[i] == "Total Stockholder Equity") {
+        totalStockholderEquity = simplify_num(balance_list[i])
+    }
+}
+
+for (i=0; i<cash.length; i++) {
+    totalcash_value = cash[i] + shortTermInvestments[i]
+    if (isNaN(totalcash_value) == false) {
+        totalcash.push(totalcash_value)
+    }
+    totalNonCurrentAssets_value = longTermInvestments[i] + otherAssets[i]
+    if (isNaN(totalNonCurrentAssets_value) == false) {
+        totalNonCurrentAssets.push(totalNonCurrentAssets_value)
+    }
+}
+
+var options_dict = {
+        responsive:true,
+        maintainAspectRatio: false,
+        layout: {
+            padding: 5
+        },
+        scales: {
+            xAxes: [{
+                categoryPercentage: 0.5,
+                barPercentage: 1.0,
+                ticks: {
+                    beginAtZero: false
+                }, 
+                gridLines: {
+                    drawOnChartArea: false
+                },
+            }],
+            yAxes: [{
+                ticks: {
+                    beginAtZero: false,
+                    minTicksLimit: 8,
+                    maxTicksLimit: 12,
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Amount [$M]',
+                    beginAtZero: false,
+                },
+            }],
+        },
+
+        tooltips: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+                title: tooltipItem => date_list[tooltipItem[0].index],
+                label: function(tooltipItem, data) {
+                    var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                    var label = data.datasets[tooltipItem.datasetIndex].label;
+                    return label + ': ' + Number(value).toLocaleString() + 'M USD';
+                }
+            },
+        },
+   }
+
+var current_assets = document.getElementById('current_assets');
+var current_assets = new Chart(current_assets, {
+    type: 'bar',
+    data: {
+        labels: date_list,
+        datasets: [
+        {
+            label: 'Cash & Cash Equivalent',
+            data: cash,
+            backgroundColor: 'rgba(255, 159, 64, 0.5)',
+            borderColor: 'rgb(255, 159, 64)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },
+        {
+            label: 'Other Short-Term Investments',
+            data: shortTermInvestments,
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            borderColor: 'rgb(255, 99, 132)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },    
+        {
+            label: 'Net Receivables',
+            data: netReceivables,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgb(75, 192, 192)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        }, 
+        {
+            label: "Inventory",
+            data: inventory,
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgb(54, 162, 235)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },        
+        {
+            label: "Other Current Assets",
+            data: otherCurrentAssets,
+            backgroundColor: 'rgba(161, 253, 55, 0.5)',
+            borderColor: 'rgb(161, 253, 55)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },   
+        {
+            label: "Total Cash",
+            data: totalcash,
+            backgroundColor: 'rgba(136, 82, 55, 0.5)',
+            borderColor: 'rgb(136, 82, 55)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        }, 
+        {
+            label: "Total Current Assets",
+            data: totalCurrentAssets,
+            backgroundColor: 'rgba(0, 39, 255, 0.5)',
+            borderColor: 'rgb(0, 39, 255)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        }
+        ],
+    },
+
+    options: options_dict,
+});
+
+date_row = ""
+cash_and_cash_equi_row = "", short_term_investment_row = "", net_receivable_row = "", inventory_row = "", other_current_assets_row = "", total_cash_row = "", total_current_assets_row = ""
+property_plant_row = "", long_term_investment_row = "", other_assets_row = "", total_non_current_assets_row = ""
+accounts_payable_row = [], debt_row = "", long_term_debt_row = "", other_current_liab_row = "", total_current_liab_row = "", total_liab_row = ""
+common_stock_row = [], retained_earnings_row = [], treasury_row = [], total_stockholder_row = []
+
+for (i=0; i<date_list.length; i++) {
+    date_row += `<th>${date_list[i]}</th>`
+    cash_and_cash_equi_row += `<td>${replace_nan(cash[i])}</td>`
+    short_term_investment_row += `<td>${replace_nan(shortTermInvestments[i])}</td>`
+    net_receivable_row += `<td>${replace_nan(netReceivables[i])}</td>`
+    inventory_row += `<td>${replace_nan(inventory[i])}</td>`
+    other_current_assets_row += `<td>${replace_nan(otherCurrentAssets[i])}</td>`
+    total_cash_row += `<td>${replace_nan(totalcash[i])}</td>`
+    total_current_assets_row += `<td>${replace_nan(totalCurrentAssets[i])}</td>`
+
+    property_plant_row += `<td>${replace_nan(propertyPlantEquipment[i])}</td>`
+    long_term_investment_row += `<td>${replace_nan(longTermInvestments[i])}</td>`
+    other_assets_row += `<td>${replace_nan(otherAssets[i])}</td>`
+    total_non_current_assets_row += `<td>${replace_nan(totalNonCurrentAssets[3])}</td>`
+
+    accounts_payable_row += `<td>${replace_nan(accountsPayable[i])}</td>`
+    debt_row += `<td>${replace_nan(shortTermDebt[i])}</td>`
+    long_term_debt_row += `<td>${replace_nan(longTermDebt[i])}</td>`
+    other_current_liab_row += `<td>${replace_nan(otherCurrentLiab[i])}</td>`
+    total_current_liab_row += `<td>${totalCurrentLiab[i]}</td>`
+    total_liab_row += `<td>${replace_nan(totalLiab[i])}</td>`
+
+    common_stock_row += `<td>${replace_nan(commonStock[i])}</td>`
+    retained_earnings_row += `<td>${replace_nan(retainedEarnings[i])}</td>`
+    treasury_row += `<td>${replace_nan(treasury[i])}</td>`
+    total_stockholder_row += `<td>${replace_nan(totalStockholderEquity[i])}</td>`
+}
+
+var current_assets_table = document.getElementById("current_assets_table");
+var current_assets_table_html =  `
+    <table>
+        <tr>
+            <th></th>
+            ${date_row}
+        </tr>
+        <tr>
+            <th>Cash & Cash Equivalent</th>
+            ${cash_and_cash_equi_row}
+        </tr>
+        <tr>
+            <th>Other Short-Term Investments</th>
+            ${short_term_investment_row}
+        </tr>
+        <tr>
+            <th>Net Receivables</th>
+            ${net_receivable_row}
+        </tr>
+        <tr>
+            <th>Inventory</th>
+            ${inventory_row}
+        </tr>
+        <tr>
+            <th>Other Current Assets</th>
+            ${other_current_assets_row}
+        </tr>
+        <tr>
+            <th>Total Cash</th>
+            ${total_cash_row}
+        </tr>
+        <tr>
+            <th>Total Current Assets</th>
+            ${total_current_assets_row}
+        </tr>
+    </table>`
+current_assets_table.innerHTML = current_assets_table_html
+
+
+var non_current_assets = document.getElementById('non_current_assets');
+var non_current_assets = new Chart(non_current_assets, {
+    type: 'bar',
+    data: {
+        labels: date_list,
+        datasets: [
+        {
+            label: 'Net Property, Plant and Equipment',
+            data: propertyPlantEquipment,
+            backgroundColor: 'rgba(255, 159, 64, 0.5)',
+            borderColor: 'rgb(255, 159, 64)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },
+        {
+            label: 'Equity and Other Investments',
+            data: longTermInvestments,
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            borderColor: 'rgb(255, 99, 132)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },    
+        {
+            label: 'Other Long-Term Assets',
+            data: otherAssets,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgb(75, 192, 192)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        }, 
+        {
+            label: "Total Non-Current Assets",
+            data: totalNonCurrentAssets,
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgb(54, 162, 235)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },  
+        ],
+    },
+
+    options: options_dict
+});
+
+var non_current_assets_table = document.getElementById("non_current_assets_table");
+var non_current_assets_table_html =  `
+    <table>
+        <tr>
+            <th></th>
+            ${date_row}
+        </tr>
+        <tr>
+            <th>Net Property, Plant & Equipment</th>
+            ${property_plant_row}
+        </tr>
+        <tr>
+            <th>Equity & Other Investments</th>
+            ${long_term_investment_row}
+        </tr>
+        <tr>
+            <th>Other Long-Term Assets</th>
+            ${other_assets_row}
+        </tr>
+        <tr>
+            <th>Total Non-Current Assets</th>
+            ${total_non_current_assets_row}
+        </tr>
+    </table>`
+non_current_assets_table.innerHTML = non_current_assets_table_html
+
+var liabilities = document.getElementById('liabilities');
+var liabilities = new Chart(liabilities, {
+    type: 'bar',
+    data: {
+        labels: date_list,
+        datasets: [
+        {
+            label: 'Accounts Payable',
+            data: accountsPayable,
+            backgroundColor: 'rgba(255, 159, 64, 0.5)',
+            borderColor: 'rgb(255, 159, 64)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },
+        {
+            label: 'Debt',
+            data: shortTermDebt,
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            borderColor: 'rgb(255, 99, 132)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },
+        {
+            label: 'Long Term Debt',
+            data: longTermDebt,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgb(75, 192, 192)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },
+        {
+            label: 'Other Current Liab',
+            data: otherCurrentLiab,
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgb(54, 162, 135)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },    
+        {
+            label: 'Total Current Liab',
+            data: totalCurrentLiab,
+            backgroundColor: 'rgba(161, 253, 55, 0.5)',
+            borderColor: 'rgb(161, 253, 55)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },   
+        {
+            label: 'Total Liab',
+            data: totalLiab,
+            backgroundColor: 'rgba(136, 82, 55, 0.5)',
+            borderColor: 'rgb(136, 82, 55)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        }
+        ],
+    },
+
+    options: options_dict
+});
+
+var liabilities_table = document.getElementById("liabilities_table");
+var liabilities_table_html =  `
+    <table>
+        <tr>
+            <th></th>
+            ${date_row}
+        </tr>
+        <tr>
+            <th>Accounts Payable</th>
+            ${accounts_payable_row}
+        </tr>
+        <tr>
+            <th>Debt</th>
+            ${debt_row}
+        </tr>
+        <tr>
+            <th>Long Term Debt</th>
+            ${long_term_debt_row}
+        </tr>
+        <tr>
+            <th>Other Current Liab</th>
+            ${other_current_liab_row}
+        </tr>
+        <tr>
+            <th>Total Current Liab</th>
+            ${total_current_liab_row}
+        </tr>
+        <tr>
+            <th>Total Liab</th>
+            ${total_liab_row}
+        </tr>
+    </table>`
+liabilities_table.innerHTML = liabilities_table_html
+
+
+var stockholders_equity = document.getElementById('stockholders_equity');
+var stockholders_equity = new Chart(stockholders_equity, {
+    type: 'bar',
+    data: {
+        labels: date_list,
+        datasets: [
+        {
+            label: 'Common Stock',
+            data: commonStock,
+            backgroundColor: 'rgba(255, 159, 64, 0.5)',
+            borderColor: 'rgb(255, 159, 64)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },
+        {
+            label: 'Retained Earnings',
+            data: retainedEarnings,
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            borderColor: 'rgb(255, 99, 132)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },    
+        {
+            label: 'Treasury',
+            data: treasury,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgb(75, 192, 192)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        }, 
+        {
+            label: "Total StockHolders' Equity",
+            data: totalStockholderEquity,
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgb(54, 162, 235)',
+            borderWidth: '2',
+            barThickness: 'flex',
+        },        
+        ],
+    },
+    options: options_dict,
+});
+
+
+var stockholders_equity_table = document.getElementById("stockholders_equity_table");
+var stockholders_equity_table_html =  `
+    <table>
+        <tr>
+            <th></th>
+            ${date_row}
+        </tr>
+        <tr>
+            <th>Common Stock</th>
+            ${common_stock_row}
+        </tr>
+        <tr>
+            <th>Retained Earnings</th>
+            ${retained_earnings_row}
+        </tr>
+        <tr>
+            <th>Treasury</th>
+            ${treasury_row}
+        </tr>
+        <tr>
+            <th>Total StockHolders' Equity</th>
+            ${total_stockholder_row}
+        </tr>
+    </table>`
+stockholders_equity_table.innerHTML = stockholders_equity_table_html
+</script>
+{% endblock %}

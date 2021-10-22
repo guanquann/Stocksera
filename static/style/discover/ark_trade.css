@@ -1,0 +1,178 @@
+@media only screen and (max-width: 900px) {
+    #profile span {
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    td img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .btn_type {
+        border: 1px solid grey;
+        border-radius: 5px;
+        padding: 4.5px;
+        min-width: 40px;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    #profile span {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    td img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .btn_type {
+        border: 1px solid grey;
+        border-radius: 5px;
+        padding: 7px;
+        min-width: 40px;
+    }
+}
+
+.chart-container {
+    position: relative;
+    height:55vh;
+    width:98%;
+    max-width: 900px;
+    max-height:250px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.dark_mode .fund_type, .dark_mode button {
+    color: black;
+}
+
+.weightage_div {
+    display: flex;
+    margin-top: 5px
+}
+
+.weightage_div div {
+    border-radius: 5px;
+    border: 2px solid grey;
+    padding: 5px;
+    margin-right: 4px;
+}
+
+#fund_selected {
+    display: none;
+}
+
+.fund_type_parent {
+    display: flex;
+    max-width: 100%;
+    overflow: auto;
+}
+
+.fund_type_parent .selected, .button_parent .selected {
+    background-color: gray;
+    transition: 0.5s;
+}
+
+.dark_mode .selected {
+    background-color: rgb(38, 166, 154);
+}
+
+.fund_type {
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border: 1.5px solid gray;
+    border-radius: 3px;
+    margin: 1.5px;
+    background-color: #E9EAEA;
+}
+
+.fund_type:hover {
+    cursor: pointer;
+}
+
+td div {
+    display: table;
+    width: 100%;
+}
+
+td img {
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+    display: table-cell;
+}
+
+td div div {
+    vertical-align: middle;
+    display: table-cell;
+}
+
+td div:hover {
+    cursor: pointer;
+}
+
+.scrollable_div .instructions {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 30px;
+}
+
+.news_div {
+    display:flex;
+    border: 1px solid gray;
+    border-radius: 6px;
+    padding: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.news_div img {
+    width: 130px;
+    height: 90px;
+    border-radius: 5px;
+    border: 1px solid gray;
+}
+
+.news_div div {
+    margin-left: 6px;
+    margin-bottom: 5px;
+    padding-top: 3px;
+}
+
+#ticker_description, #ticker_trade, #fund_ownership {
+    margin-bottom: 40px;
+    margin-top: 20px;
+}
+
+#ticker_intro a {
+    color: black;
+    text-decoration: none;
+}
+
+.dark_mode #ticker_intro a {
+    color: #ccc;
+}
+
+.ticker_summary {
+    line-height: 1.5;
+}
+
+.read_more {
+    text-decoration: none !important;
+    color: grey !important;
+}
+
+.read_more:hover {
+    color: #26a69a;
+}
+
+.click_table_info {
+    text-align: right;
+    margin: 10px 0 0 0;
+}

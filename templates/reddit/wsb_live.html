@@ -1,0 +1,101 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | WSB Live {% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/reddit/wsb_live.css' %}">
+<script src="{% static 'javascript/reddit/wsb_live.js' %}"></script>
+<script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+<script src="https://cdn.anychart.com/releases/v8/js/anychart-tag-cloud.min.js"></script>
+{% endblock %}
+
+{% block onload_properties%}load_trending_over_time_chart({{trending_list}}, '24H');load_trending_over_time_chart({{trending_list_by_hour}}, '7d');load_change_chart();load_sentiment_chart();load_mkt_cap_chart();load_options_chart();load_word_cloud({{wsb_word_cloud}}){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/wsb_live/">WSB Live</a>
+{% endblock %}
+
+{% block main_content %}
+<script>highlight_selected_nav('reddit')</script>
+<div>
+    <div class="instructions">
+        <h2>Live Wallstreetbets Analysis</h2>
+        <p>This page tracks & analysis trending tickers realtime. Updates every 10 minutes.</p>
+        <div class="subscribe_email_div"><a class="subscribe_email" href="/subscribe" target="_blank">Subscribe to Free WSB Notifications</a></div>
+        <form action="/wsb_live_ticker" method="GET" autocomplete="off" target="wsb_live_ticker">
+            <div class="search_bar">
+                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                    <span class="fa fa-search"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn current_link" href="/wsb_live">WSB Live</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis">Trending Stocks</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis/?subreddit=cryptocurrency">Trending Crypto</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reddit_etf' %}">WSB ETF</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'subreddit_count' %}">Subreddit Stats</a></div>
+        </div>
+    </div>
+
+    <div class="contents_div">
+        <div id="tips_btn">
+            <a href="/wsb_documentation" target="_blank">Guide when using WSB Live</a>
+        </div>
+        <h2 class="header">Trending Last 24H</h2>
+        <div id="trending_over_time_chart_24H" class="chart"></div>
+
+        <h2 class="header">Trending Last 7 Days</h2>
+        <div id="trending_over_time_chart_7d" class="chart"></div>
+
+        <h2 class="header">Change in Mentions Last 24H</h2>
+        <div style="text-align: center"><i>% Change capped at 1000%</i></div>
+        <div id="change_mentions" class="tree_chart"></div>
+
+        <h2 class="header">Call/Put Mentions Last 7 Days</h2>
+        <div id="options_chart" class="chart"></div>
+
+        <h2 class="header">Sentiment Last 24H</h2>
+        <div id="sentiment_chart" class="chart"></div>
+
+        <h2 class="header">Market Cap vs Mentions Last 24H</h2>
+        <div id="mkt_cap_chart" class="chart"></div>
+
+        <h2 class="header">Latest Price Change Comparison</h2>
+        <div id="price_change_chart" class="tree_chart"></div>
+
+        <h2 class="header">Current Price vs Diff. 50SMA | 52W High-Low</h2>
+        <div id="50SMA_chart" class="sma_chart"></div>
+
+        <h2 class="header">Most Mentioned Words Last 24H</h2>
+        <div id="word_cloud"></div>
+
+        <h2 class="header">No. of Mentions Last 24H</h2>
+        <div class="search_bar">
+            <input type="text" class="ticker_input" placeholder="Ticker: " onkeyup="searchTicker(this)" autocomplete="off">
+            <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                <span class="fa fa-search"></span>
+            </button>
+        </div>
+        <span class="click_table_info"><b>Click on ticker symbol for more info.</b></span>
+
+        <div class="scrollable_div" style="max-height: 450px">
+            {{mentions_df|safe}}
+        </div>
+        <div style="display:none">
+            {{change_df|safe}}
+            {{wsb_yf_df|safe}}
+            {{trending_options|safe}}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

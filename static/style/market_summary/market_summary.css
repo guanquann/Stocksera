@@ -1,0 +1,15 @@
+.tree_chart {
+    height: 600px;
+}
+
+.header {
+    margin: 10px 0 0px 0;
+    text-align: center;
+}
+
+#ticker_chart {
+    width: 100% !important;
+    margin: auto !important;
+    height: 450px;
+    padding: 0 !important;
+}

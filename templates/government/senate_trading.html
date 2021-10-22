@@ -1,0 +1,146 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Senate Watcher{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/government/senate_trading.css' %}">
+<link rel="stylesheet" href="{% static 'style/government/calendar.css' %}">
+{% endblock %}
+
+{% block onload_properties%}load_overview_table();load_daily_summary();load_ticker_stats();{% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/senate">Senate</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('government')</script>
+    <div class="instructions">
+        <h2>Senate Trading</h2>
+        <p>
+            In recent days, there are many scrutiny on the trades made by government officials, as they seem to time their
+            buys & sells almost perfectly - with the help of insider information.
+            Analyse trades made by Senators in the past 5 years to keep track of their movements.
+        </p>
+    </div>
+
+    <div class="contents_div">
+        <span id="dates_available" style="display: none">{{dates_available}}</span>
+        <form action="" method="GET" autocomplete="off" id="form">
+            <input id="date_selected_from_calendar" name="date_selected">
+        </form>
+
+        <button onclick="open_calendar()" type="button" id="open_calendar">Open Calendar</button>
+        <div class="top_section">
+            <div class="calendar_div hide_calendar">
+                <div><b>Select date to view trades disclosed on that day</b></div>
+                <div class="card">
+                    <div style="display: flex; justify-content: center">
+                        <button id="previous" onclick="previous()" style="width:35px;border:0;"><img src="{% static 'images/left_arrow.svg' %}" style="vertical-align: middle"></button>
+                        <h3 class="card-header" id="monthAndYear"></h3>
+                        <button id="next" onclick="next()" style="width:35px;border:0"><img src="{% static 'images/right_arrow.svg' %}" style="vertical-align: middle"></button>
+                    </div>
+                    <table id="calendar">
+                        <thead>
+                        <tr>
+                            <th>Sun</th>
+                            <th>Mon</th>
+                            <th>Tue</th>
+                            <th>Wed</th>
+                            <th>Thu</th>
+                            <th>Fri</th>
+                            <th>Sat</th>
+                        </tr>
+                        </thead>
+                        <tbody id="calendar-body">
+                        </tbody>
+                    </table>
+
+                    <form>
+                        <label style="margin-left: 3px" for="month">Jump To: </label>
+                        <select name="month" id="month" onchange="jump()">
+                            <option value=0>Jan</option>
+                            <option value=1>Feb</option>
+                            <option value=2>Mar</option>
+                            <option value=3>Apr</option>
+                            <option value=4>May</option>
+                            <option value=5>Jun</option>
+                            <option value=6>Jul</option>
+                            <option value=7>Aug</option>
+                            <option value=8>Sep</option>
+                            <option value=9>Oct</option>
+                            <option value=10>Nov</option>
+                            <option value=11>Dec</option>
+                        </select>
+
+                        <label for="year"></label>
+                        <select name="year" id="year" onchange="jump()">
+                            <option value=2017>2017</option>
+                            <option value=2018>2018</option>
+                            <option value=2019>2019</option>
+                            <option value=2020>2020</option>
+                            <option value=2021>2021</option>
+                            <option value=2022>2022</option>
+                            <option value=2023>2023</option>
+                            <option value=2024>2024</option>
+                            <option value=2025>2025</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+
+            <div class="overall_statistics_div">
+                <h2>Senator Summary (Last 5 Years)</h2>
+                <div class="search_bar">
+                    <input type="text" class="ticker_input" placeholder="Name:" onkeyup="searchSenator(this, 0)" autocomplete="off">
+                    <button class="submit_btn" type="button">
+                        <span class="fa fa-search"></span>
+                    </button>
+                </div>
+                <span class="click_table_info"><b>Click on senator for more info</b></span>
+                <div class="scrollable_div" style="max-height: 380px">
+                    {{group_by_senator|safe}}
+                </div>
+            </div>
+        </div>
+
+        <h2>Most Traded Stocks (Last 5 Years)</h2>
+        <div style="text-align: center"><i>Unknown Trades Excluded</i></div>
+        <div style="display: flex; justify-content: space-between">
+            <div id="ticker_stats_div"></div>
+            <div>
+                <div class="search_bar">
+                    <input type="text" class="ticker_input" placeholder="Ticker:" onkeyup="searchSenator(this, 0)" autocomplete="off">
+                    <button class="submit_btn" type="button">
+                        <span class="fa fa-search"></span>
+                    </button>
+                </div>
+                <div class="scrollable_div" style="max-height: 280px; width: fit-content">
+                    {{group_by_ticker|safe}}
+                </div>
+            </div>
+        </div>
+
+        <div id="daily_summary_div">
+            <h2>Trades Disclosed on <span id="date_selected">{{date_selected}}</span></h2>
+            <div id="daily_statistics"></div>
+            <div id="graph_div"></div>
+
+            <div class="search_bar">
+                <input type="text" class="ticker_input" placeholder="Search:" onkeyup="searchSenator(this, 2)" autocomplete="off">
+                <button class="submit_btn" type="button">
+                    <span class="fa fa-search"></span>
+                </button>
+            </div>
+            <span class="click_table_info"><b>Click on ticker symbol / senator for more info</b></span>
+            <div class="scrollable_div">
+                {{latest_df|safe}}
+            </div>
+
+        </div>
+        <script src="{% static 'javascript/government/senate_trading.js' %}"></script>
+    </div>
+{% endblock %}

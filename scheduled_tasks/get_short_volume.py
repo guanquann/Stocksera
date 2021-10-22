@@ -1,24 +1,20 @@
 import io
 import os
 import sys
-import sqlite3
 import requests
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-import scheduled_tasks.reddit.get_reddit_trending_stocks.fast_yahoo as fast_yahoo
-
-conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
-db = conn.cursor()
+import scheduled_tasks.reddit.stocks.fast_yahoo as fast_yahoo
 
 current_date = datetime.utcnow().date()
 
 
 def get_30d_data_finra():
     """
-    Get short volume data from https://cdn.finra.org/ in the last 40 days
+    Get short volume data from https://cdn.finra.org/ in the last 30 days
     """
     last_date = datetime.utcnow().date() - timedelta(days=30)
     combined_df = pd.DataFrame(columns=["Date", "Symbol", "ShortVolume", "ShortExemptVolume", "TotalVolume", "%Shorted"])
@@ -48,7 +44,7 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date
     Get short volume data from https://cdn.finra.org/
     """
 
-    original_df = pd.read_sql_query("SELECT * FROM short_volume", conn)
+    original_df = pd.read_csv("database/short_volume.csv")
 
     url = r"https://cdn.finra.org/equity/regsho/daily/CNMSshvol{}.txt".format(str(date_to_process).replace("-", ""))
     print(url)
@@ -66,7 +62,7 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date
         df_copy.columns = ["Date", "ticker", "short_vol", "short_exempt_vol", "total_vol", "percent"]
         original_df = original_df.append(df_copy)
         original_df.drop_duplicates(keep="first", inplace=True)
-        original_df.to_sql("short_volume", conn, if_exists="replace", index=False)
+        original_df.to_csv("database/short_volume.csv", index=False)
 
         highest_shorted = df[df["ShortVolume"] >= 3000000].nlargest(50, "%Shorted")
         del highest_shorted["Date"]
@@ -89,7 +85,7 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date
 
 
 def main():
-    # get_30d_data_finra()
+    get_30d_data_finra()
     get_daily_data_finra()
 
 

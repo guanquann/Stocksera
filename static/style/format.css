@@ -710,13 +710,8 @@ input[type=text], input[type=email] {
 }
 
 .chart-container {
-    /*background: #EAE9E9;
-    border-radius: 15px;
-    margin-bottom: 30px;
-    margin-top: 30px;*/
-
+    position: relative;
+    margin: 1px auto 20px auto;
+    padding: 1px 5px;
+    width: 95%;
 }
-
-/*.dark_mode .chart-container {
-    background: #292626
-}*/

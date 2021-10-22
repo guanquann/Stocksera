@@ -1,0 +1,87 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Inflation{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/economy/economy.css' %}">
+<script src="{% static 'javascript/economy/inflation.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}color_table('checked', 'DRS');inflation('max');show_reference();get_economic_releases({{next_date}}){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/market_overview">Discover</a> /
+    <a href="/reverse_repo">Economy</a> /
+    <a href="/inflation">Inflation</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('economy')</script>
+    <div class="instructions">
+        <h2>Inflation</h2>
+        <p> Inflation is the decline of purchasing power of a given currency over time. A quantitative estimate of the
+            rate at which the decline in purchasing power occurs can be reflected in the increase of an average price
+            level of a basket of selected goods and services in an economy over some period of time.
+        </p>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reverse_repo' %}">Reverse Repo</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'daily_treasury' %}">Treasury</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'inflation' %}">Inflation</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'retail_sales' %}">Retail Sales</a></div>
+        </div>
+    </div>
+
+    <div class="instructions" id="releases_div">
+        <h2>Next Release Date</h2>
+    </div>
+
+    <div class="contents_div">
+        <div class="date_selector">
+            <button name="date_range" value="1 Year" onclick="btn_selected(this); inflation('one_year')">1 Year</button>
+            <button name="date_range" value="Max" onclick="btn_selected(this); inflation('max')" class="selected">Max</button>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="inflation_chart"></canvas>
+        </div>
+
+        <div>
+            <input type="checkbox" onclick="change_color_table('normal')" class="normal heat_map_selector">Normal Heat Map
+            <input type="checkbox" onclick="change_color_table('DRS')"  class="DRS heat_map_selector" checked>Apes Heat Map
+        </div>
+        <div class="drs_your_shares">
+            <h1>HAVE YOU DRS YOUR SHARES?</h1>
+            <a href="https://www.reddit.com/r/Superstonk/comments/ptvaka/when_you_wish_upon_a_star_a_complete_guide_to/" target="_blank">Reddit Guide</a>
+            <span> | </span>
+            <a href="https://www.computershare.com/us" target="_blank">Official Website</a>
+        </div>
+        <div class="scrollable_div">
+            {{inflation_stats|safe}}
+        </div>
+
+        <div class="scrollable_div" style="margin-top: 15px">
+            <div style="text-align: center">Colourbar (for reference):</div>
+            <table id="heatmap_reference">
+                <tr>
+                    <td>0.0</td>
+                    <td>1.0</td>
+                    <td>2.0</td>
+                    <td>3.0</td>
+                    <td>4.0</td>
+                    <td>5.0</td>
+                    <td>6.0</td>
+                    <td>7.0</td>
+                    <td>8.0</td>
+                    <td>9.0</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+{% endblock %}

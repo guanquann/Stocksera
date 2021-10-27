@@ -6,6 +6,7 @@ from scheduled_tasks.reddit.reddit_utils import *
 from scheduled_tasks.reddit.stocks.fast_yahoo import download_advanced_stats, download_quick_stats
 
 current_datetime = datetime.utcnow()
+mapping_stocks = get_mapping_stocks()
 
 
 def extract_ticker(text, tickers_dict, sentiment_dict, sentiment_score, calls_dict, calls_mentions, puts_dict,
@@ -31,7 +32,15 @@ def extract_ticker(text, tickers_dict, sentiment_dict, sentiment_score, calls_di
     puts_mentions: bool
         whether or not 'put(s)' or '100P' is mentioned
     """
-    extracted_tickers = set(re.findall(pattern, text.upper()))
+
+    for word in text.split():
+        for key, value in mapping_stocks.items():
+            if word in value:
+                # print("!!!!!", word, key, text)
+                text = text.replace(word, key)
+
+    extracted_tickers = set(re.findall(pattern, text))
+    print(extracted_tickers)
     for ticker in extracted_tickers:
         tickers_dict[ticker] = tickers_dict.get(ticker, 0) + 1
         sentiment_dict[ticker] = sentiment_dict.get(ticker, 0) + sentiment_score
@@ -51,7 +60,6 @@ def check_for_options(text):
     text: str
         comment
     """
-    text = text.upper()
     if re.findall("CALL|\d+C", text):
         calls_mentions = True
     else:
@@ -73,14 +81,7 @@ def wsb_live():
     current_datetime_str = current_datetime_str[:-2] + round_time(minute_hand)
     threshold_datetime = datetime.timestamp(current_datetime - timedelta(minutes=10))
 
-    basic_stopwords_list = list(map(lambda x: re.sub(r'\W+', '', x.upper()), stopwords.words('english'))) + \
-                           ["THATS", "GOT", "IM", "LIKE", "STILL", "EVER", "EVEN", "CANT", "US", "THATS", "GO", "WOULD",
-                            "MUCH", "GET", "ONE", "SEE", "WAY", "NEED", "TAKE", "MAKE", "GETTING", "GOING", "GONNA",
-                            "NEED", "THINK", "SAY", "SAID", "KNOW", "WAY", "TIME", "WEEK", "WELL", "WANT", "THING",
-                            "LETS", "IVE", "COULD", "ALWAYS", "FEEL", "FELT", "FEELS", "WHATS", "REALLY", "LOOK",
-                            "GUYS", "PEOPLE", "ALREADY", "IMGEMOTET_TH", "BANBET", "VISUALMOD", "TODAY",
-                            "MADE", "YESTERDAY", "TOMORROW", "TMR", "EDT", "KEEP", "ANYONE", "GOES", "PLEASE", "BET",
-                            "BAN"]
+    basic_stopwords_list = words_to_remove()
 
     subreddit = reddit.subreddit("wallstreetbets")
 
@@ -101,7 +102,7 @@ def wsb_live():
 
                 for comment in submission.comments:
                     if threshold_datetime < comment.created_utc:
-                        comment_body = comment.body
+                        comment_body = comment.body.upper()
 
                         # Get sentiment of comment
                         vs = analyzer.polarity_scores(comment_body)
@@ -121,7 +122,7 @@ def wsb_live():
 
                         # Read sub-comment
                         for second_level_comment in comment.replies:
-                            second_level_comment = second_level_comment.body
+                            second_level_comment = second_level_comment.body.upper()
 
                             # Get sentiment of comment
                             vs = analyzer.polarity_scores(second_level_comment)
@@ -208,7 +209,7 @@ def update_hourly():
     """
     threshold_datetime = str(current_datetime - timedelta(hours=1))
     threshold_hour = threshold_datetime.rsplit(":", 2)[0] + ":00"
-    print(threshold_hour, "onwards being saved to hourly database")
+    # print(threshold_hour, "onwards being saved to hourly database")
 
     db.execute("SELECT ticker, SUM(mentions), AVG(sentiment), SUM(calls), SUM(puts) FROM wsb_trending_24H WHERE "
                "date_updated > ? GROUP BY ticker", (threshold_datetime, ))
@@ -228,7 +229,7 @@ def wsb_change():
     threshold_datetime2 = str(current_datetime - timedelta(hours=48))
     threshold_hour2 = threshold_datetime2.rsplit(":", 2)[0] + ":00"
 
-    print(threshold_hour, threshold_hour2)
+    # print(threshold_hour, threshold_hour2)
 
     db.execute("SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment FROM wsb_trending_24H "
                "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) DESC LIMIT 50".format(threshold_hour))
@@ -255,7 +256,7 @@ def wsb_change():
 def get_mkt_cap():
     threshold_datetime = str(current_datetime - timedelta(hours=24))
     threshold_hour = threshold_datetime.rsplit(":", 2)[0] + ":00"
-    print(threshold_hour, "onwards being saved to yf database")
+    # print(threshold_hour, "onwards being saved to yf database")
 
     ticker_list, mentions_list = list(), list()
     db.execute("SELECT ticker, SUM(mentions) FROM wsb_trending_24H WHERE date_updated > ? GROUP BY "
@@ -294,7 +295,7 @@ def get_mkt_cap():
     quick_stats_df.reset_index(inplace=True)
     quick_stats_df.rename(columns={"Symbol": "ticker"}, inplace=True)
     quick_stats_df.to_sql("wsb_yf", conn, if_exists="replace", index=False)
-    print(quick_stats_df)
+    # print(quick_stats_df)
 
 
 if __name__ == '__main__':

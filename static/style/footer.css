@@ -1,7 +1,7 @@
 @media only screen and (max-width: 900px) {
     .modal-content {
         position: relative;
-        background-color: #fefefe;
+        background-color: #eae9e9;
         padding: 0;
         margin: auto;
         width: 85vw;
@@ -22,7 +22,7 @@
 @media only screen and (min-width: 900px) {
     .modal-content {
         position: relative;
-        background-color: #fefefe;
+        background-color: #eae9e9;
         padding: 0;
         margin-left: calc(15vw + 199px);
         width: calc(70vw - 200px);
@@ -195,7 +195,7 @@
 }
 
 #advertisement_model a, #advertisement_model .adv_close {
-    background: #9e9e9e;
+    background: rgb(38, 166, 154);
     color: black;
     font-weight: bold;
     text-decoration: none;

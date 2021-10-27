@@ -1,0 +1,73 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Crypto Live ({{ticker_selected}}){% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/reddit/wsb_live.css' %}">
+<script src="{% static 'javascript/reddit/crypto_live_ticker.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}load_ticker_graph();load_ticker_change(){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/wsb_live/">Crypto Live</a> /
+    <a href="/wsb_live/ticker/?quote={{ticker_selected}}">{{ticker_selected}}</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('reddit')</script>
+    <div class="instructions">
+        <h2>Live CryptoCurrency Analysis</h2>
+        <p>This page tracks & analysis trending tickers cryptocurrencies. Updates every 10 minutes.</p>
+        <div class="subscribe_email_div"><a class="subscribe_email" href="/subscribe" target="_blank">Subscribe to Free WSB Notifications</a></div>
+        <form action="/crypto_live_ticker" method="GET" autocomplete="off">
+            <div class="search_bar">
+                <input type="text" name="quote" value="{{ticker_selected}}" class="ticker_input" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                    <span class="fa fa-search"></span>
+                </button>
+            </div>
+            <a href="/crypto_live/" class="overview_btn">Overview</a>
+        </form>
+    </div>
+
+<!--    <div class="instructions">-->
+<!--        <h2>Other Datasets Available</h2>-->
+<!--        <div class="more_info_div_parent" id="more_info_div">-->
+<!--            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}">Analysis</a></div>-->
+<!--            <div class="more_info_div"><a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}">Options</a></div>-->
+<!--            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}">Short Vol</a></div>-->
+<!--            <div class="more_info_div"><a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}">FTD</a></div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <div class="contents_div">
+        <div id="ticker_basic_stats"></div>
+
+        <div style="display: flex; justify-content: center">
+            <div class="comparison">
+                <h2 class="comparison_title">Mentions 7D</h2>
+                <div class="recent">{{recent_mention}}</div>
+                <div class="change_div">
+                    <div class="prev">{{previous_mention}}</div>
+                    <div class="change"></div>
+                </div>
+            </div>
+            <div class="comparison">
+                <h2 class="comparison_title">Sentiment 7D</h2>
+                <div class="recent">{{recent_snt}}</div>
+                <div class="change_div">
+                    <div class="prev">{{previous_snt}}</div>
+                    <div class="change"></div>
+                </div>
+            </div>
+        </div>
+        <div id="ticker_chart" class="chart"></div>
+        <div style="display:none">
+            {{mentions_df|safe}}
+        </div>
+    </div>
+{% endblock %}

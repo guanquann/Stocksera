@@ -6,7 +6,7 @@
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/reddit/wsb_live.css' %}">
-<script src="{% static 'javascript/reddit/wsb_live.js' %}"></script>
+<script src="{% static 'javascript/reddit/wsb_live_ticker.js' %}"></script>
 {% endblock %}
 
 {% block onload_properties%}load_ticker_graph();load_ticker_change(){% endblock %}
@@ -51,7 +51,7 @@
 
         <div style="display: flex; justify-content: center">
             <div class="comparison">
-                <h2 class="comparison_title">Mentions 24H</h2>
+                <h2 class="comparison_title">Mentions 7D</h2>
                 <div class="recent">{{recent_mention}}</div>
                 <div class="change_div">
                     <div class="prev">{{previous_mention}}</div>
@@ -59,7 +59,7 @@
                 </div>
             </div>
             <div class="comparison">
-                <h2 class="comparison_title">Sentiment 24H</h2>
+                <h2 class="comparison_title">Sentiment 7D</h2>
                 <div class="recent">{{recent_snt}}</div>
                 <div class="change_div">
                     <div class="prev">{{previous_snt}}</div>
@@ -67,7 +67,7 @@
                 </div>
             </div>
             <div class="comparison">
-                <h2 class="comparison_title">No. Calls 24H</h2>
+                <h2 class="comparison_title">No. Calls 7D</h2>
                 <div class="recent">{{recent_calls}}</div>
                 <div class="change_div">
                     <div class="prev">{{previous_calls}}</div>
@@ -75,7 +75,7 @@
                 </div>
             </div>
             <div class="comparison">
-                <h2 class="comparison_title">No. Puts 24H</h2>
+                <h2 class="comparison_title">No. Puts 7D</h2>
                 <div class="recent">{{recent_puts}}</div>
                 <div class="change_div">
                     <div class="prev">{{previous_puts}}</div>

@@ -46,7 +46,7 @@ def get_submission_generators(n, sub):
     """
 
     recent = get_submission_praw(n, sub)
-    crypto_dict = get_topics()
+    crypto_dict = get_mapping_coins()
 
     current_scores, current_rocket_scores, current_posts_dict, current_upvotes_dict, current_comments_dict = \
         get_ticker_scores_praw(recent, crypto_dict)
@@ -79,11 +79,13 @@ def get_ticker_scores_praw(sub_gen_dict, crypto_dict):
             title = submission[0]
             self_text = submission[2]
             for word in title.upper().split():
+                word = re.sub(r'\d|\W+', '', word)
                 for key, value in crypto_dict.items():
                     if word in value:
                         extracted_tickers.add(key)
 
             for word in self_text.upper().split():
+                word = re.sub(r'\d|\W+', '', word)
                 for key, value in crypto_dict.items():
                     if word in value:
                         extracted_tickers.add(key)

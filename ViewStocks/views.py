@@ -982,7 +982,8 @@ def wsb_live(request):
         trending_list_by_hour.append(running_sum)
 
     # Get calls/puts mentions
-    trending_options = pd.read_sql_query("SELECT ticker, SUM(puts) AS Puts, SUM(calls) AS Calls FROM wsb_trending_24H "
+    trending_options = pd.read_sql_query("SELECT ticker as Ticker, SUM(calls) AS Calls, SUM(puts) AS Puts, "
+                                         "CAST(SUM(calls) AS float)/SUM(puts) as Ratio FROM wsb_trending_24H "
                                          "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(puts + calls) "
                                          "DESC LIMIT 30".format(date_threshold), conn)
 
@@ -1005,10 +1006,21 @@ def wsb_live_ticker(request):
     """
     Get mentions and sentiment of tickers in WSB
     """
+    pd.options.display.float_format = '{:.2f}'.format
     ticker_selected = default_ticker(request, "SPY")
     information, related_tickers = check_market_hours(ticker_selected)
 
     df = pd.read_sql_query("SELECT * FROM wsb_trending_hourly WHERE ticker='{}' ".format(ticker_selected), conn)
+    del df["ticker"]
+
+    # df = pd.read_sql_query("SELECT SUM(mentions) AS mentions, AVG(sentiment) AS sentiment, SUM(calls) AS calls, "
+    #                        "SUM(puts) as puts, strftime('%Y-%m-%d',date_updated) AS date_updated FROM "
+    #                        "wsb_trending_hourly WHERE ticker='{}' GROUP BY strftime('%Y-%m-%d', date_updated), "
+    #                        "ticker".format(ticker_selected), conn)
+
+    # df["put_call"] = df["calls"] / df["puts"]
+    # df.fillna(0, inplace=True)
+    # df.replace(np.inf, 0, inplace=True)
     if df.empty:
         recent_mention = 0
         previous_mention = 0
@@ -1020,20 +1032,20 @@ def wsb_live_ticker(request):
         previous_puts = 0
     else:
         current_time = datetime.utcnow()
-        last_24H = str(current_time - timedelta(days=1))
-        last_48H = str(current_time - timedelta(days=2))
+        last_7D = str(current_time - timedelta(days=7))
+        last_14D = str(current_time - timedelta(days=14))
 
-        recent_mention = df[df["date_updated"] >= last_24H]["mentions"].sum()
-        previous_mention = df[(df["date_updated"] >= last_48H) & (df["date_updated"] < last_24H)]["mentions"].sum()
+        recent_mention = df[df["date_updated"] >= last_7D]["mentions"].sum()
+        previous_mention = df[(df["date_updated"] >= last_14D) & (df["date_updated"] < last_7D)]["mentions"].sum()
 
-        recent_snt = round(df[df["date_updated"] >= last_24H]["sentiment"].mean(), 4)
-        previous_snt = round(df[(df["date_updated"] >= last_48H) & (df["date_updated"] < last_24H)]["sentiment"].mean(), 4)
+        recent_snt = round(df[df["date_updated"] >= last_7D]["sentiment"].mean(), 4)
+        previous_snt = round(df[(df["date_updated"] >= last_14D) & (df["date_updated"] < last_7D)]["sentiment"].mean(), 4)
 
-        recent_calls = df[df["date_updated"] >= last_24H]["calls"].sum().astype(int)
-        previous_calls = df[(df["date_updated"] >= last_48H) & (df["date_updated"] < last_24H)]["calls"].sum().astype(int)
+        recent_calls = df[df["date_updated"] >= last_7D]["calls"].sum().astype(int)
+        previous_calls = df[(df["date_updated"] >= last_14D) & (df["date_updated"] < last_7D)]["calls"].sum().astype(int)
 
-        recent_puts = df[df["date_updated"] >= last_24H]["puts"].sum().astype(int)
-        previous_puts = df[(df["date_updated"] >= last_48H) & (df["date_updated"] < last_24H)]["puts"].sum().astype(int)
+        recent_puts = df[df["date_updated"] >= last_7D]["puts"].sum().astype(int)
+        previous_puts = df[(df["date_updated"] >= last_14D) & (df["date_updated"] < last_7D)]["puts"].sum().astype(int)
 
     return render(request, 'reddit/wsb_live_ticker.html', {"ticker_selected": ticker_selected,
                                                            "information": information,
@@ -1051,6 +1063,97 @@ def wsb_live_ticker(request):
 
 def wsb_documentation(request):
     return render(request, "reddit/wsb_documentation.html", {"banned_words": sorted(stopwords_list)})
+
+
+def crypto_live(request):
+    """
+    Get live sentiment from crypto discussion thread
+    """
+    pd.options.display.float_format = '{:.2f}'.format
+
+    # Get trending tickers in the past 24H
+    date_threshold = str(datetime.utcnow() - timedelta(hours=24))
+
+    query = "SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment FROM crypto_trending_24H " \
+            "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) DESC".format(date_threshold)
+
+    mentions_df = pd.read_sql_query(query, conn)
+    mentions_df.index += 1
+    mentions_df.reset_index(inplace=True)
+    mentions_df.rename(columns={"index": "Rank"}, inplace=True)
+
+    db.execute(query)
+    top_12 = db.fetchall()
+    trending_list = list()
+    for ticker in top_12[:12]:
+        db.execute("SELECT ticker, date_updated, SUM(mentions) OVER (ROWS UNBOUNDED PRECEDING) FROM "
+                   "crypto_trending_24H WHERE ticker=? AND date_updated >= ?", (ticker[0], date_threshold))
+        running_sum = db.fetchall()
+        running_sum = list(map(list, running_sum))
+        trending_list.append(running_sum)
+
+    # Get word cloud
+    db.execute("SELECT word, SUM(mentions) FROM crypto_word_cloud WHERE date_updated >= ? GROUP BY word ORDER BY "
+               "SUM(mentions) DESC LIMIT 50", (date_threshold, ))
+    crypto_word_cloud = db.fetchall()
+    crypto_word_cloud = list(map(list, crypto_word_cloud))
+
+    # Get trending tickers in the past 7 days
+    date_threshold = str(datetime.utcnow() - timedelta(hours=24*7))
+    query = "SELECT ticker AS Ticker, SUM(mentions) AS Mention, AVG(sentiment) AS Sentiment FROM crypto_trending_hourly " \
+            "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) DESC LIMIT 12".format(date_threshold)
+    db.execute(query)
+    top_12 = db.fetchall()
+    trending_list_by_hour = list()
+    for ticker in top_12:
+        db.execute("SELECT ticker, date_updated, SUM(mentions) OVER (ROWS UNBOUNDED PRECEDING) FROM "
+                   "crypto_trending_hourly WHERE ticker=? AND date_updated >= ?", (ticker[0], date_threshold))
+        running_sum = db.fetchall()
+        running_sum = list(map(list, running_sum))
+        trending_list_by_hour.append(running_sum)
+
+    # Get change in mentions
+    change_df = pd.read_sql_query("SELECT * FROM crypto_change", conn)
+
+    return render(request, 'reddit/crypto_live.html', {"trending_list": trending_list,
+                                                       "trending_list_by_hour": trending_list_by_hour,
+                                                       "crypto_word_cloud": crypto_word_cloud,
+                                                       "mentions_df": mentions_df.to_html(index=False),
+                                                       "change_df": change_df.to_html(index=False),
+                                                       })
+
+
+def crypto_live_ticker(request):
+    pd.options.display.float_format = '{:.2f}'.format
+    ticker_selected = default_ticker(request, "BTC")
+
+    df = pd.read_sql_query("SELECT * FROM crypto_trending_hourly WHERE ticker='{}' ".format(ticker_selected), conn)
+    del df["ticker"]
+
+    if df.empty:
+        recent_mention = 0
+        previous_mention = 0
+        recent_snt = 0
+        previous_snt = 0
+    else:
+        current_time = datetime.utcnow()
+        last_7D = str(current_time - timedelta(days=7))
+        last_14D = str(current_time - timedelta(days=14))
+
+        recent_mention = df[df["date_updated"] >= last_7D]["mentions"].sum()
+        previous_mention = df[(df["date_updated"] >= last_14D) & (df["date_updated"] < last_7D)]["mentions"].sum()
+
+        recent_snt = round(df[df["date_updated"] >= last_7D]["sentiment"].mean(), 4)
+        previous_snt = round(df[(df["date_updated"] >= last_14D) & (df["date_updated"] < last_7D)]["sentiment"].mean(),
+                             4)
+
+    return render(request, 'reddit/crypto_live_ticker.html', {"ticker_selected": ticker_selected,
+                                                              "mentions_df": df.to_html(index=False),
+                                                              "recent_mention": recent_mention,
+                                                              "previous_mention": previous_mention,
+                                                              "recent_snt": recent_snt,
+                                                              "previous_snt": previous_snt,
+                                                              })
 
 
 def market_summary(request):

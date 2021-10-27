@@ -18,34 +18,44 @@ if not os.path.exists(INDICES_PATH):
 
 
 def main():
+    snp = pd.read_csv(os.path.join(INDICES_PATH, "snp500.csv"))
+    nasdaq = pd.read_csv(os.path.join(INDICES_PATH, "nasdaq100.csv"))
+    merge_df = snp.append(nasdaq)
+    merge_df.drop_duplicates(inplace=True)
+
     quick_stats_dict = {'price': {"marketCap": "Market Cap",
-                                  "regularMarketChangePercent": "price_change",
-                                  'regularMarketPrice': 'current_price'},
-                        'summaryDetail': {"sector": "Sector",
-                                          "industry": "Industry"}}
-    # quick_stats_dict = {'price': {"marketCap": "Market Cap", 'regularMarketChangePercent': '% Change'},
-    #                     'summaryProfile': {'sector': "Sector", 'industry': "Industry", }
-    #                     }
-    for indice in ["snp500", "nasdaq100"]:
-        snp = pd.read_csv(os.path.join(INDICES_PATH, f"{indice}.csv"))
-        symbol_list = snp["Symbol"].to_list()
-        symbol_list.remove("GOOG")
-        original_df = pd.DataFrame()
+                                  "regularMarketPreviousClose": "Prev Close",
+                                  'regularMarketPrice': 'Current Price'},
+                        'summaryProfile': {"sector": "Sector",
+                                           "industry": "Industry"}}
 
-        current_index = 0
-        while current_index < len(symbol_list):
-            quick_stats_df = download_advanced_stats(symbol_list[current_index:current_index + 100],
-                                                     quick_stats_dict, threads=True)
-            original_df = pd.concat([original_df, quick_stats_df])
-            current_index += 100
+    symbol_list = merge_df["Symbol"].to_list()
+    symbol_list.remove("GOOG")
+    original_df = pd.DataFrame()
 
-        original_df["% Change"] = original_df["% Change"] * 100
-        original_df = original_df.reindex(symbol_list)
-        original_df.reset_index(inplace=True)
+    current_index = 0
+    while current_index < len(symbol_list):
+        quick_stats_df = download_advanced_stats(symbol_list[current_index:current_index + 100],
+                                                 quick_stats_dict, threads=True)
+        original_df = pd.concat([original_df, quick_stats_df])
+        current_index += 100
 
-        original_df = original_df[original_df["Market Cap"] != "N/A"]
-        print(original_df)
-        original_df.to_csv(f"database/indices/{indice}_heatmap.csv", index=False)
+    original_df["Current Price"] = pd.to_numeric(original_df["Current Price"], errors='coerce')
+    original_df["Prev Close"] = pd.to_numeric(original_df["Prev Close"], errors='coerce')
+    original_df["% Change"] = (original_df["Current Price"] - original_df["Prev Close"]) * 100 / original_df["Prev Close"]
+    original_df = original_df.reindex(symbol_list)
+    original_df.reset_index(inplace=True)
+
+    original_df = original_df[original_df["Market Cap"] != "N/A"]
+    original_df = original_df[["Symbol", "Market Cap", "% Change", "Sector", "Industry"]]
+
+    snp_out = pd.merge(snp, original_df, on="Symbol", how="left")
+    snp_out.to_csv(f"database/indices/snp500_heatmap.csv", index=False)
+    print(snp_out)
+
+    nasdaq_out = pd.merge(nasdaq, original_df, on="Symbol", how="left")
+    nasdaq_out.to_csv(f"database/indices/nasdaq100_heatmap.csv", index=False)
+    print(nasdaq_out)
 
 
 if __name__ == '__main__':

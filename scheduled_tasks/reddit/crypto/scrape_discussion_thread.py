@@ -6,7 +6,8 @@ from scheduled_tasks.reddit.reddit_utils import *
 
 current_datetime = datetime.utcnow()
 
-crypto_dict = get_topics()
+crypto_dict = get_mapping_coins()
+print(crypto_dict)
 
 
 def extract_ticker(text, tickers_dict, sentiment_dict, sentiment_score):
@@ -23,12 +24,17 @@ def extract_ticker(text, tickers_dict, sentiment_dict, sentiment_score):
     sentiment_score: float
         sentiment of comment
     """
+    print(text)
+    extracted_tickers_set = set()
     for word in text.upper().split():
         for key, value in crypto_dict.items():
+            word = re.sub(r'\d|\W+', '', word)
             if word in value:
-                tickers_dict[key] = tickers_dict.get(key, 0) + 1
-                sentiment_dict[key] = sentiment_dict.get(key, 0) + sentiment_score
-
+                extracted_tickers_set.add(key)
+    for ticker in extracted_tickers_set:
+        tickers_dict[ticker] = tickers_dict.get(ticker, 0) + 1
+        sentiment_dict[ticker] = sentiment_dict.get(ticker, 0) + sentiment_score
+    print(extracted_tickers_set)
     return tickers_dict, sentiment_dict
 
 
@@ -42,13 +48,7 @@ def crypto_live():
     current_datetime_str = current_datetime_str[:-2] + round_time(minute_hand)
     threshold_datetime = datetime.timestamp(current_datetime - timedelta(minutes=10))
 
-    basic_stopwords_list = list(map(lambda x: re.sub(r'\W+', '', x.upper()), stopwords.words('english'))) + \
-                           ["THATS", "GOT", "IM", "LIKE", "STILL", "EVER", "EVEN", "CANT", "US", "THATS", "GO", "WOULD",
-                            "MUCH", "GET", "ONE", "SEE", "WAY", "NEED", "TAKE", "MAKE", "GETTING", "GOING", "GONNA",
-                            "NEED", "THINK", "SAY", "SAID", "KNOW", "WAY", "TIME", "WEEK", "WELL", "WANT", "THING",
-                            "LETS", "IVE", "COULD", "ALWAYS", "FEEL", "FELT", "FEELS", "WHATS", "REALLY", "LOOK",
-                            "GUYS", "PEOPLE", "ALREADY", "IMGEMOTET_TH", "BANBET", "VISUALMOD", "TODAY",
-                            "MADE", "YESTERDAY", "TOMORROW", "TMR", "EDT"]
+    basic_stopwords_list = words_to_remove()
 
     subreddit = reddit.subreddit("cryptocurrency")
 
@@ -57,46 +57,47 @@ def crypto_live():
     sentiment_dict = dict()
 
     for post in subreddit.hot(limit=10):
-        try:
-            # Ensure that post is stickied and the post is not an image
-            if post.stickied and ".jpg" not in post.url and ".png" not in post.url:
-                print(post.url)
-                submission = reddit.submission(url=post.url)
+        # Ensure that post is stickied and the post is not an image
+        if post.stickied and ".jpg" not in post.url and ".png" not in post.url:
+            print(post.url)
+            submission = reddit.submission(url=post.url)
 
-                submission.comment_sort = "new"
-                submission.comments.replace_more(limit=0)
+            submission.comment_sort = "new"
+            submission.comments.replace_more(limit=0)
 
-                for comment in submission.comments:
-                    if threshold_datetime < comment.created_utc:
-                        comment_body = comment.body
+            for comment in submission.comments:
+                if threshold_datetime < comment.created_utc:
+                    comment_body = comment.body
+
+                    # Get sentiment of comment
+                    vs = analyzer.polarity_scores(comment_body)
+                    sentiment_score = float(vs['compound'])
+
+                    # print(datetime.fromtimestamp(comment.created_utc), sentiment_score, comment_body)
+
+                    # Remove number/special characters (clean up word cloud)
+                    all_words_dict = insert_into_word_cloud_dict(comment_body, all_words_dict)
+
+                    # Get ticker based on pattern
+                    tickers_dict, sentiment_dict = extract_ticker(comment_body, tickers_dict, sentiment_dict, sentiment_score)
+
+                    # Read sub-comment
+                    for second_level_comment in comment.replies:
+                        second_level_comment = second_level_comment.body
 
                         # Get sentiment of comment
-                        vs = analyzer.polarity_scores(comment_body)
+                        vs = analyzer.polarity_scores(second_level_comment)
                         sentiment_score = float(vs['compound'])
-
-                        print(datetime.fromtimestamp(comment.created_utc), sentiment_score, comment_body)
-
-                        # Remove number/special characters (clean up word cloud)
-                        all_words_dict = insert_into_word_cloud_dict(comment_body, all_words_dict)
+                        # print(second_level_comment)
+                        # Insert into word cloud
+                        all_words_dict = insert_into_word_cloud_dict(second_level_comment, all_words_dict)
 
                         # Get ticker based on pattern
-                        tickers_dict, sentiment_dict = extract_ticker(comment_body, tickers_dict, sentiment_dict, sentiment_score)
-
-                        # Read sub-comment
-                        for second_level_comment in comment.replies:
-                            second_level_comment = second_level_comment.body
-
-                            # Get sentiment of comment
-                            vs = analyzer.polarity_scores(second_level_comment)
-                            sentiment_score = float(vs['compound'])
-
-                            # Insert into word cloud
-                            all_words_dict = insert_into_word_cloud_dict(second_level_comment, all_words_dict)
-
-                            # Get ticker based on pattern
-                            tickers_dict, sentiment_dict = extract_ticker(second_level_comment, tickers_dict, sentiment_dict, sentiment_score)
-        except:
-            pass
+                        tickers_dict, sentiment_dict = extract_ticker(second_level_comment, tickers_dict,
+                                                                      sentiment_dict, sentiment_score)
+        # except:
+        #     print("error!")
+        #     pass
 
     # Remove word from word cloud if it is found in stopwords_list
     all_words_dict = dict(sorted(all_words_dict.items(), key=lambda item: item[1]))
@@ -113,7 +114,6 @@ def crypto_live():
     df = df[(df["mentions"] >= 3) & (df["word"].str.len() > 1)]
 
     df["date_updated"] = current_datetime_str
-    print(df)
     df.to_sql("crypto_word_cloud", conn, if_exists="append", index=False)
 
     # Combine into 1 df
@@ -154,8 +154,6 @@ def crypto_change():
 
     threshold_datetime2 = str(current_datetime - timedelta(hours=48))
     threshold_hour2 = threshold_datetime2.rsplit(":", 2)[0] + ":00"
-
-    print(threshold_hour, threshold_hour2)
 
     db.execute("SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment "
                "FROM crypto_trending_24H WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) "

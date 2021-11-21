@@ -25,7 +25,7 @@ def download_ftd():
     ftd_url_links = text_soup_high_short_interested_stocks.findAll("table")[1].findAll("a")
     for url_link in ftd_url_links[:24]:
         print(base_url + url_link["href"])
-        df = pd.read_csv(base_url + url_link["href"], delimiter="|", error_bad_lines=False)
+        df = pd.read_csv(base_url + url_link["href"], delimiter="|", error_bad_lines=False, encoding="cp1252")
         df.to_csv("database/failure_to_deliver/csv/" + url_link["href"].split("/")[-1].replace(".zip", ".csv"),
                   index=None)
 

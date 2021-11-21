@@ -58,7 +58,8 @@
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
-    <a href="/market_summary/">Market Summary</a>
+    <a href="/market_summary/">Market Summary</a> /
+    <a href="/market_summary/">{{title}}</a>
 {% endblock %}
 
 {% block main_content %}
@@ -71,6 +72,7 @@
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=snp500">S&P 500</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=nasdaq100">Nasdaq 100</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=crypto">Cryptocurrency</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'earnings_calendar' %}">Earnings</a></div>
         </div>
     </div>
 
@@ -143,7 +145,6 @@
         </div>
         <br>
 
-<!--        <iframe src="https://whale-alert.io/transaction-map-embed.shtml" height="500px" width="100%" style="border:0px #ffffff none;" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" allowfullscreen></iframe>-->
         <h2 class="header">Heatmap of {{title}}</h2>
         <div id="heatmap_chart" class="tree_chart"></div>
 
@@ -152,12 +153,6 @@
             {{sector_df|safe}}
             {{industry_df|safe}}
         </div>
-
-<!--        <div class="scrollable_div" style="width: 70%; max-height: 400px; margin: auto; min-width: 250px; max-width: 500px" id="twitter_embed">-->
-<!--            <script>load_twitter_embed()</script>-->
-<!--            <a class="twitter-timeline" data-theme="light" href="https://twitter.com/stocksera_bot/lists/1448875408477212675?ref_src=twsrc%5Etfw">A Twitter List by stocksera_bot</a>-->
-<!--            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>-->
-<!--        </div>-->
     </div>
 </div>
 {% endblock %}

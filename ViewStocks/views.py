@@ -267,7 +267,7 @@ def latest_insider(request):
     """
     pd.options.display.float_format = '{:.2f}'.format
 
-    recent_activity = pd.read_sql_query("SELECT * FROM latest_insider_trading ORDER BY DateFilled DESC LIMIT 500", conn)
+    recent_activity = pd.read_sql_query("SELECT * FROM latest_insider_trading ORDER BY DateFilled DESC LIMIT 2000", conn)
     recent_activity.rename(columns={"TransactionDate": "Date",
                                     "TransactionType": "Transaction",
                                     "Value": "Value ($)",
@@ -535,7 +535,7 @@ def financial(request):
 #
 #         k = requests.get(f"https://www.optionsprofitcalculator.com/ajax/getOptions?stock={ticker_selected}&reqId=1").json()
 #         if "options" not in k:
-#             render(request, 'options.html', {"ticker_selected": ticker_selected,
+#             render(request, 'stock/options.html', {"ticker_selected": ticker_selected,
 #                                              "error": "error_true",
 #                                              "error_msg": "There is no options data for {}.".
 #                    format(ticker_selected)})
@@ -564,7 +564,7 @@ def financial(request):
 #         df_merge["OI"] = df_merge["OI"].astype(int)
 #         df_merge["Volume"] = df_merge["Volume"].astype(int)
 #
-#         return render(request, 'options.html', {"ticker_selected": ticker_selected,
+#         return render(request, 'stock/options.html', {"ticker_selected": ticker_selected,
 #                                                 "information": information,
 #                                                 "related_tickers": related_tickers,
 #                                                 "options_dates": options_dates,
@@ -575,7 +575,7 @@ def financial(request):
 #                                                 "merge": df_merge.to_html(index=False)
 #                                                 })
 #     else:
-#         return render(request, 'options.html', {"ticker_selected": ticker_selected,
+#         return render(request, 'stock/options.html', {"ticker_selected": ticker_selected,
 #                                                 "error": "error_true",
 #                                                 "error_msg": "There is no ticker named {} found! "
 #                                                              "Please enter a ticker symbol (TSLA) "
@@ -792,8 +792,7 @@ def earnings_calendar(request):
     db.execute("SELECT * FROM earnings_calendar ORDER BY earning_date ASC")
     calendar = db.fetchall()
     calendar = list(map(list, calendar))
-
-    return render(request, 'discover/earnings_calendar.html', {"earnings_calendar": calendar})
+    return render(request, 'market_summary/earnings_calendar.html', {"earnings_calendar": calendar})
 
 
 def reddit_analysis(request):
@@ -1013,14 +1012,6 @@ def wsb_live_ticker(request):
     df = pd.read_sql_query("SELECT * FROM wsb_trending_hourly WHERE ticker='{}' ".format(ticker_selected), conn)
     del df["ticker"]
 
-    # df = pd.read_sql_query("SELECT SUM(mentions) AS mentions, AVG(sentiment) AS sentiment, SUM(calls) AS calls, "
-    #                        "SUM(puts) as puts, strftime('%Y-%m-%d',date_updated) AS date_updated FROM "
-    #                        "wsb_trending_hourly WHERE ticker='{}' GROUP BY strftime('%Y-%m-%d', date_updated), "
-    #                        "ticker".format(ticker_selected), conn)
-
-    # df["put_call"] = df["calls"] / df["puts"]
-    # df.fillna(0, inplace=True)
-    # df.replace(np.inf, 0, inplace=True)
     if df.empty:
         recent_mention = 0
         previous_mention = 0
@@ -1059,10 +1050,6 @@ def wsb_live_ticker(request):
                                                            "recent_puts": recent_puts,
                                                            "previous_puts": previous_puts
                                                            })
-
-
-def wsb_documentation(request):
-    return render(request, "reddit/wsb_documentation.html", {"banned_words": sorted(stopwords_list)})
 
 
 def crypto_live(request):
@@ -1154,6 +1141,10 @@ def crypto_live_ticker(request):
                                                               "recent_snt": recent_snt,
                                                               "previous_snt": previous_snt,
                                                               })
+
+
+def wsb_documentation(request):
+    return render(request, "reddit/wsb_documentation.html", {"banned_words": sorted(stopwords_list)})
 
 
 def market_summary(request):
@@ -1311,8 +1302,21 @@ def retail_sales(request):
                                  "covid_monthly_avg": "Monthly Avg Cases"}, inplace=True)
     with open(r"database/economic_date.json", "r+") as r:
         data = json.load(r)
-    return render(request, 'economy/retail_sales.html', {"retail_stats": retail_stats[::-1].to_html(index=False),
-                                                 "next_date": data})
+    return render(request, 'economy/retail_sales.html',
+                  {"retail_stats": retail_stats[::-1].to_html(index=False),
+                   "next_date": data})
+
+
+def initial_jobless_claims(request):
+    pd.options.display.float_format = '{:.2f}'.format
+    jobless_claims = pd.read_sql_query("SELECT * FROM initial_jobless_claims", conn)
+    jobless_claims.rename(columns={"record_date": "Date", "value": "Number", "percent_change": "Percent Change"
+                                   }, inplace=True)
+    with open(r"database/economic_date.json", "r+") as r:
+        data = json.load(r)
+    return render(request, 'economy/initial_jobless_claims.html',
+                  {"jobless_claims": jobless_claims[::-1].to_html(index=False),
+                   "next_date": data})
 
 
 def short_interest(request):
@@ -1357,14 +1361,13 @@ def amd_xlnx_ratio(request):
     amd_df = yf.Ticker("AMD").history(interval="1d", period="1y")
     xlnx_df = yf.Ticker("XLNX").history(interval="1d", period="1y")
 
-    combined_df["AMD Price (Close)"] = amd_df["Close"].round(2)
-    combined_df["XLNX Price (Close)"] = xlnx_df["Close"].round(2)
-    combined_df["XLNX % Upside"] = 100 * ((1.7234 * combined_df["AMD Price (Close)"]) / combined_df["XLNX Price (Close)"] - 1)
-    combined_df["Ratio"] = combined_df["XLNX Price (Close)"] / combined_df["AMD Price (Close)"]
+    combined_df["AMD $"] = amd_df["Close"].round(2)
+    combined_df["XLNX $"] = xlnx_df["Close"].round(2)
+    combined_df["XLNX % Upside"] = 100 * ((1.7234 * combined_df["AMD $"]) / combined_df["XLNX $"] - 1)
+    combined_df["Ratio"] = combined_df["XLNX $"] / combined_df["AMD $"]
     combined_df["Ratio"] = combined_df["Ratio"].round(4)
     combined_df.reset_index(inplace=True)
     combined_df.rename(columns={"index": "Date"}, inplace=True)
-    combined_df = combined_df[combined_df["Date"] >= "2020-10-30"]
     return render(request, 'discover/amd_xlnx_ratio.html', {"combined_df": combined_df[::-1].to_html(index=False)})
 
 

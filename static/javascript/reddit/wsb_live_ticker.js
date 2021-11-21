@@ -1,12 +1,20 @@
-function load_ticker_graph() {
+function load_ticker_graph(duration) {
+    var date_threshold = get_date_difference(duration, "-")
+
     tr = document.querySelectorAll("tr")
-    mentions_list = [], sentiment_list = [], date_list = []
+    mentions_list = [], call_list = [], put_list = [], date_list = []
 
     for (i=1; i<tr.length; i++) {
         td = tr[i].querySelectorAll("td")
-        mentions_list.push(td[0].innerHTML)
-        sentiment_list.push(td[1].innerHTML)
-        date_list.push(td[4].innerHTML)
+
+        date_string = td[4].innerHTML
+        if (date_string >= date_threshold) {
+            mentions_list.push(td[0].innerHTML)
+            // sentiment_list.push(td[1].innerHTML)
+            call_list.push(td[2].innerHTML)
+            put_list.push(-td[3].innerHTML)
+            date_list.push(date_string)
+        }
     }
 
     var trace1 = {
@@ -23,27 +31,27 @@ function load_ticker_graph() {
         type: 'bar',
     };
 
-    var trace2 = {
-        x: date_list,
-        y: sentiment_list,
-        marker: {
-            color: '#ffa500c4'
-        },
-        name: 'Sentiment',
-        hovertemplate:
-                `<b>%{x|%d/%m (%H:%M)}</b><br>` +
-                "Sentiment: %{y}<br>" +
-                "<extra></extra>",
-        type: 'line',
-        yaxis: 'y2'
-    };
+//    var trace2 = {
+//        x: date_list,
+//        y: sentiment_list,
+//        marker: {
+//            color: '#ffa500c4'
+//        },
+//        name: 'Sentiment',
+//        hovertemplate:
+//                `<b>%{x|%d/%m (%H:%M)}</b><br>` +
+//                "Sentiment: %{y}<br>" +
+//                "<extra></extra>",
+//        type: 'line',
+//        yaxis: 'y2'
+//    };
 
     var layout = {
         autosize: true,
         margin: {
             t:0,
             l:50,
-            r:50,
+            r:0,
             pad: 0
         },
         automargin: true,
@@ -74,20 +82,95 @@ function load_ticker_graph() {
                 }
             },
         },
-        yaxis2: {
+//        yaxis2: {
+//            showgrid: false,
+//            showline: true,
+//            rangemode: 'tozero',
+//            range: [-1, 1],
+//            title: {
+//                text: 'Sentiment',
+//                font: {
+//                    size: 12,
+//                }
+//            },
+//            color: "gray",
+//            overlaying: 'y',
+//            side: 'right'
+//        },
+        legend: {
+            x: 0.5,
+            xanchor: 'center',
+            y: 1.1,
+            orientation: 'h',
+        },
+    };
+
+    var data = [trace1]
+    Plotly.newPlot('mentions_chart', data, layout, {displayModeBar: false, showTips: false, responsive: true});
+
+    var trace1 = {
+        x: date_list,
+        y: call_list,
+        marker: {
+            color: 'green'
+        },
+        name: 'Calls',
+        hovertemplate:
+                `<b>%{x|%d/%m (%H:%M)}</b><br>` +
+                "Calls: %{y}<br>" +
+                "<extra></extra>",
+        type: 'bar',
+    };
+
+    var trace2 = {
+        x: date_list,
+        y: put_list,
+        marker: {
+            color: 'red'
+        },
+        name: 'Puts',
+        hovertemplate:
+                `<b>%{x|%d/%m (%H:%M)}</b><br>` +
+                "Puts: %{y}<br>" +
+                "<extra></extra>",
+        type: 'bar',
+    };
+
+    var layout = {
+        autosize: true,
+        margin: {
+            t:0,
+            l:50,
+            r:0,
+            pad: 0
+        },
+        automargin: true,
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: 'transparent',
+        xaxis: {
+            showgrid: false,
+            showline: true,
+            color: "gray",
+            rangemode: 'tozero',
+            title: {
+                text: "Date (UTC)",
+                font: {
+                    size: 12
+                }
+            },
+            tickformat: "%d/%m",
+        },
+        yaxis: {
             showgrid: false,
             showline: true,
             rangemode: 'tozero',
-            range: [-1, 1],
+            color: "gray",
             title: {
-                text: 'Sentiment',
+                text: 'Calls / Puts Mentions',
                 font: {
                     size: 12,
                 }
             },
-            color: "gray",
-            overlaying: 'y',
-            side: 'right'
         },
         legend: {
             x: 0.5,
@@ -98,7 +181,7 @@ function load_ticker_graph() {
     };
 
     var data = [trace1, trace2]
-    Plotly.newPlot('ticker_chart', data, layout, {displayModeBar: false, showTips: false, responsive: true});
+    Plotly.newPlot('call_put_chart', data, layout, {displayModeBar: false, showTips: false, responsive: true});
 }
 
 function load_ticker_change() {
@@ -112,5 +195,6 @@ function load_ticker_change() {
 }
 
 function resize_plotly_graph() {
-    Plotly.Plots.resize('ticker_chart')
+    Plotly.Plots.resize('mentions_chart')
+    Plotly.Plots.resize('call_put_chart')
 }

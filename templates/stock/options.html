@@ -34,10 +34,10 @@
         <h2>Other Datasets Available</h2>
         <div class="more_info_div_parent">
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}">Analysis</a></div>
-<!--            <div class="more_info_div"><a class="more_info_btn" href="{% url 'financial' %}?quote={{ticker_selected}}">Financials</a></div>-->
             <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'options' %}?quote={{ticker_selected}}">Options</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}">Short Vol</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}">FTD</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'wsb_live_ticker' %}?quote={{ticker_selected}}">WSB Live</a></div>
         </div>
     </div>
 
@@ -65,11 +65,10 @@
         </div>
 
         <div id="graph_section">
-            <h2>Max Pain</h2>
+            <h2>Max Pain (${{max_pain}})</h2>
             <div class="chart-container">
                 <canvas id="max_pain_chart"></canvas>
             </div>
-            <div class="max_pain_div">Max Pain: ${{max_pain}}</div>
 
             <h2>Volume</h2>
             <div class="chart-container">

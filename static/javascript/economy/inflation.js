@@ -50,7 +50,6 @@ function show_reference(whether_drs) {
 
 function change_color_table(whether_drs) {
     checkbox = document.getElementsByClassName(whether_drs)[0]
-    drs_your_shares = document.getElementsByClassName("drs_your_shares")[0]
     if (checkbox.checked == true) {
         color_table("checked", whether_drs)
     }
@@ -59,11 +58,9 @@ function change_color_table(whether_drs) {
     }
     if (whether_drs == "normal") {
         document.querySelector(".DRS").checked = false
-        drs_your_shares.style.display = "none"
     }
     else {
         document.querySelector(".normal").checked = false
-        drs_your_shares.style.removeProperty("display")
     }
     show_reference(whether_drs)
 }

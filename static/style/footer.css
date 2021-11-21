@@ -1,7 +1,7 @@
 @media only screen and (max-width: 900px) {
     .modal-content {
         position: relative;
-        background-color: #eae9e9;
+        background-color: white;
         padding: 0;
         margin: auto;
         width: 85vw;
@@ -22,7 +22,7 @@
 @media only screen and (min-width: 900px) {
     .modal-content {
         position: relative;
-        background-color: #eae9e9;
+        background-color: white;
         padding: 0;
         margin-left: calc(15vw + 199px);
         width: calc(70vw - 200px);

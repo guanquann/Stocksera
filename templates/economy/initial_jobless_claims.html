@@ -1,0 +1,61 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Initial Jobless Claims{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/economy/economy.css' %}">
+<script src="{% static 'javascript/economy/initial_jobless_claims.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}initial_jobless_claims(48);display_table();get_economic_releases({{next_date}}){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/market_overview">Discover</a> /
+    <a href="/reverse_repo">Economy</a> /
+    <a href="/initial_jobless_claims">Initial Jobless Claims</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('economy')</script>
+    <div class="instructions">
+        <h2>Initial Jobless Claims</h2>
+        <p>
+            Initial Jobless Claims measures the number of individuals who filed for unemployment insurance for the
+            first time during the past week.
+        </p>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reverse_repo' %}">RRP</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'daily_treasury' %}">Treasury</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'inflation' %}">Inflation</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'retail_sales' %}">Retail</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'initial_jobless_claims' %}">Jobless Claims</a></div>
+        </div>
+    </div>
+
+    <div class="instructions" id="releases_div">
+        <h2>Next Release Date</h2>
+    </div>
+
+    <div class="contents_div">
+        <div class="date_selector">
+              <button name="date_range" onclick="btn_selected(this); initial_jobless_claims(3)">3 Months</button>
+              <button name="date_range" onclick="btn_selected(this); initial_jobless_claims(6)">6 Months</button>
+              <button name="date_range" onclick="btn_selected(this); initial_jobless_claims(12)" class="selected">1 Year</button>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="ijc_chart"></canvas>
+        </div>
+
+        <div class="scrollable_div">
+            {{jobless_claims|safe}}
+        </div>
+    </div>
+{% endblock %}

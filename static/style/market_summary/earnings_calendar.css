@@ -15,9 +15,8 @@
     }
 
     .sticky {
-        position: fixed;
+        position: sticky;
         top: 40px;
-        width: 87%;
     }
 }
 
@@ -38,21 +37,19 @@
     }
 
     .sticky {
-        position: fixed;
+        position: sticky;
         top: 45px;
-        width: 82%;
     }
 }
 
 .menu {
-    padding: 6px;
     border-radius: 6px;
     z-index: 99;
     background-color: #e9eaea;
 }
 
 .dark_mode .menu {
-    background-color: #505050;
+    background-color: #1c1f21;
 }
 
 #to_top {
@@ -65,7 +62,7 @@
 }
 
 button {
-    border: 1px solid grey;
+    border: 1.5px solid grey;
     border-radius: 3px;
     padding: 0.4%;
 }
@@ -73,10 +70,6 @@ button {
 button:hover {
     cursor: pointer;
     outline: 0;
-    background-color: #26a69a;
-}
-
-.selected_btn {
     background-color: #26a69a;
 }
 

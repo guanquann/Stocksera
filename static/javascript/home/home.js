@@ -9,21 +9,21 @@ function show_dd(type, elem) {
         text = "View latest price, key statistics, major holders, institutional holders, earnings, recommendations and sort historical data."
         url = "/ticker/"
     }
-    else if (type == "financials") {
-        text = "Get Balance Sheet of a company. Income Statement and Cash Flow will be added in the next update."
-        url = "/ticker/financial/"
-    }
     else if (type == "options") {
         text = "View max pain for the week, Call & Put Ratio and option chain of a ticker."
         url = "/ticker/options/"
     }
     else if (type == "short_volume") {
-        text = "Get short volume of some of the popular tickers. Data is from shortvolumes.com."
+        text = "Get short volume of some of the popular tickers."
         url = "/ticker/short_volume/"
     }
     else if (type == "ftd") {
         text = "View Failure to Deliver (FTD) data of some of the popular tickers. Data is updated whenever latest information from SEC is available."
         url = "/ticker/failure_to_deliver/"
+    }
+    else if (type == "wsb_live") {
+        text = "View number of mentions of a ticker in r/wallstreetbets over time."
+        url = "/wsb_live/"
     }
     document.getElementById("dd_description").innerHTML = `
         <div class="section_div_text">${text}</div><div class="href_btn"><a href="${url}">VIEW MORE</a></div>`
@@ -44,6 +44,10 @@ function show_reddit(type, elem) {
         text = "Get live sentiment and analysis on most mentioned tickers in WSB discussion thread."
         url = "/wsb_live/"
     }
+    else if (type == "crypto_live") {
+        text = "Get live sentiment and analysis on most mentioned symbols in r/CryptoCurrency discussion thread."
+        url = "/crypto_live/"
+    }
     else if (type == "reddit_etf") {
         text = "WSB ETF contains the top 10 trending tickers on r/wallstreetbets. Past performance included as well."
         url = "/reddit_etf/"
@@ -63,17 +67,17 @@ function show_discover(type, elem) {
     }
     elem.classList.add("selected");
 
-    if (type == "overview") {
-        text = "View performance of the entire market, futures, commodities, forex, cryptocurrencies and economic events"
-        url = "/market_overview/"
+    if (type == "heatmap") {
+        text = "View overall performance of S&P500, Nasdaq100 & Crypto market."
+        url = "/market_summary/"
     }
     else if (type == "short_int") {
         text = "View stocks with high short interest. Squeeze time!"
         url = "/short_interest/"
     }
-    else if (type == "low_float") {
-        text = "View stocks with low float."
-        url = "/low_float/"
+    else if (type == "latest_insider") {
+        text = "Analyse largest net latest insider transactions in the last month."
+        url = "/latest_insider/"
     }
     else if (type == "ark") {
         text = "Get holdings, daily trades and news of ARK Fund."
@@ -113,6 +117,10 @@ function show_economy(type, elem) {
     else if (type == "retail") {
         text = "Get total sales of the US economy and look at how Covid-19 cases affect spending."
         url = "/retail_sales/"
+    }
+    else if (type == "initial_jobless_claims") {
+        text = "View number of individuals who filed for unemployment insurance last week."
+        url = "/initial_jobless_claims/"
     }
     document.getElementById("economy_description").innerHTML = `
         <div class="section_div_text">${text}</div><div class="href_btn"><a href="${url}">VIEW MORE</a></div>`

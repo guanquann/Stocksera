@@ -1,8 +1,14 @@
+import os
+import sys
 import json
 import sqlite3
 import tabula
 import pandas as pd
 from datetime import datetime, timedelta
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+
+from scheduled_tasks.economy.ychart_connection import ychart_data
 
 conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
@@ -19,6 +25,16 @@ def get_next_retail_sales_date():
     df = df[df["Release Date"] >= current_date].iloc[0]
     df['Release Date'] = df['Release Date'].strftime('%Y-%m-%d')
     return df
+
+
+def get_next_initial_jobless_date():
+    """
+    Get next initial jobless claim date
+    """
+    url = "https://ycharts.com/indicators/us_initial_claims_for_unemployment_insurance"
+    release_date = ychart_data(url)[3].iloc[3][1].split(",")[0]
+    release_date = str(datetime.strptime(release_date, "%b %d %Y")).split()[0]
+    return release_date
 
 
 def get_next_cpi_date():
@@ -60,16 +76,19 @@ def get_holidays():
 
 
 def main():
+    get_next_initial_jobless_date()
     db.execute("SELECT record_date from reverse_repo ORDER BY record_date DESC LIMIT 1")
     record_date = db.fetchone()
     rrp_treasury_date = get_next_rrp_treasury_date(datetime.strptime(record_date[0], "%Y-%m-%d") + timedelta(days=1))
     retail_df = get_next_retail_sales_date()
     cpi_df = get_next_cpi_date()
+    ijp_date = get_next_initial_jobless_date()
 
     with open(r"database/economic_date.json", "w") as r:
         information = {
             "Retail Sales": {"Ref Month": retail_df["Data Month"], "Release Date": retail_df["Release Date"]},
             "Inflation": {"Ref Month": cpi_df["Reference Month"], "Release Date": cpi_df["Release Date"]},
+            "Initial Jobless Claims": {"Release Date": ijp_date},
             "Daily Treasury": {"Release Date": rrp_treasury_date},
             "Reverse Repo": {"Release Date": rrp_treasury_date},
         }

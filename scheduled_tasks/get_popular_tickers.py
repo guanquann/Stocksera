@@ -9,8 +9,9 @@ def full_ticker_list():
                        "TLRY", "CLNE", "WISH", "CLF", "GOEV", "DKNG", "RIDE", "AMZN", "GOOG", "RIOT", "NFLX", "XPEV",
                        "CRSP", "JPM", "LI", "C", "ORCL", "BYND", "NKLA", "CHWY", "CLVS", "SNOW", "BNGO", "VBR", "VTI",
                        "MU", "SKLZ", "AI", "MS", "BAC", "CRSR", "AAL", "CRWD", "NKE", "NAKD", "ICLN", "ZM", "UBS", "NET",
-                       "UBER", "TSM", "DIS", "V", "BIDU", "JNJ", "TDOC", "PSFE", "DAL", "DIDI", "XELA", "SENS", "SPRT",
+                       "UBER", "TSM", "DIS", "V", "BIDU", "JNJ", "TDOC", "PSFE", "DAL", "DIDI", "XELA", "SENS",
                        "MMAT", "XLNX", "HOOD", "LCID", "NVAX", "MRNA", "HP", "ILMN", "MCD", "WFC", "BBIG", "PTON", "MSTR",
                        "MARA", "ATER", "BBBY", "BTBT", "BTCM", "TTD", "IRNT", "WOOF", "UPST", "AFRM", "U", "RKLB",
-                       "PINS", "PENN", "CZR", "SBUX", "FUTU", "CSCO", "WMT", "EA", "IBM", "CRM", "GS", "SDC"]
+                       "PINS", "PENN", "CZR", "SBUX", "FUTU", "CSCO", "WMT", "EA", "IBM", "CRM", "GS", "SDC", "BITO",
+                       "RIVN", "MA", "ASTR", "PFE", "Z"]
     return list_of_tickers

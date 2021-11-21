@@ -1,11 +1,24 @@
 var earnings_container_div = document.getElementsByClassName("earnings_container");
 
 function sortTicker(self, threshold) {
+    threshold = self.value
+    if (threshold == "All") {
+        threshold = 0
+    }
+    else if (threshold == ">$10B") {
+        threshold = 10000000000
+    }
+    else if (threshold == ">$20B") {
+        threshold = 20000000000
+    }
+    else if (threshold == ">$50B") {
+        threshold = 50000000000
+    }
+
     var btns = document.getElementsByTagName("button");
     for (btn of btns) {
         btn.className = "";
     }
-    self.className = "selected_btn"
     document.getElementById("search_ticker").value = "";
 
     for (earning=0; earning<earnings_container_div.length; earning++) {
@@ -63,7 +76,6 @@ function sort_by(elem) {
     for (earning=0; earning<earnings_container_div.length; earning++) {
         if (sort_selection == "Market Cap") {
             mkt_cap = earnings_calendar[earning][2];
-
         }
         else {
             continue

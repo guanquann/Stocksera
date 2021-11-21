@@ -31,10 +31,11 @@
     <div class="instructions">
         <h2>Other Datasets Available</h2>
         <div class="more_info_div_parent">
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reverse_repo' %}">Reverse Repo</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reverse_repo' %}">RRP</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'daily_treasury' %}">Treasury</a></div>
             <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'inflation' %}">Inflation</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'retail_sales' %}">Retail Sales</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'retail_sales' %}">Retail</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'initial_jobless_claims' %}">Jobless Claims</a></div>
         </div>
     </div>
 
@@ -55,12 +56,6 @@
         <div>
             <input type="checkbox" onclick="change_color_table('normal')" class="normal heat_map_selector">Normal Heat Map
             <input type="checkbox" onclick="change_color_table('DRS')"  class="DRS heat_map_selector" checked>Apes Heat Map
-        </div>
-        <div class="drs_your_shares">
-            <h1>HAVE YOU DRS YOUR SHARES?</h1>
-            <a href="https://www.reddit.com/r/Superstonk/comments/ptvaka/when_you_wish_upon_a_star_a_complete_guide_to/" target="_blank">Reddit Guide</a>
-            <span> | </span>
-            <a href="https://www.computershare.com/us" target="_blank">Official Website</a>
         </div>
         <div class="scrollable_div">
             {{inflation_stats|safe}}

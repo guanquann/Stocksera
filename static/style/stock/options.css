@@ -76,17 +76,7 @@
     max-height:250px;
 }
 
-.max_pain_div {
-    background-color: #E9EAEA;
-    border: 1.5px solid grey;
-    padding: 5px;
-    border-radius: 6px;
-    width: fit-content;
-    float: right;
-    margin-right: 10px;
-}
-
-.dark_mode .max_pain_div, .dark_mode .options_summary, .dark_mode .options_summary_sub {
+.dark_mode .options_summary, .dark_mode .options_summary_sub {
     background-color: #1c1f21;
     color: #ccc;
 }

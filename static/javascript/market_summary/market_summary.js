@@ -100,12 +100,13 @@ function load_crypto_chart() {
             symbol = i["symbol"].toUpperCase()
             market_cap = i["market_cap"] / 1000000000
             current_price = i["current_price"]
+            volume = i["total_volume"]
             price_change_percentage_24h = i["price_change_percentage_24h"]
             parent_list.push("Top 100 Crypto by Market Cap")
             symbol_list.push(symbol)
             market_cap_list.push(market_cap)
             color_list.push(price_change_percentage_24h)
-            custom_data_list.push([current_price, price_change_percentage_24h, Number(market_cap).toLocaleString()])
+            custom_data_list.push([current_price, price_change_percentage_24h, Number(market_cap).toLocaleString(), volume.toLocaleString()])
         }
 
         var data = [{
@@ -114,7 +115,7 @@ function load_crypto_chart() {
             labels: symbol_list,
             parents: parent_list,
             customdata: custom_data_list,
-            hovertemplate: "<b>%{label}</b><br>Price: $%{customdata[0]}<br>Price Change: %{customdata[1]:.2f}%<br>Market Cap: %{customdata[2]}B<extra></extra>",
+            hovertemplate: "<b>%{label}</b><br>Price: $%{customdata[0]}<br>Price Change: %{customdata[1]:.2f}%<br>Market Cap: %{customdata[2]}B<br>24H Vol: $%{customdata[3]}<extra></extra>",
             textposition: "center",
             texttemplate: "<b>%{label}</b><br>%{customdata[1]:.2f}%",
             showscale: false,

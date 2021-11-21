@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/reddit/wsb_live_ticker.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}load_ticker_graph();load_ticker_change(){% endblock %}
+{% block onload_properties%}load_ticker_graph(12);load_ticker_change(){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -42,6 +42,7 @@
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}">Options</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}">Short Vol</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}">FTD</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'wsb_live_ticker' %}?quote={{ticker_selected}}">WSB Live</a></div>
         </div>
     </div>
 
@@ -67,7 +68,7 @@
                 </div>
             </div>
             <div class="comparison">
-                <h2 class="comparison_title">No. Calls 7D</h2>
+                <h2 class="comparison_title">Calls 7D</h2>
                 <div class="recent">{{recent_calls}}</div>
                 <div class="change_div">
                     <div class="prev">{{previous_calls}}</div>
@@ -75,7 +76,7 @@
                 </div>
             </div>
             <div class="comparison">
-                <h2 class="comparison_title">No. Puts 7D</h2>
+                <h2 class="comparison_title">Puts 7D</h2>
                 <div class="recent">{{recent_puts}}</div>
                 <div class="change_div">
                     <div class="prev">{{previous_puts}}</div>
@@ -83,7 +84,18 @@
                 </div>
             </div>
         </div>
-        <div id="ticker_chart" class="chart"></div>
+
+        <div class="date_selector">
+              <button name="date_range" onclick="btn_selected(this); load_ticker_graph(1)">1 Month</button>
+              <button name="date_range" onclick="btn_selected(this); load_ticker_graph(48)" class="selected">Max</button>
+<!--              <button name="date_range" onclick=" load_ticker_graph(6)" class="selected">6 Months</button>-->
+        </div>
+
+        <h2 class="header">Number of Mentions</h2>
+        <div id="mentions_chart" class="chart"></div>
+
+        <h2 class="header">Calls / Puts Mentions</h2>
+        <div id="call_put_chart" class="chart"></div>
         <div style="display:none">
             {{mentions_df|safe}}
         </div>
@@ -92,7 +104,6 @@
 
 {% block bottom_script %}
 <script type="text/javascript">
-<!--Hack to convert python variables to javascript-->
 var None = "N/A", False = false; True = true;
 var information = {{information|safe}};
 show_ticker_price(information)

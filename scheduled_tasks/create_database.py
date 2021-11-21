@@ -131,7 +131,7 @@ def database():
     db.execute("CREATE table IF NOT EXISTS earnings_calendar ("
                "name TEXT, "
                "symbol TEXT, "
-               "mkt_cap TEXT, "
+               "mkt_cap INTEGER, "
                "eps_est TEXT, "
                "eps_act TEXT, "
                "earning_date TEXT, "
@@ -195,6 +195,11 @@ def database():
                "value FLOAT, "
                "percent_change FLOAT, "
                "covid_monthly_avg INTEGER, "
+               "UNIQUE ('record_date') )")
+
+    db.execute("CREATE table IF NOT EXISTS initial_jobless_claims (record_date TEXT, "
+               "value INTEGER, "
+               "percent_change FLOAT, "
                "UNIQUE ('record_date') )")
 
     db.execute("CREATE table IF NOT EXISTS inflation ("

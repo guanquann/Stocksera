@@ -23,22 +23,23 @@
         <p>These are the positions, trades, and weight of all companies in ARK Fund. Data is updated daily.</p>
         <div class="fund_type_parent">
             <div class="fund_type selected" onclick="update_fund(this)">ARKK</div>
-            <div class="fund_type" onclick="update_fund(this)">ARKQ</div>
-            <div class="fund_type" onclick="update_fund(this)">ARKF</div>
-            <div class="fund_type" onclick="update_fund(this)">ARKG</div>
-            <div class="fund_type" onclick="update_fund(this)">ARKW</div>
-            <div class="fund_type" onclick="update_fund(this)">ARKX</div>
-            <div class="fund_type" onclick="update_fund(this)">PRNT</div>
-            <div class="fund_type" onclick="update_fund(this)">IZRL</div>
+            <div class="fund_type" onclick="update_fund(this, false)">ARKQ</div>
+            <div class="fund_type" onclick="update_fund(this, false)">ARKF</div>
+            <div class="fund_type" onclick="update_fund(this, false)">ARKG</div>
+            <div class="fund_type" onclick="update_fund(this, false)">ARKW</div>
+            <div class="fund_type" onclick="update_fund(this, false)">ARKX</div>
+            <div class="fund_type" onclick="update_fund(this, false)">PRNT</div>
+            <div class="fund_type" onclick="update_fund(this, false)">IZRL</div>
+            <div class="fund_type" onclick="update_fund(this, true)">Summary</div>
         </div>
     </div>
 
     <div class="instructions">
         <h2>Other Datasets Available</h2>
         <div class="more_info_div_parent">
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'latest_insider' %}">Latest Insider</a></div>
-            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'ark_trades' %}">ARK Fund</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'amd_xlnx_ratio' %}">AMD-XLNX Ratio</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'latest_insider' %}">Insider</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'ark_trades' %}">ARK</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'amd_xlnx_ratio' %}">AMD-XLNX</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_interest' %}">Short Interest</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'beta' %}">Beta</a></div>
         </div>

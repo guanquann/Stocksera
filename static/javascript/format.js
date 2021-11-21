@@ -283,6 +283,7 @@ function get_economic_releases(elem) {
     treasury_json = elem["Daily Treasury"]["Release Date"]
     inflation_json = elem["Inflation"]["Release Date"]
     retail_sales_json = elem["Retail Sales"]["Release Date"]
+    jobless_claims_json = elem["Initial Jobless Claims"]["Release Date"]
 
     if (rrp == today_date) {
         rrp_code = `<div style="color:red">RRP: ${rrp} </div>`
@@ -308,15 +309,23 @@ function get_economic_releases(elem) {
     else {
         retail_sales_code = `<div>Retail Sales: ${retail_sales_json} (Pre)</div>`
     }
-
+    if (jobless_claims_json == today_date) {
+        jobless_claims_code = `<div style="color:red">Jobless Claims: ${jobless_claims_json} (Pre)</div>`
+    }
+    else {
+        jobless_claims_code = `<div>Jobless Claims: ${jobless_claims_json} (Pre)</div>`
+    }
     code = `
             <div style="display:inline-block;width:52%">
                 ${rrp_code}
                 ${treasury_code}
             </div>
-            <div style="display:inline-block">
+            <div style="display:inline-block;width:46%">
                 ${inflation_code}
                 ${retail_sales_code}
+            </div>
+            <div style="display:inline-block">
+                ${jobless_claims_code}
             </div>`
     document.getElementById("releases_div").innerHTML += code
 }

@@ -33,16 +33,6 @@
             </div>
         </div>
         <div id="intro_images">
-<!--                                <div style="position:absolute; z-index: 99999;-->
-<!--    right: 250px;-->
-<!--background: rgb(38, 166, 154);-->
-<!--    padding: 10px 20px;-->
-<!--    border-radius: 50px;-->
-<!--    margin-top: 10px;-->
-<!--    color: white;-->
-<!--    font-weight: bold;">-->
-<!--            SHORT VOL.-->
-<!--        </div>-->
             <div class="introSlides fade">
                 <a href="/ticker/failure_to_deliver"><img src="{% static 'images/homepage/introduction/light_mode/ftd.png' %}"></a>
             </div>
@@ -106,10 +96,10 @@
         <h1>Due-Diligence</h1>
         <div class="dd_btn">
             <button onclick="show_dd('analysis', this)" class="selected">Analysis</button>
-            <button onclick="show_dd('financials', this)">Financials</button>
             <button onclick="show_dd('options', this)">Options</button>
             <button onclick="show_dd('short_volume', this)">Short Volume</button>
             <button onclick="show_dd('ftd', this)">FTD</button>
+            <button onclick="show_dd('wsb_live', this)">WSB Live</button>
         </div>
 
         <div class="section_div_description" id="dd_description">
@@ -128,6 +118,7 @@
         <h1>Reddit Analysis</h1>
         <div class="reddit_btn">
             <button onclick="show_reddit('wsb_live', this)" class="selected">WSB Live</button>
+            <button onclick="show_reddit('crypto_live', this)">Crypto Live</button>
             <button onclick="show_reddit('reddit_trending', this)">Trending</button>
             <button onclick="show_reddit('reddit_etf', this)">WSB ETF</button>
             <button onclick="show_reddit('subreddit', this)">Subreddit</button>
@@ -147,10 +138,11 @@
     <div class="section_div_left">
         <h1>Economy</h1>
         <div class="economy_btn">
-            <button onclick="show_economy('rrp', this)" class="selected">Reverse Repo</button>
-            <button onclick="show_economy('treasury', this)">Daily Treasury</button>
+            <button onclick="show_economy('rrp', this)" class="selected">RRP</button>
+            <button onclick="show_economy('treasury', this)">Treasury</button>
             <button onclick="show_economy('inflation', this)">Inflation</button>
             <button onclick="show_economy('retail', this)">Retail Sales</button>
+            <button onclick="show_economy('initial_jobless_claims', this)">Jobless Claims</button>
         </div>
 
         <div class="section_div_description" id="economy_description">
@@ -186,11 +178,11 @@
     <div class="section_div_left">
         <h1>Discover</h1>
         <div class="discover_btn">
-            <button onclick="show_discover('overview', this)" class="selected">Market Overview</button>
+            <button onclick="show_discover('latest_insider', this)" class="selected">Insider</button>
+            <button onclick="show_discover('ark', this)">ARK</button>
+            <button onclick="show_discover('amd_xlnx_ratio', this)">AMD-XLNX</button>
             <button onclick="show_discover('short_int', this)">Short Interest</button>
-            <button onclick="show_discover('low_float', this)">Low Float</button>
-            <button onclick="show_discover('ark', this)">ARK Trades</button>
-            <button onclick="show_discover('amd_xlnx_ratio', this)">AMD-XLNX Ratio</button>
+            <button onclick="show_discover('heatmap', this)">Heatmap</button>
             <button onclick="show_discover('earnings', this)">Earnings</button>
         </div>
 
@@ -239,7 +231,7 @@
             </div>
         </div>
     </div>
-    <div class="section_div_right"><img src="{% static 'images/homepage/subscribe.png' %}"></div>
+    <div class="section_div_right"><a href="https://twitter.com/stocksera_bot" target="_blank"><img src="{% static 'images/homepage/subscribe.png' %}"></a></div>
 </div>
 
 <div class="section_div">

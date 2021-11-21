@@ -82,6 +82,7 @@ def get_earnings(n_days=7, forward=True):
                                                             "surprise", "earning_date", "earning_time"])
     mkt_cap_df = fast_yahoo.download_quick_stats(earnings_df["Symbol"].to_list(), {'marketCap': 'mkt_cap'})
     mkt_cap_df.reset_index(inplace=True)
+    mkt_cap_df.replace("N/A", 0, inplace=True)
     results_df = pd.merge(earnings_df, mkt_cap_df, on="Symbol")
     return results_df
 
@@ -142,17 +143,11 @@ def delete_old_earnings(last_date):
     last_date: str
         Date format: YYYY-MM-DD
     """
-    db.execute("SELECT DISTINCT earning_date FROM earnings_calendar")
-    all_dates = db.fetchall()
-    for date in sorted(all_dates):
-        if date[0] == last_date:
-            print("All earnings date till {} removed from database.".format(last_date))
-            break
-        db.execute("DELETE FROM earnings_calendar WHERE earning_date=?", (date[0],))
-        conn.commit()
+    db.execute("DELETE FROM earnings_calendar WHERE earning_date<=?", (last_date,))
+    conn.commit()
 
 
 if __name__ == '__main__':
-    insert_earnings_into_db(get_earnings(1, forward=True))
-    update_previous_earnings(get_earnings(7, forward=False))
     delete_old_earnings("2021-10-01")
+    insert_earnings_into_db(get_earnings(7, forward=True))
+    # update_previous_earnings(get_earnings(7, forward=False))

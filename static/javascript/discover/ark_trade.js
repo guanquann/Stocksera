@@ -3,6 +3,7 @@ var trades_clicks = 0;
 var news_clicks = 0;
 
 var profile_clicks = 0;
+var weighting_chart = null;
 
 const searchFun = () =>{
     let filter = document.getElementById('ticker_name').value.toUpperCase();
@@ -27,16 +28,166 @@ const searchFun = () =>{
     }
 }
 
-function update_fund(elem) {
+function update_fund(elem, isSummary) {
     document.getElementById("fund_selected").value = elem.innerHTML;
     holdings_clicks = 0, trades_clicks = 0, news_clicks = 0;
-    load_holdings(0)
-    load_profile()
+    if (isSummary == true) {
+        get_daily_trades_summary()
+    }
+    else {
+        load_holdings(0)
+        load_profile()
+    }
     var fund_type = document.getElementsByClassName("fund_type");
     for (i=0; i<fund_type.length; i++) {
         fund_type[i].classList.remove("selected");
     }
     elem.classList.add("selected");
+}
+
+function get_daily_trades_summary() {
+    var summary_url = "https://arkfunds.io/api/v2/etf/trades?symbol=ARKK,ARKQ,ARKW,ARKG,ARKF,ARKX"
+    table_code = `
+        <table>
+            <tr>
+                <th>Fund</th>
+                <th>Company</th>
+                <th>Ticker</th>
+                <th>Direction</th>
+                <th>Shares</th>
+                <th>ETF Weight</th>
+            </tr>`
+    fetch(summary_url)
+        .then(res => res.json())
+        .then((out) => {
+            last_date = out["date_to"]
+            all_trades = out["trades"]
+            ticker_dict = {}
+            for (i=0; i<all_trades.length; i++) {
+                var stats = all_trades[i]
+                company = stats["company"]
+                ticker = stats["ticker"]
+                fund = stats["fund"]
+                etf_percent = stats["etf_percent"]
+
+                if (! ticker_dict.hasOwnProperty(fund)) {
+                    ticker_dict[fund] = [[ticker, etf_percent]]
+                }
+                else {
+                    ticker_dict[fund].push([ticker, etf_percent])
+                }
+                img_url = `https://g.foolcdn.com/art/companylogos/mark/${ticker}.png`
+                table_code += `
+                <tr onclick="load_individual_profile(this);">
+                   <td>${fund}</td>
+                   <td><div><img src=${img_url} onerror=this.src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl4idYt_TOF1TPtJ1rF8OOLgALA0WDd00shg&usqp=CAU"><div>${company}</div></div></td>
+                   <td>${ticker}</td>
+                   <td>${stats["direction"]}</td>
+                   <td>${stats["shares"].toLocaleString()}</td>
+                   <td>${etf_percent}%</td>
+                </tr>`
+            }
+
+            profile_code = `
+                <span>Trade Summary in ${last_date}</span>
+                <p></p>`
+            document.getElementById("profile").innerHTML = profile_code
+
+            console.log(ticker_dict)
+            console.log(Object.keys(ticker_dict))
+            console.log(Object.values(ticker_dict))
+            table_code += "</table>"
+            document.getElementsByClassName("scrollable_div")[0].innerHTML = table_code
+
+            datasets_list = []
+            for (i in ticker_dict) {
+                datasets_list.push(
+                    {
+                        label: i,
+                        type: 'bar',
+                        data: ticker_dict[i].map(function(x) {return x[1]}),
+                        backgroundColor: 'rgb(38, 166, 154)',
+                        barThickness: 'flex',
+                    }
+                )
+            }
+            console.log(datasets_list)
+            if (weighting_chart != null){
+                weighting_chart.destroy();
+            }
+//
+//            weighting_chart = document.getElementById('weighting_chart');
+//            weighting_chart = new Chart(weighting_chart, {
+//                data: {
+//                    labels: Object.keys(ticker_dict),
+//                    datasets: datasets_list
+//                },
+//                options: {
+//                    responsive: true,
+//                    maintainAspectRatio: false,
+//                    legend: {
+//                        display: true
+//                     },
+//                    scales: {
+//                        yAxes: [{
+//                                scaleLabel: {
+//                                    display: true,
+//                                    labelString: 'ETF Weightage [%]',
+//                                    beginAtZero: true,
+//                                },
+//                                type: "linear",
+//                                gridLines: {
+//                                    drawOnChartArea: false,
+//                                    color: "grey",
+//                                },
+//                            }],
+//
+//                        xAxes: [{
+//                            offset: true,
+//                            gridLines: {
+//                                drawOnChartArea: false,
+//                                color: "grey",
+//                            },
+//                            ticks: {
+//                                maxTicksLimit: 10,
+//                                maxRotation: 30,
+//                                minRotation: 0,
+//                            },
+//                            stacked: true
+//                        }],
+//                    },
+//                    tooltips: {
+//                        mode: 'index',
+//                        intersect: false,
+//                        callbacks: {
+//                            label: function(tooltipItem, data) {
+//                                var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+//                                var label = data.datasets[tooltipItem.datasetIndex].label;
+//                                if (label.includes("Volume")) {
+//                                    return label + ': ' + Number(value * 1000000).toLocaleString();
+//                                }
+//                                else {
+//                                    return label + ': ' + value + "%";
+//                                }
+//                            }
+//                        }
+//                    },
+//                    hover: {
+//                        mode: 'index',
+//                        intersect: false
+//                    },
+//                    elements: {
+//                        line: {
+//                            tension: 0
+//                        },
+//                        point:{
+//                            radius: 0
+//                        }
+//                    },
+//                },
+//            });
+        })
+        .catch(err => { throw err });
 }
 
 function load_profile() {
@@ -128,8 +279,6 @@ function load_holdings(elem) {
             .catch(err => { throw err });
     }
 }
-
-var weighting_chart = null
 
 function load_graph(ticker_list, weight_list, top_10_weight, top_20_weight) {
     if (weighting_chart != null){
@@ -365,7 +514,7 @@ function load_individual_profile(elem) {
 
             if (fund_selected != "PRNT" && fund_selected != "IZRL") {
                 individual_trade_code = `
-                <p><b>Trades of ${ticker_selected} made by ${fund_selected}</b></p>
+                <p><b>Recent Trades of ${ticker_selected}</b></p>
                 <table>
                     <tr>
                         <th>Date</th>
@@ -381,7 +530,8 @@ function load_individual_profile(elem) {
                         var trades = out["trades"];
                         for (trade=0; trade<trades.length; trade++) {
                             var fund  = trades[trade]["fund"];
-                            if (fund == document.getElementById("fund_selected").value) {
+                            console.log(fund, "!!!")
+                            if (fund == fund_selected || "Summary" == fund_selected) {
                                 var date = trades[trade]["date"];
                                 var direction = trades[trade]["direction"];
                                 var etf_percent = trades[trade]["etf_percent"];

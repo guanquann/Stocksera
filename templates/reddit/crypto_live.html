@@ -23,7 +23,6 @@
     <div class="instructions">
         <h2>Live CryptoCurrency Analysis</h2>
         <p>This page tracks & analysis trending cryptocurrencies realtime. Updates every 10 minutes.</p>
-        <div class="subscribe_email_div"><a class="subscribe_email" href="/subscribe" target="_blank">Subscribe to Free WSB Notifications</a></div>
         <form action="/crypto_live_ticker" method="GET" autocomplete="off">
             <div class="search_bar">
                 <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
@@ -37,17 +36,14 @@
     <div class="instructions">
         <h2>Other Datasets Available</h2>
         <div class="more_info_div_parent">
-            <div class="more_info_div"><a class="more_info_btn current_link" href="/wsb_live">WSB Live</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis">Trending Stocks</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="/crypto_live">Crypto Live</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis/?subreddit=cryptocurrency">Trending Crypto</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reddit_etf' %}">WSB ETF</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'subreddit_count' %}">Subreddit Stats</a></div>
         </div>
     </div>
 
     <div class="contents_div">
         <div id="tips_btn">
-            <a href="/wsb_documentation" target="_blank">Guide when using WSB Live</a>
+            <a href="/wsb_documentation" target="_blank">Guide when using Crypto Live</a>
         </div>
         <h2 class="header">Trending Last 24H</h2>
         <div id="trending_over_time_chart_24H" class="chart"></div>

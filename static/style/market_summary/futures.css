@@ -1,0 +1,9 @@
+.quick_chart {
+    display: flex;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+.quick_chart .tradingview-widget-container {
+    margin-right: 3px;
+}

@@ -1,17 +1,9 @@
-import sys
 import os
-import re
+import sys
 import locale
-import praw
-from collections import Counter
-from datetime import datetime, timedelta
-import matplotlib.pyplot as plt
 import yfinance.ticker as yf
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-import sqlite3
 
-from scheduled_tasks.reddit.stocks.fast_yahoo import *
-import scheduled_tasks.reddit.config as cfg
+from scheduled_tasks.reddit.reddit_utils import *
 from custom_extensions.stopwords import stopwords_list
 from custom_extensions.custom_words import new_words
 
@@ -71,9 +63,6 @@ def get_submission_praw(n, sub, n_num):
     timestamp_mid = int(mid_interval.timestamp())
     timestamp_start = int((mid_interval - timedelta(hours=n)).timestamp())
     timestamp_end = int(datetime.today().timestamp())
-    reddit = praw.Reddit(client_id=cfg.API_REDDIT_CLIENT_ID,
-                         client_secret=cfg.API_REDDIT_CLIENT_SECRET,
-                         user_agent=cfg.API_REDDIT_USER_AGENT)
 
     recent = {}
     prev = {}

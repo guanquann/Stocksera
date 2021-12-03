@@ -37,10 +37,13 @@
 <div class="instructions">
     <h2>Other Datasets Available</h2>
     <div class="more_info_div_parent">
-        <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=snp500">S&P 500</a></div>
-        <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=nasdaq100">Nasdaq 100</a></div>
-        <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=crypto">Cryptocurrency</a></div>
-        <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'earnings_calendar' %}">Earnings</a></div>
+        <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=snp500">S&P</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=nasdaq100">Nasdaq</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=dia">DIA</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=crypto">Crypto</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=wsb">WSB</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'futures' %}?type=wsb">Futures</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'earnings_calendar' %}">Earnings</a></div>
     </div>
 </div>
 

@@ -107,7 +107,7 @@ function load_ticker_change() {
         recent = comparison_div[i].querySelector(".recent").innerHTML
         prev = comparison_div[i].querySelector(".prev").innerHTML
         change = Math.round(10000 * (recent - prev) / prev) / 100
-        comparison_div[i].querySelector(".change").innerHTML =isFinite(change) ? ` (${change}%)`: " (N/A)";
+        comparison_div[i].querySelector(".change").innerHTML =isFinite(change) ? `${change}%`: "N/A";
     }
 }
 

@@ -7,19 +7,23 @@ from scheduled_tasks.reddit.stocks.fast_yahoo import download_advanced_stats
 
 INDICES_PATH = "database/indices"
 
-if not os.path.exists(INDICES_PATH):
-    os.mkdir(INDICES_PATH)
-    snp500_df = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")[0]
-    snp500_df["Symbol"].to_csv(INDICES_PATH + "snp500.csv", index=False)
-
-    nasdaq_df = pd.read_html("https://en.wikipedia.org/wiki/Nasdaq-100")[3]
-    nasdaq_df.rename(columns={"Ticker": "Symbol"})
-    nasdaq_df["Symbol"].to_csv(INDICES_PATH + "nasdaq100.csv", index=False)
-
 
 def main():
+    if not os.path.exists(INDICES_PATH):
+        os.mkdir(INDICES_PATH)
+        snp500_df = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")[0]
+        snp500_df["Symbol"].to_csv(INDICES_PATH + "snp500.csv", index=False)
+
+        nasdaq_df = pd.read_html("https://en.wikipedia.org/wiki/Nasdaq-100")[3]
+        nasdaq_df.rename(columns={"Ticker": "Symbol"})
+        nasdaq_df["Symbol"].to_csv(INDICES_PATH + "nasdaq100.csv", index=False)
+
+        dia_df = pd.read_html("https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average")[1]
+        dia_df["Symbol"].to_csv(INDICES_PATH + "dia.csv", index=False)
+
     snp = pd.read_csv(os.path.join(INDICES_PATH, "snp500.csv"))
     nasdaq = pd.read_csv(os.path.join(INDICES_PATH, "nasdaq100.csv"))
+    dia = pd.read_csv(os.path.join(INDICES_PATH, "dia.csv"))
     merge_df = snp.append(nasdaq)
     merge_df.drop_duplicates(inplace=True)
 
@@ -56,6 +60,10 @@ def main():
     nasdaq_out = pd.merge(nasdaq, original_df, on="Symbol", how="left")
     nasdaq_out.to_csv(f"database/indices/nasdaq100_heatmap.csv", index=False)
     print(nasdaq_out)
+
+    dia_out = pd.merge(dia, original_df, on="Symbol", how="left")
+    dia_out.to_csv(f"database/indices/dia_heatmap.csv", index=False)
+    print(dia_out)
 
 
 if __name__ == '__main__':

@@ -36,11 +36,9 @@ def extract_ticker(text, tickers_dict, sentiment_dict, sentiment_score, calls_di
     for word in text.split():
         for key, value in mapping_stocks.items():
             if word in value:
-                # print("!!!!!", word, key, text)
                 text = text.replace(word, key)
 
     extracted_tickers = set(re.findall(pattern, text))
-    print(extracted_tickers)
     for ticker in extracted_tickers:
         tickers_dict[ticker] = tickers_dict.get(ticker, 0) + 1
         sentiment_dict[ticker] = sentiment_dict.get(ticker, 0) + sentiment_score
@@ -174,7 +172,7 @@ def wsb_live():
     quick_stats_df["volume"] = pd.to_numeric(quick_stats_df["volume"], errors='coerce')
     quick_stats_df["price"] = pd.to_numeric(quick_stats_df["price"], errors='coerce')
     quick_stats_df.dropna(inplace=True)
-    quick_stats_df = quick_stats_df[quick_stats_df["price"] >= 1]
+    quick_stats_df = quick_stats_df[quick_stats_df["price"] >= 0.5]
     quick_stats_df = quick_stats_df[quick_stats_df["volume"] >= 500000]
     valid_ticker_list = list(quick_stats_df.index.values)
 
@@ -229,8 +227,6 @@ def wsb_change():
     threshold_datetime2 = str(current_datetime - timedelta(hours=48))
     threshold_hour2 = threshold_datetime2.rsplit(":", 2)[0] + ":00"
 
-    # print(threshold_hour, threshold_hour2)
-
     db.execute("SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment FROM wsb_trending_24H "
                "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) DESC LIMIT 50".format(threshold_hour))
     current = db.fetchall()
@@ -255,8 +251,6 @@ def wsb_change():
 
 def get_mkt_cap():
     threshold_datetime = str(current_datetime - timedelta(hours=24))
-    threshold_hour = threshold_datetime.rsplit(":", 2)[0] + ":00"
-    # print(threshold_hour, "onwards being saved to yf database")
 
     ticker_list, mentions_list = list(), list()
     db.execute("SELECT ticker, SUM(mentions) FROM wsb_trending_24H WHERE date_updated > ? GROUP BY "
@@ -271,7 +265,9 @@ def get_mkt_cap():
                                           "fiftyTwoWeekLow": "52w_low"},
                         'price': {"marketCap": "mkt_cap",
                                   "regularMarketChangePercent": "price_change",
-                                  'regularMarketPrice': 'current_price'}}
+                                  'regularMarketPrice': 'current_price'},
+                        'summaryProfile': {"industry": "industry",
+                                           "sector": "sector"}}
 
     quick_stats_df = download_advanced_stats(ticker_list, quick_stats_dict, threads=True)
     quick_stats_df = quick_stats_df[quick_stats_df["avg_price"] != "N/A"]
@@ -294,12 +290,12 @@ def get_mkt_cap():
     quick_stats_df["mentions"] = mentions_list
     quick_stats_df.reset_index(inplace=True)
     quick_stats_df.rename(columns={"Symbol": "ticker"}, inplace=True)
+    print(quick_stats_df)
     quick_stats_df.to_sql("wsb_yf", conn, if_exists="replace", index=False)
-    # print(quick_stats_df)
 
 
 if __name__ == '__main__':
-    wsb_live()
-    update_hourly()
-    wsb_change()
+    # wsb_live()
+    # update_hourly()
+    # wsb_change()
     get_mkt_cap()

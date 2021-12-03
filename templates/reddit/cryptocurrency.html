@@ -25,6 +25,13 @@
             <div class="select_div">
                 <select name="subreddit" onchange="this.form.submit()">
                     <option>Selected: Cryptocurrency</option>
+                    <option value="wallstreetbets">Wall Street Bets</option>
+                    <option value="stocks">Stocks</option>
+                    <option value="options">Options</option>
+                    <option value="pennystocks">Pennystocks</option>
+                    <option value="shortsqueeze">Short Squeeze</option>
+                    <option value="spacs">SPACs</option>
+                    <option value="cryptocurrency">Cryptocurrency</option>
                 </select>
                 <select name="date_selected" onchange="this.form.submit()">
                     <option>Date: {{date_selected}}</option>
@@ -40,10 +47,10 @@
         <h2>Other Datasets Available</h2>
         <div class="more_info_div_parent">
             <div class="more_info_div"><a class="more_info_btn" href="/wsb_live">WSB Live</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis">Trending Stocks</a></div>
-            <div class="more_info_div"><a class="more_info_btn current_link" href="/reddit_analysis/?subreddit=cryptocurrency">Trending Crypto</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reddit_etf' %}">WSB ETF</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'subreddit_count' %}">Subreddit Stats</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="/crypto_live">Crypto Live</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="/reddit_analysis">Trending</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reddit_etf' %}">ETF</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'subreddit_count' %}">Subreddit</a></div>
         </div>
     </div>
 

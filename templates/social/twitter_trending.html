@@ -1,0 +1,58 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Twitter{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/social/stocktwits.css' %}">
+{% endblock %}
+
+{% block onload_properties%}trending_ticker_graph('{{ticker_selected}}');load_top30('{{ticker_selected}}'){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/twitter_trending">Twitter Trending</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('social')</script>
+
+    <div class="instructions">
+        <h2>Twitter Trending</h2>
+            <p>Discover the ranking of popular tickers in Stocktwits over time.
+                Due to limitations in Stocktwits API, only the top 30 trending tickers is available.
+            </p>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'stocktwits' %}">Stocktwits</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'twitter_trending' %}">Twitter</a></div>
+        </div>
+    </div>
+
+    <div class="contents_div">
+        <form action="/twitter_trending" method="GET" autocomplete="off">
+        <div class="search_bar">
+            <input type="text" class="ticker_input" name="quote" placeholder="Ticker:" autocomplete="off" value="{{ticker_selected}}">
+            <button class="submit_btn" type="submit">
+                <span class="fa fa-search"></span>
+            </button>
+        </div>
+        </form>
+
+        <div class="chart-container">
+            <canvas id="trending_ticker_chart"></canvas>
+        </div>
+
+        <div style="display: none">
+            {{ ticker_df|safe }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block bottom_script %}
+<script src="{% static 'javascript/social/twitter_trending.js' %}"></script>
+{% endblock %}

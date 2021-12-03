@@ -24,6 +24,15 @@
         padding: 7px;
         min-width: 40px;
     }
+
+    .main_trending_graph_div {
+        display: flex;
+        justify-content: middle;
+    }
+
+    .main_trending_graph_div div {
+        width: 100%;
+    }
 }
 
 .chart {

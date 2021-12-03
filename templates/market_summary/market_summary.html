@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/market_summary/market_summary.js' %}"></script>
 <script>
     function load_td_graph() {
-        mapping_dict = {"S&P 500": "AMEX:SPY", "Nasdaq 100": "QQQ", "Cryptocurrency": "BTCUSD"}
+        mapping_dict = {"S&P 500": "AMEX:SPY", "Nasdaq 100": "QQQ", "DIA": "AMEX:DIA", "Cryptocurrency": "BTCUSD"}
         var ticker = mapping_dict["{{title}}".replace(/&amp;/g, '&')]
         if (localStorage.getItem("mode") == "dark") {
             var graph_mode = "dark";
@@ -41,17 +41,6 @@
         );
     }
 </script>
-<script>
-    function load_twitter_embed() {
-        if (localStorage.getItem("mode") == "dark") {
-            var graph_mode = "dark";
-        }
-        else {
-            var graph_mode = "light"
-        }
-        document.getElementById("twitter_embed").innerHTML += `<a class="twitter-timeline" data-theme="${graph_mode}" href="https://twitter.com/stocksera_bot/lists/1448875408477212675?ref_src=twsrc%5Etfw">A Twitter List by stocksera_bot</a>`
-    }
-</script>
 {% endblock %}
 
 {% block onload_properties%}load_heatmap('{{title}}'){% endblock %}
@@ -69,9 +58,12 @@
         <h2>Market Summary</h2>
         <p style="margin: 0">Summary of the performance of the stocks and cryptocurrency market.</p>
         <div class="more_info_div_parent" id="more_info_div">
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=snp500">S&P 500</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=nasdaq100">Nasdaq 100</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=crypto">Cryptocurrency</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=snp500" id="S&P 500">S&P</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=nasdaq100" id="Nasdaq 100">Nasdaq</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=dia" id="DIA">DIA</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=crypto" id="Cryptocurrency">Crypto</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=wsb" id="Wallstreetbets">WSB</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'futures' %}?type=wsb">Futures</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'earnings_calendar' %}">Earnings</a></div>
         </div>
     </div>
@@ -90,6 +82,10 @@
                     {
                         "proName": "FOREXCOM:NSXUSD",
                         "title": "Nasdaq 100"
+                    },
+                    {
+                        "proName": "FOREXCOM:DJI",
+                        "title": "DJI"
                     },
                     {
                         "proName": "NASDAQ:AAPL",
@@ -133,7 +129,7 @@
         </script>
         </div>
 
-        <button type="button" onclick="show_ticker_chart(this)" class="more_info_btn">View {{title}} Chart</button>
+        <button type="button" onclick="show_ticker_chart(this)" class="more_info_btn" id="show_trading_view_graph">View {{title}} Chart</button>
 
         <div class="tradingview-widget-container" id="ticker_chart_div" style="display: none">
             <div id="ticker_chart"></div>

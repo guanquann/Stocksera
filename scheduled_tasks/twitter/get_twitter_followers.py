@@ -1,13 +1,13 @@
-import requests
 import os
+import sys
 import sqlite3
 from datetime import datetime
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+from scheduled_tasks.twitter.twitter_connection import *
+
 conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
-
-# https://developer.twitter.com/en/portal/dashboard
-bearer_token = os.environ.get("BEARER_TOKEN")
 
 # key of the dict is the symbol of the ticker, while the value is the username of the Twitter account
 interested_accounts = {
@@ -42,7 +42,6 @@ interested_accounts = {
     "SOFI": "SoFi",
     "WKHS": "Workhorse_Group",
     "TLRY": "tilray",
-    "CLNE": "CE_NatGas",
     "WISH": "WishShopping",
     "CLF": "CliffsNR",
     "GOEV": "canoo",
@@ -159,34 +158,9 @@ interested_accounts = {
 date_updated = str(datetime.now()).split()[0]
 
 
-def create_url(username):
-    url = "https://api.twitter.com/1.1/users/show.json?screen_name={}".format(username)
-    return url
-
-
-def bearer_oauth(r):
-    """
-    Method required by bearer token authentication.
-    """
-    r.headers["Authorization"] = f"Bearer {bearer_token}"
-    r.headers["User-Agent"] = "v2UserLookupPython"
-    return r
-
-
-def connect_to_endpoint(url):
-    response = requests.request("GET", url, auth=bearer_oauth,)
-    if response.status_code != 200:
-        raise Exception(
-            "Request returned an errors: {} {}".format(
-                response.status_code, response.text
-            )
-        )
-    return response.json()
-
-
 def main():
     for symbol, account in interested_accounts.items():
-        url = create_url(account)
+        url = "https://api.twitter.com/1.1/users/show.json?screen_name={}".format(account)
         json_response = connect_to_endpoint(url)
         print("Twitter account of: ", symbol, json_response["followers_count"])
         db.execute("INSERT OR IGNORE INTO twitter_followers VALUES (?, ?, ?)",

@@ -4,16 +4,21 @@ Script for setting up email so that any suggestions or feedbacks will be sent to
 
 import os
 import ssl
+import yaml
 import smtplib
 from datetime import datetime
+
+
+with open("config.yaml") as config_file:
+    config_keys = yaml.load(config_file, Loader=yaml.Loader)
 
 
 def send_email_to_self(name, email, feedback):
     port = 465
     smtp_server = "smtp.gmail.com"
-    sender_email = os.environ.get("EMAIL_SENDER") or "Enter your address"
+    sender_email = config_keys["GMAIL_SENDER_EMAIL"]
+    password = config_keys["GMAIL_SENDER_PASSWORD"]
     receiver_email = os.environ.get("EMAIL_RECEIVER") or "Enter receiver address"
-    password = os.environ.get("EMAIL_PW") or "Enter your password"
     message = f"""\
 Subject: Feedback!
 

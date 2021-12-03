@@ -1,0 +1,274 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Futures{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/market_summary/futures.css' %}">
+{% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/market_summary/">Market Summary</a> /
+    <a href="/futures">Futures</a>
+{% endblock %}
+
+{% block main_content %}
+<script>highlight_selected_nav('market_summary')</script>
+<div>
+    <div class="instructions">
+        <h2>Futures</h2>
+        <p>
+            Futures data from Trading View.
+        </p>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=snp500">S&P</a></div>
+                <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=nasdaq100">Nasdaq</a></div>
+                <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=dia">DIA</a></div>
+                <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=crypto">Crypto</a></div>
+                <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=wsb">WSB</a></div>
+                <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'futures' %}?type=wsb">Futures</a></div>
+                <div class="more_info_div"><a class="more_info_btn" href="{% url 'earnings_calendar' %}">Earnings</a></div>
+        </div>
+    </div>
+
+    <div class="contents_div">
+        <div class="quick_chart">
+            <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                {
+                    "symbol": "FOREXCOM:SPXUSD",
+                    "width": 270,
+                    "height": 150,
+                    "locale": "en",
+                    "dateRange": "3M",
+                    "colorTheme": "light",
+                    "trendLineColor": "rgba(41, 98, 255, 1)",
+                    "underLineColor": "rgba(41, 98, 255, 0.3)",
+                    "underLineBottomColor": "rgba(41, 98, 255, 0)",
+                    "isTransparent": false,
+                    "autosize": false,
+                    "largeChartUrl": ""
+                }
+                </script>
+            </div>
+            <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                {
+                    "symbol": "INDEX:NKY",
+                    "width": 270,
+                    "height": 150,
+                    "locale": "en",
+                    "dateRange": "3M",
+                    "colorTheme": "light",
+                    "trendLineColor": "rgba(41, 98, 255, 1)",
+                    "underLineColor": "rgba(41, 98, 255, 0.3)",
+                    "underLineBottomColor": "rgba(41, 98, 255, 0)",
+                    "isTransparent": false,
+                    "autosize": false,
+                    "largeChartUrl": ""
+                }
+                </script>
+            </div>
+            <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                {
+                    "symbol": "INDEX:DEU40",
+                    "width": 270,
+                    "height": 150,
+                    "locale": "en",
+                    "dateRange": "3M",
+                    "colorTheme": "light",
+                    "trendLineColor": "rgba(41, 98, 255, 1)",
+                    "underLineColor": "rgba(41, 98, 255, 0.3)",
+                    "underLineBottomColor": "rgba(41, 98, 255, 0)",
+                    "isTransparent": false,
+                    "autosize": false,
+                    "largeChartUrl": ""
+                }
+                </script>
+            </div>
+            <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                {
+                    "symbol": "FOREXCOM:UKXGBP",
+                    "width": 270,
+                    "height": 150,
+                    "locale": "en",
+                    "dateRange": "3M",
+                    "colorTheme": "light",
+                    "trendLineColor": "rgba(41, 98, 255, 1)",
+                    "underLineColor": "rgba(41, 98, 255, 0.3)",
+                    "underLineBottomColor": "rgba(41, 98, 255, 0)",
+                    "isTransparent": false,
+                    "autosize": false,
+                    "largeChartUrl": ""
+                }
+                </script>
+            </div>
+            <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                {
+                    "symbol": "HSI:HSI",
+                    "width": 270,
+                    "height": 150,
+                    "locale": "en",
+                    "dateRange": "3M",
+                    "colorTheme": "light",
+                    "trendLineColor": "rgba(41, 98, 255, 1)",
+                    "underLineColor": "rgba(41, 98, 255, 0.3)",
+                    "underLineBottomColor": "rgba(41, 98, 255, 0)",
+                    "isTransparent": false,
+                    "autosize": false,
+                    "largeChartUrl": ""
+                }
+                </script>
+            </div>
+        </div>
+
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+          {
+          "width": "100%",
+          "height": 500,
+          "symbolsGroups": [
+            {
+              "name": "Indices",
+              "originalName": "Indices",
+              "symbols": [
+                {
+                  "name": "FOREXCOM:SPXUSD",
+                  "displayName": "S&P 500"
+                },
+                {
+                  "name": "FOREXCOM:NSXUSD",
+                  "displayName": "Nsadaq 100"
+                },
+                {
+                  "name": "FOREXCOM:DJI",
+                  "displayName": "Dow 30"
+                },
+                {
+                  "name": "INDEX:NKY",
+                  "displayName": "Nikkei 225"
+                },
+                {
+                  "name": "INDEX:DEU40",
+                  "displayName": "DAX Index"
+                },
+                {
+                  "name": "FOREXCOM:UKXGBP",
+                  "displayName": "UK 100"
+                },
+                {
+                  "name": "HSI:HSI",
+                  "displayName": "Hang Seng"
+                }
+              ]
+            },
+            {
+              "name": "Futures",
+              "originalName": "Futures",
+              "symbols": [
+                {
+                  "name": "CME_MINI:ES1!",
+                  "displayName": "S&P 500"
+                },
+                {
+                  "name": "CME:6E1!",
+                  "displayName": "Euro"
+                },
+                {
+                  "name": "COMEX:GC1!",
+                  "displayName": "Gold"
+                },
+                {
+                  "name": "NYMEX:CL1!",
+                  "displayName": "Crude Oil"
+                },
+                {
+                  "name": "NYMEX:NG1!",
+                  "displayName": "Natural Gas"
+                },
+                {
+                  "name": "CBOT:ZC1!",
+                  "displayName": "Corn"
+                }
+              ]
+            },
+            {
+              "name": "Bonds",
+              "originalName": "Bonds",
+              "symbols": [
+                {
+                  "name": "CME:GE1!",
+                  "displayName": "Eurodollar"
+                },
+                {
+                  "name": "CBOT:ZB1!",
+                  "displayName": "T-Bond"
+                },
+                {
+                  "name": "CBOT:UB1!",
+                  "displayName": "Ultra T-Bond"
+                },
+                {
+                  "name": "EUREX:FGBL1!",
+                  "displayName": "Euro Bund"
+                },
+                {
+                  "name": "EUREX:FBTP1!",
+                  "displayName": "Euro BTP"
+                },
+                {
+                  "name": "EUREX:FGBM1!",
+                  "displayName": "Euro BOBL"
+                }
+              ]
+            },
+            {
+              "name": "Forex",
+              "originalName": "Forex",
+              "symbols": [
+                {
+                  "name": "FX:EURUSD"
+                },
+                {
+                  "name": "FX:GBPUSD"
+                },
+                {
+                  "name": "FX:USDJPY"
+                },
+                {
+                  "name": "FX:USDCHF"
+                },
+                {
+                  "name": "FX:AUDUSD"
+                },
+                {
+                  "name": "FX:USDCAD"
+                }
+              ]
+            }
+          ],
+          "showSymbolLogo": true,
+          "colorTheme": "light",
+          "isTransparent": false,
+          "locale": "en"
+        }
+          </script>
+        </div>
+    </div>
+</div>
+{% endblock %}

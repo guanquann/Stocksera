@@ -10,7 +10,13 @@
 <script src="{% static 'javascript/reddit/discussion_thread.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}load_trending_over_time_chart({{trending_list}}, '24H');load_trending_over_time_chart({{trending_list_by_hour}}, '7d');load_word_cloud({{crypto_word_cloud}});load_sentiment_chart(0, 'crypto');load_change_chart(1);{% endblock %}
+{% block onload_properties%}
+    load_trending_timeline_chart({{trending_list}}, '24H');
+    load_trending_timeline_chart({{trending_list_by_hour}}, '7d');
+    load_word_cloud({{crypto_word_cloud}});
+    load_sentiment_chart(0, 'crypto');
+    load_change_chart(1);
+{% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -36,8 +42,11 @@
     <div class="instructions">
         <h2>Other Datasets Available</h2>
         <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="/wsb_live">WSB Live</a></div>
             <div class="more_info_div"><a class="more_info_btn current_link" href="/crypto_live">Crypto Live</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis/?subreddit=cryptocurrency">Trending Crypto</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis">Trending</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reddit_etf' %}">ETF</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'subreddit_count' %}">Subreddit</a></div>
         </div>
     </div>
 

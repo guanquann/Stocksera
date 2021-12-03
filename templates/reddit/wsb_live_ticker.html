@@ -50,36 +50,37 @@
         <div id="ticker_basic_stats"></div>
         <div id="ssr_msg"></div>
 
+        <div style="text-align: center; font-size: larger"><b>-- In last 7 days --</b></div>
         <div style="display: flex; justify-content: center">
             <div class="comparison">
-                <h2 class="comparison_title">Mentions 7D</h2>
+                <h2 class="comparison_title">Mentions</h2>
                 <div class="recent">{{recent_mention}}</div>
                 <div class="change_div">
-                    <div class="prev">{{previous_mention}}</div>
+                    <div class="prev" style="display: none">{{previous_mention}}</div>
                     <div class="change"></div>
                 </div>
             </div>
             <div class="comparison">
-                <h2 class="comparison_title">Sentiment 7D</h2>
+                <h2 class="comparison_title">Sentiment</h2>
                 <div class="recent">{{recent_snt}}</div>
                 <div class="change_div">
-                    <div class="prev">{{previous_snt}}</div>
+                    <div class="prev" style="display: none">{{previous_snt}}</div>
                     <div class="change"></div>
                 </div>
             </div>
             <div class="comparison">
-                <h2 class="comparison_title">Calls 7D</h2>
+                <h2 class="comparison_title">Calls</h2>
                 <div class="recent">{{recent_calls}}</div>
                 <div class="change_div">
-                    <div class="prev">{{previous_calls}}</div>
+                    <div class="prev" style="display: none">{{previous_calls}}</div>
                     <div class="change"></div>
                 </div>
             </div>
             <div class="comparison">
-                <h2 class="comparison_title">Puts 7D</h2>
+                <h2 class="comparison_title">Puts</h2>
                 <div class="recent">{{recent_puts}}</div>
                 <div class="change_div">
-                    <div class="prev">{{previous_puts}}</div>
+                    <div class="prev" style="display: none">{{previous_puts}}</div>
                     <div class="change"></div>
                 </div>
             </div>
@@ -96,8 +97,13 @@
 
         <h2 class="header">Calls / Puts Mentions</h2>
         <div id="call_put_chart" class="chart"></div>
+
+        <h2 class="header">Daily Sentiment</h2>
+        <div id="sentiment_chart" class="chart"></div>
+
         <div style="display:none">
             {{mentions_df|safe}}
+            {{sentiment_df|safe}}
         </div>
     </div>
 {% endblock %}

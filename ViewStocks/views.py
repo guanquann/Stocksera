@@ -166,6 +166,11 @@ def dividend_and_split(request):
     return render(request, 'iframe_format.html', {"title": "Dividend & Split", "table": df.to_html(index=False)})
 
 
+def tradingview(request):
+    ticker_selected = default_ticker(request)
+    return render(request, 'stock/tradingview.html', {"ticker_selected": ticker_selected})
+
+
 def discussion(request):
     ticker_selected = default_ticker(request)
     return render(request, 'stock/discussion.html', {"ticker_selected": ticker_selected})
@@ -950,15 +955,15 @@ def wsb_live(request):
     mentions_df.reset_index(inplace=True)
     mentions_df.rename(columns={"index": "Rank"}, inplace=True)
 
-    db.execute(query)
-    top_12 = db.fetchall()
-    trending_list = list()
-    for ticker in top_12[:12]:
-        db.execute("SELECT ticker, date_updated, SUM(mentions) OVER (ROWS UNBOUNDED PRECEDING) FROM "
-                   "wsb_trending_24H WHERE ticker=? AND date_updated >= ?", (ticker[0], date_threshold))
-        running_sum = db.fetchall()
-        running_sum = list(map(list, running_sum))
-        trending_list.append(running_sum)
+    # db.execute(query)
+    # top_12 = db.fetchall()
+    # trending_list = list()
+    # for ticker in top_12[:12]:
+    #     db.execute("SELECT ticker, date_updated, SUM(mentions) OVER (ROWS UNBOUNDED PRECEDING) FROM "
+    #                "wsb_trending_24H WHERE ticker=? AND date_updated >= ?", (ticker[0], date_threshold))
+    #     running_sum = db.fetchall()
+    #     running_sum = list(map(list, running_sum))
+    #     trending_list.append(running_sum)
 
     # Get word cloud
     db.execute("SELECT word, SUM(mentions) FROM wsb_word_cloud WHERE date_updated >= ? GROUP BY word ORDER BY "
@@ -968,17 +973,22 @@ def wsb_live(request):
 
     # Get trending tickers in the past 7 days
     date_threshold = str(datetime.utcnow() - timedelta(hours=24*7))
-    query = "SELECT ticker AS Ticker, SUM(mentions) AS Mention, AVG(sentiment) AS Sentiment FROM wsb_trending_hourly " \
-            "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) DESC LIMIT 12".format(date_threshold)
-    db.execute(query)
-    top_12 = db.fetchall()
-    trending_list_by_hour = list()
-    for ticker in top_12:
-        db.execute("SELECT ticker, date_updated, SUM(mentions) OVER (ROWS UNBOUNDED PRECEDING) FROM "
-                   "wsb_trending_hourly WHERE ticker=? AND date_updated >= ?", (ticker[0], date_threshold))
-        running_sum = db.fetchall()
-        running_sum = list(map(list, running_sum))
-        trending_list_by_hour.append(running_sum)
+
+    mentions_7d_df = pd.read_sql_query("select ticker, sum(mentions)from wsb_trending_hourly where date_updated >= "
+                          "'{}' GROUP BY ticker ORDER BY SUM(mentions) DESC LIMIT 30".format(date_threshold), conn)
+    mentions_7d_df.reset_index(inplace=True)
+
+    # query = "SELECT ticker AS Ticker, SUM(mentions) AS Mention, AVG(sentiment) AS Sentiment FROM wsb_trending_hourly " \
+    #         "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) DESC LIMIT 12".format(date_threshold)
+    # db.execute(query)
+    # top_12 = db.fetchall()
+    # trending_list_by_hour = list()
+    # for ticker in top_12:
+    #     db.execute("SELECT ticker, date_updated, SUM(mentions) OVER (ROWS UNBOUNDED PRECEDING) FROM "
+    #                "wsb_trending_hourly WHERE ticker=? AND date_updated >= ?", (ticker[0], date_threshold))
+    #     running_sum = db.fetchall()
+    #     running_sum = list(map(list, running_sum))
+    #     trending_list_by_hour.append(running_sum)
 
     # Get calls/puts mentions
     trending_options = pd.read_sql_query("SELECT ticker as Ticker, SUM(calls) AS Calls, SUM(puts) AS Puts, "
@@ -992,10 +1002,12 @@ def wsb_live(request):
     # Get yahoo financial comparison
     wsb_yf = pd.read_sql_query("SELECT * FROM wsb_yf", conn)
 
-    return render(request, 'reddit/wsb_live.html', {"trending_list": trending_list,
-                                                    "trending_list_by_hour": trending_list_by_hour,
+    return render(request, 'reddit/wsb_live.html', {
+                                                    # "trending_list": trending_list,
+                                                    # "trending_list_by_hour": trending_list_by_hour,
                                                     "wsb_word_cloud": wsb_word_cloud,
                                                     "mentions_df": mentions_df.to_html(index=False),
+                                                    "mentions_7d_df": mentions_7d_df.to_html(index=False),
                                                     "change_df": change_df.to_html(index=False),
                                                     "trending_options": trending_options.to_html(index=False),
                                                     "wsb_yf_df": wsb_yf.to_html(index=False)})
@@ -1009,8 +1021,12 @@ def wsb_live_ticker(request):
     ticker_selected = default_ticker(request, "SPY")
     information, related_tickers = check_market_hours(ticker_selected)
 
-    df = pd.read_sql_query("SELECT * FROM wsb_trending_hourly WHERE ticker='{}' ".format(ticker_selected), conn)
-    del df["ticker"]
+    df = pd.read_sql_query("SELECT mentions, calls, puts, date_updated FROM wsb_trending_hourly WHERE "
+                           "ticker='{}' ".format(ticker_selected), conn)
+
+    sentiment_df = pd.read_sql_query("SELECT AVG(sentiment) as sentiment, strftime('%Y-%m-%d', date_updated) AS "
+                                     "date_updated FROM wsb_trending_hourly WHERE ticker='{}' "
+                                     "group by strftime('%Y-%m-%d', date_updated)".format(ticker_selected), conn)
 
     if df.empty:
         recent_mention = 0
@@ -1029,8 +1045,9 @@ def wsb_live_ticker(request):
         recent_mention = df[df["date_updated"] >= last_7D]["mentions"].sum()
         previous_mention = df[(df["date_updated"] >= last_14D) & (df["date_updated"] < last_7D)]["mentions"].sum()
 
-        recent_snt = round(df[df["date_updated"] >= last_7D]["sentiment"].mean(), 4)
-        previous_snt = round(df[(df["date_updated"] >= last_14D) & (df["date_updated"] < last_7D)]["sentiment"].mean(), 4)
+        recent_snt = round(sentiment_df[sentiment_df["date_updated"] >= last_7D]["sentiment"].mean(), 4)
+        previous_snt = round(sentiment_df[(sentiment_df["date_updated"] >= last_14D) &
+                                          (sentiment_df["date_updated"] < last_7D)]["sentiment"].mean(), 4)
 
         recent_calls = df[df["date_updated"] >= last_7D]["calls"].sum().astype(int)
         previous_calls = df[(df["date_updated"] >= last_14D) & (df["date_updated"] < last_7D)]["calls"].sum().astype(int)
@@ -1041,6 +1058,7 @@ def wsb_live_ticker(request):
     return render(request, 'reddit/wsb_live_ticker.html', {"ticker_selected": ticker_selected,
                                                            "information": information,
                                                            "mentions_df": df.to_html(index=False),
+                                                           "sentiment_df": sentiment_df.to_html(index=False),
                                                            "recent_mention": recent_mention,
                                                            "previous_mention": previous_mention,
                                                            "recent_snt": recent_snt,
@@ -1114,8 +1132,12 @@ def crypto_live_ticker(request):
     pd.options.display.float_format = '{:.2f}'.format
     ticker_selected = default_ticker(request, "BTC")
 
-    df = pd.read_sql_query("SELECT * FROM crypto_trending_hourly WHERE ticker='{}' ".format(ticker_selected), conn)
-    del df["ticker"]
+    df = pd.read_sql_query("SELECT mentions, sentiment, date_updated FROM crypto_trending_hourly "
+                           "WHERE ticker='{}' ".format(ticker_selected), conn)
+
+    sentiment_df = pd.read_sql_query("SELECT AVG(sentiment) as sentiment, strftime('%Y-%m-%d', date_updated) AS "
+                                     "date_updated FROM crypto_trending_hourly WHERE ticker='{}' "
+                                     "group by strftime('%Y-%m-%d', date_updated)".format(ticker_selected), conn)
 
     if df.empty:
         recent_mention = 0
@@ -1130,12 +1152,13 @@ def crypto_live_ticker(request):
         recent_mention = df[df["date_updated"] >= last_7D]["mentions"].sum()
         previous_mention = df[(df["date_updated"] >= last_14D) & (df["date_updated"] < last_7D)]["mentions"].sum()
 
-        recent_snt = round(df[df["date_updated"] >= last_7D]["sentiment"].mean(), 4)
-        previous_snt = round(df[(df["date_updated"] >= last_14D) & (df["date_updated"] < last_7D)]["sentiment"].mean(),
+        recent_snt = round(sentiment_df[sentiment_df["date_updated"] >= last_7D]["sentiment"].mean(), 4)
+        previous_snt = round(sentiment_df[(sentiment_df["date_updated"] >= last_14D) & (sentiment_df["date_updated"] < last_7D)]["sentiment"].mean(),
                              4)
 
     return render(request, 'reddit/crypto_live_ticker.html', {"ticker_selected": ticker_selected,
                                                               "mentions_df": df.to_html(index=False),
+                                                              "sentiment_df": sentiment_df.to_html(index=False),
                                                               "recent_mention": recent_mention,
                                                               "previous_mention": previous_mention,
                                                               "recent_snt": recent_snt,
@@ -1153,10 +1176,17 @@ def market_summary(request):
     if request.GET.get("type") == "nasdaq100":
         filename = "database/indices/nasdaq100_heatmap.csv"
         title = "Nasdaq 100"
+    elif request.GET.get("type") == "dia":
+        filename = "database/indices/dia_heatmap.csv"
+        title = "DIA"
     elif request.GET.get("type") == "crypto":
         title = "Cryptocurrency"
         return render(request, 'market_summary/market_summary.html', {"title": title})
-
+    elif request.GET.get("type") == "wsb":
+        title = "Wallstreetbets"
+        summary_df = pd.read_sql_query("SELECT ticker, mentions, mkt_cap, price_change FROM wsb_yf", conn)
+        return render(request, 'market_summary/market_summary.html', {"title": title,
+                                                                      "summary_df": summary_df.to_html(index=False)})
     else:
         filename = "database/indices/snp500_heatmap.csv"
         title = "S&P 500"
@@ -1175,12 +1205,14 @@ def market_summary(request):
     sector_df = pd.DataFrame(sector_df)
     sector_df["% Change"] = sector_df["% Change / Mkt Cap"] / sector_df["Market Cap"]
     sector_df.reset_index(inplace=True)
-
     return render(request, 'market_summary/market_summary.html', {"summary_df": summary_df.to_html(index=False),
                                                                   "industry_df": industry_df.to_html(index=False),
                                                                   "sector_df": sector_df.to_html(index=False),
-                                                                  "title": title
-                                                                 })
+                                                                  "title": title})
+
+
+def futures(request):
+    return render(request, 'market_summary/futures.html')
 
 
 def senate_trades(request):
@@ -1369,6 +1401,35 @@ def amd_xlnx_ratio(request):
     combined_df.reset_index(inplace=True)
     combined_df.rename(columns={"index": "Date"}, inplace=True)
     return render(request, 'discover/amd_xlnx_ratio.html', {"combined_df": combined_df[::-1].to_html(index=False)})
+
+
+def ipo_calendar(request):
+    df = pd.read_csv("database/ipo_calendar.csv")
+    return render(request, 'discover/ipo_calendar.html', {"ipo_df": df.to_html(index=False)})
+
+
+def stocktwits(request):
+    ticker_selected = default_ticker(request, "TSLA")
+    ticker_df = pd.read_sql_query("SELECT rank, watchlist, date_updated FROM stocktwits_trending WHERE "
+                                  "symbol='{}' ".format(ticker_selected), conn)
+    trending_df = pd.read_sql_query("SELECT rank, watchlist, symbol FROM stocktwits_trending "
+                                    "ORDER BY date_updated DESC LIMIT 30", conn)
+    return render(request, 'social/stocktwits.html', {"ticker_selected": ticker_selected,
+                                                        "ticker_df": ticker_df.to_html(index=False),
+                                                        "trending_df": trending_df.to_html(index=False)})
+
+
+def twitter_trending(request):
+    ticker_selected = default_ticker(request, "TSLA")
+    ticker_df = pd.read_sql_query("SELECT tweet_count, updated_date FROM twitter_trending WHERE "
+                                  "ticker='{}' ".format(ticker_selected), conn)
+    # trending_df = pd.read_sql_query("SELECT rank, watchlist, symbol FROM stocktwits_trending "
+    #                                 "ORDER BY date_updated DESC LIMIT 30", conn)
+    print(ticker_df)
+    return render(request, 'social/twitter_trending.html', {"ticker_selected": ticker_selected,
+                                                        "ticker_df": ticker_df.to_html(index=False),
+                                                        # "trending_df": trending_df.to_html(index=False)
+                                                            })
 
 
 def beta(request):

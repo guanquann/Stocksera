@@ -1,0 +1,67 @@
+@media only screen and (max-width: 900px) {
+    .scroll_horizontal_btn {
+        height: 24px;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    .scroll_horizontal_btn {
+        height: 32px;
+    }
+}
+
+.scroll_horizontal_btn {
+    border: 0;
+    padding: 0;
+    background: #EAE9E9;
+    max-width: 26px
+}
+
+.scroll_horizontal_btn img {
+    width:100%;
+    height:100%;
+}
+
+.dark_mode .scroll_horizontal_btn {
+    filter: invert(1);
+    background: transparent
+}
+
+.dark_mode button:hover {
+    background: transparent;
+}
+
+.chart-container {
+    height:55vh;
+    width:98%;
+    max-height:250px;
+}
+
+.top30_header_div {
+    display: flex;
+    justify-content: center;
+}
+
+#top30_div {
+    display: flex;
+    overflow-x: auto;
+}
+
+#top30_div::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+}
+
+.top30_individual_div {
+    border: 1.5px solid grey;
+    padding: 2px;
+    margin: 0 2px;
+    border-radius: 5px;
+    width: fit-content;
+}
+
+.click_ticker_info {
+    text-align: right;
+    font-weight: bold;
+    margin-right: 3px;
+}

@@ -1,26 +1,31 @@
 import re
+import yaml
 import praw
 import math
 import sqlite3
 import requests
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 from collections import Counter
 from nltk.corpus import stopwords
 from datetime import datetime, timedelta
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
-import scheduled_tasks.reddit.config as cfg
-from helpers import *
+from helpers import long_number_format
+from scheduled_tasks.reddit.stocks.fast_yahoo import *
 from custom_extensions.custom_words import new_words
 from custom_extensions.stopwords import stopwords_list
+
+with open("config.yaml") as config_file:
+    config_keys = yaml.load(config_file, Loader=yaml.Loader)
 
 analyzer = SentimentIntensityAnalyzer()
 analyzer.lexicon.update(new_words)
 
-reddit = praw.Reddit(client_id=cfg.API_REDDIT_CLIENT_ID,
-                     client_secret=cfg.API_REDDIT_CLIENT_SECRET,
-                     user_agent=cfg.API_REDDIT_USER_AGENT)
+reddit = praw.Reddit(client_id=config_keys["API_REDDIT_CLIENT_ID"],
+                     client_secret=config_keys["API_REDDIT_CLIENT_SECRET"],
+                     user_agent=config_keys["API_REDDIT_USER_AGENT"])
 
 conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
@@ -53,7 +58,7 @@ def words_to_remove():
                             "GUYS", "PEOPLE", "ALREADY", "IMGEMOTET_TH", "BANBET", "VISUALMOD", "TODAY", "LOOKS",
                             "MADE", "YESTERDAY", "TOMORROW", "TMR", "EDT", "KEEP", "ANYONE", "GOES", "PLEASE", "BET",
                             "BAN", "AROUND", "ANYONE", "ACTUALLY", "SEEN", "ALSO", "RIGHT", "THERES", "MAY", "MIGHT",
-                            "DAY", "MAKING"]
+                            "DAY", "MAKING", "AWAY", "KIND"]
     return basic_stopwords_list
 
 

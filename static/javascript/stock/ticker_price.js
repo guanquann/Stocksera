@@ -57,7 +57,6 @@ function show_ticker_table(information) {
                 <td>Dividend: ${dividend_amount}</td>
             </tr>`
         document.getElementById("more_info_div").style.removeProperty("display");
-//        document.getElementsByClassName("more_info_div")[1].style.display = "none";
         btn_div = document.getElementsByClassName("btn_div")
         btn_div[1].style.display = "none"
         btn_div[4].style.display = "none"
@@ -193,8 +192,8 @@ const buttonRight = document.getElementById('slideRight');
 const buttonLeft = document.getElementById('slideLeft');
 
 buttonRight.onclick = function () {
-  document.getElementsByClassName('main_btn_div')[0].scrollLeft += 100;
+    document.getElementsByClassName('main_btn_div')[0].scrollLeft += 100;
 };
 buttonLeft.onclick = function () {
-  document.getElementsByClassName('main_btn_div')[0].scrollLeft -= 100;
+    document.getElementsByClassName('main_btn_div')[0].scrollLeft -= 100;
 };

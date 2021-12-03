@@ -1,0 +1,75 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | IPO{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/discover/short_interest.css' %}">
+<script src="{% static 'javascript/discover/ipo.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}load_ipo(){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/ipo_calendar">IPO Calendar</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('discover')</script>
+    <div class="instructions">
+        <h2>IPO Calendar</h2>
+            <p>Coming Soon!</p>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'latest_insider' %}">Insider</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ark_trades' %}">ARK</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'amd_xlnx_ratio' %}">AMD-XLNX</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_interest' %}">SI</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'ipo_calendar' %}">IPO</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'beta' %}">Beta</a></div>
+        </div>
+    </div>
+
+    <div class="contents_div">
+        <div class="search_bar">
+            <input type="text" class="ticker_input" placeholder="Ticker:" onkeyup="searchTicker(this)" autocomplete="off">
+            <button class="submit_btn" type="button">
+                <span class="fa fa-search"></span>
+            </button>
+        </div>
+        <br>
+        <span>Mkt Cap: </span>
+        <select>
+            <option><100M</option>
+            <option><1B</option>
+            <option><5B</option>
+            <option>>5B</option>
+        </select>
+        <span>No. Shares: </span>
+        <select>
+            <option><10M</option>
+            <option><20M</option>
+            <option><50M</option>
+            <option>>50M</option>
+        </select>
+        <span>Status: </span>
+        <select>
+            <option>Expected</option>
+            <option>Filed</option>
+            <option>Price</option>
+            <option>Withdrawn</option>
+        </select>
+        <span class="click_table_info"><b>Click on ticker for more info</b></span>
+        <div class="table_div">
+            {{ ipo_df|safe }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block bottom_script %}
+{% endblock %}

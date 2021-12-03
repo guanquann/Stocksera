@@ -10,7 +10,15 @@
 <script src="{% static 'javascript/reddit/discussion_thread.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}load_trending_over_time_chart({{trending_list}}, '24H');load_trending_over_time_chart({{trending_list_by_hour}}, '7d');load_change_chart(2);load_sentiment_chart(1, 'wsb');load_mkt_cap_chart(3);load_options_chart(0);load_word_cloud({{wsb_word_cloud}}){% endblock %}
+{% block onload_properties %}
+                            load_trending_chart(1, 'trending_24H', 'lightgreen');
+                            load_trending_chart(4, 'trending_7days', 'lightblue');
+                            load_change_chart(2);
+                            load_sentiment_chart(1, 'wsb');
+                            load_yf_chart(3);
+                            load_options_chart(0);
+                            load_word_cloud({{wsb_word_cloud}});
+{% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -38,10 +46,10 @@
         <h2>Other Datasets Available</h2>
         <div class="more_info_div_parent">
             <div class="more_info_div"><a class="more_info_btn current_link" href="/wsb_live">WSB Live</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis">Trending Stocks</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis/?subreddit=cryptocurrency">Trending Crypto</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reddit_etf' %}">WSB ETF</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'subreddit_count' %}">Subreddit Stats</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="/crypto_live">Crypto Live</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis">Trending</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reddit_etf' %}">ETF</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'subreddit_count' %}">Subreddit</a></div>
         </div>
     </div>
 
@@ -49,11 +57,18 @@
         <div id="tips_btn">
             <a href="/wsb_documentation" target="_blank">Guide when using WSB Live</a>
         </div>
-        <h2 class="header">Trending Last 24H</h2>
-        <div id="trending_over_time_chart_24H" class="chart"></div>
 
-        <h2 class="header">Trending Last 7 Days</h2>
-        <div id="trending_over_time_chart_7d" class="chart"></div>
+        <div class="main_trending_graph_div">
+            <div>
+                <h2 class="header">Trending Last 24H</h2>
+                <div id="trending_24H" class="chart"></div>
+            </div>
+
+            <div>
+                <h2 class="header">Trending Last 7 Days</h2>
+                <div id="trending_7days" class="chart"></div>
+            </div>
+        </div>
 
         <h2 class="header">Change in Mentions Last 24H</h2>
         <div style="text-align: center"><i>% Change capped at 1000%</i></div>
@@ -94,10 +109,11 @@
         <div class="scrollable_div" style="max-height: 450px">
             {{mentions_df|safe}}
         </div>
+
         <div style="display:none">
             {{change_df|safe}}
             {{wsb_yf_df|safe}}
-            {{trending_options|safe}}
+            {{mentions_7d_df|safe}}
         </div>
     </div>
 </div>

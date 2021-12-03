@@ -50,16 +50,20 @@ function short_vol_graph(duration) {
     }
 
     var shorted_vol_daily = document.getElementsByTagName("table")[0].querySelectorAll("tr");
-    var date_list = [], price_list = [], short_vol_list = [], long_vol_list = [], percentage_list = []
+    var date_list = [], price_list = [], short_vol_list = [], short_exempt_vol_list = [], long_vol_list = [], percentage_list = []
     for (tr=shorted_vol_daily.length-1; tr>0; tr--) {
         var total_td = shorted_vol_daily[tr].querySelectorAll("td");
         date_string = total_td[0].innerHTML;
         if (date_string >= date_threshold) {
             date_list.push(date_string);
             price_list.push(total_td[5].innerHTML.replace("$", ""));
+
             short_vol_num = Number(total_td[1].innerHTML.replace(/[^0-9-.]/g, ""))
+            short_exempt_vol_num = Number(total_td[2].innerHTML.replace(/[^0-9-.]/g, ""))
             long_vol_num = Number(total_td[3].innerHTML.replace(/[^0-9-.]/g, ""))
+
             short_vol_list.push(Math.round(short_vol_num) / 1000000);
+            short_exempt_vol_list.push(Math.round(short_exempt_vol_num) / 1000000);
             long_vol_list.push(Math.round(long_vol_num - short_vol_num) / 1000000);
             percentage_list.push(total_td[4].innerHTML.replace("%", ""));
             shorted_vol_daily[tr].style.removeProperty("display");
@@ -93,6 +97,14 @@ function short_vol_graph(duration) {
                     type: 'bar',
                     data: short_vol_list,
                     backgroundColor: 'red',
+                    barThickness: 'flex',
+                    yAxisID: 'A',
+                },
+                {
+                    label: 'Short Exempt Volume',
+                    type: 'bar',
+                    data: short_exempt_vol_list,
+                    backgroundColor: 'lightblue',
                     barThickness: 'flex',
                     yAxisID: 'A',
                 },

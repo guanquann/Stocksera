@@ -1,4 +1,4 @@
-function load_mkt_cap_chart(table_index) {
+function load_yf_chart(table_index) {
     ticker_list = [], mkt_cap_list = [], price_change_list = [], mentions_list = [], parent_list = []
     difference_list = [], difference_52w_high_list = [], difference_52w_low_list = []
     tr = document.getElementsByTagName("table")[table_index].querySelectorAll("tr")
@@ -7,10 +7,10 @@ function load_mkt_cap_chart(table_index) {
         ticker_list.push(td[0].innerHTML)
         mkt_cap_list.push(td[1].innerHTML)
         price_change_list.push(td[2].innerHTML)
-        difference_list.push(td[3].innerHTML)
-        difference_52w_high_list.push(td[4].innerHTML)
-        difference_52w_low_list.push(td[5].innerHTML)
-        mentions_list.push(td[6].innerHTML)
+        difference_list.push(td[5].innerHTML)
+        difference_52w_high_list.push(td[6].innerHTML)
+        difference_52w_low_list.push(td[7].innerHTML)
+        mentions_list.push(td[8].innerHTML)
         parent_list.push("")
     }
 
@@ -322,8 +322,8 @@ function load_options_chart(table_index) {
 }
 
 function resize_plotly_graph() {
-    Plotly.Plots.resize('trending_over_time_chart_24H')
-    Plotly.Plots.resize('trending_over_time_chart_7d')
+    Plotly.Plots.resize('trending_24H')
+    Plotly.Plots.resize('trending_7days')
     Plotly.Plots.resize('change_mentions')
     Plotly.Plots.resize('mkt_cap_chart')
     Plotly.Plots.resize('price_change_chart')

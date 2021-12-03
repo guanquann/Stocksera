@@ -1,0 +1,77 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Stocktwits{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/social/stocktwits.css' %}">
+{% endblock %}
+
+{% block onload_properties%}trending_ticker_graph('{{ticker_selected}}');load_top30('{{ticker_selected}}'){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/stocktwits">Stocktwits Trending</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('social')</script>
+
+    <div class="instructions">
+        <h2>Stocktwits Trending</h2>
+            <p>Discover the ranking of popular tickers in Stocktwits over time.
+                Due to limitations in Stocktwits API, only the top 30 trending tickers is available.
+            </p>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'stocktwits' %}">Stocktwits</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'twitter_trending' %}">Twitter</a></div>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <div class="top30_header_div">
+            <button id="slideLeft" type="button" class="scroll_horizontal_btn">
+                <img src="{% static 'images/left_arrow.svg' %}">
+            </button>
+            <h2>Currently Trending</h2>
+            <button id="slideRight" type="button" class="scroll_horizontal_btn">
+                <img src="{% static 'images/right_arrow.svg' %}">
+            </button>
+        </div>
+        <div class="click_ticker_info">Click on ticker symbol to view more</div>
+        <div id="top30_div"></div>
+    </div>
+
+    <div class="contents_div">
+        <form action="/stocktwits" method="GET" autocomplete="off">
+        <div class="search_bar">
+            <input type="text" class="ticker_input" name="quote" placeholder="Ticker:" autocomplete="off" value="{{ticker_selected}}">
+            <button class="submit_btn" type="submit">
+                <span class="fa fa-search"></span>
+            </button>
+        </div>
+        </form>
+
+        <div class="chart-container">
+            <canvas id="trending_ticker_chart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="watchlist_ticker_chart"></canvas>
+        </div>
+
+        <div style="display: none">
+            {{ ticker_df|safe }}
+            {{ trending_df|safe }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block bottom_script %}
+<script src="{% static 'javascript/social/stocktwits.js' %}"></script>
+{% endblock %}

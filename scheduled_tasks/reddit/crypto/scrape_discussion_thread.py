@@ -7,7 +7,6 @@ from scheduled_tasks.reddit.reddit_utils import *
 current_datetime = datetime.utcnow()
 
 crypto_dict = get_mapping_coins()
-print(crypto_dict)
 
 
 def extract_ticker(text, tickers_dict, sentiment_dict, sentiment_score):
@@ -73,8 +72,6 @@ def crypto_live():
                     vs = analyzer.polarity_scores(comment_body)
                     sentiment_score = float(vs['compound'])
 
-                    # print(datetime.fromtimestamp(comment.created_utc), sentiment_score, comment_body)
-
                     # Remove number/special characters (clean up word cloud)
                     all_words_dict = insert_into_word_cloud_dict(comment_body, all_words_dict)
 
@@ -88,16 +85,13 @@ def crypto_live():
                         # Get sentiment of comment
                         vs = analyzer.polarity_scores(second_level_comment)
                         sentiment_score = float(vs['compound'])
-                        # print(second_level_comment)
+
                         # Insert into word cloud
                         all_words_dict = insert_into_word_cloud_dict(second_level_comment, all_words_dict)
 
                         # Get ticker based on pattern
                         tickers_dict, sentiment_dict = extract_ticker(second_level_comment, tickers_dict,
                                                                       sentiment_dict, sentiment_score)
-        # except:
-        #     print("error!")
-        #     pass
 
     # Remove word from word cloud if it is found in stopwords_list
     all_words_dict = dict(sorted(all_words_dict.items(), key=lambda item: item[1]))

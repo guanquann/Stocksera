@@ -1,4 +1,5 @@
 import os
+import yaml
 import sqlite3
 import numpy as np
 import finnhub
@@ -9,12 +10,15 @@ from fast_yahoo import *
 from custom_extensions.custom_words import *
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
+with open("config.yaml") as config_file:
+    config_keys = yaml.load(config_file, Loader=yaml.Loader)
+
 analyzer = SentimentIntensityAnalyzer()
 analyzer.lexicon.update(new_words)
 
 # https://finnhub.io/
-finnhub_client = finnhub.Client(api_key="API_KEY_HERE")
-finnhub_client2 = finnhub.Client(api_key="API_KEY_HERE")
+finnhub_client = finnhub.Client(api_key=config_keys["FINNHUB_KEY1"])
+finnhub_client2 = finnhub.Client(api_key=config_keys["FINNHUB_KEY2"])
 
 conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()

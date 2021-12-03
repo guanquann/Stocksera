@@ -135,19 +135,20 @@ def update_previous_earnings(earnings_df):
     print("Updated previous earnings successfully")
 
 
-def delete_old_earnings(last_date):
+def delete_old_earnings(n_days_ago):
     """
     Remove old earnings till last_date
     Parameters
     ----------
-    last_date: str
-        Date format: YYYY-MM-DD
+    n_days_ago: int
+        Keep earnings from n_days_ago till now
     """
-    db.execute("DELETE FROM earnings_calendar WHERE earning_date<=?", (last_date,))
+    date_to_remove = str(datetime.utcnow().date() - timedelta(days=n_days_ago))
+    db.execute("DELETE FROM earnings_calendar WHERE earning_date<=?", (date_to_remove,))
     conn.commit()
 
 
 if __name__ == '__main__':
-    delete_old_earnings("2021-10-01")
     insert_earnings_into_db(get_earnings(7, forward=True))
-    # update_previous_earnings(get_earnings(7, forward=False))
+    update_previous_earnings(get_earnings(7, forward=False))
+    delete_old_earnings(14)

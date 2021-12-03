@@ -1,17 +1,9 @@
 import os
 import sys
-import sqlite3
-import praw
 import yfinance as yf
-from datetime import datetime
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..\\..'))
-from scheduled_tasks.reddit.config import *
-
-CLIENT_ID = API_REDDIT_CLIENT_ID
-CLIENT_SECRET = API_REDDIT_CLIENT_SECRET
-USER_AGENT = API_REDDIT_USER_AGENT
-reddit = praw.Reddit(client_id=CLIENT_ID, client_secret=CLIENT_SECRET, user_agent=USER_AGENT)
+from scheduled_tasks.reddit.reddit_utils import *
 
 conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()

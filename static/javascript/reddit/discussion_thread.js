@@ -1,4 +1,4 @@
-function load_trending_over_time_chart(trending_list, period) {
+function load_trending_timeline_chart(trending_list, period) {
     date_1_list = [], ticker_1_list = []
     for (ticker in trending_list[0]) {
         mentions = trending_list[0][ticker]
@@ -429,6 +429,75 @@ function load_sentiment_chart(table_index, link) {
 
     var data = [trace2, trace1]
     Plotly.newPlot('sentiment_chart', data, layout, {displayModeBar: false, showTips: false, responsive: true});
+}
+
+function load_trending_chart(table_index, graph_id, color) {
+    tr = document.getElementsByTagName("table")[table_index].querySelectorAll("tr")
+    ticker_list = [], mentions_list = [];
+
+    for (i=19; i>0; i--) {
+        td = tr[i].querySelectorAll("td")
+        ticker_list.push(td[1].innerHTML)
+        mentions_list.push(td[2].innerHTML)
+    }
+
+    var trace1 = {
+        x: mentions_list,
+        y: ticker_list,
+        name: 'Calls',
+        marker: {
+            color: color,
+        },
+        hovertemplate:
+                `<b>$%{y}</b><br>` +
+                "Mentions: %{x}<br>" +
+                "<extra></extra>",
+        type: 'bar',
+        orientation: 'h'
+    };
+
+    var layout = {
+        barmode: 'stack',
+        autosize: true,
+        margin: {
+            t:0,
+            l:50,
+            r:20,
+            pad: 0
+        },
+        automargin: true,
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: 'transparent',
+        xaxis: {
+            showgrid: false,
+            showline: true,
+            fixedrange: true,
+            color: "gray",
+            rangemode: 'tozero',
+            title: {
+                text: 'No. of Mentions',
+                font: {
+                    size: 12,
+                }
+            },
+        },
+        yaxis: {
+            showgrid: false,
+            showline: true,
+            rangemode: 'tozero',
+            fixedrange: true,
+            color: "gray",
+        },
+        legend: {
+            x: 0.5,
+            xanchor: 'center',
+            y: 1.1,
+            orientation: 'h',
+        },
+    };
+
+    var data = [trace1]
+    Plotly.newPlot(graph_id, data, layout, {displayModeBar: false, showTips: false, responsive: true});
 }
 
 function load_word_cloud(word_list){

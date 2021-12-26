@@ -1,13 +1,17 @@
 ---
+  # https://finnhub.io/
   FINNHUB_KEY1: "API_KEY_HERE"
   FINNHUB_KEY2: "API_KEY_HERE"
 
+  # https://developer.twitter.com/en/portal/dashboard/
   TWITTER_BEARER_TOKEN: "API_KEY_HERE"
 
+  # https://www.reddit.com/prefs/apps/
   API_REDDIT_CLIENT_ID: "API_KEY_HERE"
   API_REDDIT_CLIENT_SECRET: "API_KEY_HERE"
   API_REDDIT_USER_AGENT:  "subreddit_scraper"
 
+  # https://realpython.com/python-send-email/
   GMAIL_SENDER_EMAIL: "API_KEY_HERE"
   GMAIL_SENDER_PASSWORD: "API_KEY_HERE"
 

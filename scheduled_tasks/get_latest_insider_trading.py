@@ -22,12 +22,12 @@ def latest_insider_trading():
         insider_trader = insider_trader[insider_trader["Value ($)"] >= 50000]
 
         insider_trader["Date"] = insider_trader["Date"] + " 2021"
-        insider_trader["Date"] = pd.to_datetime(insider_trader["Date"], format="%b %d %Y")
+        insider_trader["Date"] = pd.to_datetime(insider_trader["Date"], format="%b %d %Y", errors='coerce')
         insider_trader["Date"] = insider_trader["Date"].astype(str)
 
         insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"].apply(lambda x: x.rsplit(' ', 2)[0])
         insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"] + " 2021"
-        insider_trader["SEC Form 4"] = pd.to_datetime(insider_trader["SEC Form 4"], format="%b %d %Y")
+        insider_trader["SEC Form 4"] = pd.to_datetime(insider_trader["SEC Form 4"], format="%b %d %Y", errors='coerce')
         insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"].astype(str)
 
         if type_trading == "sales":

@@ -70,7 +70,7 @@ def get_holidays():
     Get holidays in US when stock market is closed
     """
     holidays_df = pd.read_html(r"https://www.sec.gov/edgar/filer-information/calendar")[0]
-    holidays_df["Date"] = pd.to_datetime(holidays_df["Date"])
+    holidays_df["Date"] = pd.to_datetime(holidays_df["Date"], errors='coerce')
     print(holidays_df)
     return holidays_df
 

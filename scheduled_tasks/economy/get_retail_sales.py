@@ -34,7 +34,7 @@ def retail_sales():
 
     covid_df = pd.read_csv(r'https://covid.ourworldindata.org/data/owid-covid-data.csv')
     usa_df = covid_df[covid_df["iso_code"] == "USA"]
-    usa_df.index = pd.to_datetime(usa_df["date"])
+    usa_df.index = pd.to_datetime(usa_df["date"], errors='coerce')
     usa_df = usa_df.groupby(pd.Grouper(freq="M"))
     usa_df = usa_df.mean()["new_cases"]
     usa_df = pd.DataFrame(usa_df)

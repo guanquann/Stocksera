@@ -11,7 +11,7 @@ def senate_trades():
     df = pd.read_json("https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.json")
 
     for i in ["transaction_date", "disclosure_date"]:
-        df[i] = pd.to_datetime(df[i])
+        df[i] = pd.to_datetime(df[i], errors='coerce')
         df[i] = df[i].dt.strftime('%Y-%m-%d')
 
     df = df[df["disclosure_date"] >= str(datetime.utcnow().date() - timedelta(days=365*5))]

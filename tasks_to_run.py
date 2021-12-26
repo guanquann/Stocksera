@@ -124,10 +124,12 @@ if __name__ == '__main__':
         scrape_stocks_discussion_thread.wsb_live()
         scrape_stocks_discussion_thread.wsb_change()
         scrape_stocks_discussion_thread.get_mkt_cap()
+        scrape_stocks_discussion_thread.update_hourly()
 
     if SCRAPE_LIVE_CRYPTO:
         scrape_crypto_discussion_thread.crypto_live()
         scrape_crypto_discussion_thread.crypto_change()
+        scrape_crypto_discussion_thread.update_hourly()
 
     if SCRAPE_REDDIT_STOCKS_POSTS:
         scrape_reddit_stocks.main()

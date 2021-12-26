@@ -120,6 +120,12 @@ This website is free for everyone. But if you want to support me, please give me
 - Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>.
 ![Earnings Calendar](./static/images/github/earnings_calendar.png)
 
+#### /senate/
+- View recent senate trading
+![Senate](./static/images/github/senate_trading.png)
+![Senate](./static/images/github/senate_trading1.png)
+![Senate](./static/images/github/senate_trading2.png)
+
 #### /short_interest/
 - Identify tickers with the highest short interest level.
 - Data is from <a href="https://www.highshortinterest.com">shortinterest.com</a>

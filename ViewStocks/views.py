@@ -188,7 +188,7 @@ def ticker_earnings(request):
         past_df.sort_values(by=["Year"], ascending=False, inplace=True)
     else:
         past_df = pd.DataFrame(columns=["Year", "Revenue", "Earnings"])
-        past_df["Year"] = ["2021", "2020", "2019", "2018"]
+        past_df["Year"] = ["2022", "2021", "2020", "2019"]
         past_df["Revenue"] = ["N/A", "N/A", "N/A", "N/A"]
         past_df["Earnings"] = ["N/A", "N/A", "N/A", "N/A"]
 
@@ -1219,58 +1219,88 @@ def senate_trades(request):
     df = pd.read_csv("database/government/senate.csv")
     df["Disclosure Date"] = df["Disclosure Date"].astype(str)
 
-    senator = request.GET.get("senator")
+    senator = request.GET.get("person")
     ticker_selected = request.GET.get("quote")
 
     if senator:
-        senator_df = df[df["Senator"] == senator]
-        all_senators = df["Senator"].drop_duplicates().sort_values().to_list()
-        del senator_df["Senator"]
-        return render(request, 'government/senate_trading_individual.html',
-                      {"senator_df": senator_df.to_html(index=False),
-                       "senator": senator,
-                       "all_senators": all_senators})
+        senator_df, all_senators = government_individual_trades(df, senator, "Senator")
+        return render(request, 'government/trading_individual.html',
+                      {"gov_type": "senate",
+                       "person_trades_df": senator_df.to_html(index=False),
+                       "person_name": senator,
+                       "all_person_list": all_senators})
 
     elif ticker_selected:
         ticker_selected = ticker_selected.upper()
-
-        ticker_df = df[df["Ticker"] == ticker_selected]
-        del ticker_df["Ticker"]
-        del ticker_df["Asset Description"]
-        history_df = yf.Ticker(ticker_selected).history(period="5y", interval="1d")
-        history_df.reset_index(inplace=True)
-        history_df = history_df[["Date", "Close"]]
-
-        all_tickers = df["Ticker"].drop_duplicates().sort_values().to_list()
-        all_tickers.sort()
-        all_tickers.remove("Unknown")
-        return render(request, 'government/senate_ticker_analysis.html', {"ticker_df": ticker_df.to_html(index=False),
-                                                                          "history_df": history_df.to_html(index=False),
-                                                                          "ticker_selected": ticker_selected,
-                                                                          "ticker_list": all_tickers})
+        ticker_df, history_df, all_tickers = government_ticker_trades(df, ticker_selected)
+        return render(request, 'government/ticker_analysis.html', {"gov_type": "senate",
+                                                                   "ticker_df": ticker_df.to_html(index=False),
+                                                                   "history_df": history_df.to_html(index=False),
+                                                                   "ticker_selected": ticker_selected,
+                                                                   "ticker_list": all_tickers})
 
     else:
         date_selected = request.GET.get("date_selected")
-        if not date_selected:
-            date_selected = df["Disclosure Date"].iloc[0]
-        latest_df = df[df["Disclosure Date"] == date_selected]
-        group_by_senator = pd.DataFrame(df.groupby(["Senator"]).agg({"Transaction Date": "count",
-                                                                     "Disclosure Date": lambda x: x.iloc[0]}))
-        group_by_senator.sort_values(by=["Disclosure Date"], ascending=False, inplace=True)
-        group_by_senator.rename(columns={"Transaction Date": "Total",
-                                         "Disclosure Date": "Last Disclosure"}, inplace=True)
-        group_by_senator.reset_index(inplace=True)
-
-        group_by_ticker = pd.DataFrame(df["Ticker"].value_counts())
-        group_by_ticker.reset_index(inplace=True)
-        group_by_ticker.columns = ["Ticker", "Count"]
-        group_by_ticker = group_by_ticker[group_by_ticker["Ticker"] != "Unknown"]
-
-        return render(request, 'government/senate_trading.html',
-                      {"group_by_senator": group_by_senator.to_html(index=False),
+        date_selected, latest_df, group_by_senator, group_by_ticker = government_daily_trades(df, date_selected, "Senator")
+        return render(request, 'government/trading_summary.html',
+                      {"gov_type": "senate",
+                       "group_by_people": group_by_senator.to_html(index=False),
                        "group_by_ticker": group_by_ticker.to_html(index=False),
                        "latest_df": latest_df.to_html(index=False),
                        "dates_available": df["Disclosure Date"].drop_duplicates().to_list(),
+                       "district": [],
+                       "district_count": [],
+                       "date_selected": date_selected})
+
+
+def house_trades(request):
+    df = pd.read_csv("database/government/house.csv")
+    df["Disclosure Date"] = df["Disclosure Date"].astype(str)
+
+    representative = request.GET.get("person")
+    ticker_selected = request.GET.get("quote")
+    state = request.GET.get("state")
+    if representative:
+        house_df, all_representative = government_individual_trades(df, representative, "Representative")
+        return render(request, 'government/trading_individual.html',
+                      {"gov_type": "house",
+                       "person_trades_df": house_df.to_html(index=False),
+                       "person_name": representative,
+                       "all_person_list": all_representative})
+
+    elif ticker_selected:
+        ticker_selected = ticker_selected.upper()
+        ticker_df, history_df, all_tickers = government_ticker_trades(df, ticker_selected)
+        return render(request, 'government/ticker_analysis.html', {"gov_type": "house",
+                                                                   "ticker_df": ticker_df.to_html(index=False),
+                                                                   "history_df": history_df.to_html(index=False),
+                                                                   "ticker_selected": ticker_selected,
+                                                                   "ticker_list": all_tickers})
+
+    elif state:
+        state = state.upper()
+        district_df = df[df["District"].str.contains(state)]
+        district_list = df["District"].str[:2].unique().tolist()
+        return render(request, 'government/state.html', {"gov_type": "house",
+                                                         "state": state,
+                                                         "district_list": district_list,
+                                                         "district_df": district_df.to_html(index=False)})
+
+    else:
+        date_selected = request.GET.get("date_selected")
+        date_selected, latest_df, group_by_representative, group_by_ticker = government_daily_trades(df, date_selected, "Representative")
+        df["District"] = df["District"].str[:2]
+        district_df = pd.DataFrame(df.groupby(["District"]).agg("count")["Ticker"])
+        district_count = district_df["Ticker"].tolist()
+        district = district_df.index.tolist()
+        return render(request, 'government/trading_summary.html',
+                      {"gov_type": "house",
+                       "group_by_people": group_by_representative.to_html(index=False),
+                       "group_by_ticker": group_by_ticker.to_html(index=False),
+                       "latest_df": latest_df.to_html(index=False),
+                       "dates_available": df["Disclosure Date"].drop_duplicates().to_list(),
+                       "district": district,
+                       "district_count": district_count,
                        "date_selected": date_selected})
 
 

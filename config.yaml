@@ -14,4 +14,3 @@
   # https://realpython.com/python-send-email/
   GMAIL_SENDER_EMAIL: "API_KEY_HERE"
   GMAIL_SENDER_PASSWORD: "API_KEY_HERE"
-

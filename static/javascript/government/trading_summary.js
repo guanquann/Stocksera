@@ -1,4 +1,8 @@
-const searchSenator = (elem, index) =>{
+backgroundColorList = ['rgb(38, 166, 154)', 'red', 'orange', 'yellow', 'blue', 'purple', 'pink',
+                       'grey', 'green', 'lightgreen', 'salmon', 'lightblue', 'lightsalmon', 'wheat', 'black',
+                       'aquamarine', 'blueviolet', 'cornflowerblue', 'darkgoldenrod']
+
+const searchPerson = (elem, index) =>{
 let filter = elem.value.toUpperCase();
 let filter_table = elem.parentElement.parentElement.querySelector("table");
 let tr = filter_table.getElementsByTagName('tr');
@@ -16,132 +20,20 @@ for (var i = 0; i < tr.length; i++){
     }
 }
 
-// Adapted from https://github.com/niinpatel/calendarHTML-Javascript/blob/master/scripts.js
-today = new Date();
-//currentMonth = today.getMonth();
-//currentYear = today.getFullYear();
-selectYear = document.getElementById("year");
-selectMonth = document.getElementById("month");
-
-months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-backgroundColorList = ['rgb(38, 166, 154)', 'red', 'orange', 'yellow', 'blue', 'purple', 'pink', 'grey', 'green']
-
-monthAndYear = document.getElementById("monthAndYear");
-dates_available = document.getElementById("dates_available").innerHTML;
-
-original_date_selected = document.getElementById("date_selected").innerHTML;
-original_date_selected_split = original_date_selected.split("-")
-original_date_split = original_date_selected.split("-")
-originalMonth = Number(original_date_split[1]) - 1;
-originalYear = Number(original_date_split[0]);
-originalDate = Number(original_date_split[2]);
-
-date_selected = document.getElementById("date_selected").innerHTML;
-date_split = date_selected.split("-")
-currentMonth = Number(date_split[1]) - 1;
-currentYear = Number(date_split[0]);
-showCalendar(currentMonth, currentYear);
-
-
-function next() {
-    currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
-    currentMonth = (currentMonth + 1) % 12;
-    showCalendar(currentMonth, currentYear);
-}
-
-function previous() {
-    currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
-    currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
-    showCalendar(currentMonth, currentYear);
-}
-
-function jump() {
-    currentYear = parseInt(selectYear.value);
-    currentMonth = parseInt(selectMonth.value);
-    showCalendar(currentMonth, currentYear);
-}
-
-function showCalendar(month, year) {
-    let firstDay = (new Date(year, month)).getDay();
-
-    tbl = document.getElementById("calendar-body"); // body of the calendar
-
-    // clearing all previous cells
-    tbl.innerHTML = "";
-
-    // filing data about month and in the page via DOM.
-    monthAndYear.innerHTML = months[month] + " " + year;
-    selectYear.value = year;
-    selectMonth.value = month;
-
-    // creating all cells
-    let date = 1;
-    for (let i = 0; i < 6; i++) {
-        // creates a table row
-        let row = document.createElement("tr");
-
-        //creating individual cells, filing them up with data.
-        for (let j = 0; j < 7; j++) {
-            if (i === 0 && j < firstDay) {
-                cell = document.createElement("td");
-                cellText = document.createTextNode("");
-                cell.appendChild(cellText);
-                row.appendChild(cell);
-            }
-            else if (date > daysInMonth(month, year)) {
-                break;
-            }
-
-            else {
-                cell = document.createElement("td");
-                cellText = document.createTextNode(date);
-                if (date === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
-                    cell.classList.add("bg-today");
-                }
-                if (date === originalDate && month === originalMonth && year === originalYear) {
-                    cell.classList.add("bg-selected");
-                }
-
-                date_ = (date <= 9) ? "0" + date : date;
-                month_ = (month <= 8) ? "0" + (month+1) : month+1;
-                actual_date = `${year}-${month_}-${date_}`
-
-                if (dates_available.includes(actual_date)) {
-                    cell.classList.add("bg-info");
-                }
-                cell.classList.add("hoverable");
-                cell.setAttribute("onclick",`get_clicked_date('${actual_date}')`);
-                cell.appendChild(cellText);
-
-                row.appendChild(cell);
-                date++;
-            }
-        }
-        tbl.appendChild(row); // appending each row into calendar body.
-    }
-}
-
-// check how many days in a month code from https://dzone.com/articles/determining-number-days-month
-function daysInMonth(iMonth, iYear) {
-    return 32 - new Date(iYear, iMonth, 32).getDate();
-}
-// End of https://github.com/niinpatel/calendarHTML-Javascript/blob/master/scripts.js
-
-
 function get_clicked_date(elem) {
     document.getElementById("date_selected_from_calendar").value = elem
     document.getElementById("form").submit()
 }
 
-function load_overview_table() {
+function load_overview_table(gov_type) {
     var tr = document.querySelectorAll("table")[1].querySelectorAll("tr")
     for (i=1; i<tr.length; i++) {
         td = tr[i].querySelectorAll("td")
-        td[0].innerHTML = `<td><a href="/senate/?senator=${td[0].innerHTML}"><b>${td[0].innerHTML}</b></td>`
+        td[0].innerHTML = `<td><a href="/${gov_type}/?person=${td[0].innerHTML}"><b>${td[0].innerHTML}</b></td>`
     }
 }
 
-function load_ticker_stats() {
+function load_ticker_stats(gov_type) {
     var tr = document.querySelectorAll("table")[2].querySelectorAll("tr")
     ticker_list = [], count_list = []
     for (i=1; i<tr.length; i++) {
@@ -150,7 +42,7 @@ function load_ticker_stats() {
             ticker_list.push(td[0].innerHTML)
             count_list.push(td[1].innerHTML)
         }
-        td[0].innerHTML = `<a href="/senate?quote=${td[0].innerHTML}"><b>${td[0].innerHTML}</b></a>`
+        td[0].innerHTML = `<a href="/${gov_type}?quote=${td[0].innerHTML}"><b>${td[0].innerHTML}</b></a>`
     }
 
     ticker_stats_div = document.getElementById("ticker_stats_div")
@@ -225,16 +117,16 @@ function load_ticker_stats() {
     })
 }
 
-function load_daily_summary() {
+function load_daily_summary(gov_type) {
     var tr = document.querySelectorAll("table")[3].querySelectorAll("tr")
-    senator_dict = {}, type_dict = {}, ticker_list = [], net_amount = 0, total_amount = 0, transaction_dict = {}
+    govt_dict = {}, type_dict = {}, ticker_list = [], net_amount = 0, total_amount = 0, transaction_dict = {}
     for (i=0; i<tr.length; i++) {
         td = tr[i].children
         td[1].style.display = "none"
         td[3].style.display = "none"
         td[4].style.display = "none"
         td[8].style.display = "none"
-//        td[9].style.display = "none"
+
         if (i > 0) {
             type = td[5].innerHTML
             if (td[6].innerHTML.includes("$")) {
@@ -250,23 +142,23 @@ function load_daily_summary() {
             }
             net_amount += amount
 
-            senator_name = td[7].innerHTML
+            person_name = td[7].innerHTML
             ticker = td[2].innerHTML
             if (! ticker_list.includes(ticker)) {
                 ticker_list.push(ticker)
             }
 
-            if (senator_dict.hasOwnProperty(senator_name)) {
-                if (senator_dict[senator_name].hasOwnProperty(ticker)) {
-                    senator_dict[senator_name][ticker] += amount
+            if (govt_dict.hasOwnProperty(person_name)) {
+                if (govt_dict[person_name].hasOwnProperty(ticker)) {
+                    govt_dict[person_name][ticker] += amount
                 }
                 else {
-                    senator_dict[senator_name][ticker] = amount
+                    govt_dict[person_name][ticker] = amount
                 }
             }
             else {
-                senator_dict[senator_name] = {}
-                senator_dict[senator_name][ticker] = amount
+                govt_dict[person_name] = {}
+                govt_dict[person_name][ticker] = amount
             }
 
             if (type_dict.hasOwnProperty(type)) {
@@ -278,8 +170,13 @@ function load_daily_summary() {
                 transaction_dict[type] = amount
             }
 
-            td[2].innerHTML = `<a href="/senate/?quote=${td[2].innerHTML}"><b>${td[2].innerHTML}</b></a>`
-            td[7].innerHTML = `<a href="/senate/?senator=${senator_name}"><b>${senator_name}</b></a>`
+            td[2].innerHTML = `<a href="/${gov_type}/?quote=${td[2].innerHTML}"><b>${td[2].innerHTML}</b></a>`
+            td[7].innerHTML = `<a href="/${gov_type}/?person=${person_name}"><b>${person_name}</b></a>`
+
+
+            if (gov_type == "house") {
+                td[10].innerHTML = `<a href="/${gov_type}/?state=${td[10].innerHTML.slice(0, 2)}"><b>${td[10].innerHTML}</b></a>`
+            }
         }
     }
 
@@ -320,12 +217,12 @@ function load_daily_summary() {
 
     bg_count = 0
     dataset_list = []
-    for (i in senator_dict) {
+    for (i in govt_dict) {
         data_list = []
         for (s in ticker_list) {
             looking_at = ticker_list[s]
-            if (senator_dict[i].hasOwnProperty(looking_at)) {
-                data_list.push({x: looking_at, y: senator_dict[i][looking_at]})
+            if (govt_dict[i].hasOwnProperty(looking_at)) {
+                data_list.push({x: looking_at, y: govt_dict[i][looking_at]})
             }
             else {
                 data_list.push({x: looking_at, y: 0})
@@ -340,20 +237,20 @@ function load_daily_summary() {
         bg_count += 1
     }
 
-    if (Object.keys(senator_dict).length != 0) {
-            senate_id = "senator_breakdown"
+    if (Object.keys(govt_dict).length != 0) {
+            gov_id = "government_breakdown"
 
             div = document.createElement("div");
             div.classList.add("chart-container")
 
             canvas = document.createElement("canvas")
-            canvas.setAttribute("id", senate_id);
+            canvas.setAttribute("id", gov_id);
             div.appendChild(canvas)
 
             daily_summary_div.appendChild(div)
 
-            var senator_breakdown = document.getElementById(senate_id);
-            var senator_breakdown = new Chart(senator_breakdown, {
+            var govt_breakdown = document.getElementById(gov_id);
+            var govt_breakdown = new Chart(govt_breakdown, {
             type: 'bar',
             data: {
                 labels: ticker_list,
@@ -431,7 +328,7 @@ function load_daily_summary() {
             },
         })
 
-        num_senators = Object.keys(senator_dict).length
+        num_person = Object.keys(govt_dict).length
         num_transactions = tr.length - 1
         if (type_dict.hasOwnProperty("Purchase")) {
             num_purchases = type_dict["Purchase"]
@@ -463,8 +360,8 @@ function load_daily_summary() {
                 <div>Companies</div>
             </div>
             <div class="in_a_nutshell">
-                <h2>${num_senators}</h2>
-                <div>Senator(s)</div>
+                <h2>${num_person}</h2>
+                <div>Person</div>
             </div>
         `
     }
@@ -477,18 +374,5 @@ function load_daily_summary() {
                 <br><br>
             </div>
             `
-    }
-}
-
-function open_calendar() {
-    calendar_class = document.querySelector(".calendar_div").classList
-    calendar_btn = document.querySelector("#open_calendar")
-    if (calendar_class.contains("hide_calendar")) {
-        calendar_class.remove("hide_calendar")
-        calendar_btn.innerHTML = "Hide Calendar"
-    }
-    else {
-        calendar_class.add("hide_calendar")
-        calendar_btn.innerHTML = "Open Calendar"
     }
 }

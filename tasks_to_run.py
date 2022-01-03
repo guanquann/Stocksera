@@ -28,7 +28,8 @@ import scheduled_tasks.get_failure_to_deliver as get_failure_to_deliver
 
 import scheduled_tasks.get_latest_insider_trading as get_latest_insider_trading
 import scheduled_tasks.get_stocks_summary as get_stocks_summary
-import scheduled_tasks.get_senate_trading as get_senate_trading
+import scheduled_tasks.government.get_senate_trading as get_senate_trading
+import scheduled_tasks.government.get_house_trading as get_house_trading
 import scheduled_tasks.get_ipo_calendar as get_ipo_calendar
 import scheduled_tasks.miscellaneous as miscellaneous
 
@@ -96,6 +97,9 @@ STOCKS_HEATMAP = True
 
 # Get senate trading
 SENATE_TRADING = True
+
+# Get house trading
+HOUSE_TRADING = True
 
 # Get IPO calendar
 IPO_calendar = True
@@ -199,7 +203,10 @@ if __name__ == '__main__':
 
     if SENATE_TRADING:
         get_senate_trading.senate_trades()
-    
+
+    if HOUSE_TRADING:
+        get_house_trading.house_trades()
+
     if IPO_calendar:
         get_ipo_calendar.main()
     

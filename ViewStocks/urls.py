@@ -20,6 +20,7 @@ urlpatterns = [
     path('market_summary/', views.market_summary, name='market_summary'),
     path('futures/', views.futures, name='futures'),
     path('senate/', views.senate_trades, name='senate'),
+    path('house/', views.house_trades, name='house'),
     path('reverse_repo/', views.reverse_repo, name='reverse_repo'),
     path('daily_treasury/', views.daily_treasury, name='daily_treasury'),
     path('inflation/', views.inflation, name='inflation'),

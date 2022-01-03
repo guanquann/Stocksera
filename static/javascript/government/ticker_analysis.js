@@ -1,4 +1,4 @@
-function load_ticker_table() {
+function load_ticker_table(gov_type) {
     tr = document.getElementsByTagName("table")[1].querySelectorAll("tr");
     date_list = [], close_list = [];
     for (i=1; i<tr.length; i++) {
@@ -75,7 +75,7 @@ function load_ticker_table() {
                 transaction_date_dict[transaction_date] = 1
             }
 
-            td[5].innerHTML = `<a href="/senate?senator=${td[5].innerHTML}"><b>${td[5].innerHTML}</b></a>`
+            td[5].innerHTML = `<a href="/${gov_type}?person=${td[5].innerHTML}"><b>${td[5].innerHTML}</b></a>`
         }
     }
 

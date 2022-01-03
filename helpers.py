@@ -3,6 +3,7 @@ import yaml
 import sqlite3
 import numpy as np
 import finnhub
+import yfinance as yf
 from django.http import HttpResponse
 from finvizfinance.quote import finvizfinance
 from json.decoder import JSONDecodeError
@@ -303,7 +304,7 @@ def get_insider_trading(ticker_selected):
         inside_trader_df = ticker_fin.TickerInsideTrader()
         inside_trader_df["Insider Trading"] = inside_trader_df["Insider Trading"].str.title()
         inside_trader_df.rename(columns={"Insider Trading": "Name", "SEC Form 4 Link": ""}, inplace=True)
-        inside_trader_df["Date"] = inside_trader_df["Date"] + " 2021"
+        inside_trader_df["Date"] = inside_trader_df["Date"] + " 2022"
         inside_trader_df["Date"] = pd.to_datetime(inside_trader_df["Date"], format="%b %d %Y")
         del inside_trader_df["Insider_id"]
         del inside_trader_df["SEC Form 4"]
@@ -322,6 +323,45 @@ def get_insider_trading(ticker_selected):
         inside_trader_df = pd.DataFrame(columns=["Name", "Relationship", "Date", "Transaction", "Cost", "Shares", "Value ($)", "#Shares Total", ""])
         inside_trader_df.loc[0] = ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
     return inside_trader_df
+
+
+def government_individual_trades(df, govt_official_name, col_name):
+    govt_official_name_df = df[df[col_name] == govt_official_name]
+    all_officials_list = df[col_name].drop_duplicates().sort_values().to_list()
+    del govt_official_name_df[col_name]
+    return govt_official_name_df, all_officials_list
+
+
+def government_ticker_trades(df, ticker_selected):
+    ticker_df = df[df["Ticker"] == ticker_selected]
+    del ticker_df["Ticker"]
+    del ticker_df["Asset Description"]
+    history_df = yf.Ticker(ticker_selected).history(period="5y", interval="1d")
+    history_df.reset_index(inplace=True)
+    history_df = history_df[["Date", "Close"]]
+
+    all_tickers = df["Ticker"].drop_duplicates().sort_values().to_list()
+    all_tickers.sort()
+    all_tickers.remove("Unknown")
+    return ticker_df, history_df, all_tickers
+
+
+def government_daily_trades(df, date_selected, col_name):
+    if not date_selected:
+        date_selected = df["Disclosure Date"].iloc[0]
+    latest_df = df[df["Disclosure Date"] == date_selected]
+    group_by_govt_official = pd.DataFrame(df.groupby([col_name]).agg({"Transaction Date": "count",
+                                                                      "Disclosure Date": lambda x: x.iloc[0]}))
+    group_by_govt_official.sort_values(by=["Disclosure Date"], ascending=False, inplace=True)
+    group_by_govt_official.rename(columns={"Transaction Date": "Total",
+                                           "Disclosure Date": "Last Disclosure"}, inplace=True)
+    group_by_govt_official.reset_index(inplace=True)
+
+    group_by_ticker = pd.DataFrame(df["Ticker"].value_counts())
+    group_by_ticker.reset_index(inplace=True)
+    group_by_ticker.columns = ["Ticker", "Count"]
+    group_by_ticker = group_by_ticker[group_by_ticker["Ticker"] != "Unknown"]
+    return date_selected, latest_df, group_by_govt_official, group_by_ticker
 
 
 def long_number_format(num):

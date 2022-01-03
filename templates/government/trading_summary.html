@@ -2,29 +2,37 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | Senate Watcher{% endblock %}
+{% block title %}StocksEra | {{gov_type | title}} Watcher{% endblock %}
 
 {% block additional_script %}
-<link rel="stylesheet" href="{% static 'style/government/senate_trading.css' %}">
+<link rel="stylesheet" href="{% static 'style/government/trading.css' %}">
 <link rel="stylesheet" href="{% static 'style/government/calendar.css' %}">
 {% endblock %}
 
-{% block onload_properties%}load_overview_table();load_daily_summary();load_ticker_stats();{% endblock %}
+{% block onload_properties%}load_overview_table('{{gov_type}}');load_daily_summary('{{gov_type}}');load_ticker_stats('{{gov_type}}');load_usa_chart({{district}}, {{district_count}}, '{{gov_type}}');{% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
-    <a href="/senate">Senate</a>
+    <a href="/{{gov_type}}">{{gov_type | title}}</a>
 {% endblock %}
 
 {% block main_content %}
     <script>highlight_selected_nav('government')</script>
     <div class="instructions">
-        <h2>Senate Trading</h2>
+        <h2>{{gov_type | title}} Trading</h2>
         <p>
             In recent days, there are many scrutiny on the trades made by government officials, as they seem to time their
             buys & sells almost perfectly - with the help of insider information.
-            Analyse trades made by Senators in the past 5 years to keep track of their movements.
+            Analyse trades made in the past 5 years to keep track of their movements.
         </p>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'senate' %}">Senate</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'house' %}">House</a></div>
+        </div>
     </div>
 
     <div class="contents_div">
@@ -93,16 +101,16 @@
             </div>
 
             <div class="overall_statistics_div">
-                <h2>Senator Summary (Last 5 Years)</h2>
+                <h2>{{gov_type | title}} Summary (Last 5 Years)</h2>
                 <div class="search_bar">
-                    <input type="text" class="ticker_input" placeholder="Name:" onkeyup="searchSenator(this, 0)" autocomplete="off">
+                    <input type="text" class="ticker_input" placeholder="Name:" onkeyup="searchPerson(this, 0)" autocomplete="off">
                     <button class="submit_btn" type="button">
                         <span class="fa fa-search"></span>
                     </button>
                 </div>
-                <span class="click_table_info"><b>Click on senator for more info</b></span>
+                <span class="click_table_info"><b>Click on {{gov_type}} for more info</b></span>
                 <div class="scrollable_div" style="max-height: 380px">
-                    {{group_by_senator|safe}}
+                    {{group_by_people|safe}}
                 </div>
             </div>
         </div>
@@ -113,7 +121,7 @@
             <div id="ticker_stats_div"></div>
             <div>
                 <div class="search_bar">
-                    <input type="text" class="ticker_input" placeholder="Ticker:" onkeyup="searchSenator(this, 0)" autocomplete="off">
+                    <input type="text" class="ticker_input" placeholder="Ticker:" onkeyup="searchPerson(this, 0)" autocomplete="off">
                     <button class="submit_btn" type="button">
                         <span class="fa fa-search"></span>
                     </button>
@@ -124,23 +132,27 @@
             </div>
         </div>
 
+        <div id="usa_chart_div"></div>
+
         <div id="daily_summary_div">
             <h2>Trades Disclosed on <span id="date_selected">{{date_selected}}</span></h2>
             <div id="daily_statistics"></div>
             <div id="graph_div"></div>
 
             <div class="search_bar">
-                <input type="text" class="ticker_input" placeholder="Search:" onkeyup="searchSenator(this, 2)" autocomplete="off">
+                <input type="text" class="ticker_input" placeholder="Ticker:" onkeyup="searchPerson(this, 2)" autocomplete="off">
                 <button class="submit_btn" type="button">
                     <span class="fa fa-search"></span>
                 </button>
             </div>
-            <span class="click_table_info"><b>Click on ticker symbol / senator for more info</b></span>
+            <span class="click_table_info"><b>Click on ticker symbol / {{gov_type}} for more info</b></span>
             <div class="scrollable_div">
                 {{latest_df|safe}}
             </div>
 
         </div>
-        <script src="{% static 'javascript/government/senate_trading.js' %}"></script>
+        <script src="{% static 'javascript/government/trading_summary.js' %}"></script>
+        <script src="{% static 'javascript/government/usa_map.js' %}"></script>
+        <script src="{% static 'javascript/government/calendar.js' %}"></script>
     </div>
 {% endblock %}

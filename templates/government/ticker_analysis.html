@@ -2,37 +2,37 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | Senate Watcher{% endblock %}
+{% block title %}StocksEra | {{gov_type | title}} Watcher{% endblock %}
 
 {% block additional_script %}
-<link rel="stylesheet" href="{% static 'style/government/senate_trading.css' %}">
-<script src="{% static 'javascript/government/senate_trading.js' %}"></script>
-<script src="{% static 'javascript/government/senate_ticker_analysis.js' %}"></script>
+<link rel="stylesheet" href="{% static 'style/government/trading.css' %}">
+<script src="{% static 'javascript/government/trading_summary.js' %}"></script>
+<script src="{% static 'javascript/government/ticker_analysis.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}load_ticker_table(){% endblock %}
+{% block onload_properties%}load_ticker_table('{{ gov_type }}'){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
-    <a href="/senate">Senate</a> /
-    <a href="/senate/?quote={{ticker_selected}}">{{ticker_selected}}</a>
+    <a href="/{{gov_type}}">{{gov_type | title}}</a> /
+    <a href="/{{gov_type}}/?quote={{ticker_selected}}">{{ticker_selected}}</a>
 {% endblock %}
 
 {% block main_content %}
     <script>highlight_selected_nav('government')</script>
     <div class="instructions">
-        <h2>Senate Transaction Summary of ${{ticker_selected}}</h2>
+        <h2>{{gov_type | title}} Transaction Summary of ${{ticker_selected}}</h2>
         <p>
             In recent days, there are many scrutiny on the trades made by government officials, as they seem to time their
             buys & sells almost perfectly - with the help of insider information.
-            Analyse trades made by Senators in the past 5 years to keep track of their movements.
+            Analyse trades made in the past 5 years to keep track of their movements.
         </p>
         <div>
             <form action="" method="GET" autocomplete="off" name="form">
                 <div class="search_bar">
                     <input type="text" class="ticker_input datalist_input" name="quote" list="ticker_list" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
                     <button class="search_btn">Search</button>
-                    <a href="/senate/" class="main_senator_pg">Overview</a>
+                    <a href="/{{gov_type}}/" class="return_to_summary_btn">Overview</a>
                 </div>
                 <datalist id="ticker_list" onchange="this.form.submit()">
                     {% for ticker in ticker_list %}
@@ -40,6 +40,14 @@
                     {% endfor %}
                 </datalist>
             </form>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'senate' %}">Senate</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'house' %}">House</a></div>
         </div>
     </div>
 
@@ -51,12 +59,12 @@
         <div id="graph_div"></div>
 
         <div class="search_bar">
-            <input type="text" class="ticker_input" placeholder="Name:" onkeyup="searchSenator(this, 5)" autocomplete="off">
+            <input type="text" class="ticker_input" placeholder="Name:" onkeyup="searchPerson(this, 5)" autocomplete="off">
             <button class="submit_btn" type="button">
                 <span class="fa fa-search"></span>
             </button>
         </div>
-        <span class="click_table_info"><b>Click on senator for more info</b></span>
+        <span class="click_table_info"><b>Click on {{gov_type}} for more info</b></span>
         <div class="scrollable_div">
             {{ticker_df|safe}}
         </div>

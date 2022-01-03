@@ -71,12 +71,16 @@
         margin-left: 3px;
     }
 
-    .main_senator_pg {
+    .return_to_summary_btn {
         border: 1px solid grey;
         border-radius: 5px;
         padding: 4.5px;
         min-width: 40px;
         margin-left: 3px;
+    }
+
+    .usa-chart-container {
+        height: 250px;
     }
 }
 
@@ -95,12 +99,16 @@
         margin-left: 3px;
     }
 
-    .main_senator_pg {
+    .return_to_summary_btn {
         border: 1px solid grey;
         border-radius: 5px;
         padding: 7px;
         min-width: 40px;
         margin-left: 3px;
+    }
+
+    .usa-chart-container {
+        height: 350px;
     }
 }
 
@@ -160,6 +168,10 @@ input {
     display: flex;
     flex-flow: row wrap;
     border-radius: 10px;
+    margin: 0px auto 20px auto;
+}
+
+#graph_big_div {
     margin: 0px auto 20px auto;
 }
 
@@ -228,11 +240,22 @@ input {
     border-radius: 5px;
 }
 
-.dark_mode .main_senator_pg {
+.dark_mode .return_to_summary_btn {
     background: #ccc;
     color: black;
 }
 
-.dark_mode .main_senator_pg:hover {
+.dark_mode .return_to_summary_btn:hover {
     background: rgb(38, 166, 154);
+}
+
+.state_more_info {
+    text-align: center;
+    font-style: italic;
+}
+
+.chart-container-big {
+    width: 100%;
+    height: 450px;
+    margin: 18px auto 18px auto !important;
 }

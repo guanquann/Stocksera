@@ -1,4 +1,4 @@
-function load_individual_table() {
+function load_individual_table(gov_type) {
     var tr = document.querySelector("table").querySelectorAll("tr")
     total_amount = 0, owner_dict = {}, type_dict = {}, amount_breakdown_dict = {}, ticker_amount_breakdown_dict = {}, transaction_date_dict = {}, ticker_dict = {}, net_amount = 0
     for (i=0; i<tr.length; i++) {
@@ -65,7 +65,7 @@ function load_individual_table() {
                 ticker_amount_breakdown_dict[ticker] = formatted_amount
             }
         }
-        td[2].innerHTML = `<td><a href="/senate/?quote=${td[2].innerHTML}"><b>${td[2].innerHTML}</b></td>`
+        td[2].innerHTML = `<td><a href="/${gov_type}/?quote=${td[2].innerHTML}"><b>${td[2].innerHTML}</b></td>`
     }
 
     daily_summary_div = document.getElementById("graph_div")

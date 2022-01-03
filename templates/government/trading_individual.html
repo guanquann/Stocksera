@@ -1,0 +1,71 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | {{gov_type | title}} Watcher{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/government/trading.css' %}">
+<script src="{% static 'javascript/government/trading_summary.js' %}"></script>
+<script src="{% static 'javascript/government/trading_individual.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}load_individual_table('{{ gov_type }}');{% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/{{gov_type}}">{{gov_type | title}}</a> /
+    <a href="/{{gov_type}}/?person={{person_name}}">{{person_name}}</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('government')</script>
+    <div class="instructions">
+        <h2>{{gov_type | title}} Trading for {{person_name}}</h2>
+        <p>
+            In recent days, there are many scrutiny on the trades made by government officials, as they seem to time their
+            buys & sells almost perfectly - with the help of insider information.
+            Analyse trades made in the past 5 years to keep track of their movements.
+        </p>
+        <div>
+            <form action="" method="GET" autocomplete="off" name="form">
+                <div class="search_bar">
+                    <input type="text" class="ticker_input datalist_input" name="person" list="all_person_list" value="{{person_name}}" placeholder="{{gov_type | title}}:" autocomplete="off" style="max-width: 200px;">
+                    <button class="search_btn">Search</button>
+                    <a href="/{{gov_type}}" class="return_to_summary_btn">Overview</a>
+                </div>
+                <datalist id="all_person_list" onchange="this.form.submit()">
+                    {% for person in all_person_list %}
+                        <option value="{{person}}">{{person}}</option>
+                    {% endfor %}
+                </datalist>
+            </form>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'senate' %}">Senate</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'house' %}">House</a></div>
+        </div>
+    </div>
+
+    <div id="daily_statistics"></div>
+
+    <div class="contents_div">
+        <div id="graph_div"></div>
+
+        <div class="search_bar">
+            <input type="text" class="ticker_input" placeholder="Ticker:" onkeyup="searchPerson(this, 2)" autocomplete="off">
+            <button class="submit_btn" type="button">
+                <span class="fa fa-search"></span>
+            </button>
+        </div>
+        <span class="click_table_info"><b>Click on ticker for more info</b></span>
+        <div class="scrollable_div">
+            {{person_trades_df|safe}}
+        </div>
+
+    </div>
+{% endblock %}

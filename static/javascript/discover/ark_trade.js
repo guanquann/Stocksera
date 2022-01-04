@@ -93,9 +93,6 @@ function get_daily_trades_summary() {
                 <p></p>`
             document.getElementById("profile").innerHTML = profile_code
 
-            console.log(ticker_dict)
-            console.log(Object.keys(ticker_dict))
-            console.log(Object.values(ticker_dict))
             table_code += "</table>"
             document.getElementsByClassName("scrollable_div")[0].innerHTML = table_code
 
@@ -115,77 +112,77 @@ function get_daily_trades_summary() {
             if (weighting_chart != null){
                 weighting_chart.destroy();
             }
-//
-//            weighting_chart = document.getElementById('weighting_chart');
-//            weighting_chart = new Chart(weighting_chart, {
-//                data: {
-//                    labels: Object.keys(ticker_dict),
-//                    datasets: datasets_list
-//                },
-//                options: {
-//                    responsive: true,
-//                    maintainAspectRatio: false,
-//                    legend: {
-//                        display: true
-//                     },
-//                    scales: {
-//                        yAxes: [{
-//                                scaleLabel: {
-//                                    display: true,
-//                                    labelString: 'ETF Weightage [%]',
-//                                    beginAtZero: true,
-//                                },
-//                                type: "linear",
-//                                gridLines: {
-//                                    drawOnChartArea: false,
-//                                    color: "grey",
-//                                },
-//                            }],
-//
-//                        xAxes: [{
-//                            offset: true,
-//                            gridLines: {
-//                                drawOnChartArea: false,
-//                                color: "grey",
-//                            },
-//                            ticks: {
-//                                maxTicksLimit: 10,
-//                                maxRotation: 30,
-//                                minRotation: 0,
-//                            },
-//                            stacked: true
-//                        }],
-//                    },
-//                    tooltips: {
-//                        mode: 'index',
-//                        intersect: false,
-//                        callbacks: {
-//                            label: function(tooltipItem, data) {
-//                                var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-//                                var label = data.datasets[tooltipItem.datasetIndex].label;
-//                                if (label.includes("Volume")) {
-//                                    return label + ': ' + Number(value * 1000000).toLocaleString();
-//                                }
-//                                else {
-//                                    return label + ': ' + value + "%";
-//                                }
-//                            }
-//                        }
-//                    },
-//                    hover: {
-//                        mode: 'index',
-//                        intersect: false
-//                    },
-//                    elements: {
-//                        line: {
-//                            tension: 0
-//                        },
-//                        point:{
-//                            radius: 0
-//                        }
-//                    },
-//                },
-//            });
+
+            weighting_chart = document.getElementById('weighting_chart');
+            weighting_chart = new Chart(weighting_chart, {
+                data: {
+                    labels: Object.keys(ticker_dict),
+                    datasets: datasets_list
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: true
+                     },
+                    scales: {
+                        yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'ETF Weightage [%]',
+                                    beginAtZero: true,
+                                },
+                                type: "linear",
+                                gridLines: {
+                                    drawOnChartArea: false,
+                                    color: "grey",
+                                },
+                            }],
+
+                        xAxes: [{
+                            offset: true,
+                            gridLines: {
+                                drawOnChartArea: false,
+                                color: "grey",
+                            },
+                            ticks: {
+                                maxTicksLimit: 10,
+                                maxRotation: 30,
+                                minRotation: 0,
+                            },
+                            stacked: true
+                        }],
+                    },
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                var label = data.datasets[tooltipItem.datasetIndex].label;
+                                if (label.includes("Volume")) {
+                                    return label + ': ' + Number(value * 1000000).toLocaleString();
+                                }
+                                else {
+                                    return label + ': ' + value + "%";
+                                }
+                            }
+                        }
+                    },
+                    hover: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    elements: {
+                        line: {
+                            tension: 0
+                        },
+                        point:{
+                            radius: 0
+                        }
+                    },
+                },
+            });
         })
         .catch(err => { throw err });
 }
@@ -530,7 +527,6 @@ function load_individual_profile(elem) {
                         var trades = out["trades"];
                         for (trade=0; trade<trades.length; trade++) {
                             var fund  = trades[trade]["fund"];
-                            console.log(fund, "!!!")
                             if (fund == fund_selected || "Summary" == fund_selected) {
                                 var date = trades[trade]["date"];
                                 var direction = trades[trade]["direction"];

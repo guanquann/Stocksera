@@ -326,7 +326,7 @@ def get_insider_trading(ticker_selected):
 
 
 def government_individual_trades(df, govt_official_name, col_name):
-    govt_official_name_df = df[df[col_name] == govt_official_name]
+    govt_official_name_df = df[df[col_name].str.contains(govt_official_name)]
     all_officials_list = df[col_name].drop_duplicates().sort_values().to_list()
     del govt_official_name_df[col_name]
     return govt_official_name_df, all_officials_list

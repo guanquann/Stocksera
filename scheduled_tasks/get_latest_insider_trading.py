@@ -12,6 +12,12 @@ conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
 db = conn.cursor()
 
 
+def check_date(value, last_date):
+    if value > last_date:
+        value = value - timedelta(days=365)
+    return value
+
+
 def latest_insider_trading():
     for type_trading in ["buys", "sales"]:
         print("latest {}".format(type_trading))
@@ -23,17 +29,25 @@ def latest_insider_trading():
 
         insider_trader["Date"] = insider_trader["Date"] + " 2022"
         insider_trader["Date"] = pd.to_datetime(insider_trader["Date"], format="%b %d %Y", errors='coerce')
-        insider_trader["Date"] = insider_trader["Date"].astype(str)
+        # insider_trader["Date"] = insider_trader["Date"].astype(str)
 
         insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"].apply(lambda x: x.rsplit(' ', 2)[0])
         insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"] + " 2022"
         insider_trader["SEC Form 4"] = pd.to_datetime(insider_trader["SEC Form 4"], format="%b %d %Y", errors='coerce')
-        insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"].astype(str)
+        # insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"].astype(str)
 
         if type_trading == "sales":
             insider_trader["Value ($)"] = -insider_trader["Value ($)"]
 
+        # print(insider_trader)
+        last_date = datetime.utcnow().date()
+
+        insider_trader["Date"] = insider_trader["Date"].apply(lambda x: check_date(x, last_date))
+        insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"].apply(lambda x: check_date(x, last_date))
+        insider_trader["Date"] = insider_trader["Date"].astype(str)
+        insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"].astype(str)
         print(insider_trader)
+
         for index, row in insider_trader.iterrows():
             db.execute("INSERT OR IGNORE INTO latest_insider_trading VALUES (? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?)",
                        tuple(row))
@@ -53,10 +67,6 @@ def latest_insider_trading_analysis():
     insider_df.reset_index(inplace=True)
     insider_df.rename(columns={"Ticker": "Symbol", "Value": "Amount"}, inplace=True)
 
-    # insider_df = pd.read_sql_query("SELECT Ticker AS Symbol, SUM(Value) AS Amount "
-    #                                "FROM latest_insider_trading WHERE "
-    #                                "DateFilled>='{}' GROUP BY Ticker ORDER BY "
-    #                                "ABS(SUM(Value)) DESC LIMIT 50".format(last_date), conn)
     quick_stats = {'marketCap': 'MktCap'}
     quick_stats_df = download_quick_stats(insider_df["Symbol"].to_list(), quick_stats, threads=True).reset_index()
     quick_stats_df = quick_stats_df[quick_stats_df["MktCap"] != "N/A"]

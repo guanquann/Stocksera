@@ -28,7 +28,13 @@ function load_ticker_table(gov_type) {
 
             raw_amount = td[4].innerHTML
             num_list = raw_amount.split("- $")
-            formatted_amount = Math.round(Number(num_list[1].replace(/\D/g,'')) - Number(num_list[0].replace(/\D/g,'')) / 2)
+            if (num_list.length == 2) {
+                formatted_amount = Math.round(Number(num_list[1].replace(/\D/g,'')) - Number(num_list[0].replace(/\D/g,'')) / 2)
+            }
+            else {
+                formatted_amount = Number(num_list[0].replace(/\D/g,''))
+            }
+
             if (amount_breakdown_dict.hasOwnProperty(raw_amount)) {
                 amount_breakdown_dict[raw_amount] += 1
             }

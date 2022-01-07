@@ -46,7 +46,7 @@ function update_fund(elem, isSummary) {
 }
 
 function get_daily_trades_summary() {
-    var summary_url = "https://arkfunds.io/api/v2/etf/trades?symbol=ARKK,ARKQ,ARKW,ARKG,ARKF,ARKX"
+    var summary_url = "https://arkfunds.io/api/v2/etf/trades?symbol=ARKK,ARKQ,ARKW,ARKG,ARKF,ARKX,CTRU"
     table_code = `
         <table>
             <tr>

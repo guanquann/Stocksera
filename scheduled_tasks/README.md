@@ -137,5 +137,6 @@ You can view a sample of the database in <a href="https://drive.google.com/drive
 | scheduled_tasks/get_stocks_summary.py                                                 | main()                                  | 10 Mins     |
 | scheduled_tasks/get_stocktwits_summary.py                                             | main()                                  | Hourly      |
 | scheduled_tasks/get_senate_trading.py                                                 | main()                                  | Daily (AH)  |
+| scheduled_tasks/get_house_trading.py                                                  | main()                                  | Daily (AH)  |
 | scheduled_tasks/reset_options_cache.py                                                | reset_options()                         | Daily (AH)  |
 | scheduled_tasks/reset_stocksera_trending.py                                           | reset_trending_db()                     | 30 Mins     |

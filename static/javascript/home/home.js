@@ -164,7 +164,7 @@ function show_op(type, elem) {
     }
     else if (type == "code") {
         text = "You can view the code in GitHub. Do give a star if you like it!"
-        url = "https://github.com/spartan737/Stocksera"
+        url = "https://github.com/guanquann/Stocksera"
     }
     document.getElementById("op_description").innerHTML = `
         <div class="section_div_text">${text}</div><div class="href_btn"><a href="${url}" target="_blank">VIEW MORE</a></div>`

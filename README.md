@@ -106,7 +106,6 @@ This website is free for everyone. But if you want to support me, please give me
 
 #### /market_summary/
 - Overview of the performance of S&P500, Nasdaq100, DIA & WSB.
-- Data is from <a href="https://tradingview.com/">Trading View</a>.
 ![Market Overview](./static/images/github/market_summary.png)
 
 #### /futures/
@@ -125,6 +124,12 @@ This website is free for everyone. But if you want to support me, please give me
 ![Senate](./static/images/github/senate_trading.png)
 ![Senate](./static/images/github/senate_trading1.png)
 ![Senate](./static/images/github/senate_trading2.png)
+
+#### /house/
+- View recent house trading
+![House](./static/images/github/house_trading.png)
+![House](./static/images/github/house_trading1.png)
+![House](./static/images/github/house_trading2.png)
 
 #### /short_interest/
 - Identify tickers with the highest short interest level.
@@ -187,7 +192,7 @@ This website is free for everyone. But if you want to support me, please give me
 #### Setting up and installing dependencies
 ```
 # Clone the project
-git clone https://github.com/spartan737/Stocksera.git
+git clone https://github.com/guanquann/Stocksera.git
 
 # Create environment
 py -m venv venv
@@ -215,7 +220,7 @@ Download nltk data for sentiment analysis. Type the following in console:
 - Get trending tickers in Reddit, subreddit subscribers statistics, stocks with low float and high short interest.
 
 #### Run scheduled tasks
-- Please refer to [Scheduled Tasks Guide](https://github.com/spartan737/Stocksera/tree/master/scheduled_tasks) for more information on how to run scheduled tasks.
+- Please refer to [Scheduled Tasks Guide](https://github.com/guanquann/Stocksera/tree/master/scheduled_tasks) for more information on how to run scheduled tasks.
 
 #### Running the application
 You can run run_app.bat.
@@ -230,4 +235,4 @@ py manange.py runserver
 You can view the application in 127.0.0.1:8000.
 
 ### License:
-This project is under the <a href="https://github.com/spartan737/stocksera/blob/master/LICENSE">MIT</a> license.
+This project is under the <a href="https://github.com/guanquann/stocksera/blob/master/LICENSE">MIT</a> license.

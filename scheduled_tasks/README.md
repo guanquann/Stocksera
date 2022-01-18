@@ -84,8 +84,11 @@ You can view a sample of the database in <a href="https://drive.google.com/drive
 #### scheduled_tasks/get_latest_insider_trading.py
 - Get latest insider trading from Finviz.
 
-#### scheduled_tasks/get_senate_trading.py     
+#### scheduled_tasks/government/get_senate_trading.py     
 - Get recent senate trading.
+
+#### scheduled_tasks/government/get_house_trading.py     
+- Get recent house trading.
 
 #### scheduled_tasks/get_financial.py
 - Get financial data for companies.
@@ -136,7 +139,8 @@ You can view a sample of the database in <a href="https://drive.google.com/drive
 | scheduled_tasks/get_short_volume.py                                                   | main()                                  | 6.00PM      | 
 | scheduled_tasks/get_stocks_summary.py                                                 | main()                                  | 10 Mins     |
 | scheduled_tasks/get_stocktwits_summary.py                                             | main()                                  | Hourly      |
-| scheduled_tasks/get_senate_trading.py                                                 | main()                                  | Daily (AH)  |
-| scheduled_tasks/get_house_trading.py                                                  | main()                                  | Daily (AH)  |
+| scheduled_tasks/government/get_senate_trading.py                                      | main()                                  | Daily (AH)  |
+| scheduled_tasks/government/get_house_trading.py                                       | main()                                  | Daily (AH)  |
+| scheduled_tasks/get_ipo_calendar.py                                                   | main()                                  | Daily (AH)  |
 | scheduled_tasks/reset_options_cache.py                                                | reset_options()                         | Daily (AH)  |
 | scheduled_tasks/reset_stocksera_trending.py                                           | reset_trending_db()                     | 30 Mins     |

@@ -1,0 +1,20 @@
+.discover_div div {
+    background-color: #EAE9E9;
+    padding: 15px;
+    margin: 10px auto;
+    text-align: center;
+    width: 50%;
+    border-radius: 10px;
+    border: 2px solid gray;
+}
+
+.dark_mode .discover_div div {
+    background-color: #1C1F21;
+}
+
+.discover_div div:hover {
+    cursor: pointer;
+    background-color: #ccc;
+    color: black;
+    transition: 0.5s;
+}

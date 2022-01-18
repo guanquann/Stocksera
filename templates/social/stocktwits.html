@@ -16,12 +16,12 @@
 {% endblock %}
 
 {% block main_content %}
-    <script>highlight_selected_nav('social')</script>
+    <script>highlight_selected_nav('discover')</script>
 
     <div class="instructions">
         <h2>Stocktwits Trending</h2>
             <p>Discover the ranking of popular tickers in Stocktwits over time.
-                Due to limitations in Stocktwits API, only the top 30 trending tickers is available.
+                Due to limitations in Stocktwits API, only tickers in the top 30 rank are shown.
             </p>
     </div>
 
@@ -57,17 +57,14 @@
         </div>
         </form>
 
-        <div class="chart-container">
-            <canvas id="trending_ticker_chart"></canvas>
-        </div>
+        <div id="trending_ticker_chart" class="chart"></div>
 
-        <div class="chart-container">
-            <canvas id="watchlist_ticker_chart"></canvas>
-        </div>
+        <div id="price_ticker_chart" class="chart"></div>
 
         <div style="display: none">
             {{ ticker_df|safe }}
             {{ trending_df|safe }}
+            {{ price_df|safe }}
         </div>
     </div>
 {% endblock %}

@@ -37,6 +37,10 @@
     max-height:250px;
 }
 
+.chart {
+    height: 320px;
+}
+
 .top30_header_div {
     display: flex;
     justify-content: center;

@@ -8,8 +8,6 @@ venv/
 database
 static/graph_chart
 scheduled_tasks/subscription
-scheduled_tasks/get_crypto_transactions.py
-scheduled_tasks/get_ipo_calendar.py
 *.zip
 db.sqlite3
 logging.log

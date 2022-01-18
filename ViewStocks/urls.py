@@ -2,33 +2,16 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    # Home
     path('', views.main, name='main'),
+
+    # Stock
     path('ticker/', views.stock_price, name='ticker'),
     path('earnings_calendar/', views.earnings_calendar, name='earnings_calendar'),
     path('ticker/financial/', views.financial, name='financial'),
     path('ticker/options/', views.options, name='options'),
     path('ticker/short_volume/', views.short_volume, name='short_volume'),
     path('ticker/failure_to_deliver/', views.failure_to_deliver, name='failure_to_deliver'),
-    path('reddit_analysis/', views.reddit_analysis, name='reddit_analysis'),
-    path('wsb_live/', views.wsb_live, name='wsb_live'),
-    path('wsb_live_ticker/', views.wsb_live_ticker, name="wsb_live_ticker"),
-    path('crypto_live/', views.crypto_live, name='crypto_live'),
-    path('crypto_live_ticker/', views.crypto_live_ticker, name="crypto_live_ticker"),
-    path('wsb_documentation/', views.wsb_documentation, name="wsb_documentation"),
-    path('reddit_ticker_analysis/', views.reddit_ticker_analysis, name='reddit_ticker_analysis'),
-    path('latest_insider/', views.latest_insider, name='latest_insider'),
-    path('market_summary/', views.market_summary, name='market_summary'),
-    path('futures/', views.futures, name='futures'),
-    path('senate/', views.senate_trades, name='senate'),
-    path('house/', views.house_trades, name='house'),
-    path('reverse_repo/', views.reverse_repo, name='reverse_repo'),
-    path('daily_treasury/', views.daily_treasury, name='daily_treasury'),
-    path('inflation/', views.inflation, name='inflation'),
-    path('retail_sales/', views.retail_sales, name='retail_sales'),
-    path('initial_jobless_claims/', views.initial_jobless_claims, name='initial_jobless_claims'),
-    path('short_interest/', views.short_interest, name='short_interest'),
-    path('low_float/', views.low_float, name='low_float'),
-    path('ark_trades/', views.ark_trades, name='ark_trades'),
     path('historical_data/', views.historical_data, name='historical_data'),
     path('sub_news/', views.news_sentiment, name='sub_news'),
     path('google_trends/', views.google_trends, name='google_trends'),
@@ -42,19 +25,55 @@ urlpatterns = [
     path('ticker_earnings/', views.ticker_earnings, name='ticker_earnings'),
     path('sec_fillings/', views.sec_fillings, name='sec_fillings'),
     path('insider_trading/', views.insider_trading, name='insider_trading'),
+
+    # Reddit
+    path('reddit_analysis/', views.reddit_analysis, name='reddit_analysis'),
+    path('wsb_live/', views.wsb_live, name='wsb_live'),
+    path('wsb_live_ticker/', views.wsb_live_ticker, name="wsb_live_ticker"),
+    path('crypto_live/', views.crypto_live, name='crypto_live'),
+    path('crypto_live_ticker/', views.crypto_live_ticker, name="crypto_live_ticker"),
+    path('wsb_documentation/', views.wsb_documentation, name="wsb_documentation"),
+    path('reddit_ticker_analysis/', views.reddit_ticker_analysis, name='reddit_ticker_analysis'),
     path('subreddit_count/', views.subreddit_count, name='subreddit_count'),
     path('reddit_etf/', views.reddit_etf, name='reddit_etf'),
+
+    # Market Summary
+    path('latest_insider/', views.latest_insider, name='latest_insider'),
+    path('market_summary/', views.market_summary, name='market_summary'),
+    path('futures/', views.futures, name='futures'),
+
+    # Government
+    path('senate/', views.senate_trades, name='senate'),
+    path('house/', views.house_trades, name='house'),
+
+    # Economy
+    path('reverse_repo/', views.reverse_repo, name='reverse_repo'),
+    path('daily_treasury/', views.daily_treasury, name='daily_treasury'),
+    path('inflation/', views.inflation, name='inflation'),
+    path('retail_sales/', views.retail_sales, name='retail_sales'),
+    path('initial_jobless_claims/', views.initial_jobless_claims, name='initial_jobless_claims'),
+
+    # Discover
+    path('discover/', views.discover, name='discover'),
+    path('ark_trades/', views.ark_trades, name='ark_trades'),
     path('amd_xlnx_ratio/', views.amd_xlnx_ratio, name='amd_xlnx_ratio'),
     path('ipo_calendar/', views.ipo_calendar, name='ipo_calendar'),
     path('stocktwits/', views.stocktwits, name='stocktwits'),
     path('twitter_trending/', views.twitter_trending, name='twitter_trending'),
     path('beta/', views.beta, name='beta'),
     path('covid_beta/', views.covid_beta, name='covid_beta'),
-    path('about/', views.about, name='about'),
+    path('short_interest/', views.short_interest, name='short_interest'),
+    path('low_float/', views.low_float, name='low_float'),
+
+    # Spinner
     path('loading/', views.loading_spinner, name='loading'),
 
+    # Subscription
     path('subscribe/', views.subscribe_to_wsb_notifications, name='subscribe'),
     path('mailing_preference/', views.mailing_preference, name='mailing_preference'),
     path('unsubscribe/', views.unsubscribe, name='unsubscribe'),
     path('sample_email/', views.sample_email, name='sample_email'),
+
+    # About
+    path('about/', views.about, name='about'),
 ]

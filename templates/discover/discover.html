@@ -1,0 +1,36 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Dicover{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/discover/discover.css' %}">
+{% endblock %}
+
+{% block onload_properties%}{% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/discover">Discover</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('discover')</script>
+    <div class="instructions">
+        <h2>Discover</h2>
+        <p>Click on any of the links below to view more.</p>
+    </div>
+
+    <div class="contents_div">
+        <a class="discover_div" href="{% url 'latest_insider' %}"><div>Latest Insider</div></a>
+        <a class="discover_div" href="{% url 'ark_trades' %}"><div>ARK Invest</div></a>
+        <a class="discover_div" href="{% url 'amd_xlnx_ratio' %}"><div>AMD-XLNX</div></a>
+        <a class="discover_div" href="{% url 'ipo_calendar' %}"><div>IPO Calendar</div></a>
+        <a class="discover_div" href="{% url 'stocktwits' %}"><div>Stocktwits</div></a>
+        <a class="discover_div" href="{% url 'twitter_trending' %}"><div>Twitter</div></a>
+        <a class="discover_div" href="{% url 'beta' %}"><div>Beta</div></a>
+        <a class="discover_div" href="{% url 'short_interest' %}"><div>Short Interest</div></a>
+        <a class="discover_div" href="{% url 'low_float' %}"><div>Low Float</div></a>
+    </div>
+{% endblock %}

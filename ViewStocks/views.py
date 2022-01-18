@@ -1381,6 +1381,10 @@ def initial_jobless_claims(request):
                    "next_date": data})
 
 
+def discover(request):
+    return render(request, 'discover/discover.html')
+
+
 def short_interest(request):
     """
     Get short interest of ticker. Data from https://www.stockgrid.io/shortinterest
@@ -1444,21 +1448,23 @@ def stocktwits(request):
                                   "symbol='{}' ".format(ticker_selected), conn)
     trending_df = pd.read_sql_query("SELECT rank, watchlist, symbol FROM stocktwits_trending "
                                     "ORDER BY date_updated DESC LIMIT 30", conn)
+    ticker = yf.Ticker(ticker_selected)
+    price_df = ticker.history(period="1y", interval="1d").reset_index().iloc[::-1]
+    price_df = price_df[["Date", "Close", "Volume"]]
+    price_df = price_df[price_df["Date"] >= ticker_df.iloc[0]["date_updated"].split()[0]]
     return render(request, 'social/stocktwits.html', {"ticker_selected": ticker_selected,
-                                                        "ticker_df": ticker_df.to_html(index=False),
-                                                        "trending_df": trending_df.to_html(index=False)})
+                                                      "ticker_df": ticker_df.to_html(index=False),
+                                                      "trending_df": trending_df.to_html(index=False),
+                                                      "price_df": price_df.to_html(index=False)})
 
 
 def twitter_trending(request):
     ticker_selected = default_ticker(request, "TSLA")
     ticker_df = pd.read_sql_query("SELECT tweet_count, updated_date FROM twitter_trending WHERE "
                                   "ticker='{}' ".format(ticker_selected), conn)
-    # trending_df = pd.read_sql_query("SELECT rank, watchlist, symbol FROM stocktwits_trending "
-    #                                 "ORDER BY date_updated DESC LIMIT 30", conn)
     print(ticker_df)
     return render(request, 'social/twitter_trending.html', {"ticker_selected": ticker_selected,
-                                                        "ticker_df": ticker_df.to_html(index=False),
-                                                        # "trending_df": trending_df.to_html(index=False)
+                                                            "ticker_df": ticker_df.to_html(index=False),
                                                             })
 
 

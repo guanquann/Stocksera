@@ -119,6 +119,14 @@ This website is free for everyone. But if you want to support me, please give me
 - Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>.
 ![Earnings Calendar](./static/images/github/earnings_calendar.png)
 
+#### /ipo_calendar/
+- View upcoming and past IPOs
+![IPO](./static/images/github/ipo.png)
+
+#### /stocktwits/
+- View stocktwits trending tickers over time
+![Stocktwits Trending](./static/images/github/stocktwits_trending.png)
+
 #### /senate/
 - View recent senate trading
 ![Senate](./static/images/github/senate_trading.png)

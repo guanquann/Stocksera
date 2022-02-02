@@ -23,5 +23,6 @@ handler400 = 'ViewStocks.views.custom_bad_request_view'
 
 urlpatterns = [
     path('', include('ViewStocks.urls')),
+    path('api/', include('api.urls')),
     path('admin/', admin.site.urls),
 ]

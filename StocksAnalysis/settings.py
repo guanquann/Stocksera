@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'templatetags.filter',
     'ViewStocks',
+    'api',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

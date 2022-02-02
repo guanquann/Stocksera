@@ -24,6 +24,7 @@ def main():
                     db.execute("INSERT OR IGNORE INTO twitter_trending VALUES (?, ?, ?)",
                                (symbol, tweet_count, start_date.split("T")[0]))
                     conn.commit()
+        time.sleep(1)
 
 
 if __name__ == "__main__":

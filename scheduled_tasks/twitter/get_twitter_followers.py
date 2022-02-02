@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import sqlite3
 from datetime import datetime
 
@@ -154,6 +155,12 @@ interested_accounts = {
     "BARK": "barkbox",
     "EBAY": "eBay",
     "LYFT": "lyft",
+    "MARA": "MarathonDigitalHoldings",
+    "TSM": "TaiwanSemiconductor",
+    "LODE": "ComstockMining",
+    "USAS": "AmericasGoldandSilverCorporation",
+    "CLSK": "CleanSpark",
+    "CYDY": "CytoDyn",
 }
 date_updated = str(datetime.now()).split()[0]
 
@@ -166,6 +173,7 @@ def main():
         db.execute("INSERT OR IGNORE INTO twitter_followers VALUES (?, ?, ?)",
                    (symbol, json_response["followers_count"], date_updated))
         conn.commit()
+        time.sleep(1)
 
 
 if __name__ == "__main__":

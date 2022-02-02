@@ -1,18 +1,18 @@
 ---
   # https://finnhub.io/
-  FINNHUB_KEY1: "API_KEY_HERE"
-  FINNHUB_KEY2: "API_KEY_HERE"
+  FINNHUB_KEY1: "c3k54riad3i8d96rsqe0"
+  FINNHUB_KEY2: "c4v00siad3id268asqcg"
 
   # https://developer.twitter.com/en/portal/dashboard/
-  TWITTER_BEARER_TOKEN: "API_KEY_HERE"
+  TWITTER_BEARER_TOKEN: "AAAAAAAAAAAAAAAAAAAAAIJtSwEAAAAAVP9%2BmlfK4v97TYsn1XKthfgh6q0%3DWyqQcbXlGE9h6ZiTmgGvw9EhgvpRYXTdrQVYdT0Bm6SVBTPIVQ"
 
   # https://www.reddit.com/prefs/apps/
-  API_REDDIT_CLIENT_ID: "API_KEY_HERE"
-  API_REDDIT_CLIENT_SECRET: "API_KEY_HERE"
+  API_REDDIT_CLIENT_ID: "3RbFQX8O9UqDCA"
+  API_REDDIT_CLIENT_SECRET: "NalOX_ZQqGWP4eYKZv6bPlAb2aWOcA"
   API_REDDIT_USER_AGENT:  "subreddit_scraper"
 
   # https://api.whale-alert.io/
-  API_WHALE_ALERT: "API_KEY_HERE"
+  API_WHALE_ALERT: "1HDED9FmqwF6WPFNDrbRBZTazQeRxX8t"
 
   # https://realpython.com/python-send-email/
   GMAIL_SENDER_EMAIL: "API_KEY_HERE"

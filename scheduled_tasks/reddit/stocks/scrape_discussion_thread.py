@@ -295,7 +295,7 @@ def get_mkt_cap():
 
 
 if __name__ == '__main__':
-    # wsb_live()
-    # update_hourly()
-    # wsb_change()
+    wsb_live()
+    update_hourly()
+    wsb_change()
     get_mkt_cap()

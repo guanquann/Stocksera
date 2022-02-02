@@ -228,7 +228,13 @@ def wsb_options(request, ticker_selected=None):
                                          "date_updated FROM wsb_trending_hourly WHERE ticker='{}' "
                                          "group by strftime('%Y-%m-%d', date_updated)".format(ticker_selected), conn)
     else:
-        date_threshold = str(datetime.utcnow() - timedelta(hours=24))
+        try:
+            num_days = int(request.GET.get("days", 1))
+        except ValueError:
+            num_days = 1
+
+        date_threshold = str(datetime.utcnow() - timedelta(hours=24*num_days))
+
         df = pd.read_sql_query("SELECT ticker as Ticker, SUM(calls) AS Calls, SUM(puts) AS Puts, "
                                              "CAST(SUM(calls) AS float)/SUM(puts) as Ratio FROM wsb_trending_24H "
                                              "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(puts + calls) "

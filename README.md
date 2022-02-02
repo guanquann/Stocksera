@@ -2,6 +2,8 @@
 
 ![Stocksera](./static/images/logo.png)
 
+<b>NEW RELEASE: Stocksera API now available at https://pypi.org/project/stocksera or via `pip install stocksera`. View documentation at https://github.com/guanquann/Stocksera-API. </b>
+
 You can view the application in <a href="https://stocksera.pythonanywhere.com" target="_blank">stocksera.pythonanywhere.com</a>.
 
 Live demo is available at https://youtu.be/jkAZu7DvhvY.

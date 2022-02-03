@@ -290,6 +290,13 @@ def database():
                "symbol TEXT, "
                "date_updated TEXT )")
 
+    db.execute("CREATE table IF NOT EXISTS jim_cramer_trades ("
+               "Symbol TEXT, "
+               "Date INTEGER, "
+               "Segment TEXT, "
+               "Call TEXT,"
+               "Price TEXT )")
+
     # db.execute("CREATE table IF NOT EXISTS max_pain ("
     #            "symbol TEXT, "
     #            "date_updated TEXT, "

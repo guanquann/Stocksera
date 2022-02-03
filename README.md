@@ -214,9 +214,6 @@ cd .. / ..
 
 # Install modules
 pip install -r requirements.txt
-
-# Set up static file (if debug is set to False in settings.py)
-py manage.py collectstatic
 ```
 
 Download nltk data for sentiment analysis. Type the following in console:

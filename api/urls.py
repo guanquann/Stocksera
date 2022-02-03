@@ -2,6 +2,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('stocksera_trending/', views.stocksera_trending, name='api_stocksera_trending'),
+
     path('sec_fillings/', views.sec_fillings, name='api_sec_fillings'),
     path('sec_fillings/<str:ticker_selected>/', views.sec_fillings, name='api_sec_fillings'),
 
@@ -53,4 +55,7 @@ urlpatterns = [
     path('stocktwits/<str:ticker_selected>/', views.stocktwits, name='api_stocktwits'),
 
     path('ipo_calendar/', views.ipo_calendar, name='api_ipo_calendar'),
+
+    path('jim_cramer/', views.jim_cramer, name='api_jim_cramer'),
+    path('jim_cramer/<str:ticker_selected>/', views.jim_cramer, name='api_jim_cramer'),
 ]

@@ -1,4 +1,3 @@
-from custom_extensions.stopwords import *
 from scheduled_tasks.reddit.get_subreddit_count import *
 from email_server import *
 from fast_yahoo_options import *
@@ -29,11 +28,15 @@ session.headers['User-agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKi
 option_market_open_time = "110000"    # 9.30PM - 2H30MIN = 7PM   133000
 option_market_close_time = "030000"   # 4.15AM + 6H45MIN = 11AM   201500
 
+BASE_URL = "http://127.0.0.1:8000/api"
+
 
 def main(request):
-    db.execute("SELECT * FROM stocksera_trending ORDER BY count DESC LIMIT 10")
-    trending = db.fetchall()
-    trending = list(map(list, trending))
+    trending = []
+    data = requests.get(f"{BASE_URL}/stocksera_trending").json()[:10]
+    for i in data:
+        trending.append([i["symbol"], i["name"]])
+
     if request.GET.get("quote"):
         ticker_selected = request.GET['quote'].upper().replace(" ", "")
         information, related_tickers = check_market_hours(ticker_selected)
@@ -41,7 +44,7 @@ def main(request):
             return render(request, 'stock/ticker_price.html', {"ticker_selected": ticker_selected,
                                                                "information": information,
                                                                "related_tickers": related_tickers,
-                                                              })
+                                                               })
     return render(request, "home/home.html", {"trending": trending})
 
 
@@ -69,7 +72,12 @@ def ticker_recommendations(request):
     ticker = yf.Ticker(ticker_selected, session=session)
     try:
         recommendations = ticker.recommendations
-        recommendations["Action"] = recommendations["Action"].str.replace("main", "Maintain").replace("up", "Upgrade").replace("down", "Downgrade").replace("init", "Initialised").replace("reit", "Reiterate")
+        recommendations["Action"] = recommendations["Action"].str\
+            .replace("main", "Maintain")\
+            .replace("up", "Upgrade")\
+            .replace("down", "Downgrade")\
+            .replace("init", "Initialised")\
+            .replace("reit", "Reiterate")
         recommendations.reset_index(inplace=True)
         recommendations["Date"] = recommendations["Date"].dt.date
         recommendations.sort_values(by=["Date"], ascending=False, inplace=True)
@@ -215,14 +223,8 @@ def sec_fillings(request):
     Get SEC filling from Finnhub of ticker selected
     """
     ticker_selected = default_ticker(request)
-    db.execute("SELECT * FROM sec_fillings WHERE ticker=?", (ticker_selected, ))
-    sec = db.fetchall()
-    if not sec:
-        get_sec_fillings(ticker_selected)
-    df = pd.read_sql_query("SELECT * FROM sec_fillings WHERE ticker='{}' ".format(ticker_selected), conn)
-    del df["ticker"]
-    df.rename(columns={"filling": "Filling", "description": "Description", "filling_date": "Filling Date"},
-              inplace=True)
+    data = requests.get(f"{BASE_URL}/sec_fillings/{ticker_selected}").json()
+    df = pd.DataFrame(data)
     df = df.to_html(index=False)
     return render(request, 'stock/sec_fillings.html', {"sec_fillings_df": df})
 
@@ -233,13 +235,8 @@ def news_sentiment(request):
     Note: News are only available if hosted locally. Read README.md for more details
     """
     ticker_selected = default_ticker(request)
-    db.execute("SELECT * FROM daily_ticker_news WHERE ticker=?", (ticker_selected,))
-    news = db.fetchall()
-    if not news:
-        news_df = get_ticker_news(ticker_selected)
-    else:
-        news_df = pd.read_sql_query("SELECT * FROM daily_ticker_news WHERE ticker='{}' ".format(ticker_selected), conn)
-        del news_df["Ticker"]
+    data = requests.get(f"{BASE_URL}/news_sentiment/{ticker_selected}").json()
+    news_df = pd.DataFrame(data)
     news_df = news_df.to_html(index=False)
     return render(request, 'stock/recent_news.html', {"title": "News", "recent_news_df": news_df})
 
@@ -248,20 +245,9 @@ def insider_trading(request):
     """
     Get a specific ticker's insider trading data from Finviz
     """
-    pd.options.display.float_format = '{:.2f}'.format
     ticker_selected = default_ticker(request)
-    db.execute("SELECT * FROM insider_trading WHERE Ticker=?", (ticker_selected,))
-    transactions = db.fetchall()
-    if not transactions:
-        inside_trader_df = get_insider_trading(ticker_selected)
-    else:
-        inside_trader_df = pd.read_sql_query("SELECT * FROM insider_trading WHERE Ticker='{}' ".format(ticker_selected), conn)
-        del inside_trader_df["Ticker"]
-        inside_trader_df.rename(columns={"TransactionDate": "Date",
-                                         "TransactionType": "Transaction",
-                                         "Value": "Value ($)",
-                                         "SharesLeft": "#Shares Total",
-                                         "URL": ""}, inplace=True)
+    data = requests.get(f"{BASE_URL}/insider_trading/{ticker_selected}").json()
+    inside_trader_df = pd.DataFrame(data)
     inside_trader_df = inside_trader_df.to_html(index=False)
     return render(request, 'stock/insider_trading.html', {"inside_trader_df": inside_trader_df})
 
@@ -270,18 +256,11 @@ def latest_insider(request):
     """
     Get latest insider trading data from Finviz and perform analysis
     """
-    pd.options.display.float_format = '{:.2f}'.format
+    data = requests.get(f"{BASE_URL}/latest_insider").json()
+    recent_activity = pd.DataFrame(data)
 
-    recent_activity = pd.read_sql_query("SELECT * FROM latest_insider_trading ORDER BY DateFilled DESC LIMIT 2000", conn)
-    recent_activity.rename(columns={"TransactionDate": "Date",
-                                    "TransactionType": "Transaction",
-                                    "Value": "Value ($)",
-                                    "SharesLeft": "#Shares Total",
-                                    "URL": ""}, inplace=True)
-
-    insider_analysis = pd.read_sql_query("SELECT * FROM latest_insider_trading_analysis", conn)
-    insider_analysis.rename(columns={"MktCap": "Market Cap", "Proportion": "% of Mkt Cap"}, inplace=True)
-
+    data = requests.get(f"{BASE_URL}/latest_insider_summary").json()
+    insider_analysis = pd.DataFrame(data)
     return render(request, 'discover/latest_insider_trading.html',
                   {"insider_analysis": insider_analysis.to_html(index=False),
                    "recent_activity": recent_activity.to_html(index=False)})
@@ -308,6 +287,7 @@ def historical_data(request):
 
     del price_df["Dividends"]
     del price_df["Stock Splits"]
+
     # Add % Price Change, Amplitude, % Vol Change columns
     price_df["% Price Change"] = price_df["Close"].shift(-1)
     price_df["% Price Change"] = 100 * (price_df["Close"] - price_df["% Price Change"]) / price_df["% Price Change"]
@@ -378,7 +358,7 @@ def google_trends(request):
         timeframe = "today 12-m"
 
     # cat=7 refers to finance and investing section in Google
-    trends.build_payload(kw_list=[ticker_selected], timeframe=timeframe)  #  cat=7
+    trends.build_payload(kw_list=[ticker_selected], timeframe=timeframe)
     interest_over_time = trends.interest_over_time().reset_index()
 
     interest_over_time = interest_over_time.rename(columns={ticker_selected: "score"})
@@ -521,7 +501,11 @@ def options(request):
                      current_str_time < option_market_close_time)) or \
                         current_datetime.weekday() >= 5:
                     print("Ticker {} present, but not same date".format(ticker_selected))
-                    options_info = save_options_to_json([ticker_selected], int(datetime.timestamp(datetime.strptime(date_selected, "%Y-%m-%d") + timedelta(seconds=60*60*8))), data=data, r=r)[ticker_selected]["CurrentDate"][date_selected]
+                    options_info = save_options_to_json([ticker_selected],
+                                                        int(datetime.timestamp(
+                                                            datetime.strptime(date_selected, "%Y-%m-%d") +
+                                                            timedelta(seconds=60*60*8))),
+                                                        data=data, r=r)[ticker_selected]["CurrentDate"][date_selected]
                 else:
                     return render(request, 'stock/options.html', {"ticker_selected": ticker_selected,
                                                                   "error": "error_true",
@@ -573,21 +557,16 @@ def short_volume(request):
     ticker_selected = default_ticker(request)
 
     if ticker_selected == "TOP_SHORT_VOLUME":
-        pd.options.display.float_format = '{:.2f}'.format
-        highest_short_vol = pd.read_csv(r"database/highest_short_volume.csv")
+        data = requests.get(f"{BASE_URL}/top_short_volume").json()
+        highest_short_vol = pd.DataFrame(data)
         return render(request, 'stock/top_short_volume.html',
                       {"highest_short_vol": highest_short_vol.to_html(index=False)})
 
     information, related_tickers = check_market_hours(ticker_selected)
 
     if "longName" in information and information["regularMarketPrice"] != "N/A":
-        pd.options.display.float_format = '{:.2f}'.format
-        short_volume_data = pd.read_csv("database/short_volume.csv")
-        short_volume_data = short_volume_data[short_volume_data["ticker"] == ticker_selected][::-1]
-        history = pd.DataFrame(yf.Ticker(ticker_selected).history(interval="1d", period="1y")["Close"])
-        history.reset_index(inplace=True)
-        history["Date"] = history["Date"].astype(str)
-        short_volume_data = pd.merge(short_volume_data, history, on=["Date"], how="left")
+        data = requests.get(f"{BASE_URL}/short_volume/{ticker_selected}/").json()
+        short_volume_data = pd.DataFrame(data)
 
         if "download_csv" in request.GET:
             file_name = "{}_short_volume.csv".format(ticker_selected)
@@ -597,11 +576,8 @@ def short_volume(request):
 
         del short_volume_data["ticker"]
 
-        short_volume_data.rename(columns={"reported_date": "Date", "short_vol": "Short Volume",
-                                          "short_exempt_vol": "Short Exempt Vol", "total_vol": "Total Volume",
-                                          "percent": "% Shorted", "close_price": "Close Price"}, inplace=True)
-
-        highest_short_vol = pd.read_csv(r"database/highest_short_volume.csv")["Symbol"].tolist()[:20]
+        data = requests.get(f"{BASE_URL}/top_short_volume").json()
+        highest_short_vol = pd.DataFrame(data)["Symbol"].tolist()[:20]
 
         return render(request, 'stock/short_volume.html', {"ticker_selected": ticker_selected,
                                                            "information": information,
@@ -620,18 +596,14 @@ def failure_to_deliver(request):
     ticker_selected = default_ticker(request)
 
     if ticker_selected == "TOP_FTD":
-        top_ftd = pd.read_csv(r"database/failure_to_deliver/top_ftd.csv")
-        top_ftd = top_ftd.replace(np.nan, "")
+        data = requests.get(f"{BASE_URL}/top_failure_to_deliver").json()
+        top_ftd = pd.DataFrame(data)
         return render(request, 'stock/top_ftd.html', {"top_ftd": top_ftd.to_html(index=False)})
 
     information, related_tickers = check_market_hours(ticker_selected)
     if "longName" in information and information["regularMarketPrice"] != "N/A":
-        ftd = pd.read_csv(r"database/failure_to_deliver/ftd.csv")
-        ftd = ftd[ftd["Symbol"] == ticker_selected]
-        ftd = ftd[::-1]
-        ftd["Amount (FTD x $)"] = (ftd["Failure to Deliver"].astype(int) * ftd["Price"].astype(float)).astype(int)
-        del ftd["Symbol"]
-        ftd = ftd[['Date', 'Failure to Deliver', 'Price', 'Amount (FTD x $)', 'T+35 Date']]
+        data = requests.get(f"{BASE_URL}/failure_to_deliver/{ticker_selected}").json()
+        ftd = pd.DataFrame(data)
 
         if "download_csv" in request.GET:
             file_name = "{}_ftd.csv".format(ticker_selected)
@@ -681,7 +653,8 @@ def reddit_analysis(request):
     else:
         date_selected = all_dates[0]
 
-    db.execute("SELECT * FROM {} WHERE date_updated LIKE '{}' ORDER BY rank ASC LIMIT 35".format(subreddit, "%" + date_selected + "%"))
+    db.execute("SELECT * FROM {} WHERE date_updated LIKE '{}' ORDER BY rank ASC "
+               "LIMIT 35".format(subreddit, "%" + date_selected + "%"))
     trending_tickers = db.fetchall()
     trending_tickers = list(map(list, trending_tickers))
 
@@ -771,15 +744,11 @@ def subreddit_count(request):
     all_subreddits = sorted(interested_stocks_subreddits)
     if ticker_selected and ticker_selected.upper() != "SUMMARY":
         ticker_selected = ticker_selected.upper().replace(" ", "")
-        pd.options.display.float_format = '{:.2f}'.format
-        stats = pd.read_sql_query("SELECT * FROM subreddit_count WHERE ticker='{}'".format(ticker_selected), conn)
-        stats.rename(columns={"subscribers": "Redditors", "active": "Active", "updated_date": "Date",
-                              "percentage_active": "% Active", "growth": "% Growth",
-                              "percentage_price_change": "% Price Change"}, inplace=True)
+        data = requests.get(f"{BASE_URL}/subreddit_count/{ticker_selected}").json()
+        stats = pd.DataFrame(data)
         information, related_tickers = check_market_hours(ticker_selected)
         try:
             subreddit = stats.iloc[0][2]
-            del stats["ticker"]
             del stats["subreddit"]
         except (TypeError, IndexError):
             subreddit = "N/A"
@@ -806,23 +775,8 @@ def wsb_live(request):
     # Get trending tickers in the past 24H
     date_threshold = str(datetime.utcnow() - timedelta(hours=24))
 
-    query = "SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment FROM wsb_trending_24H " \
-            "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) DESC".format(date_threshold)
-
-    mentions_df = pd.read_sql_query(query, conn)
-    mentions_df.index += 1
-    mentions_df.reset_index(inplace=True)
-    mentions_df.rename(columns={"index": "Rank"}, inplace=True)
-
-    # db.execute(query)
-    # top_12 = db.fetchall()
-    # trending_list = list()
-    # for ticker in top_12[:12]:
-    #     db.execute("SELECT ticker, date_updated, SUM(mentions) OVER (ROWS UNBOUNDED PRECEDING) FROM "
-    #                "wsb_trending_24H WHERE ticker=? AND date_updated >= ?", (ticker[0], date_threshold))
-    #     running_sum = db.fetchall()
-    #     running_sum = list(map(list, running_sum))
-    #     trending_list.append(running_sum)
+    data = requests.get(f"{BASE_URL}/wsb_mentions").json()
+    mentions_df = pd.DataFrame(data)
 
     # Get word cloud
     db.execute("SELECT word, SUM(mentions) FROM wsb_word_cloud WHERE date_updated >= ? GROUP BY word ORDER BY "
@@ -834,26 +788,13 @@ def wsb_live(request):
     date_threshold = str(datetime.utcnow() - timedelta(hours=24*7))
 
     mentions_7d_df = pd.read_sql_query("select ticker, sum(mentions)from wsb_trending_hourly where date_updated >= "
-                          "'{}' GROUP BY ticker ORDER BY SUM(mentions) DESC LIMIT 30".format(date_threshold), conn)
+                                       "'{}' GROUP BY ticker ORDER BY SUM(mentions) DESC "
+                                       "LIMIT 30".format(date_threshold), conn)
     mentions_7d_df.reset_index(inplace=True)
 
-    # query = "SELECT ticker AS Ticker, SUM(mentions) AS Mention, AVG(sentiment) AS Sentiment FROM wsb_trending_hourly " \
-    #         "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) DESC LIMIT 12".format(date_threshold)
-    # db.execute(query)
-    # top_12 = db.fetchall()
-    # trending_list_by_hour = list()
-    # for ticker in top_12:
-    #     db.execute("SELECT ticker, date_updated, SUM(mentions) OVER (ROWS UNBOUNDED PRECEDING) FROM "
-    #                "wsb_trending_hourly WHERE ticker=? AND date_updated >= ?", (ticker[0], date_threshold))
-    #     running_sum = db.fetchall()
-    #     running_sum = list(map(list, running_sum))
-    #     trending_list_by_hour.append(running_sum)
-
     # Get calls/puts mentions
-    trending_options = pd.read_sql_query("SELECT ticker as Ticker, SUM(calls) AS Calls, SUM(puts) AS Puts, "
-                                         "CAST(SUM(calls) AS float)/SUM(puts) as Ratio FROM wsb_trending_24H "
-                                         "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(puts + calls) "
-                                         "DESC LIMIT 30".format(date_threshold), conn)
+    data = requests.get(f"{BASE_URL}/wsb_options").json()
+    trending_options = pd.DataFrame(data)
 
     # Get change in mentions
     change_df = pd.read_sql_query("SELECT * FROM wsb_change", conn)
@@ -880,12 +821,11 @@ def wsb_live_ticker(request):
     ticker_selected = default_ticker(request, "SPY")
     information, related_tickers = check_market_hours(ticker_selected)
 
-    df = pd.read_sql_query("SELECT mentions, calls, puts, date_updated FROM wsb_trending_hourly WHERE "
-                           "ticker='{}' ".format(ticker_selected), conn)
+    data = requests.get(f"{BASE_URL}/wsb_mentions/{ticker_selected}").json()
+    df = pd.DataFrame(data)
 
-    sentiment_df = pd.read_sql_query("SELECT AVG(sentiment) as sentiment, strftime('%Y-%m-%d', date_updated) AS "
-                                     "date_updated FROM wsb_trending_hourly WHERE ticker='{}' "
-                                     "group by strftime('%Y-%m-%d', date_updated)".format(ticker_selected), conn)
+    data = requests.get(f"{BASE_URL}/wsb_options/{ticker_selected}").json()
+    sentiment_df = pd.DataFrame(data)
 
     if df.empty:
         recent_mention = 0
@@ -909,7 +849,8 @@ def wsb_live_ticker(request):
                                           (sentiment_df["date_updated"] < last_7D)]["sentiment"].mean(), 4)
 
         recent_calls = df[df["date_updated"] >= last_7D]["calls"].sum().astype(int)
-        previous_calls = df[(df["date_updated"] >= last_14D) & (df["date_updated"] < last_7D)]["calls"].sum().astype(int)
+        previous_calls = df[(df["date_updated"] >= last_14D) &
+                            (df["date_updated"] < last_7D)]["calls"].sum().astype(int)
 
         recent_puts = df[df["date_updated"] >= last_7D]["puts"].sum().astype(int)
         previous_puts = df[(df["date_updated"] >= last_14D) & (df["date_updated"] < last_7D)]["puts"].sum().astype(int)
@@ -938,8 +879,8 @@ def crypto_live(request):
     # Get trending tickers in the past 24H
     date_threshold = str(datetime.utcnow() - timedelta(hours=24))
 
-    query = "SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment FROM crypto_trending_24H " \
-            "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) DESC".format(date_threshold)
+    query = "SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment FROM crypto_trending_24H" \
+            " WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) DESC".format(date_threshold)
 
     mentions_df = pd.read_sql_query(query, conn)
     mentions_df.index += 1
@@ -964,8 +905,9 @@ def crypto_live(request):
 
     # Get trending tickers in the past 7 days
     date_threshold = str(datetime.utcnow() - timedelta(hours=24*7))
-    query = "SELECT ticker AS Ticker, SUM(mentions) AS Mention, AVG(sentiment) AS Sentiment FROM crypto_trending_hourly " \
-            "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) DESC LIMIT 12".format(date_threshold)
+    query = "SELECT ticker AS Ticker, SUM(mentions) AS Mention, AVG(sentiment) AS Sentiment FROM " \
+            "crypto_trending_hourly WHERE date_updated >= '{}' GROUP BY ticker ORDER BY " \
+            "SUM(mentions) DESC LIMIT 12".format(date_threshold)
     db.execute(query)
     top_12 = db.fetchall()
     trending_list_by_hour = list()
@@ -1012,8 +954,8 @@ def crypto_live_ticker(request):
         previous_mention = df[(df["date_updated"] >= last_14D) & (df["date_updated"] < last_7D)]["mentions"].sum()
 
         recent_snt = round(sentiment_df[sentiment_df["date_updated"] >= last_7D]["sentiment"].mean(), 4)
-        previous_snt = round(sentiment_df[(sentiment_df["date_updated"] >= last_14D) & (sentiment_df["date_updated"] < last_7D)]["sentiment"].mean(),
-                             4)
+        previous_snt = round(sentiment_df[(sentiment_df["date_updated"] >= last_14D) &
+                                          (sentiment_df["date_updated"] < last_7D)]["sentiment"].mean(), 4)
 
     return render(request, 'reddit/crypto_live_ticker.html', {"ticker_selected": ticker_selected,
                                                               "mentions_df": df.to_html(index=False),
@@ -1075,8 +1017,8 @@ def futures(request):
 
 
 def senate_trades(request):
-    df = pd.read_csv("database/government/senate.csv")
-    df["Disclosure Date"] = df["Disclosure Date"].astype(str)
+    data = requests.get(f"{BASE_URL}/senate_trades").json()
+    df = pd.DataFrame(data)
 
     senator = request.GET.get("person")
     ticker_selected = request.GET.get("quote")
@@ -1100,7 +1042,8 @@ def senate_trades(request):
 
     else:
         date_selected = request.GET.get("date_selected")
-        date_selected, latest_df, group_by_senator, group_by_ticker = government_daily_trades(df, date_selected, "Senator")
+        date_selected, latest_df, group_by_senator, group_by_ticker = government_daily_trades(df, date_selected,
+                                                                                              "Senator")
         return render(request, 'government/trading_summary.html',
                       {"gov_type": "senate",
                        "group_by_people": group_by_senator.to_html(index=False),
@@ -1113,8 +1056,8 @@ def senate_trades(request):
 
 
 def house_trades(request):
-    df = pd.read_csv("database/government/house.csv")
-    df["Disclosure Date"] = df["Disclosure Date"].astype(str)
+    data = requests.get(f"{BASE_URL}/house_trades").json()
+    df = pd.DataFrame(data)
 
     representative = request.GET.get("person")
     ticker_selected = request.GET.get("quote")
@@ -1147,7 +1090,8 @@ def house_trades(request):
 
     else:
         date_selected = request.GET.get("date_selected")
-        date_selected, latest_df, group_by_representative, group_by_ticker = government_daily_trades(df, date_selected, "Representative")
+        date_selected, latest_df, group_by_representative, group_by_ticker = government_daily_trades(df, date_selected,
+                                                                                                     "Representative")
         df["District"] = df["District"].str[:2]
         district_df = pd.DataFrame(df.groupby(["District"]).agg("count")["Ticker"])
         district_count = district_df["Ticker"].tolist()
@@ -1171,14 +1115,12 @@ def reverse_repo(request):
     """
     Get reverse repo. Data is from https://apps.newyorkfed.org/
     """
-    pd.options.display.float_format = '{:.2f}'.format
-    reverse_repo_stats = pd.read_sql_query("SELECT * FROM reverse_repo", conn)
-    reverse_repo_stats['Moving Avg'] = reverse_repo_stats['amount'].rolling(window=7).mean()
-    reverse_repo_stats.rename(columns={"record_date": "Date", "amount": "Amount", "parties": "Num Parties",
-                                       "average": "Average"}, inplace=True)
+    data = requests.get(f"{BASE_URL}/reverse_repo").json()
+    reverse_repo_stats = pd.DataFrame(data)
 
     with open(r"database/economic_date.json", "r+") as r:
         data = json.load(r)
+
     return render(request, 'economy/reverse_repo.html',
                   {"reverse_repo_stats": reverse_repo_stats[::-1].to_html(index=False),
                    "next_date": data})
@@ -1186,15 +1128,12 @@ def reverse_repo(request):
 
 def daily_treasury(request):
     """
-    Get daily treasury. Data is from https://fiscaldata.treasury.gov/datasets/daily-treasury-statement/operating-cash-balance
+    Get daily treasury.
+    Data is from https://fiscaldata.treasury.gov/datasets/daily-treasury-statement/operating-cash-balance
     """
-    pd.options.display.float_format = '{:.2f}'.format
-    daily_treasury_stats = pd.read_sql_query("SELECT * FROM daily_treasury", conn)
-    daily_treasury_stats['Moving Avg'] = daily_treasury_stats['close_today_bal'].rolling(window=7).mean()
-    daily_treasury_stats.rename(columns={"record_date": "Date", "close_today_bal": "Close Balance",
-                                         "open_today_bal": "Open Balance", "amount_change": "Amount Change",
-                                         "percent_change": "Percent Change"},
-                                inplace=True)
+    data = requests.get(f"{BASE_URL}/daily_treasury").json()
+    daily_treasury_stats = pd.DataFrame(data)
+
     with open(r"database/economic_date.json", "r+") as r:
         data = json.load(r)
     return render(request, 'economy/daily_treasury.html',
@@ -1206,21 +1145,24 @@ def inflation(request):
     """
     Get inflation. Data is from https://www.usinflationcalculator.com/inflation/current-inflation-rates/
     """
-    pd.options.display.float_format = '{:.1f}'.format
-    inflation_stats = pd.read_sql_query("SELECT * FROM inflation", conn).to_html(index=False)
+    data = requests.get(f"{BASE_URL}/inflation").json()
+    inflation_stats = pd.DataFrame(data).T
+    inflation_stats.reset_index(inplace=True)
+    inflation_stats.rename({"index": "Year"}, inplace=True)
+
     with open(r"database/economic_date.json", "r+") as r:
         data = json.load(r)
-    return render(request, 'economy/inflation.html', {"inflation_stats": inflation_stats, "next_date": data})
+    return render(request, 'economy/inflation.html', {"inflation_stats": inflation_stats.to_html(index=False),
+                                                      "next_date": data})
 
 
 def retail_sales(request):
     """
     Get retail sales. Data is from https://ycharts.com/indicators/us_retail_and_food_services_sales
     """
-    pd.options.display.float_format = '{:.2f}'.format
-    retail_stats = pd.read_sql_query("SELECT * FROM retail_sales", conn)
-    retail_stats.rename(columns={"record_date": "Date", "value": "Amount", "percent_change": "Percent Change",
-                                 "covid_monthly_avg": "Monthly Avg Cases"}, inplace=True)
+    data = requests.get(f"{BASE_URL}/retail_sales").json()
+    retail_stats = pd.DataFrame(data)
+
     with open(r"database/economic_date.json", "r+") as r:
         data = json.load(r)
     return render(request, 'economy/retail_sales.html',
@@ -1229,10 +1171,9 @@ def retail_sales(request):
 
 
 def initial_jobless_claims(request):
-    pd.options.display.float_format = '{:.2f}'.format
-    jobless_claims = pd.read_sql_query("SELECT * FROM initial_jobless_claims", conn)
-    jobless_claims.rename(columns={"record_date": "Date", "value": "Number", "percent_change": "Percent Change"
-                                   }, inplace=True)
+    data = requests.get(f"{BASE_URL}/initial_jobless_claims").json()
+    jobless_claims = pd.DataFrame(data)
+
     with open(r"database/economic_date.json", "r+") as r:
         data = json.load(r)
     return render(request, 'economy/initial_jobless_claims.html',
@@ -1248,11 +1189,9 @@ def short_interest(request):
     """
     Get short interest of ticker. Data from https://www.stockgrid.io/shortinterest
     """
-    pd.options.display.float_format = '{:.2f}'.format
-    df_high_short_interest = pd.read_sql("SELECT * FROM short_interest", con=conn)
-    df_high_short_interest.reset_index(inplace=True)
-    df_high_short_interest.rename(columns={"index": "Rank"}, inplace=True)
-    df_high_short_interest["Rank"] = df_high_short_interest["Rank"] + 1
+    data = requests.get(f"{BASE_URL}/short_interest").json()
+    df_high_short_interest = pd.DataFrame(data)
+
     return render(request, 'discover/short_interest.html',
                   {"df_high_short_interest": df_high_short_interest.to_html(index=False)})
 
@@ -1261,11 +1200,9 @@ def low_float(request):
     """
     Get short interest of ticker. Data if from lowfloat.com
     """
-    pd.options.display.float_format = '{:.2f}'.format
-    df_low_float = pd.read_sql("SELECT * FROM low_float", con=conn)
-    df_low_float.reset_index(inplace=True)
-    df_low_float.rename(columns={"index": "Rank"}, inplace=True)
-    df_low_float["Rank"] = df_low_float["Rank"] + 1
+    data = requests.get(f"{BASE_URL}/low_float").json()
+    df_low_float = pd.DataFrame(data)
+
     return render(request, 'discover/low_float.html',
                   {"df_low_float": df_low_float.to_html(index=False)})
 
@@ -1297,20 +1234,24 @@ def amd_xlnx_ratio(request):
 
 
 def ipo_calendar(request):
-    df = pd.read_csv("database/ipo_calendar.csv")
+    data = requests.get(f"{BASE_URL}/ipo_calendar").json()
+    df = pd.DataFrame(data)
     return render(request, 'discover/ipo_calendar.html', {"ipo_df": df.to_html(index=False)})
 
 
 def stocktwits(request):
     ticker_selected = default_ticker(request, "TSLA")
-    ticker_df = pd.read_sql_query("SELECT rank, watchlist, date_updated FROM stocktwits_trending WHERE "
-                                  "symbol='{}' ".format(ticker_selected), conn)
+    data = requests.get(f"{BASE_URL}/stocktwits/{ticker_selected}").json()
+    ticker_df = pd.DataFrame(data)
+
     trending_df = pd.read_sql_query("SELECT rank, watchlist, symbol FROM stocktwits_trending "
                                     "ORDER BY date_updated DESC LIMIT 30", conn)
+
     ticker = yf.Ticker(ticker_selected)
     price_df = ticker.history(period="1y", interval="1d").reset_index().iloc[::-1]
     price_df = price_df[["Date", "Close", "Volume"]]
     price_df = price_df[price_df["Date"] >= ticker_df.iloc[0]["date_updated"].split()[0]]
+
     return render(request, 'social/stocktwits.html', {"ticker_selected": ticker_selected,
                                                       "ticker_df": ticker_df.to_html(index=False),
                                                       "trending_df": trending_df.to_html(index=False),
@@ -1368,7 +1309,8 @@ def beta(request):
                                                   "ticker_selected2": default,
                                                   "price_change": price_change[::-1].to_html(index=False),
                                                   "timeframe": timeframe.replace("mo", " Months").replace("y", " Year"),
-                                                  "interval": interval.replace("1mo", "Monthly").replace("1d", "Daily")})
+                                                  "interval": interval.replace("1mo", "Monthly").replace("1d",
+                                                                                                         "Daily")})
 
 
 def covid_beta(request):
@@ -1376,7 +1318,6 @@ def covid_beta(request):
     Compare performance of ticker with covid cases
     """
     pd.options.display.float_format = '{:.3f}'.format
-    ticker_interested = default_ticker(request)
     return render(request, 'discover/beta_covid.html')
 
 

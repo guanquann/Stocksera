@@ -21,16 +21,22 @@ class JSONResponse(HttpResponse):
 
 
 @csrf_exempt
+def stocksera_trending(request):
+    df = pd.read_sql_query("SELECT * FROM stocksera_trending ORDER BY count DESC LIMIT 10", conn)
+    df = df.to_dict(orient="records")
+    return JSONResponse(df)
+
+
+@csrf_exempt
 def sec_fillings(request, ticker_selected="AAPL"):
     ticker_selected = default_ticker(ticker_selected)
-    db.execute("SELECT * FROM sec_fillings WHERE ticker=?", (ticker_selected,))
-    sec = db.fetchall()
-    if not sec:
-        get_sec_fillings(ticker_selected)
     df = pd.read_sql_query("SELECT * FROM sec_fillings WHERE ticker='{}' ".format(ticker_selected), conn)
-    del df["ticker"]
-    df.rename(columns={"filling": "Filling", "description": "Description", "filling_date": "Filling Date"},
-              inplace=True)
+    if df.empty:
+        df = get_sec_fillings(ticker_selected)
+    else:
+        del df["ticker"]
+        df.rename(columns={"filling": "Filling", "description": "Description", "filling_date": "Filling Date"},
+                  inplace=True)
     df = df.to_dict(orient="records")
     return JSONResponse(df)
 
@@ -63,12 +69,12 @@ def insider_trading(request, ticker_selected="AAPL"):
         get_insider_trading(ticker_selected)
         df = pd.read_sql_query("SELECT * FROM insider_trading WHERE Ticker='{}' ".format(ticker_selected), conn)
     else:
-        del df["Ticker"]
         df.rename(columns={"TransactionDate": "Date",
                            "TransactionType": "Transaction",
                            "Value": "Value ($)",
                            "SharesLeft": "#Shares Total",
                            "URL": ""}, inplace=True)
+    del df["Ticker"]
     df = df.to_dict(orient="records")
     return JSONResponse(df)
 
@@ -99,13 +105,14 @@ def latest_insider(request):
     except ValueError:
         n_rows = 500
 
-    df = pd.read_sql_query("SELECT * FROM latest_insider_trading ORDER BY DateFilled DESC LIMIT {}".format(n_rows), conn)
+    df = pd.read_sql_query("SELECT * FROM latest_insider_trading ORDER BY DateFilled DESC LIMIT {}".format(n_rows),
+                           conn)
 
     df.rename(columns={"TransactionDate": "Date",
-                                    "TransactionType": "Transaction",
-                                    "Value": "Value ($)",
-                                    "SharesLeft": "#Shares Total",
-                                    "URL": ""}, inplace=True)
+                       "TransactionType": "Transaction",
+                       "Value": "Value ($)",
+                       "SharesLeft": "#Shares Total",
+                       "URL": ""}, inplace=True)
 
     df = df.to_dict(orient="records")
     return JSONResponse(df)
@@ -128,19 +135,16 @@ def short_volume(request, ticker_selected="AAPL"):
     pd.options.display.float_format = '{:.2f}'.format
 
     ticker_selected = default_ticker(ticker_selected)
-    # date_from = request.GET.get("date_from")
-    # date_to = request.GET.get("date_to")
 
     df = pd.read_csv("database/short_volume.csv")
     df = df[df["ticker"] == ticker_selected][::-1]
-    # print(df)
     history = pd.DataFrame(yf.Ticker(ticker_selected).history(interval="1d", period="1y")["Close"])
     history.reset_index(inplace=True)
     history["Date"] = history["Date"].astype(str)
     df = pd.merge(df, history, on=["Date"], how="left")
     df.rename(columns={"reported_date": "Date", "short_vol": "Short Volume",
-                                      "short_exempt_vol": "Short Exempt Vol", "total_vol": "Total Volume",
-                                      "percent": "% Shorted", "close_price": "Close Price"}, inplace=True)
+                       "short_exempt_vol": "Short Exempt Vol", "total_vol": "Total Volume",
+                       "percent": "% Shorted", "close_price": "Close Price"}, inplace=True)
     df = df.to_dict(orient="records")
     return JSONResponse(df)
 
@@ -188,9 +192,10 @@ def subreddit_count(request, ticker_selected="GME"):
     pd.options.display.float_format = '{:.2f}'.format
     ticker_selected = default_ticker(ticker_selected)
     df = pd.read_sql_query("SELECT * FROM subreddit_count WHERE ticker='{}'".format(ticker_selected), conn)
+    del df["ticker"]
     df.rename(columns={"subscribers": "Redditors", "active": "Active", "updated_date": "Date",
-                          "percentage_active": "% Active", "growth": "% Growth",
-                          "percentage_price_change": "% Price Change"}, inplace=True)
+                       "percentage_active": "% Active", "growth": "% Growth",
+                       "percentage_price_change": "% Price Change"}, inplace=True)
     df = df.to_dict(orient="records")
     return JSONResponse(df)
 
@@ -208,7 +213,7 @@ def wsb_mentions(request, ticker_selected=None):
         except ValueError:
             num_days = 1
 
-        date_threshold = str(datetime.utcnow() - timedelta(hours=24*num_days))
+        date_threshold = str(datetime.utcnow() - timedelta(hours=24 * num_days))
 
         query = "SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment FROM wsb_trending_24H " \
                 "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) DESC".format(date_threshold)
@@ -225,20 +230,20 @@ def wsb_mentions(request, ticker_selected=None):
 def wsb_options(request, ticker_selected=None):
     if ticker_selected:
         df = pd.read_sql_query("SELECT AVG(sentiment) as sentiment, strftime('%Y-%m-%d', date_updated) AS "
-                                         "date_updated FROM wsb_trending_hourly WHERE ticker='{}' "
-                                         "group by strftime('%Y-%m-%d', date_updated)".format(ticker_selected), conn)
+                               "date_updated FROM wsb_trending_hourly WHERE ticker='{}' "
+                               "group by strftime('%Y-%m-%d', date_updated)".format(ticker_selected), conn)
     else:
         try:
             num_days = int(request.GET.get("days", 1))
         except ValueError:
             num_days = 1
 
-        date_threshold = str(datetime.utcnow() - timedelta(hours=24*num_days))
+        date_threshold = str(datetime.utcnow() - timedelta(hours=24 * num_days))
 
         df = pd.read_sql_query("SELECT ticker as Ticker, SUM(calls) AS Calls, SUM(puts) AS Puts, "
-                                             "CAST(SUM(calls) AS float)/SUM(puts) as Ratio FROM wsb_trending_24H "
-                                             "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(puts + calls) "
-                                             "DESC LIMIT 30".format(date_threshold), conn)
+                               "CAST(SUM(calls) AS float)/SUM(puts) as Ratio FROM wsb_trending_24H "
+                               "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(puts + calls) "
+                               "DESC LIMIT 30".format(date_threshold), conn)
     df.fillna(0, inplace=True)
     df = df.to_dict(orient="records")
     return JSONResponse(df)
@@ -304,8 +309,9 @@ def daily_treasury(request):
 def inflation(request):
     pd.options.display.float_format = '{:.1f}'.format
     inflation_stats = pd.read_sql_query("SELECT * FROM inflation", conn)
+    inflation_stats.set_index("Year", inplace=True)
     inflation_stats.fillna(0, inplace=True)
-    df = inflation_stats.to_dict(orient="records")
+    df = inflation_stats.to_dict(orient="index")
     return JSONResponse(df)
 
 
@@ -376,3 +382,11 @@ def stocktwits(request, ticker_selected="TSLA"):
     df = ticker_df.to_dict(orient="records")
     return JSONResponse(df)
 
+
+@csrf_exempt
+def jim_cramer(request, ticker_selected=""):
+    df = pd.read_sql_query("SELECT * FROM jim_cramer_trades ORDER BY Date DESC", conn)
+    if ticker_selected:
+        df = df[df["Symbol"] == ticker_selected.upper()]
+    df = df.to_dict(orient="records")
+    return JSONResponse(df)

@@ -258,6 +258,12 @@ def get_sec_fillings(ticker_selected):
         db.execute("INSERT INTO sec_fillings VALUES (?, ?, ?, ?, ?, ?)", (ticker, fillings, description, filling_date,
                                                                           report_url, filing_url))
         conn.commit()
+    df = pd.DataFrame(sec_list)
+    df.rename(columns={"form": "Filling", "filedDate": "Filling Date"},
+              inplace=True)
+    df["Description"] = ""
+    df = df[["Filling", "Description", "Filling Date", "reportUrl", "filingUrl"]]
+    return df
 
 
 def get_ticker_news(ticker_selected):

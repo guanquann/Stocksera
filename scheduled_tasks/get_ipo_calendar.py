@@ -1,7 +1,11 @@
+import os
+import sys
 import yaml
 import finnhub
 import pandas as pd
 from datetime import datetime, timedelta
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 with open("config.yaml") as config_file:
     config_keys = yaml.load(config_file, Loader=yaml.Loader)

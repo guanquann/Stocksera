@@ -331,27 +331,6 @@ def get_insider_trading(ticker_selected):
     return inside_trader_df
 
 
-def government_individual_trades(df, govt_official_name, col_name):
-    govt_official_name_df = df[df[col_name].str.contains(govt_official_name)]
-    all_officials_list = df[col_name].drop_duplicates().sort_values().to_list()
-    del govt_official_name_df[col_name]
-    return govt_official_name_df, all_officials_list
-
-
-def government_ticker_trades(df, ticker_selected):
-    ticker_df = df[df["Ticker"] == ticker_selected]
-    del ticker_df["Ticker"]
-    del ticker_df["Asset Description"]
-    history_df = yf.Ticker(ticker_selected).history(period="5y", interval="1d")
-    history_df.reset_index(inplace=True)
-    history_df = history_df[["Date", "Close"]]
-
-    all_tickers = df["Ticker"].drop_duplicates().sort_values().to_list()
-    all_tickers.sort()
-    all_tickers.remove("Unknown")
-    return ticker_df, history_df, all_tickers
-
-
 def government_daily_trades(df, date_selected, col_name):
     if not date_selected:
         date_selected = df["Disclosure Date"].iloc[0]

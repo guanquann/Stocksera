@@ -973,14 +973,7 @@ def wsb_documentation(request):
 
 def market_summary(request):
     pd.options.display.float_format = '{:.2f}'.format
-
-    if request.GET.get("type") == "nasdaq100":
-        filename = "database/indices/nasdaq100_heatmap.csv"
-        title = "Nasdaq 100"
-    elif request.GET.get("type") == "dia":
-        filename = "database/indices/dia_heatmap.csv"
-        title = "DIA"
-    elif request.GET.get("type") == "crypto":
+    if request.GET.get("type") == "crypto":
         title = "Cryptocurrency"
         return render(request, 'market_summary/market_summary.html', {"title": title})
     elif request.GET.get("type") == "wsb":
@@ -988,11 +981,13 @@ def market_summary(request):
         summary_df = pd.read_sql_query("SELECT ticker, mentions, mkt_cap, price_change FROM wsb_yf", conn)
         return render(request, 'market_summary/market_summary.html', {"title": title,
                                                                       "summary_df": summary_df.to_html(index=False)})
-    else:
-        filename = "database/indices/snp500_heatmap.csv"
-        title = "S&P 500"
 
-    summary_df = pd.read_csv(filename)
+    data = requests.get(f"{BASE_URL}/market_summary/?type={request.GET.get('type')}").json()
+    title = list(data.keys())[0]
+    data = list(data.values())[0]
+
+    summary_df = pd.DataFrame(data)
+    summary_df = summary_df.replace("N/A", np.nan)
 
     x = summary_df.copy()
     x["% Change / Mkt Cap"] = (x["% Change"] * x["Market Cap"])
@@ -1017,14 +1012,14 @@ def futures(request):
 
 
 def senate_trades(request):
-    data = requests.get(f"{BASE_URL}/senate_trades").json()
-    df = pd.DataFrame(data)
-
     senator = request.GET.get("person")
     ticker_selected = request.GET.get("quote")
 
     if senator:
-        senator_df, all_senators = government_individual_trades(df, senator, "Senator")
+        data = requests.get(f"{BASE_URL}/government/senate/?name={senator}").json()
+        senator_df = pd.DataFrame(data[senator])
+        all_senators = data["names_available"]
+
         return render(request, 'government/trading_individual.html',
                       {"gov_type": "senate",
                        "person_trades_df": senator_df.to_html(index=False),
@@ -1033,7 +1028,13 @@ def senate_trades(request):
 
     elif ticker_selected:
         ticker_selected = ticker_selected.upper()
-        ticker_df, history_df, all_tickers = government_ticker_trades(df, ticker_selected)
+        data = requests.get(f"{BASE_URL}/government/senate/?ticker={ticker_selected}").json()
+        ticker_df = pd.DataFrame(data[ticker_selected])
+        history_df = yf.Ticker(ticker_selected).history(period="5y", interval="1d")
+        history_df.reset_index(inplace=True)
+        history_df = history_df[["Date", "Close"]]
+        all_tickers = data["tickers_available"]
+
         return render(request, 'government/ticker_analysis.html', {"gov_type": "senate",
                                                                    "ticker_df": ticker_df.to_html(index=False),
                                                                    "history_df": history_df.to_html(index=False),
@@ -1041,6 +1042,8 @@ def senate_trades(request):
                                                                    "ticker_list": all_tickers})
 
     else:
+        data = requests.get(f"{BASE_URL}/government/senate").json()
+        df = pd.DataFrame(data)
         date_selected = request.GET.get("date_selected")
         date_selected, latest_df, group_by_senator, group_by_ticker = government_daily_trades(df, date_selected,
                                                                                               "Senator")
@@ -1056,14 +1059,15 @@ def senate_trades(request):
 
 
 def house_trades(request):
-    data = requests.get(f"{BASE_URL}/house_trades").json()
-    df = pd.DataFrame(data)
-
     representative = request.GET.get("person")
     ticker_selected = request.GET.get("quote")
     state = request.GET.get("state")
+
     if representative:
-        house_df, all_representative = government_individual_trades(df, representative, "Representative")
+        data = requests.get(f"{BASE_URL}/government/house/?name={representative}").json()
+        house_df = pd.DataFrame(data[representative])
+        all_representative = data["names_available"]
+
         return render(request, 'government/trading_individual.html',
                       {"gov_type": "house",
                        "person_trades_df": house_df.to_html(index=False),
@@ -1072,7 +1076,13 @@ def house_trades(request):
 
     elif ticker_selected:
         ticker_selected = ticker_selected.upper()
-        ticker_df, history_df, all_tickers = government_ticker_trades(df, ticker_selected)
+        data = requests.get(f"{BASE_URL}/government/house/?ticker={ticker_selected}").json()
+        ticker_df = pd.DataFrame(data[ticker_selected])
+        history_df = yf.Ticker(ticker_selected).history(period="5y", interval="1d")
+        history_df.reset_index(inplace=True)
+        history_df = history_df[["Date", "Close"]]
+        all_tickers = data["tickers_available"]
+
         return render(request, 'government/ticker_analysis.html', {"gov_type": "house",
                                                                    "ticker_df": ticker_df.to_html(index=False),
                                                                    "history_df": history_df.to_html(index=False),
@@ -1080,9 +1090,10 @@ def house_trades(request):
                                                                    "ticker_list": all_tickers})
 
     elif state:
-        state = state.upper()
-        district_df = df[df["District"].str.contains(state)]
-        district_list = df["District"].str[:2].unique().tolist()
+        data = requests.get(f"{BASE_URL}/government/house/?state={state}").json()
+        district_df = pd.DataFrame(data[state])
+        district_list = data["districts_available"]
+
         return render(request, 'government/state.html', {"gov_type": "house",
                                                          "state": state,
                                                          "district_list": district_list,
@@ -1090,12 +1101,15 @@ def house_trades(request):
 
     else:
         date_selected = request.GET.get("date_selected")
+        data = requests.get(f"{BASE_URL}/government/house").json()
+        df = pd.DataFrame(data)
         date_selected, latest_df, group_by_representative, group_by_ticker = government_daily_trades(df, date_selected,
                                                                                                      "Representative")
         df["District"] = df["District"].str[:2]
         district_df = pd.DataFrame(df.groupby(["District"]).agg("count")["Ticker"])
         district_count = district_df["Ticker"].tolist()
         district = district_df.index.tolist()
+        
         return render(request, 'government/trading_summary.html',
                       {"gov_type": "house",
                        "group_by_people": group_by_representative.to_html(index=False),

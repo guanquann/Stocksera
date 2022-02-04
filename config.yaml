@@ -4,7 +4,7 @@
   FINNHUB_KEY2: "API_KEY_HERE"
 
   # https://developer.twitter.com/en/portal/dashboard/
-  TWITTER_BEARER_TOKEN: "API_KEY_HERE"
+  TWITTER_BEARER_TOKEN: "API_KEY_HERE%2BmlfK4v97TYsn1XKthfgh6q0%3DWyqQcbXlGE9h6ZiTmgGvw9EhgvpRYXTdrQVYdT0Bm6SVBTPIVQ"
 
   # https://www.reddit.com/prefs/apps/
   API_REDDIT_CLIENT_ID: "API_KEY_HERE"

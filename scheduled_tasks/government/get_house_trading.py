@@ -11,7 +11,7 @@ def house_trades():
     for i in ["transaction_date", "disclosure_date"]:
         df[i] = pd.to_datetime(df[i], errors='coerce')
         df[i] = df[i].dt.strftime('%Y-%m-%d')
-    print(df.columns)
+
     df.columns = ["Disclosure Year", "Disclosure Date", "Transaction Date", "Owner", "Ticker", "Asset Description",
                   "Type", "Amount", "Representative", "District", "Link", "Cap Gains Over 200USD"]
 
@@ -31,7 +31,10 @@ def house_trades():
     df = df[["Transaction Date", "Owner", "Ticker", "Asset Description", "Asset Type", "Type", "Amount",
              "Representative", "Link", "Disclosure Date", "District", "Cap Gains Over 200USD"]]
 
+    df["Representative"] = df["Representative"].str.replace("^Hon. |^Mr. |^Mrs. |^None ", "")
+
     print(df)
+
     df.to_csv(os.path.join(OUT_PATH, "house.csv"), index=False)
 
 

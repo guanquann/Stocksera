@@ -27,6 +27,69 @@ def stocksera_trending(request):
     return JSONResponse(df)
 
 
+def historical_data(request, ticker_selected="AAPL"):
+    """
+    Allow users to filter/sort historical data of ticker
+    """
+    pd.options.display.float_format = '{:.2f}'.format
+    ticker_selected = default_ticker(ticker_selected)
+
+    if request.GET.get("sort"):
+        sort_by = request.GET['sort'].replace("Sort By: ", "").title()
+    else:
+        sort_by = "Date"
+
+    if request.GET.get("timeframe"):
+        timeframe = request.GET['timeframe'].replace("Timeframe: ", "")
+    else:
+        timeframe = "1Y"
+
+    ticker = yf.Ticker(ticker_selected)
+    price_df = ticker.history(period=timeframe.lower(), interval="1d").reset_index().iloc[::-1]
+
+    # del price_df["Dividends"]
+    # del price_df["Stock Splits"]
+
+    # Add % Price Change, Amplitude, % Vol Change columns
+    price_df["% Price Change"] = price_df["Close"].shift(-1)
+    price_df["% Price Change"] = 100 * (price_df["Close"] - price_df["% Price Change"]) / price_df["% Price Change"]
+
+    price_df["Amplitude"] = 100 * (price_df["High"] - price_df["Low"]) / price_df["Open"]
+
+    price_df["% Vol Change"] = price_df["Volume"].shift(-1)
+    price_df["% Vol Change"] = 100 * (price_df["Volume"] - price_df["% Vol Change"]) / price_df["% Vol Change"]
+
+    price_df["Volume / % Price Ratio"] = round(price_df["Volume"] / price_df["% Price Change"].abs())
+    price_df.insert(0, 'Day', price_df["Date"].dt.day_name())
+
+    if request.GET.get("order"):
+        order = request.GET['order'].replace("Order: ", "")
+    else:
+        order = "Descending"
+
+    price_df = price_df.round(2)
+    price_df = price_df.replace([np.inf, -np.inf], np.nan)
+    price_df = price_df.fillna(0)
+
+    # summary_df = price_df.head(50).groupby(["Day"]).mean()
+    # summary_df.reset_index(inplace=True)
+    # summary_df = summary_df.groupby(['Day']).sum().reindex(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])
+    # summary_df.reset_index(inplace=True)
+    # summary_df = pd.DataFrame(summary_df[["Day", "% Price Change"]]).to_html(index=False)
+
+    if order == "Descending":
+        price_df.sort_values(by=[sort_by], inplace=True, ascending=False)
+    else:
+        price_df.sort_values(by=[sort_by], inplace=True)
+
+    # price_df.reset_index(inplace=True, drop=True)
+    # price_df.index = np.arange(1, len(price_df) + 1)
+    # price_df.reset_index(inplace=True)
+    # price_df.rename(columns={"index": "Rank"}, inplace=True)
+    df = price_df.to_dict(orient="records")
+    return JSONResponse(df)
+
+
 @csrf_exempt
 def sec_fillings(request, ticker_selected="AAPL"):
     ticker_selected = default_ticker(ticker_selected)
@@ -250,31 +313,36 @@ def wsb_options(request, ticker_selected=None):
 
 
 @csrf_exempt
-def senate_trades(request):
+def government(request, gov_type="senate"):
+    mapping_dict = {"senate": "Senator", "house": "Representative"}
+    col_name = mapping_dict[gov_type]
+
     name = request.GET.get("name")
     ticker = request.GET.get("ticker")
-    df = pd.read_csv("database/government/senate.csv")
-    if name:
-        df = df[df["Senator"] == name]
-    if ticker:
-        df = df[df["Ticker"] == ticker.upper()]
+    state = request.GET.get("state")
+
+    df = pd.read_csv(f"database/government/{gov_type}.csv")
     df["Disclosure Date"] = df["Disclosure Date"].astype(str)
     df.fillna(0, inplace=True)
-    df = df.to_dict(orient="records")
-    return JSONResponse(df)
 
-
-@csrf_exempt
-def house_trades(request):
-    name = request.GET.get("name")
-    ticker = request.GET.get("ticker")
-    df = pd.read_csv("database/government/house.csv")
     if name:
-        df = df[df["Representative"] == name]
+        name_list = df[col_name].drop_duplicates().sort_values().to_list()
+        df = df[df[col_name] == name]
+        return JSONResponse({name: df.to_dict(orient="records"), "names_available": name_list})
     if ticker:
-        df = df[df["Ticker"] == ticker.upper()]
-    df["Disclosure Date"] = df["Disclosure Date"].astype(str)
-    df.fillna(0, inplace=True)
+        ticker = ticker.upper()
+        ticker_list = df["Ticker"].drop_duplicates().sort_values().to_list()
+        ticker_list.remove("Unknown")
+        ticker_list.sort()
+        df = df[df["Ticker"] == ticker]
+        del df["Ticker"]
+        del df["Asset Description"]
+        return JSONResponse({ticker: df.to_dict(orient="records"), "tickers_available": ticker_list})
+    if state:
+        state = state.upper()
+        district_df = df[df["District"].str.contains(state)]
+        district_list = df["District"].str[:2].unique().tolist()
+        return JSONResponse({state: district_df.to_dict(orient="records"), "districts_available": district_list})
     df = df.to_dict(orient="records")
     return JSONResponse(df)
 
@@ -384,8 +452,33 @@ def stocktwits(request, ticker_selected="TSLA"):
 
 
 @csrf_exempt
+def market_summary(request):
+    pd.options.display.float_format = '{:.2f}'.format
+
+    if request.GET.get("type") == "nasdaq100":
+        filename = "database/indices/nasdaq100_heatmap.csv"
+        title = "Nasdaq 100"
+    elif request.GET.get("type") == "dia":
+        filename = "database/indices/dia_heatmap.csv"
+        title = "DIA"
+    elif request.GET.get("type") == "wsb":
+        title = "Wallstreetbets"
+        df = pd.read_sql_query("SELECT ticker, mentions, mkt_cap, price_change FROM wsb_yf", conn)
+        df.fillna(0, inplace=True)
+        df = {title: df.to_dict(orient="records")}
+        return JSONResponse(df)
+    else:
+        filename = "database/indices/snp500_heatmap.csv"
+        title = "S&P 500"
+
+    df = pd.read_csv(filename)
+    df.fillna("N/A", inplace=True)
+    return JSONResponse({title: df.to_dict(orient="records")})
+
+
+@csrf_exempt
 def jim_cramer(request, ticker_selected=""):
-    df = pd.read_sql_query("SELECT * FROM jim_cramer_trades ORDER BY Date DESC", conn)
+    df = pd.read_sql_query("SELECT DISTINCT * FROM jim_cramer_trades ORDER BY Date DESC", conn)
     if ticker_selected:
         df = df[df["Symbol"] == ticker_selected.upper()]
     df = df.to_dict(orient="records")

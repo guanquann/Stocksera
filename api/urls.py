@@ -4,6 +4,9 @@ from . import views
 urlpatterns = [
     path('stocksera_trending/', views.stocksera_trending, name='api_stocksera_trending'),
 
+    path('history/', views.historical_data, name='api_history'),
+    path('history/<str:ticker_selected>/', views.historical_data, name='api_history'),
+
     path('sec_fillings/', views.sec_fillings, name='api_sec_fillings'),
     path('sec_fillings/<str:ticker_selected>/', views.sec_fillings, name='api_sec_fillings'),
 
@@ -38,8 +41,8 @@ urlpatterns = [
     path('wsb_options/', views.wsb_options, name='api_wsb_options'),
     path('wsb_options/<str:ticker_selected>/', views.wsb_options, name='api_wsb_options'),
 
-    path('senate_trades/', views.senate_trades, name='api_senate_trades'),
-    path('house_trades/', views.house_trades, name='api_house_trades'),
+    path('government/', views.government, name='api_government'),
+    path('government/<str:gov_type>/', views.government, name='api_government'),
 
     path('reverse_repo/', views.reverse_repo, name='api_reverse_repo'),
     path('daily_treasury/', views.daily_treasury, name='api_daily_treasury'),
@@ -55,6 +58,8 @@ urlpatterns = [
     path('stocktwits/<str:ticker_selected>/', views.stocktwits, name='api_stocktwits'),
 
     path('ipo_calendar/', views.ipo_calendar, name='api_ipo_calendar'),
+
+    path('market_summary/', views.market_summary, name='api_market_summary'),
 
     path('jim_cramer/', views.jim_cramer, name='api_jim_cramer'),
     path('jim_cramer/<str:ticker_selected>/', views.jim_cramer, name='api_jim_cramer'),

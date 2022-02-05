@@ -267,7 +267,9 @@ def subreddit_count(request, ticker_selected="GME"):
     """
     pd.options.display.float_format = '{:.2f}'.format
     ticker_selected = default_ticker(ticker_selected)
-    df = pd.read_sql_query("SELECT * FROM subreddit_count WHERE ticker='{}'".format(ticker_selected), conn)
+    date_threshold = get_days_params(request, 100, 1000)
+    df = pd.read_sql_query("SELECT * FROM subreddit_count WHERE ticker = '{}' AND "
+                           "updated_date >= '{}' ".format(ticker_selected, date_threshold), conn)
     del df["ticker"]
     df.rename(columns={"subscribers": "Redditors", "active": "Active", "updated_date": "Date",
                        "percentage_active": "% Active", "growth": "% Growth",
@@ -278,7 +280,6 @@ def subreddit_count(request, ticker_selected="GME"):
 
 @csrf_exempt
 def wsb_mentions(request, ticker_selected=None):
-
     if ticker_selected:
         pd.options.display.float_format = '{:.2f}'.format
         date_threshold = get_days_params(request, 100, 1000)
@@ -300,20 +301,13 @@ def wsb_mentions(request, ticker_selected=None):
 
 
 @csrf_exempt
-def wsb_options(request, ticker_selected=None):
-    if ticker_selected:
-        date_threshold = get_days_params(request, 100, 1000)
+def wsb_options(request):
+    date_threshold = get_days_params(request, 1, 14)
 
-        df = pd.read_sql_query("SELECT AVG(sentiment) as sentiment, strftime('%Y-%m-%d', date_updated) AS "
-                               "date_updated FROM wsb_trending_hourly WHERE ticker='{}' AND date_updated >= '{}' GROUP "
-                               "BY strftime('%Y-%m-%d', date_updated)".format(ticker_selected, date_threshold), conn)
-    else:
-        date_threshold = get_days_params(request, 1, 14)
-
-        df = pd.read_sql_query("SELECT ticker as Ticker, SUM(calls) AS Calls, SUM(puts) AS Puts, "
-                               "CAST(SUM(calls) AS float)/SUM(puts) as Ratio FROM wsb_trending_24H "
-                               "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(puts + calls) "
-                               "DESC LIMIT 30".format(date_threshold), conn)
+    df = pd.read_sql_query("SELECT ticker as Ticker, SUM(calls) AS Calls, SUM(puts) AS Puts, "
+                           "CAST(SUM(calls) AS float)/SUM(puts) as Ratio FROM wsb_trending_24H "
+                           "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(puts + calls) "
+                           "DESC LIMIT 30".format(date_threshold), conn)
     df.fillna(0, inplace=True)
     df = df.to_dict(orient="records")
     return JSONResponse(df)
@@ -458,7 +452,7 @@ def ipo_calendar(request):
 
 
 @csrf_exempt
-def stocktwits(request, ticker_selected=""):
+def stocktwits(request, ticker_selected=None):
     if ticker_selected:
         ticker_selected = default_ticker(ticker_selected)
         df = pd.read_sql_query("SELECT rank, watchlist, date_updated FROM stocktwits_trending WHERE "
@@ -496,7 +490,7 @@ def market_summary(request):
 
 
 @csrf_exempt
-def jim_cramer(request, ticker_selected=""):
+def jim_cramer(request, ticker_selected=None):
     df = pd.read_sql_query("SELECT DISTINCT * FROM jim_cramer_trades ORDER BY Date DESC", conn)
     if ticker_selected:
         df = df[df["Symbol"] == ticker_selected.upper()]

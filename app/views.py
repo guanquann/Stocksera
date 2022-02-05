@@ -744,7 +744,7 @@ def subreddit_count(request):
     all_subreddits = sorted(interested_stocks_subreddits)
     if ticker_selected and ticker_selected.upper() != "SUMMARY":
         ticker_selected = ticker_selected.upper().replace(" ", "")
-        data = requests.get(f"{BASE_URL}/subreddit_count/{ticker_selected}").json()
+        data = requests.get(f"{BASE_URL}/subreddit_count/{ticker_selected}/?days=1000").json()
         stats = pd.DataFrame(data)
         information, related_tickers = check_market_hours(ticker_selected)
         try:
@@ -824,8 +824,9 @@ def wsb_live_ticker(request):
     data = requests.get(f"{BASE_URL}/wsb_mentions/{ticker_selected}/?days=1000").json()
     df = pd.DataFrame(data)
 
-    data = requests.get(f"{BASE_URL}/wsb_options/{ticker_selected}/?days=1000").json()
-    sentiment_df = pd.DataFrame(data)
+    sentiment_df = pd.read_sql_query("SELECT AVG(sentiment) as sentiment, strftime('%Y-%m-%d', date_updated) AS "
+                                     "date_updated FROM wsb_trending_hourly WHERE ticker='{}' GROUP "
+                                     "BY strftime('%Y-%m-%d', date_updated)".format(ticker_selected), conn)
 
     if df.empty:
         recent_mention = 0

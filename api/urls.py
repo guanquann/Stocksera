@@ -39,7 +39,6 @@ urlpatterns = [
     path('wsb_mentions/<str:ticker_selected>/', views.wsb_mentions, name='api_wsb_mentions'),
 
     path('wsb_options/', views.wsb_options, name='api_wsb_options'),
-    path('wsb_options/<str:ticker_selected>/', views.wsb_options, name='api_wsb_options'),
 
     path('government/', views.government, name='api_government'),
     path('government/<str:gov_type>/', views.government, name='api_government'),

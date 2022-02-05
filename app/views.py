@@ -256,7 +256,7 @@ def latest_insider(request):
     """
     Get latest insider trading data from Finviz and perform analysis
     """
-    data = requests.get(f"{BASE_URL}/latest_insider").json()
+    data = requests.get(f"{BASE_URL}/latest_insider/?limit=2000").json()
     recent_activity = pd.DataFrame(data)
 
     data = requests.get(f"{BASE_URL}/latest_insider_summary").json()
@@ -775,7 +775,7 @@ def wsb_live(request):
     # Get trending tickers in the past 24H
     date_threshold = str(datetime.utcnow() - timedelta(hours=24))
 
-    data = requests.get(f"{BASE_URL}/wsb_mentions").json()
+    data = requests.get(f"{BASE_URL}/wsb_mentions/?days=1").json()
     mentions_df = pd.DataFrame(data)
 
     # Get word cloud
@@ -793,7 +793,7 @@ def wsb_live(request):
     mentions_7d_df.reset_index(inplace=True)
 
     # Get calls/puts mentions
-    data = requests.get(f"{BASE_URL}/wsb_options").json()
+    data = requests.get(f"{BASE_URL}/wsb_options/?days=1000").json()
     trending_options = pd.DataFrame(data)
 
     # Get change in mentions
@@ -821,10 +821,10 @@ def wsb_live_ticker(request):
     ticker_selected = default_ticker(request, "SPY")
     information, related_tickers = check_market_hours(ticker_selected)
 
-    data = requests.get(f"{BASE_URL}/wsb_mentions/{ticker_selected}").json()
+    data = requests.get(f"{BASE_URL}/wsb_mentions/{ticker_selected}/?days=1000").json()
     df = pd.DataFrame(data)
 
-    data = requests.get(f"{BASE_URL}/wsb_options/{ticker_selected}").json()
+    data = requests.get(f"{BASE_URL}/wsb_options/{ticker_selected}/?days=1000").json()
     sentiment_df = pd.DataFrame(data)
 
     if df.empty:
@@ -1129,7 +1129,7 @@ def reverse_repo(request):
     """
     Get reverse repo. Data is from https://apps.newyorkfed.org/
     """
-    data = requests.get(f"{BASE_URL}/reverse_repo").json()
+    data = requests.get(f"{BASE_URL}/reverse_repo/?days=1000").json()
     reverse_repo_stats = pd.DataFrame(data)
 
     with open(r"database/economic_date.json", "r+") as r:
@@ -1145,7 +1145,7 @@ def daily_treasury(request):
     Get daily treasury.
     Data is from https://fiscaldata.treasury.gov/datasets/daily-treasury-statement/operating-cash-balance
     """
-    data = requests.get(f"{BASE_URL}/daily_treasury").json()
+    data = requests.get(f"{BASE_URL}/daily_treasury/?days=1000").json()
     daily_treasury_stats = pd.DataFrame(data)
 
     with open(r"database/economic_date.json", "r+") as r:
@@ -1174,7 +1174,7 @@ def retail_sales(request):
     """
     Get retail sales. Data is from https://ycharts.com/indicators/us_retail_and_food_services_sales
     """
-    data = requests.get(f"{BASE_URL}/retail_sales").json()
+    data = requests.get(f"{BASE_URL}/retail_sales/?days=1000").json()
     retail_stats = pd.DataFrame(data)
 
     with open(r"database/economic_date.json", "r+") as r:
@@ -1185,7 +1185,7 @@ def retail_sales(request):
 
 
 def initial_jobless_claims(request):
-    data = requests.get(f"{BASE_URL}/initial_jobless_claims").json()
+    data = requests.get(f"{BASE_URL}/initial_jobless_claims/?days=1000").json()
     jobless_claims = pd.DataFrame(data)
 
     with open(r"database/economic_date.json", "r+") as r:
@@ -1255,11 +1255,12 @@ def ipo_calendar(request):
 
 def stocktwits(request):
     ticker_selected = default_ticker(request, "TSLA")
+
     data = requests.get(f"{BASE_URL}/stocktwits/{ticker_selected}").json()
     ticker_df = pd.DataFrame(data)
 
-    trending_df = pd.read_sql_query("SELECT rank, watchlist, symbol FROM stocktwits_trending "
-                                    "ORDER BY date_updated DESC LIMIT 30", conn)
+    data = requests.get(f"{BASE_URL}/stocktwits").json()
+    trending_df = pd.DataFrame(data)
 
     ticker = yf.Ticker(ticker_selected)
     price_df = ticker.history(period="1y", interval="1d").reset_index().iloc[::-1]

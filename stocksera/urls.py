@@ -1,4 +1,4 @@
-"""StocksAnalysis URL Configuration
+"""stocksera URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.1/topics/http/urls/
@@ -16,13 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-handler404 = 'ViewStocks.views.custom_page_not_found_view'
-handler500 = 'ViewStocks.views.custom_error_view'
-handler403 = 'ViewStocks.views.custom_permission_denied_view'
-handler400 = 'ViewStocks.views.custom_bad_request_view'
+handler404 = 'app.views.custom_page_not_found_view'
+handler500 = 'app.views.custom_error_view'
+handler403 = 'app.views.custom_permission_denied_view'
+handler400 = 'app.views.custom_bad_request_view'
 
 urlpatterns = [
-    path('', include('ViewStocks.urls')),
+    path('', include('app.urls')),
     path('api/', include('api.urls')),
     path('admin/', admin.site.urls),
 ]

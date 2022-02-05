@@ -13,6 +13,19 @@ def default_ticker(ticker):
     return ticker.upper()
 
 
+def get_days_params(request, default_days, max_days):
+    try:
+        num_days = int(request.GET.get("days", default_days))
+        if num_days > max_days:
+            num_days = max_days
+    except ValueError:
+        num_days = default_days
+
+    date_threshold = str(datetime.utcnow() - timedelta(hours=24 * num_days))
+
+    return date_threshold
+
+
 class JSONResponse(HttpResponse):
     def __init__(self, data, **kwargs):
         content = JSONRenderer().render(data)
@@ -265,22 +278,19 @@ def subreddit_count(request, ticker_selected="GME"):
 
 @csrf_exempt
 def wsb_mentions(request, ticker_selected=None):
+
     if ticker_selected:
         pd.options.display.float_format = '{:.2f}'.format
+        date_threshold = get_days_params(request, 100, 1000)
         df = pd.read_sql_query("SELECT mentions, calls, puts, date_updated FROM wsb_trending_hourly WHERE "
-                               "ticker='{}' ".format(ticker_selected), conn)
+                               "ticker='{}' AND date_updated >= '{}' ".format(ticker_selected, date_threshold), conn)
         df.fillna(0, inplace=True)
     else:
-        try:
-            num_days = int(request.GET.get("days", 1))
-        except ValueError:
-            num_days = 1
+        date_threshold = get_days_params(request, 1, 14)
 
-        date_threshold = str(datetime.utcnow() - timedelta(hours=24 * num_days))
-
-        query = "SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment FROM wsb_trending_24H " \
-                "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) DESC".format(date_threshold)
-
+        query = "SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment FROM " \
+                "wsb_trending_24H WHERE date_updated >= '{}' GROUP BY ticker " \
+                "ORDER BY SUM(mentions) DESC".format(date_threshold)
         df = pd.read_sql_query(query, conn)
         df.index += 1
         df.reset_index(inplace=True)
@@ -292,16 +302,13 @@ def wsb_mentions(request, ticker_selected=None):
 @csrf_exempt
 def wsb_options(request, ticker_selected=None):
     if ticker_selected:
-        df = pd.read_sql_query("SELECT AVG(sentiment) as sentiment, strftime('%Y-%m-%d', date_updated) AS "
-                               "date_updated FROM wsb_trending_hourly WHERE ticker='{}' "
-                               "group by strftime('%Y-%m-%d', date_updated)".format(ticker_selected), conn)
-    else:
-        try:
-            num_days = int(request.GET.get("days", 1))
-        except ValueError:
-            num_days = 1
+        date_threshold = get_days_params(request, 100, 1000)
 
-        date_threshold = str(datetime.utcnow() - timedelta(hours=24 * num_days))
+        df = pd.read_sql_query("SELECT AVG(sentiment) as sentiment, strftime('%Y-%m-%d', date_updated) AS "
+                               "date_updated FROM wsb_trending_hourly WHERE ticker='{}' AND date_updated >= '{}' GROUP "
+                               "BY strftime('%Y-%m-%d', date_updated)".format(ticker_selected, date_threshold), conn)
+    else:
+        date_threshold = get_days_params(request, 1, 14)
 
         df = pd.read_sql_query("SELECT ticker as Ticker, SUM(calls) AS Calls, SUM(puts) AS Puts, "
                                "CAST(SUM(calls) AS float)/SUM(puts) as Ratio FROM wsb_trending_24H "
@@ -350,7 +357,9 @@ def government(request, gov_type="senate"):
 @csrf_exempt
 def reverse_repo(request):
     pd.options.display.float_format = '{:.2f}'.format
-    reverse_repo_stats = pd.read_sql_query("SELECT * FROM reverse_repo", conn)
+    date_threshold = get_days_params(request, 100, 10000)
+    reverse_repo_stats = pd.read_sql_query("SELECT * FROM reverse_repo "
+                                           "WHERE record_date >= '{}' ".format(date_threshold), conn)
     reverse_repo_stats['Moving Avg'] = reverse_repo_stats['amount'].rolling(window=7).mean()
     reverse_repo_stats.rename(columns={"record_date": "Date", "amount": "Amount", "parties": "Num Parties",
                                        "average": "Average"}, inplace=True)
@@ -362,7 +371,9 @@ def reverse_repo(request):
 @csrf_exempt
 def daily_treasury(request):
     pd.options.display.float_format = '{:.2f}'.format
-    daily_treasury_stats = pd.read_sql_query("SELECT * FROM daily_treasury", conn)
+    date_threshold = get_days_params(request, 100, 10000)
+    daily_treasury_stats = pd.read_sql_query("SELECT * FROM daily_treasury "
+                                             "WHERE record_date >= '{}' ".format(date_threshold), conn)
     daily_treasury_stats['Moving Avg'] = daily_treasury_stats['close_today_bal'].rolling(window=7).mean()
     daily_treasury_stats.rename(columns={"record_date": "Date", "close_today_bal": "Close Balance",
                                          "open_today_bal": "Open Balance", "amount_change": "Amount Change",
@@ -389,7 +400,9 @@ def retail_sales(request):
     Get retail sales. Data is from https://ycharts.com/indicators/us_retail_and_food_services_sales
     """
     pd.options.display.float_format = '{:.2f}'.format
-    retail_stats = pd.read_sql_query("SELECT * FROM retail_sales", conn)
+    date_threshold = get_days_params(request, 100, 10000)
+    retail_stats = pd.read_sql_query("SELECT * FROM retail_sales "
+                                     "WHERE record_date >= '{}' ".format(date_threshold), conn)
     retail_stats.rename(columns={"record_date": "Date", "value": "Amount", "percent_change": "Percent Change",
                                  "covid_monthly_avg": "Monthly Avg Cases"}, inplace=True)
     retail_stats.fillna(0, inplace=True)
@@ -400,7 +413,9 @@ def retail_sales(request):
 @csrf_exempt
 def initial_jobless_claims(request):
     pd.options.display.float_format = '{:.2f}'.format
-    jobless_claims = pd.read_sql_query("SELECT * FROM initial_jobless_claims", conn)
+    date_threshold = get_days_params(request, 100, 10000)
+    jobless_claims = pd.read_sql_query("SELECT * FROM initial_jobless_claims "
+                                       "WHERE record_date >= '{}' ".format(date_threshold), conn)
     jobless_claims.rename(columns={"record_date": "Date", "value": "Number", "percent_change": "Percent Change"
                                    }, inplace=True)
     jobless_claims.fillna(0, inplace=True)
@@ -443,11 +458,15 @@ def ipo_calendar(request):
 
 
 @csrf_exempt
-def stocktwits(request, ticker_selected="TSLA"):
-    ticker_selected = default_ticker(ticker_selected)
-    ticker_df = pd.read_sql_query("SELECT rank, watchlist, date_updated FROM stocktwits_trending WHERE "
-                                  "symbol='{}' ".format(ticker_selected), conn)
-    df = ticker_df.to_dict(orient="records")
+def stocktwits(request, ticker_selected=""):
+    if ticker_selected:
+        ticker_selected = default_ticker(ticker_selected)
+        df = pd.read_sql_query("SELECT rank, watchlist, date_updated FROM stocktwits_trending WHERE "
+                               "symbol='{}' ".format(ticker_selected), conn)
+    else:
+        df = pd.read_sql_query("SELECT rank, watchlist, symbol FROM stocktwits_trending "
+                               "ORDER BY date_updated DESC LIMIT 30", conn)
+    df = df.to_dict(orient="records")
     return JSONResponse(df)
 
 
@@ -481,5 +500,9 @@ def jim_cramer(request, ticker_selected=""):
     df = pd.read_sql_query("SELECT DISTINCT * FROM jim_cramer_trades ORDER BY Date DESC", conn)
     if ticker_selected:
         df = df[df["Symbol"] == ticker_selected.upper()]
+    if request.GET.get("segment"):
+        df = df[df["Segment"] == request.GET.get("segment").title()]
+    if request.GET.get("call"):
+        df = df[df["Call"] == request.GET.get("call").title()]
     df = df.to_dict(orient="records")
     return JSONResponse(df)

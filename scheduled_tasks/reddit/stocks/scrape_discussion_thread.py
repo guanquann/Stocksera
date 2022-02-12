@@ -91,7 +91,7 @@ def wsb_live():
     for post in subreddit.hot(limit=10):
         try:
             # Ensure that post is stickied and the post is not an image
-            if post.stickied and ".jpg" not in post.url and ".png" not in post.url:
+            if post.stickied and ".jpg" not in post.url and ".png" not in post.url and "comments" in post.url:
                 print(post.url)
                 submission = reddit.submission(url=post.url)
 

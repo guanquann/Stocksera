@@ -101,7 +101,9 @@ interested_crypto_subreddits = {
     "XMR": ["xmrtrader"],
     "AAVE": ["Aave_Official"],
     "NEO": ["NEO"],
-    "BCH": ["Bitcoincash"]
+    "BCH": ["Bitcoincash"],
+    "LRC": ["loopringorg"],
+    "IMX": ["ImmutableX"]
 }
 date_updated = str(datetime.now()).split()[0]
 

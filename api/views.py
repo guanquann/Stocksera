@@ -26,6 +26,15 @@ def get_days_params(request, default_days, max_days):
     return date_threshold
 
 
+def get_date(df, date_to, date_from, col_name="Date"):
+    df[col_name] = df[col_name].astype(str)
+    if date_to:
+        df = df[df[col_name] <= date_to]
+    if date_from:
+        df = df[df[col_name] >= date_from]
+    return df
+
+
 class JSONResponse(HttpResponse):
     def __init__(self, data, **kwargs):
         content = JSONRenderer().render(data)
@@ -113,6 +122,7 @@ def sec_fillings(request, ticker_selected="AAPL"):
         del df["ticker"]
         df.rename(columns={"filling": "Filling", "description": "Description", "filling_date": "Filling Date"},
                   inplace=True)
+    df = get_date(df, request.GET.get("date_to"), request.GET.get("date_from"), "Filling Date")
     df = df.to_dict(orient="records")
     return JSONResponse(df)
 
@@ -151,6 +161,7 @@ def insider_trading(request, ticker_selected="AAPL"):
                            "SharesLeft": "#Shares Total",
                            "URL": ""}, inplace=True)
     del df["Ticker"]
+    df = get_date(df, request.GET.get("date_to"), request.GET.get("date_from"))
     df = df.to_dict(orient="records")
     return JSONResponse(df)
 
@@ -221,6 +232,7 @@ def short_volume(request, ticker_selected="AAPL"):
     df.rename(columns={"reported_date": "Date", "short_vol": "Short Volume",
                        "short_exempt_vol": "Short Exempt Vol", "total_vol": "Total Volume",
                        "percent": "% Shorted", "close_price": "Close Price"}, inplace=True)
+    df = get_date(df, request.GET.get("date_to"), request.GET.get("date_from"))
     df = df.to_dict(orient="records")
     return JSONResponse(df)
 
@@ -246,6 +258,7 @@ def failure_to_deliver(request, ticker_selected="AAPL"):
     ftd["Amount (FTD x $)"] = (ftd["Failure to Deliver"].astype(int) * ftd["Price"].astype(float)).astype(int)
     del ftd["Symbol"]
     ftd = ftd[['Date', 'Failure to Deliver', 'Price', 'Amount (FTD x $)', 'T+35 Date']]
+    ftd = get_date(ftd, request.GET.get("date_to"), request.GET.get("date_from"))
     df = ftd.to_dict(orient="records")
     return JSONResponse(df)
 
@@ -256,6 +269,7 @@ def earnings_calendar(request):
     Get earnings for the upcoming week. Data from yahoo finance
     """
     df = pd.read_sql_query("SELECT * FROM earnings_calendar ORDER BY earning_date ASC", conn)
+    df = get_date(df, request.GET.get("date_to"), request.GET.get("date_from"), "earning_date")
     df = df.to_dict(orient="records")
     return JSONResponse(df)
 
@@ -325,27 +339,31 @@ def government(request, gov_type="senate"):
     df = pd.read_csv(f"database/government/{gov_type}.csv")
     df["Disclosure Date"] = df["Disclosure Date"].astype(str)
     df.fillna(0, inplace=True)
+    df_copy = df.copy()
 
+    final_dict = {}
     if name:
-        name_list = df[col_name].drop_duplicates().sort_values().to_list()
+        name_list = df_copy[col_name].drop_duplicates().sort_values().to_list()
         df = df[df[col_name] == name]
-        return JSONResponse({name: df.to_dict(orient="records"), "names_available": name_list})
+        final_dict = {**final_dict, **{"names_available": name_list}}
     if ticker:
-        ticker = ticker.upper()
-        ticker_list = df["Ticker"].drop_duplicates().sort_values().to_list()
+        ticker_list = df_copy["Ticker"].drop_duplicates().sort_values().to_list()
         ticker_list.remove("Unknown")
         ticker_list.sort()
+        ticker = ticker.upper()
         df = df[df["Ticker"] == ticker]
         del df["Ticker"]
         del df["Asset Description"]
-        return JSONResponse({ticker: df.to_dict(orient="records"), "tickers_available": ticker_list})
+        final_dict = {**final_dict, **{"tickers_available": ticker_list}}
     if state:
+        district_list = df_copy["District"].str[:2].unique().tolist()
         state = state.upper()
-        district_df = df[df["District"].str.contains(state)]
-        district_list = df["District"].str[:2].unique().tolist()
-        return JSONResponse({state: district_df.to_dict(orient="records"), "districts_available": district_list})
+        df = df[df["District"].str.contains(state)]
+        final_dict = {**final_dict, **{"districts_available": district_list}}
+    df = get_date(df, request.GET.get("date_to"), request.GET.get("date_from"), "Transaction Date")
     df = df.to_dict(orient="records")
-    return JSONResponse(df)
+    final_dict = {**{gov_type: df}, **final_dict}
+    return JSONResponse(final_dict)
 
 
 @csrf_exempt
@@ -498,5 +516,6 @@ def jim_cramer(request, ticker_selected=None):
         df = df[df["Segment"] == request.GET.get("segment").title()]
     if request.GET.get("call"):
         df = df[df["Call"] == request.GET.get("call").title()]
+    df = get_date(df, request.GET.get("date_to"), request.GET.get("date_from"))
     df = df.to_dict(orient="records")
     return JSONResponse(df)

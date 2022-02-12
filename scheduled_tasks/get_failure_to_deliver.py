@@ -40,15 +40,15 @@ def combine_df(folder_path):
         df = pd.read_csv(file)
         del df["CUSIP"]
         del df["DESCRIPTION"]
-        df["SETTLEMENT DATE"] = df["SETTLEMENT DATE"].apply(lambda x: str(x[:4] + "/" + x[4:6] + "/" + x[6:]))
+        df["SETTLEMENT DATE"] = df["SETTLEMENT DATE"].apply(lambda x: str(x[:4] + "-" + x[4:6] + "-" + x[6:]))
         combined_df = combined_df.append(df).drop_duplicates()
     combined_df["SETTLEMENT DATE"] = combined_df["SETTLEMENT DATE"].astype(str)
     combined_df.rename(columns={"SETTLEMENT DATE": "Date",
                                 "SYMBOL": "Symbol",
                                 "QUANTITY (FAILS)": "Failure to Deliver",
                                 "PRICE": "Price"}, inplace=True)
-    combined_df["T+35 Date"] = pd.to_datetime(combined_df['Date'], format='%Y/%m/%d', errors="coerce") + timedelta(days=35)
-    combined_df["T+35 Date"] = combined_df["T+35 Date"].astype(str).apply(lambda x: x.replace("-", "/"))
+    combined_df["T+35 Date"] = pd.to_datetime(combined_df['Date'], format='%Y-%m-%d', errors="coerce") + timedelta(days=35)
+    combined_df["T+35 Date"] = combined_df["T+35 Date"].astype(str)  # .apply(lambda x: x.replace("-", "/"))
     combined_df.to_csv("database/failure_to_deliver/ftd.csv", index=False)
 
 
@@ -90,15 +90,15 @@ def get_top_ftd(filename):
     del original_df["CUSIP"]
     del original_df["DESCRIPTION"]
 
-    original_df["SETTLEMENT DATE"] = original_df["SETTLEMENT DATE"].apply(lambda x: str(x[:4] + "/" + x[4:6] + "/" + x[6:]))
+    original_df["SETTLEMENT DATE"] = original_df["SETTLEMENT DATE"].apply(lambda x: str(x[:4] + "-" + x[4:6] + "-" + x[6:]))
     original_df["SETTLEMENT DATE"] = original_df["SETTLEMENT DATE"].astype(str)
     original_df["FTD x $"] = (original_df["QUANTITY (FAILS)"].astype(int) * original_df["PRICE"].astype(float)).astype(int)
     original_df.rename(columns={"SETTLEMENT DATE": "Date", "SYMBOL": "Symbol",
                                 "QUANTITY (FAILS)": "FTD",
                                 "PRICE": "Price"}, inplace=True)
-    original_df["T+35 Date"] = pd.to_datetime(original_df['Date'], format='%Y/%m/%d', errors="coerce") + timedelta(
+    original_df["T+35 Date"] = pd.to_datetime(original_df['Date'], format='%Y-%m-%d', errors="coerce") + timedelta(
         days=35)
-    original_df["T+35 Date"] = original_df["T+35 Date"].astype(str).apply(lambda x: x.replace("-", "/"))
+    original_df["T+35 Date"] = original_df["T+35 Date"].astype(str)  # .apply(lambda x: x.replace("-", "/"))
 
     # Sort df based on number of FTD days that meet criteria and add new row between tickers
     combined_df = pd.DataFrame(columns=["Date", "Symbol", "FTD", "Price", "FTD x $"])

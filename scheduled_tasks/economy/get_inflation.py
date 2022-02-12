@@ -11,11 +11,15 @@ def inflation():
     Get inflation data from https://www.usinflationcalculator.com/inflation/historical-inflation-rates/
     """
     df = pd.read_html("https://www.usinflationcalculator.com/inflation/historical-inflation-rates/")[0]
-    df = df[df["Year"] >= 2001][::-1]
+    df = df[df["Year"] >= 1980][::-1]
+
+    for col in df.columns:
+        df[col] = pd.to_numeric(df[col], errors="coerce")
     df["Year"] = df["Year"].astype(str)
     df.replace(np.nan, "N/A", inplace=True)
+
     most_recent_yr_avg = round(float(df.iloc[[0]].mean(axis=1)), 1)
-    df.at[df[df["Year"] == "2021"].index[0], 'Ave'] = most_recent_yr_avg
+    df.at[df[df["Year"] == df.iloc[0]["Year"]].index[0], 'Ave'] = most_recent_yr_avg
 
     db.execute("DELETE FROM inflation")
     for index, row in df.iterrows():

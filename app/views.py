@@ -1018,7 +1018,7 @@ def senate_trades(request):
 
     if senator:
         data = requests.get(f"{BASE_URL}/government/senate/?name={senator}").json()
-        senator_df = pd.DataFrame(data[senator])
+        senator_df = pd.DataFrame(data["senate"])
         all_senators = data["names_available"]
 
         return render(request, 'government/trading_individual.html',
@@ -1030,7 +1030,7 @@ def senate_trades(request):
     elif ticker_selected:
         ticker_selected = ticker_selected.upper()
         data = requests.get(f"{BASE_URL}/government/senate/?ticker={ticker_selected}").json()
-        ticker_df = pd.DataFrame(data[ticker_selected])
+        ticker_df = pd.DataFrame(data["senate"])
         history_df = yf.Ticker(ticker_selected).history(period="5y", interval="1d")
         history_df.reset_index(inplace=True)
         history_df = history_df[["Date", "Close"]]
@@ -1044,7 +1044,7 @@ def senate_trades(request):
 
     else:
         data = requests.get(f"{BASE_URL}/government/senate").json()
-        df = pd.DataFrame(data)
+        df = pd.DataFrame(data["senate"])
         date_selected = request.GET.get("date_selected")
         date_selected, latest_df, group_by_senator, group_by_ticker = government_daily_trades(df, date_selected,
                                                                                               "Senator")
@@ -1066,7 +1066,7 @@ def house_trades(request):
 
     if representative:
         data = requests.get(f"{BASE_URL}/government/house/?name={representative}").json()
-        house_df = pd.DataFrame(data[representative])
+        house_df = pd.DataFrame(data["house"])
         all_representative = data["names_available"]
 
         return render(request, 'government/trading_individual.html',
@@ -1078,7 +1078,7 @@ def house_trades(request):
     elif ticker_selected:
         ticker_selected = ticker_selected.upper()
         data = requests.get(f"{BASE_URL}/government/house/?ticker={ticker_selected}").json()
-        ticker_df = pd.DataFrame(data[ticker_selected])
+        ticker_df = pd.DataFrame(data["house"])
         history_df = yf.Ticker(ticker_selected).history(period="5y", interval="1d")
         history_df.reset_index(inplace=True)
         history_df = history_df[["Date", "Close"]]
@@ -1092,7 +1092,7 @@ def house_trades(request):
 
     elif state:
         data = requests.get(f"{BASE_URL}/government/house/?state={state}").json()
-        district_df = pd.DataFrame(data[state])
+        district_df = pd.DataFrame(data["house"])
         district_list = data["districts_available"]
 
         return render(request, 'government/state.html', {"gov_type": "house",
@@ -1103,7 +1103,7 @@ def house_trades(request):
     else:
         date_selected = request.GET.get("date_selected")
         data = requests.get(f"{BASE_URL}/government/house").json()
-        df = pd.DataFrame(data)
+        df = pd.DataFrame(data["house"])
         date_selected, latest_df, group_by_representative, group_by_ticker = government_daily_trades(df, date_selected,
                                                                                                      "Representative")
         df["District"] = df["District"].str[:2]

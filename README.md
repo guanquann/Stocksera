@@ -2,6 +2,8 @@
 
 ![Stocksera](./static/images/logo.png)
 
+[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/stocksera_bot.svg?style=social&label=Follow%20%40stocksera_bot)](https://twitter.com/stocksera_bot)
+
 <b>NEW RELEASE: Stocksera API now available at https://pypi.org/project/stocksera or via `pip install stocksera`. View documentation at https://github.com/guanquann/Stocksera-API. </b>
 
 You can view the application in <a href="https://stocksera.pythonanywhere.com" target="_blank">stocksera.pythonanywhere.com</a>.

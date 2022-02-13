@@ -45,7 +45,10 @@ urlpatterns = [
 
     path('reverse_repo/', views.reverse_repo, name='api_reverse_repo'),
     path('daily_treasury/', views.daily_treasury, name='api_daily_treasury'),
+
     path('inflation/', views.inflation, name='api_inflation'),
+    path('inflation/<str:area>/', views.inflation, name='api_inflation'),
+
     path('retail_sales/', views.retail_sales, name='api_retail_sales'),
     path('initial_jobless_claims/', views.initial_jobless_claims, name='api_initial_jobless_claims'),
 

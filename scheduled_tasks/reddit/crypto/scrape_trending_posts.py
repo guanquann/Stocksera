@@ -234,13 +234,16 @@ def main():
         for i in coingecko_coin_list:
             if symbol.lower() == i["symbol"].lower():
                 print(index, ": ", symbol)
-                crypto_id = i['id']
-                stats_table = get_financial_data(stats_table, crypto_id, symbol)
+                try:
+                    crypto_id = i['id']
+                    stats_table = get_financial_data(stats_table, crypto_id, symbol)
 
-                # Only save graph for top 35 symbols
-                if index < 35:
-                    get_graph_chart(crypto_id, symbol)
-                break
+                    # Only save graph for top 35 symbols
+                    if index < 35:
+                        get_graph_chart(crypto_id, symbol)
+                    break
+                except KeyError:
+                    continue
 
     stats_df = pd.DataFrame(stats_table, columns=["Symbol", "Price", "24H Change", "30D Change", "Volume", "Market Cap",
                                                   "Circulating Supply", "Max Supply"])

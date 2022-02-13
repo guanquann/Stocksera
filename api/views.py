@@ -397,10 +397,13 @@ def daily_treasury(request):
 
 
 @csrf_exempt
-def inflation(request):
+def inflation(request, area="usa"):
     pd.options.display.float_format = '{:.1f}'.format
-    inflation_stats = pd.read_sql_query("SELECT * FROM inflation", conn)
-    inflation_stats.set_index("Year", inplace=True)
+    if area == "world":
+        inflation_stats = pd.read_sql_query("SELECT * FROM world_inflation", conn)
+    else:
+        inflation_stats = pd.read_sql_query("SELECT * FROM usa_inflation", conn)
+        inflation_stats.set_index("Year", inplace=True)
     inflation_stats.fillna(0, inplace=True)
     df = inflation_stats.to_dict(orient="index")
     return JSONResponse(df)

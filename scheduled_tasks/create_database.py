@@ -211,7 +211,7 @@ def database():
                "percent_change FLOAT, "
                "UNIQUE ('record_date') )")
 
-    db.execute("CREATE table IF NOT EXISTS inflation ("
+    db.execute("CREATE table IF NOT EXISTS usa_inflation ("
                "Year TEXT, "
                "Jan FLOAT, "
                "Feb FLOAT, "
@@ -227,13 +227,19 @@ def database():
                "Dec FLOAT, "
                "Avg FLOAT )")
 
+    db.execute("CREATE table IF NOT EXISTS world_inflation ("
+               "Country TEXT, "
+               "Last FLOAT, "
+               "Previous FLOAT, "
+               "Reference TEXT ) ")
+
     db.execute("CREATE table IF NOT EXISTS sec_fillings ("
                "ticker TEXT, "
                "filling TEXT, "
                "description TEXT, "
                "filling_date TEXT, "
                "report_url TEXT, "
-               "filing_url) ")
+               "filing_url TEXT ) ")
 
     db.execute("CREATE table IF NOT EXISTS daily_ticker_news ("
                "Ticker TEXT, "

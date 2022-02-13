@@ -1160,7 +1160,7 @@ def inflation(request):
     """
     Get inflation. Data is from https://www.usinflationcalculator.com/inflation/current-inflation-rates/
     """
-    data = requests.get(f"{BASE_URL}/inflation").json()
+    data = requests.get(f"{BASE_URL}/inflation/usa").json()
     inflation_stats = pd.DataFrame(data).T
     inflation_stats.reset_index(inplace=True)
     inflation_stats.rename({"index": "Year"}, inplace=True)

@@ -1,7 +1,6 @@
 import os
 import sys
 import json
-import sqlite3
 import tabula
 import pandas as pd
 from datetime import datetime, timedelta
@@ -9,9 +8,10 @@ from datetime import datetime, timedelta
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 from scheduled_tasks.economy.ychart_connection import ychart_data
+from helpers import connect_mysql_database
 
-conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
-db = conn.cursor()
+cnx, engine = connect_mysql_database()
+cur = cnx.cursor()
 
 current_date = datetime.utcnow()
 
@@ -77,8 +77,8 @@ def get_holidays():
 
 def main():
     get_next_initial_jobless_date()
-    db.execute("SELECT record_date from reverse_repo ORDER BY record_date DESC LIMIT 1")
-    record_date = db.fetchone()
+    cur.execute("SELECT record_date from reverse_repo ORDER BY record_date DESC LIMIT 1")
+    record_date = cur.fetchone()
     rrp_treasury_date = get_next_rrp_treasury_date(datetime.strptime(record_date[0], "%Y-%m-%d") + timedelta(days=1))
     retail_df = get_next_retail_sales_date()
     cpi_df = get_next_cpi_date()

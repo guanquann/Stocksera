@@ -33,12 +33,6 @@
                     <option value="spacs">SPACs</option>
                     <option value="cryptocurrency">Cryptocurrency</option>
                 </select>
-                <select name="date_selected" onchange="this.form.submit()">
-                    <option>Date: {{date_selected}}</option>
-                    {% for date in all_dates %}
-                        <option value="{{date}}">{{date}}</option>
-                    {% endfor %}
-                </select>
             </div>
         </form>
     </div>
@@ -132,27 +126,27 @@
                     <tbody>
                         {% for ticker in trending_tickers %}
                         <tr>
-                            <td>{{ticker.0}}</td>
-                            <td><a href="{% url 'reddit_ticker_analysis' %}?quote={{ticker.1}}&subreddit={{subreddit_selected}}" target="_blank"><img class="table_ticker_logo" src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.1}}.png" onerror="this.error=null;load_table_error_img(this, '{{ticker.1}}')"><b>{{ticker.1}}</b></a></td>
-                            <td>{{ticker.2}}</td>
+                            <td>{{ticker.1}}</td>
+                            <td><a href="{% url 'reddit_ticker_analysis' %}?quote={{ticker.2}}&subreddit={{subreddit_selected}}" target="_blank"><img class="table_ticker_logo" src="https://g.foolcdn.com/art/companylogos/mark/{{ticker.2}}.png" onerror="this.error=null;load_table_error_img(this, '{{ticker.2}}')"><b>{{ticker.2}}</b></a></td>
                             <td>{{ticker.3}}</td>
                             <td>{{ticker.4}}</td>
                             <td>{{ticker.5}}</td>
+                            <td>{{ticker.6}}</td>
                             <td class="price_chart_cell"></td>
-                            <td>{{ticker.7}}</td>
                             <td>{{ticker.8}}</td>
                             <td>{{ticker.9}}</td>
-                            <td>${{ticker.10}}</td>
-                            <td>{{ticker.13}}</td>
+                            <td>{{ticker.10}}</td>
+                            <td>${{ticker.11}}</td>
                             <td>{{ticker.14}}</td>
-                            <td>{{ticker.11}}</td>
-                            <td>{{ticker.12}}</td>
                             <td>{{ticker.15}}</td>
+                            <td>{{ticker.12}}</td>
+                            <td>{{ticker.13}}</td>
                             <td>{{ticker.16}}</td>
                             <td>{{ticker.17}}</td>
+                            <td>{{ticker.18}}</td>
                             <td>{{ticker.24}}</td>
                             <td class="reformat_text">{{ticker.25}}</td>
-                            <td>{{ticker.18}}</td>
+                            <td>{{ticker.19}}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

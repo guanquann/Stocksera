@@ -1,14 +1,9 @@
-import os
-import sys
 import locale
 import yfinance.ticker as yf
 
 from scheduled_tasks.reddit.reddit_utils import *
 from custom_extensions.stopwords import stopwords_list
 from custom_extensions.custom_words import new_words
-
-conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
-db = conn.cursor()
 
 analyzer = SentimentIntensityAnalyzer()
 analyzer.lexicon.update(new_words)
@@ -227,7 +222,7 @@ def filter_df(df, min_val):
 
 def get_financial_stats(results_df, min_vol, min_mkt_cap, threads=True):
     # dictionary of ticker summary profile information to get from yahoo
-    summary_profile_measures = {'industry': 'industry', 'website': 'website'}
+    summary_profile_measures = {'industry': 'industry'}
 
     # dictionary of ticker financial information to get from yahoo
     financial_measures = {'targetMeanPrice': 'target', 'recommendationKey': 'recommend'}
@@ -248,7 +243,6 @@ def get_financial_stats(results_df, min_vol, min_mkt_cap, threads=True):
     valid_ticker_list = list(quick_stats_df.index.values)
 
     summary_stats_df = download_advanced_stats(valid_ticker_list, module_name_map, threads)
-    summary_stats_df["website"] = summary_stats_df["website"].apply(lambda x: "https://logo.clearbit.com/" + str(x).replace("http://", "").replace("www.", "").split('/')[0])
     results_df_valid = results_df.loc[valid_ticker_list]
 
     results_df = pd.concat([results_df_valid, quick_stats_df, summary_stats_df], axis=1)
@@ -364,19 +358,16 @@ def print_df(df, filename, writesql, writecsv, subreddit):
     df['change'] = df['change'].replace(0, "N/A")
     df['industry'] = df['industry'].str.replace("—", "-")
     df['recommend'] = df['recommend'].str.replace("_", " ")
-    df['website'] = df['website'].str.replace("alibabagroup.com", "alibaba.com")
-    df['website'] = df['website'].str.replace("tesla.com", "tesla.cn")
-    df['website'] = df['website'].str.replace("https://logo.clearbit.com/modernatx.com",
-                                              "https://g.foolcdn.com/art/companylogos/mark/mrna.png")
 
     # Save to sql database
     if writesql:
-        for row_num in range(len(df)):
-            db.execute(
-                "INSERT INTO {} VALUES "
-                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)".format(subreddit),
-                tuple(df.loc[row_num].tolist()))
-            conn.commit()
+        print(df)
+        print(df.columns)
+        cur.executemany(
+            "INSERT INTO {} VALUES (NULL, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, "
+            "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(subreddit),
+            df.values.tolist())
+        cnx.commit()
         print("Saved to {} SQL Database successfully.".format(subreddit))
 
     # Write to csv

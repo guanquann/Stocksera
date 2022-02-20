@@ -1,9 +1,13 @@
-from datetime import datetime
-import sqlite3
+import os
+import sys
 import pandas as pd
+from datetime import datetime
 
-conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
-db = conn.cursor()
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
+from helpers import connect_mysql_database
+
+cnx, engine = connect_mysql_database()
+cur = cnx.cursor()
 
 
 def reverse_repo(start_date="2014-01-01", end_date=None):
@@ -20,7 +24,8 @@ def reverse_repo(start_date="2014-01-01", end_date=None):
     if end_date is None:
         end_date = str(datetime.utcnow().date())
 
-    url = "https://markets.newyorkfed.org/read?startDt={}&endDt={}&productCode=70&eventCodes=730&format=csv".format(start_date, end_date)
+    url = "https://markets.newyorkfed.org/read?startDt={}&endDt={}" \
+          "&productCode=70&eventCodes=730&format=csv".format(start_date, end_date)
 
     df = pd.read_csv(url)
     df = df[df["Operation Type"] == "Reverse Repo"]
@@ -36,8 +41,8 @@ def reverse_repo(start_date="2014-01-01", end_date=None):
         participants = row["Participating Counterparties"]
         avg = row["Average"]
         print(date, amount, participants, avg)
-        db.execute("INSERT OR IGNORE INTO reverse_repo VALUES (?, ?, ?, ?)", (date, amount, participants, avg))
-        conn.commit()
+        cur.execute("INSERT IGNORE INTO reverse_repo VALUES (%s, %s, %s, %s)", (date, amount, participants, avg))
+        cnx.commit()
 
 
 if __name__ == '__main__':

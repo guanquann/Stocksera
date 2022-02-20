@@ -160,7 +160,7 @@ def wsb_live():
     df = df[(df["mentions"] >= 3) & (df["word"].str.len() > 1)]
 
     df["date_updated"] = current_datetime_str
-    df.to_sql("wsb_word_cloud", conn, if_exists="append", index=False)
+    df.to_sql("wsb_word_cloud", engine, if_exists="append", index=False)
 
     quick_stats = {'regularMarketPreviousClose': 'prvCls',
                    'regularMarketVolume': 'volume',
@@ -196,9 +196,9 @@ def wsb_live():
     print(quick_stats_df)
 
     for index, row in quick_stats_df.iterrows():
-        db.execute("INSERT INTO wsb_trending_24H VALUES (?, ?, ?, ?, ?, ?)",
-                   (index, row[4], row[5], row[6], row[7], current_datetime_str))
-        conn.commit()
+        cur.execute("INSERT INTO wsb_trending_24H VALUES (%s, %s, %s, %s, %s, %s)",
+                    (index, row[4], row[5], row[6], row[7], current_datetime_str))
+        cnx.commit()
 
 
 def update_hourly():
@@ -209,12 +209,12 @@ def update_hourly():
     threshold_hour = threshold_datetime.rsplit(":", 2)[0] + ":00"
     # print(threshold_hour, "onwards being saved to hourly database")
 
-    db.execute("SELECT ticker, SUM(mentions), AVG(sentiment), SUM(calls), SUM(puts) FROM wsb_trending_24H WHERE "
-               "date_updated > ? GROUP BY ticker", (threshold_datetime, ))
-    x = db.fetchall()
+    cur.execute("SELECT ticker, SUM(mentions), AVG(sentiment), SUM(calls), SUM(puts) FROM wsb_trending_24H WHERE "
+               "date_updated > %s GROUP BY ticker", (threshold_datetime, ))
+    x = cur.fetchall()
     for row in x:
-        db.execute("INSERT INTO wsb_trending_hourly VALUES (?, ?, ?, ?, ?, ?)", (row + (threshold_hour, )))
-        conn.commit()
+        cur.execute("INSERT INTO wsb_trending_hourly VALUES (%s, %s, %s, %s, %s, %s)", (row + (threshold_hour, )))
+        cnx.commit()
 
 
 def wsb_change():
@@ -227,16 +227,16 @@ def wsb_change():
     threshold_datetime2 = str(current_datetime - timedelta(hours=48))
     threshold_hour2 = threshold_datetime2.rsplit(":", 2)[0] + ":00"
 
-    db.execute("SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment FROM wsb_trending_24H "
+    cur.execute("SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment FROM wsb_trending_24H "
                "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) DESC LIMIT 50".format(threshold_hour))
-    current = db.fetchall()
-    db.execute("DELETE FROM wsb_change")
+    current = cur.fetchall()
+    cur.execute("DELETE FROM wsb_change")
     for row in current:
         ticker = row[0]
         current_mentions = row[1]
-        db.execute("SELECT SUM(mentions) FROM wsb_trending_hourly WHERE date_updated < ? AND date_updated >= ? "
-                   "AND ticker=?", (threshold_hour, threshold_hour2, ticker))
-        previous_mentions = db.fetchone()[0]
+        cur.execute("SELECT SUM(mentions) FROM wsb_trending_hourly WHERE date_updated < %s AND date_updated >= %s "
+                    "AND ticker=%s", (threshold_hour, threshold_hour2, ticker))
+        previous_mentions = cur.fetchone()[0]
 
         if previous_mentions is not None:
             percent_change = round((current_mentions - previous_mentions) / previous_mentions, 2) * 100
@@ -245,17 +245,17 @@ def wsb_change():
         else:
             percent_change = 1000
 
-        db.execute("INSERT INTO wsb_change VALUES (?, ?, ?)", (ticker, current_mentions, percent_change))
-        conn.commit()
+        cur.execute("INSERT INTO wsb_change VALUES (%s, %s, %s)", (ticker, current_mentions, percent_change))
+        cnx.commit()
 
 
 def get_mkt_cap():
     threshold_datetime = str(current_datetime - timedelta(hours=24))
 
     ticker_list, mentions_list = list(), list()
-    db.execute("SELECT ticker, SUM(mentions) FROM wsb_trending_24H WHERE date_updated > ? GROUP BY "
+    cur.execute("SELECT ticker, SUM(mentions) FROM wsb_trending_24H WHERE date_updated > %s GROUP BY "
                "ticker ORDER BY SUM(mentions) DESC LIMIT 50", (threshold_datetime,))
-    x = db.fetchall()
+    x = cur.fetchall()
     for row in x:
         ticker_list.append(row[0])
         mentions_list.append(row[1])
@@ -291,7 +291,7 @@ def get_mkt_cap():
     quick_stats_df.reset_index(inplace=True)
     quick_stats_df.rename(columns={"Symbol": "ticker"}, inplace=True)
     print(quick_stats_df)
-    quick_stats_df.to_sql("wsb_yf", conn, if_exists="replace", index=False)
+    quick_stats_df.to_sql("wsb_yf", engine, if_exists="replace", index=False)
 
 
 if __name__ == '__main__':

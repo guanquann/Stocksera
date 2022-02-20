@@ -2,12 +2,12 @@ import os
 import sys
 from bs4 import BeautifulSoup
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from helpers import *
 import scheduled_tasks.reddit.stocks.fast_yahoo as fast_yahoo
 
-conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
-db = conn.cursor()
+cnx, engine = connect_mysql_database()
+cur = cnx.cursor()
 
 
 def get_high_short_interest():
@@ -18,7 +18,7 @@ def get_high_short_interest():
     df.sort_values(by=["Short Interest"], ascending=False, inplace=True)
     print(df)
     df = df[["Ticker", "Date", "Short Interest", "Average Volume", "Days To Cover", "%Float Short"]]
-    df.to_sql("short_interest", conn, if_exists="replace", index=False)
+    df.to_sql("short_interest", engine, if_exists="replace", index=False)
 
 
 def get_low_float():
@@ -59,12 +59,12 @@ def get_low_float():
 
     results_df = pd.merge(df_low_float, yf_stats_df, on="Ticker")
     print(results_df)
-    db.execute("DELETE FROM low_float")
+    cur.execute("DELETE FROM low_float")
     for index, row in results_df.iterrows():
-        db.execute("INSERT INTO low_float VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                   (row['Ticker'], row['Company'], row['Exchange'], row['PreviousClose'], round(row['1DayChange%'], 2),
-                    row['Float'], row['Outstd'], row['ShortInt'], long_number_format(row['MktCap']), row['Industry']))
-        conn.commit()
+        cur.execute("INSERT INTO low_float VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                    (row['Ticker'], row['Company'], row['Exchange'], row['PreviousClose'], round(row['1DayChange%'], 2),
+                     row['Float'], row['Outstd'], row['ShortInt'], long_number_format(row['MktCap']), row['Industry']))
+        cnx.commit()
 
 
 def main():

@@ -5,7 +5,10 @@ import finnhub
 import pandas as pd
 from datetime import datetime, timedelta
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+from helpers import connect_mysql_database
+
+cnx, engine = connect_mysql_database()
 
 with open("config.yaml") as config_file:
     config_keys = yaml.load(config_file, Loader=yaml.Loader)
@@ -25,7 +28,7 @@ def main():
     df.replace("", "-", inplace=True)
     df["Status"] = df["Status"].str.capitalize()
     print(df)
-    df.to_csv("database/ipo_calendar.csv", index=False)
+    df.to_sql("ipo_calendar", engine, if_exists="replace", index=False)
 
 
 if __name__ == '__main__':

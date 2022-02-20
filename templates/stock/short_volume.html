@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/stock/short_volume.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}display_data();display_table();short_vol_graph(6){% endblock %}
+{% block onload_properties%}display_data();display_table();short_vol_graph(12){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -65,9 +65,9 @@
         <div id="summary"></div>
 
         <div class="date_selector">
-            <button name="date_range" id="1 Months" onclick="btn_selected(this); short_vol_graph(1)">1 Months</button>
             <button name="date_range" id="3 Months" onclick="btn_selected(this); short_vol_graph(3)">3 Months</button>
-            <button name="date_range" id="6 Months" onclick="btn_selected(this); short_vol_graph(6)" class="selected">6 Months</button>
+            <button name="date_range" id="6 Months" onclick="btn_selected(this); short_vol_graph(6)">6 Months</button>
+            <button name="date_range" id="12 Months" onclick="btn_selected(this); short_vol_graph(12)" class="selected">1 Year</button>
         </div>
 
         <div class="chart-container">

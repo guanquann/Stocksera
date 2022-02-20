@@ -35,8 +35,8 @@ urlpatterns = [
     path('subreddit_count/', views.subreddit_count, name='api_subreddit_count'),
     path('subreddit_count/<str:ticker_selected>/', views.subreddit_count, name='api_subreddit_count'),
 
-    path('wsb_mentions/', views.wsb_mentions, name='api_wsb_mentions'),
-    path('wsb_mentions/<str:ticker_selected>/', views.wsb_mentions, name='api_wsb_mentions'),
+    path('reddit/<str:subreddit>/', views.reddit_mentions, name='api_reddit_mentions'),
+    path('reddit/<str:subreddit>/<str:ticker_selected>/', views.reddit_mentions, name='api_reddit_mentions'),
 
     path('wsb_options/', views.wsb_options, name='api_wsb_options'),
 
@@ -65,4 +65,7 @@ urlpatterns = [
 
     path('jim_cramer/', views.jim_cramer, name='api_jim_cramer'),
     path('jim_cramer/<str:ticker_selected>/', views.jim_cramer, name='api_jim_cramer'),
+
+    path('borrowed_shares/', views.borrowed_shares, name='api_borrowed_shares'),
+    path('borrowed_shares/<str:ticker_selected>/', views.borrowed_shares, name='api_borrowed_shares'),
 ]

@@ -1,13 +1,13 @@
 import os
 import sys
-import sqlite3
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 from scheduled_tasks.economy.ychart_connection import ychart_data
+from helpers import connect_mysql_database
 
-conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
-db = conn.cursor()
+cnx, engine = connect_mysql_database()
+cur = cnx.cursor()
 
 
 def jobless_claims():
@@ -31,8 +31,8 @@ def jobless_claims():
     print(df)
 
     for index, row in df.iterrows():
-        db.execute("INSERT OR IGNORE INTO initial_jobless_claims VALUES (?, ?, ?)", (row[0], row[1], row[2]))
-        conn.commit()
+        cur.execute("INSERT IGNORE INTO initial_jobless_claims VALUES (%s, %s, %s)", (row[0], row[1], row[2]))
+        cnx.commit()
 
 
 if __name__ == '__main__':

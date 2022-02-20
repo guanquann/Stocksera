@@ -1,18 +1,18 @@
 import os
 import sys
-import sqlite3
 import requests
 import pandas as pd
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+from helpers import connect_mysql_database
 
-conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
-db = conn.cursor()
+cnx, engine = connect_mysql_database()
+cur = cnx.cursor()
 
 
-def main(days=180):
+def main(days=360):
     final_list = []
     for i in range(days, 0, -1):
         try:
@@ -29,22 +29,22 @@ def main(days=180):
                 segment = tds[2].find("img")["alt"]
                 if segment in segment_dict.keys():
                     segment = segment_dict[segment]
-                    symbol = tds[0].get_text()
-                    symbol = symbol[symbol.find("(") + 1:symbol.find(")")]
+                    ticker = tds[0].get_text()
+                    ticker = ticker[ticker.find("(") + 1:ticker.find(")")]
                     call = call_dict[tds[3].find("img")["alt"]]
-                    price = tds[4].get_text()
-                    print(symbol, date, segment, call, price)
-                    final_list.append({"Symbol": symbol,
+                    price = float(tds[4].get_text().replace("$", ""))
+                    print(ticker, date, segment, call, price)
+                    final_list.append({"Ticker": ticker,
                                        "Date": date,
                                        "Segment": segment,
                                        "Call": call,
                                        "Price": price})
         except IndexError:
             pass
-
     df = pd.DataFrame(final_list)
-    df.to_sql("jim_cramer_trades", conn, if_exists="append", index=False)
+    print(df)
+    df.to_sql("jim_cramer_trades", engine, if_exists="append", index=False)
 
 
 if __name__ == '__main__':
-    main(days=5)
+    main()

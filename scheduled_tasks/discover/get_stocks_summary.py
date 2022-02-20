@@ -2,7 +2,7 @@ import os
 import sys
 import pandas as pd
 
-sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 from scheduled_tasks.reddit.stocks.fast_yahoo import download_advanced_stats
 
 INDICES_PATH = "database/indices"
@@ -46,7 +46,8 @@ def main():
 
     original_df["Current Price"] = pd.to_numeric(original_df["Current Price"], errors='coerce')
     original_df["Prev Close"] = pd.to_numeric(original_df["Prev Close"], errors='coerce')
-    original_df["% Change"] = (original_df["Current Price"] - original_df["Prev Close"]) * 100 / original_df["Prev Close"]
+    original_df["% Change"] = (original_df["Current Price"] - original_df["Prev Close"]) * 100 / \
+                              original_df["Prev Close"]
     original_df = original_df.reindex(symbol_list)
     original_df.reset_index(inplace=True)
 

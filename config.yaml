@@ -17,3 +17,9 @@
   # https://realpython.com/python-send-email/
   GMAIL_SENDER_EMAIL: "API_KEY_HERE"
   GMAIL_SENDER_PASSWORD: "API_KEY_HERE"
+
+  # mysql credentials
+  MYSQL_USER: "root"
+  MYSQL_PASSWORD: "admin"
+  MYSQL_HOST: "127.0.0.1"
+  MYSQL_DATABASE: "stocksera"

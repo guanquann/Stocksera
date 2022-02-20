@@ -1,9 +1,10 @@
 import os
 import yaml
-import sqlite3
 import numpy as np
 import finnhub
 import yfinance as yf
+import mysql.connector
+from sqlalchemy import create_engine
 from django.http import HttpResponse
 from finvizfinance.quote import finvizfinance
 from json.decoder import JSONDecodeError
@@ -21,11 +22,20 @@ analyzer.lexicon.update(new_words)
 finnhub_client = finnhub.Client(api_key=config_keys["FINNHUB_KEY1"])
 finnhub_client2 = finnhub.Client(api_key=config_keys["FINNHUB_KEY2"])
 
-conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
-db = conn.cursor()
-
 header = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/"
                         "50.0.2661.75 Safari/537.36", "X-Requested-With": "XMLHttpRequest"}
+
+engine = create_engine(f'mysql://{config_keys["MYSQL_USER"]}:{config_keys["MYSQL_PASSWORD"]}@'
+                       f'{config_keys["MYSQL_HOST"]}/{config_keys["MYSQL_DATABASE"]}')
+cnx = mysql.connector.connect(user=config_keys["MYSQL_USER"],
+                              password=config_keys["MYSQL_PASSWORD"],
+                              host=config_keys["MYSQL_HOST"],
+                              database=config_keys["MYSQL_DATABASE"])
+cur = cnx.cursor()
+
+
+def connect_mysql_database():
+    return cnx, engine
 
 
 def default_ticker(request, ticker="AAPL"):
@@ -88,27 +98,13 @@ def check_market_hours(ticker_selected):
             print("Scraping data for {}".format(ticker_selected))
 
     if "longName" in information and information["regularMarketPrice"] != "N/A":
-        # Uncomment this if the bottom does not work!
-        # if "." not in ticker_selected:
-        #     db.execute("SELECT * FROM stocksera_trending WHERE symbol=?", (ticker_selected,))
-        #     count = db.fetchone()
-        #     if count is None:
-        #         count = 1
-        #     else:
-        #         count = count[2] + 1
-        #
-        #     db.execute("DELETE from stocksera_trending WHERE symbol=?", (ticker_selected,))
-        #     db.execute("INSERT INTO stocksera_trending (symbol, name, count) VALUES (?, ?, ?) ",
-        #                (ticker_selected, information["longName"], count))
-
-        # Comment this if you face an error. Uncomment the top instead.
         if "." not in ticker_selected:
-            db.execute("INSERT INTO stocksera_trending (symbol, name, count) VALUES (?, ?, 1) ON CONFLICT (symbol) "
-                       "DO UPDATE SET count=count+1", (ticker_selected, information["longName"]))
-            conn.commit()
+            cur.execute("INSERT INTO stocksera_trending (ticker, name, count) VALUES (%s, %s, 1) ON DUPLICATE "
+                        "KEY UPDATE count=count+1", (ticker_selected, information["longName"]))
+            cnx.commit()
 
-        db.execute("SELECT * FROM related_tickers WHERE ticker=?", (ticker_selected, ))
-        related_tickers = db.fetchall()
+        cur.execute("SELECT * FROM related_tickers WHERE ticker=%s", (ticker_selected, ))
+        related_tickers = cur.fetchall()
         if not related_tickers:
             related_tickers = finnhub_client.company_peers(ticker_selected)
             if ticker_selected in related_tickers:
@@ -116,9 +112,9 @@ def check_market_hours(ticker_selected):
             upload_to_db = related_tickers.copy()
             while len(upload_to_db) <= 6:
                 upload_to_db += [""]
-            db.execute("INSERT INTO related_tickers VALUES (?, ?, ?, ?, ?, ?, ?)",
-                       tuple([ticker_selected] + upload_to_db[:6]))
-            conn.commit()
+            cur.execute("INSERT INTO related_tickers VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                        tuple([ticker_selected] + upload_to_db[:6]))
+            cnx.commit()
         else:
             related_tickers = list(related_tickers[0])[1:]
             related_tickers = [i for i in related_tickers if i != ""]
@@ -158,32 +154,6 @@ def check_financial_data(ticker_selected, ticker, data, r):
 def convert_date(date):
     return date[0].split()[0]
 
-
-# def get_loss_at_strike(strike, chain):
-#     """
-#     Function to get the loss at the given expiry
-#     Parameters
-#     ----------
-#     strike: Union[int,float]
-#         Value to calculate total loss at
-#     chain: Dataframe:
-#         Dataframe containing at least strike and openInterest
-#     Returns
-#     -------
-#     loss: Union[float,int]
-#         Total loss
-#     """
-#
-#     itm_calls = chain[chain.index < strike][["oi_x"]]
-#     itm_calls["loss"] = (strike - itm_calls.index) * itm_calls["oi_x"]
-#     call_loss = round(itm_calls["loss"].sum() / 10000, 2)
-#
-#     # The *-1 below is due to a sign change for plotting in the _view code
-#     itm_puts = chain[chain.index > strike][["oi_y"]]
-#     itm_puts["loss"] = (itm_puts.index - strike) * itm_puts["oi_y"] * -1
-#     put_loss = round(itm_puts.loss.sum() / 10000, 2)
-#     loss = call_loss + put_loss
-#     return loss, call_loss, put_loss
 
 def get_loss_at_strike(strike, chain):
     """
@@ -255,9 +225,9 @@ def get_sec_fillings(ticker_selected):
         filling_date = filling["filedDate"].split()[0]
         report_url = filling["reportUrl"]
         filing_url = filling["filingUrl"]
-        db.execute("INSERT INTO sec_fillings VALUES (?, ?, ?, ?, ?, ?)", (ticker, fillings, description, filling_date,
-                                                                          report_url, filing_url))
-        conn.commit()
+        cur.execute("INSERT INTO sec_fillings VALUES (%s, %s, %s, %s, %s, %s)",
+                    (ticker, fillings, description, filling_date, report_url, filing_url))
+        cnx.commit()
     df = pd.DataFrame(sec_list)
     df.rename(columns={"form": "Filling", "filedDate": "Filling Date"},
               inplace=True)
@@ -288,16 +258,16 @@ def get_ticker_news(ticker_selected):
             else:
                 sentiment = "Neutral"
             sentiment_list.append(sentiment)
-            db.execute("INSERT INTO daily_ticker_news VALUES (?, ?, ?, ?, ?)",
-                       (ticker_selected, row[0], row[1], row[2], sentiment))
-            conn.commit()
+            cur.execute("INSERT INTO daily_ticker_news VALUES (%s, %s, %s, %s, %s)",
+                        (ticker_selected, row[0], row[1], row[2], sentiment))
+            cnx.commit()
         news_df["Sentiment"] = sentiment_list
     except:
         news_df = pd.DataFrame(columns=["Date", "Title", "Link", "Sentiment"])
         news_df.loc[0] = ["N/A", "N/A", "https://finance.yahoo.com/news/", "N/A"]
-        db.execute("INSERT INTO daily_ticker_news VALUES (?, ?, ?, ?, ?)",
-                   (ticker_selected, "N/A", "N/A", "https://finance.yahoo.com/news/", "N/A"))
-        conn.commit()
+        cur.execute("INSERT INTO daily_ticker_news VALUES (%s, %s, %s, %s, %s)",
+                    (ticker_selected, "N/A", "N/A", "https://finance.yahoo.com/news/", "N/A"))
+        cnx.commit()
     return news_df
 
 
@@ -322,11 +292,13 @@ def get_insider_trading(ticker_selected):
                 x = row[2]
             date_to_insert = str(x).split()[0]
             last_date = x
-            db.execute("INSERT INTO insider_trading VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                       (ticker_selected, row[0], row[1], date_to_insert, row[3], row[4], row[5], row[6], row[7], row[8]))
-            conn.commit()
+            cur.execute("INSERT INTO insider_trading VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                        (ticker_selected, row[0], row[1], date_to_insert, row[3], row[4],
+                         row[5], row[6], row[7], row[8]))
+            cnx.commit()
     except:
-        inside_trader_df = pd.DataFrame(columns=["Name", "Relationship", "Date", "Transaction", "Cost", "Shares", "Value ($)", "#Shares Total", ""])
+        inside_trader_df = pd.DataFrame(columns=["Name", "Relationship", "Date", "Transaction", "Cost", "Shares",
+                                                 "Value ($)", "#Shares Total", ""])
         inside_trader_df.loc[0] = ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
     return inside_trader_df
 

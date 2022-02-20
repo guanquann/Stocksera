@@ -1,315 +1,364 @@
 """
 Script to create database inside scheduled_tasks folder
 """
-import sqlite3
+import os
+import sys
+import yaml
+import mysql.connector
 
-conn = sqlite3.connect("database/database.db", check_same_thread=False)
-db = conn.cursor()
+sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
+
+try:
+    from helpers import connect_mysql_database
+    cnx, engine = connect_mysql_database()
+    cur = cnx.cursor()
+except mysql.connector.ProgrammingError:
+    with open("config.yaml") as config_file:
+        config_keys = yaml.load(config_file, Loader=yaml.Loader)
+    cnx = mysql.connector.connect(user=config_keys["MYSQL_USER"],
+                                  password=config_keys["MYSQL_PASSWORD"],
+                                  host=config_keys["MYSQL_HOST"])
+    cur = cnx.cursor()
+    cur.execute("CREATE DATABASE IF NOT EXISTS stocksera")
+    cnx, engine = connect_mysql_database()
+    cur = cnx.cursor()
 
 
 def database():
-    db.execute("CREATE table IF NOT EXISTS stocksera_trending ("
-               "symbol TEXT, "
-               "name TEXT, "
-               "count INTEGER, "
-               "UNIQUE('symbol'))")
+
+    cur.execute("CREATE TABLE IF NOT EXISTS stocksera_trending ("
+                "ticker VARCHAR(10), "
+                "name VARCHAR(300), "
+                "count INTEGER, "
+                "UNIQUE(ticker))")
 
     subreddits = ["wallstreetbets", "stocks", "options", "pennystocks", "investing", "shortsqueeze",
                   "spacs"]
     for subreddit in subreddits:
-        db.execute("CREATE table IF NOT EXISTS {} ("
-                   "rank INTEGER NOT NULL, "
-                   "ticker VARCHAR (10), "
-                   "total INTEGER NOT NULL DEFAULT 0, "
-                   "recent INTEGER NOT NULL DEFAULT 0, "
-                   "previous INTEGER NOT NULL DEFAULT 0, "
-                   "change FLOAT, "
-                   "rockets INTEGER NOT NULL DEFAULT 0, "
-                   "posts INTEGER NOT NULL DEFAULT 0, "
-                   "upvotes INTEGER NOT NULL DEFAULT 0, "
-                   "comments INTEGER NOT NULL DEFAULT 0, "
-                   "price FLOAT, "
-                   "one_day_change_percent FLOAT, "
-                   "fifty_day_change_percent FLOAT, "
-                   "volume VARCHAR (10), "
-                   "mkt_cap VARCHAR (25), "
-                   "floating_shares VARCHAR (10), "
-                   "beta VARCHAR (10), "
-                   "short_per_float VARCHAR (10), "
-                   "industry VARCHAR (100), "
-                   "website VARCHAR (150), "
-                   "prev_close VARCHAR (10), "
-                   "open VARCHAR (10), "
-                   "day_low VARCHAR (10), "
-                   "day_high VARCHAR (10), "
-                   "target VARCHAR (10), "
-                   "recommend VARCHAR (20), "
-                   "date_updated VARCHAR (20), "
-                   "subreddit VARCHAR (25),"
-                   "ID INTEGER PRIMARY KEY AUTOINCREMENT)".format(subreddit))
+        cur.execute("CREATE TABLE IF NOT EXISTS {} ("
+                    "ID INTEGER PRIMARY KEY AUTO_INCREMENT, "
+                    "`rank` INTEGER NOT NULL, "
+                    "ticker VARCHAR(10), "
+                    "total INTEGER NOT NULL DEFAULT 0, "
+                    "recent INTEGER NOT NULL DEFAULT 0, "
+                    "previous INTEGER NOT NULL DEFAULT 0, "
+                    "`change` VARCHAR(10), "
+                    "rockets INTEGER NOT NULL DEFAULT 0, "
+                    "posts INTEGER NOT NULL DEFAULT 0, "
+                    "upvotes INTEGER NOT NULL DEFAULT 0, "
+                    "comments INTEGER NOT NULL DEFAULT 0, "
+                    "price VARCHAR(10), "
+                    "one_day_change_percent VARCHAR(10), "
+                    "fifty_day_change_percent VARCHAR(10), "
+                    "volume VARCHAR(10), "
+                    "mkt_cap VARCHAR(25), "
+                    "floating_shares VARCHAR(10), "
+                    "beta VARCHAR(10), "
+                    "short_per_float VARCHAR(10), "
+                    "industry VARCHAR(100), "
+                    "prev_close VARCHAR(10), "
+                    "open VARCHAR(10), "
+                    "day_low VARCHAR(10), "
+                    "day_high VARCHAR(10), "
+                    "target VARCHAR(10), "
+                    "recommend VARCHAR(20), "
+                    "date_updated VARCHAR(20), "
+                    "subreddit VARCHAR(25), "
+                    "UNIQUE(ticker, date_updated) )".format(subreddit))
 
-    db.execute("CREATE table IF NOT EXISTS cryptocurrency ("
-               "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-               "rank INTEGER NOT NULL, "
-               "ticker VARCHAR (10), "
-               "total INTEGER NOT NULL DEFAULT 0, "
-               "recent INTEGER NOT NULL DEFAULT 0, "
-               "previous INTEGER NOT NULL DEFAULT 0, "
-               "change FLOAT, "
-               "rockets INTEGER NOT NULL DEFAULT 0, "
-               "posts INTEGER NOT NULL DEFAULT 0, "
-               "upvotes INTEGER NOT NULL DEFAULT 0, "
-               "comments INTEGER NOT NULL DEFAULT 0, "
-               "price FLOAT, "
-               "one_day_change_percent FLOAT, "
-               "thirty_day_change_percent FLOAT, "
-               "volume VARCHAR (10), "
-               "mkt_cap VARCHAR (25), "
-               "circulating_supply VARCHAR (20),"
-               "max_supply VARCHAR (20),"
-               "date_updated VARCHAR(20) )")
+    cur.execute("CREATE table IF NOT EXISTS cryptocurrency ("
+                "ID INTEGER PRIMARY KEY AUTO_INCREMENT, "
+                "`rank` INTEGER NOT NULL, "
+                "ticker VARCHAR (10), "
+                "total INTEGER NOT NULL DEFAULT 0, "
+                "recent INTEGER NOT NULL DEFAULT 0, "
+                "previous INTEGER NOT NULL DEFAULT 0, "
+                "`change` VARCHAR(10), "
+                "rockets INTEGER NOT NULL DEFAULT 0, "
+                "posts INTEGER NOT NULL DEFAULT 0, "
+                "upvotes INTEGER NOT NULL DEFAULT 0, "
+                "comments INTEGER NOT NULL DEFAULT 0, "
+                "price VARCHAR(10), "
+                "one_day_change_percent VARCHAR(10), "
+                "thirty_day_change_percent VARCHAR(10), "
+                "volume VARCHAR(10), "
+                "mkt_cap VARCHAR(25), "
+                "circulating_supply VARCHAR(20),"
+                "max_supply VARCHAR (20),"
+                "date_updated VARCHAR(20),"
+                "UNIQUE(ticker, date_updated) )")
 
-    db.execute("CREATE table IF NOT EXISTS wsb_trending_24H ("
-               "ticker TEXT, "
-               "mentions INTEGER, "
-               "sentiment FLOAT, "
-               "calls TEXT, "
-               "puts TEXT, "
-               "date_updated TEXT )")
+    cur.execute("CREATE table IF NOT EXISTS wsb_trending_24H ("
+                "ticker VARCHAR(10), "
+                "mentions INTEGER, "
+                "sentiment FLOAT, "
+                "calls INTEGER, "
+                "puts INTEGER, "
+                "date_updated VARCHAR(20),"
+                "INDEX (ticker) )")
 
-    db.execute("CREATE table IF NOT EXISTS wsb_trending_hourly ("
-               "ticker TEXT, "
-               "mentions INTEGER, "
-               "sentiment FLOAT, "
-               "calls TEXT, "
-               "puts TEXT, "
-               "date_updated TEXT )")
+    cur.execute("CREATE table IF NOT EXISTS wsb_trending_hourly ("
+                "ticker VARCHAR(10), "
+                "mentions INTEGER, "
+                "sentiment FLOAT, "
+                "calls INTEGER, "
+                "puts INTEGER, "
+                "date_updated VARCHAR(20),"
+                "INDEX (ticker) )")
 
-    db.execute("CREATE table IF NOT EXISTS wsb_yf ("
-               "ticker TEXT, "
-               "mkt_cap TEXT, "
-               "price_change FLOAT, "
-               "industry TEXT, "
-               "sector TEXT, "
-               "difference_sma FLOAT, "
-               "difference_52w_high FLOAT, "
-               "difference_52w_low FLOAT, "
-               "mentions INTEGER )")
+    cur.execute("CREATE table IF NOT EXISTS wsb_yf ("
+                "ticker VARCHAR(10), "
+                "mkt_cap VARCHAR(30), "
+                "price_change FLOAT, "
+                "industry VARCHAR(200), "
+                "sector VARCHAR(200), "
+                "difference_sma FLOAT, "
+                "difference_52w_high FLOAT, "
+                "difference_52w_low FLOAT, "
+                "mentions INTEGER )")
 
-    db.execute("CREATE table IF NOT EXISTS crypto_trending_24H ("
-               "ticker TEXT, "
-               "mentions INTEGER, "
-               "sentiment FLOAT, "
-               "date_updated TEXT )")
+    cur.execute("CREATE table IF NOT EXISTS crypto_trending_24H ("
+                "ticker VARCHAR(10), "
+                "mentions INTEGER, "
+                "sentiment FLOAT, "
+                "date_updated VARCHAR(20),"
+                "INDEX (ticker) )")
 
-    db.execute("CREATE table IF NOT EXISTS crypto_trending_hourly ("
-               "ticker TEXT, "
-               "mentions INTEGER, "
-               "sentiment FLOAT, "
-               "date_updated TEXT )")
+    cur.execute("CREATE table IF NOT EXISTS crypto_trending_hourly ("
+                "ticker VARCHAR(10), "
+                "mentions INTEGER, "
+                "sentiment FLOAT, "
+                "date_updated VARCHAR(20),"
+                "INDEX (ticker) )")
 
     for i in ["wsb", "crypto"]:
-        db.execute("CREATE table IF NOT EXISTS {}_change ("
-                   "ticker TEXT, "
-                   "mentions INTEGER, "
-                   "change FLOAT) ".format(i))
+        cur.execute("CREATE table IF NOT EXISTS {}_change ("
+                    "ticker VARCHAR(10), "
+                    "mentions INTEGER, "
+                    "percent_change FLOAT )".format(i))
 
-        db.execute("CREATE table IF NOT EXISTS {}_word_cloud ("
-                   "word TEXT, "
-                   "mentions INTEGER, "
-                   "date_updated TEXT )".format(i))
+        cur.execute("CREATE table IF NOT EXISTS {}_word_cloud ("
+                    "word VARCHAR(100), "
+                    "mentions INTEGER, "
+                    "date_updated VARCHAR(20) )".format(i))
 
-    db.execute("CREATE table IF NOT EXISTS reddit_etf ("
-               "ticker TEXT, "
-               "open_date TEXT, "
-               "open_price FLOAT, "
-               "num_shares INTEGER, "
-               "close_date TEXT, "
-               "close_price FLOAT, "
-               "PnL FLOAT, "
-               "percentage FLOAT, "
-               "status TEXT)")
+    cur.execute("CREATE table IF NOT EXISTS reddit_etf ("
+                "ticker VARCHAR(10), "
+                "open_date VARCHAR(20), "
+                "open_price FLOAT, "
+                "num_shares INTEGER, "
+                "close_date VARCHAR(20), "
+                "close_price FLOAT, "
+                "PnL FLOAT, "
+                "percentage FLOAT, "
+                "status VARCHAR(20))")
 
-    db.execute("CREATE table IF NOT EXISTS earnings_calendar ("
-               "name TEXT, "
-               "symbol TEXT, "
-               "mkt_cap INTEGER, "
-               "eps_est TEXT, "
-               "eps_act TEXT, "
-               "surprise TEXT, "
-               "earning_date TEXT, "
-               "earning_time TEXT, "
-               "UNIQUE(name, symbol) )")
+    cur.execute("CREATE table IF NOT EXISTS earnings_calendar ("
+                "company_name VARCHAR(200), "
+                "ticker VARCHAR(10), "
+                "mkt_cap BIGINT, "
+                "eps_est VARCHAR(20), "
+                "eps_act VARCHAR(20), "
+                "surprise VARCHAR(20), "
+                "earning_date VARCHAR(20), "
+                "earning_time VARCHAR(20), "
+                "UNIQUE(company_name, ticker) )")
 
-    db.execute("CREATE table IF NOT EXISTS subreddit_count ("
-               "ticker TEXT, "
-               "subreddit TEXT, "
-               "subscribers INTEGER, "
-               "active INTEGER, "
-               "updated_date TEXT,"
-               "percentage_active FLOAT, "
-               "growth FLOAT, "
-               "percentage_price_change FLOAT, "
-               "UNIQUE(ticker, subreddit, updated_date) )")
+    cur.execute("CREATE table IF NOT EXISTS subreddit_count ("
+                "updated_date VARCHAR(20),"
+                "ticker VARCHAR(10), "
+                "subreddit VARCHAR(50), "
+                "subscribers INTEGER, "
+                "active INTEGER, "
+                "percentage_active FLOAT, "
+                "growth FLOAT, "
+                "percentage_price_change FLOAT, "
+                "UNIQUE(ticker, subreddit, updated_date),"
+                "INDEX (ticker) )")
 
-    db.execute("CREATE table IF NOT EXISTS twitter_followers ("
-               "ticker TEXT, "
-               "followers INTEGER, "
-               "updated_date TEXT,"
-               "UNIQUE('ticker', 'updated_date' ))")
+    cur.execute("CREATE table IF NOT EXISTS twitter_followers ("
+                "ticker VARCHAR(10), "
+                "followers INTEGER, "
+                "updated_date VARCHAR(20), "
+                "UNIQUE(ticker, updated_date) )")
 
-    db.execute("CREATE table IF NOT EXISTS twitter_trending ("
-               "ticker TEXT, "
-               "tweet_count INTEGER, "
-               "updated_date TEXT,"
-               "UNIQUE('ticker', 'updated_date' ))")
+    cur.execute("CREATE table IF NOT EXISTS twitter_trending ("
+                "ticker VARCHAR(10), "
+                "tweet_count INTEGER, "
+                "updated_date VARCHAR(20),"
+                "UNIQUE(ticker, updated_date) )")
 
-    db.execute("CREATE table IF NOT EXISTS short_interest ("
-               "ticker TEXT, "
-               "date TEXT, "
-               "short_interest INTEGER, "
-               "average_vol INTEGER, "
-               "days_to_cover FLOAT, "
-               "percent_float_short FLOAT)")
+    cur.execute("CREATE table IF NOT EXISTS short_interest ("
+                "ticker VARCHAR(10), "
+                "date VARCHAR(20), "
+                "short_interest INTEGER, "
+                "average_vol INTEGER, "
+                "days_to_cover FLOAT, "
+                "percent_float_short FLOAT)")
 
-    db.execute("CREATE table IF NOT EXISTS low_float ("
-               "ticker TEXT, "
-               "company TEXT, "
-               "exchange TEXT, "
-               "previous_close FLOAT, "
-               "one_day_change FLOAT, "
-               "float TEXT, "
-               "outstanding_shares TEXT,"
-               "short_int TEXT, "
-               "market_cap INTEGER, "
-               "industry TEXT )")
+    cur.execute("CREATE table IF NOT EXISTS low_float ("
+                "ticker VARCHAR(10), "
+                "company_name VARCHAR(200), "
+                "exchange VARCHAR(100), "
+                "previous_close FLOAT, "
+                "one_day_change FLOAT, "
+                "floating_shares VARCHAR(20), "
+                "outstanding_shares VARCHAR(20),"
+                "short_int VARCHAR(20), "
+                "market_cap VARCHAR(20), "
+                "industry VARCHAR(50) )")
 
-    db.execute("CREATE table IF NOT EXISTS reverse_repo ("
-               "record_date TEXT, "
-               "amount FLOAT, "
-               "parties INTEGER, "
-               "average FLOAT, "
-               "UNIQUE ('record_date') )")
+    cur.execute("CREATE table IF NOT EXISTS reverse_repo ("
+                "record_date VARCHAR(20), "
+                "amount FLOAT, "
+                "parties INTEGER, "
+                "average FLOAT, "
+                "UNIQUE (record_date) )")
 
-    db.execute("CREATE table IF NOT EXISTS daily_treasury ("
-               "record_date TEXT, "
-               "close_today_bal FLOAT, "
-               "open_today_bal FLOAT, "
-               "amount_change FLOAT, "
-               "percent_change FLOAT, "
-               "UNIQUE ('record_date') )")
+    cur.execute("CREATE table IF NOT EXISTS daily_treasury ("
+                "record_date VARCHAR(20), "
+                "close_today_bal FLOAT, "
+                "open_today_bal FLOAT, "
+                "amount_change FLOAT, "
+                "percent_change FLOAT, "
+                "UNIQUE (record_date) )")
 
-    db.execute("CREATE table IF NOT EXISTS retail_sales ("
-               "record_date TEXT, "
-               "value FLOAT, "
-               "percent_change FLOAT, "
-               "covid_monthly_avg INTEGER, "
-               "UNIQUE ('record_date') )")
+    cur.execute("CREATE table IF NOT EXISTS retail_sales ("
+                "record_date VARCHAR(20), "
+                "value FLOAT, "
+                "percent_change FLOAT, "
+                "covid_monthly_avg INTEGER, "
+                "UNIQUE (record_date) )")
 
-    db.execute("CREATE table IF NOT EXISTS initial_jobless_claims (record_date TEXT, "
-               "value INTEGER, "
-               "percent_change FLOAT, "
-               "UNIQUE ('record_date') )")
+    cur.execute("CREATE table IF NOT EXISTS initial_jobless_claims ("
+                "record_date VARCHAR(20), "
+                "value INTEGER, "
+                "percent_change FLOAT, "
+                "UNIQUE (record_date) )")
 
-    db.execute("CREATE table IF NOT EXISTS usa_inflation ("
-               "Year TEXT, "
-               "Jan FLOAT, "
-               "Feb FLOAT, "
-               "Mar FLOAT, "
-               "Apr FLOAT, "
-               "May FLOAT, "
-               "Jun FLOAT, "
-               "Jul FLOAT, "
-               "Aug FLOAT, "
-               "Sep FLOAT, "
-               "Oct FLOAT, "
-               "Nov FLOAT, "
-               "Dec FLOAT, "
-               "Avg FLOAT )")
+    cur.execute("CREATE table IF NOT EXISTS usa_inflation ("
+                "Year VARCHAR(10), "
+                "Jan FLOAT, "
+                "Feb FLOAT, "
+                "Mar FLOAT, "
+                "Apr FLOAT, "
+                "May FLOAT, "
+                "Jun FLOAT, "
+                "Jul FLOAT, "
+                "Aug FLOAT, "
+                "Sep FLOAT, "
+                "Oct FLOAT, "
+                "Nov FLOAT, "
+                "`Dec` FLOAT, "
+                "`Avg` FLOAT )")
 
-    db.execute("CREATE table IF NOT EXISTS world_inflation ("
-               "Country TEXT, "
-               "Last FLOAT, "
-               "Previous FLOAT, "
-               "Reference TEXT ) ")
+    cur.execute("CREATE table IF NOT EXISTS world_inflation ("
+                "Country VARCHAR(100), "
+                "Last FLOAT, "
+                "Previous FLOAT, "
+                "Reference VARCHAR(20) ) ")
 
-    db.execute("CREATE table IF NOT EXISTS sec_fillings ("
-               "ticker TEXT, "
-               "filling TEXT, "
-               "description TEXT, "
-               "filling_date TEXT, "
-               "report_url TEXT, "
-               "filing_url TEXT ) ")
+    cur.execute("CREATE table IF NOT EXISTS short_volume ("
+                "`Date` VARCHAR(20), "
+                "`Ticker` VARCHAR(10), "
+                "`Short Vol` DOUBLE, "
+                "`Short Exempt Vol` DOUBLE, "
+                "`Total Vol` DOUBLE, "
+                "`% Shorted` DOUBLE, "
+                "UNIQUE (`Date`, `Ticker`), "
+                "INDEX (Ticker) )")
 
-    db.execute("CREATE table IF NOT EXISTS daily_ticker_news ("
-               "Ticker TEXT, "
-               "Date TEXT, "
-               "Title TEXT, "
-               "Link TEXT, "
-               "Sentiment TEXT )")
+    cur.execute("CREATE table IF NOT EXISTS ftd ("
+                "`Date` VARCHAR(20), "
+                "`Ticker` VARCHAR(10), "
+                "`Failure to Deliver` DOUBLE, "
+                "`Price` VARCHAR(20), "
+                "`T+35 Date` VARCHAR(20), "
+                "UNIQUE (`Date`, `Ticker`), "
+                "INDEX (Ticker) )")
+    
+    cur.execute("CREATE table IF NOT EXISTS sec_fillings ("
+                "ticker VARCHAR(10), "
+                "filling VARCHAR(100), "
+                "description VARCHAR(100), "
+                "filling_date VARCHAR(20), "
+                "report_url VARCHAR(300), "
+                "filing_url VARCHAR(300) ) ")
 
-    db.execute("CREATE table IF NOT EXISTS insider_trading ("
-               "Ticker TEXT, "
-               "Name TEXT, "
-               "Relationship TEXT, "
-               "TransactionDate TEXT, "
-               "TransactionType TEXT, "
-               "Cost FLOAT, "
-               "Shares INTEGER, "
-               "Value INTEGER, "
-               "SharesLeft INTEGER,"
-               "URL TEXT )")
+    cur.execute("CREATE table IF NOT EXISTS daily_ticker_news ("
+                "Ticker VARCHAR(10), "
+                "Date VARCHAR(20), "
+                "Title VARCHAR(500), "
+                "Link VARCHAR(300), "
+                "Sentiment VARCHAR(20) )")
 
-    db.execute("CREATE table IF NOT EXISTS latest_insider_trading ("
-               "Ticker TEXT, "
-               "Name TEXT, "
-               "Relationship TEXT, "
-               "TransactionDate TEXT, "
-               "TransactionType TEXT, "
-               "Cost FLOAT, "
-               "Shares INTEGER, "
-               "Value INTEGER, "
-               "SharesLeft INTEGER,"
-               "DateFilled TEXT, "
-               "URL TEXT, "
-               "UNIQUE ('Ticker', 'Name', 'Relationship', 'TransactionDate', 'TransactionType', 'Cost', 'Shares', "
-               "'Value', 'SharesLeft', 'DateFilled') )")
+    cur.execute("CREATE table IF NOT EXISTS insider_trading ("
+                "Ticker VARCHAR(10), "
+                "Name VARCHAR(200), "
+                "Relationship VARCHAR(200), "
+                "TransactionDate VARCHAR(20), "
+                "TransactionType VARCHAR(100), "
+                "Cost FLOAT, "
+                "Shares INTEGER, "
+                "Value INTEGER, "
+                "SharesLeft INTEGER,"
+                "URL VARCHAR(300) )")
 
-    db.execute("CREATE table IF NOT EXISTS latest_insider_trading_analysis ("
-               "Symbol TEXT, "
-               "Amount INTEGER, "
-               "MktCap INTEGER, "
-               "Proportion FLOAT) ")
+    cur.execute("CREATE table IF NOT EXISTS latest_insider_trading ("
+                "Ticker VARCHAR(10), "
+                "Name VARCHAR(200), "
+                "Relationship VARCHAR(200), "
+                "TransactionDate VARCHAR(20), "
+                "TransactionType VARCHAR(100), "
+                "Cost FLOAT, "
+                "Shares INTEGER, "
+                "Value INTEGER, "
+                "SharesLeft INTEGER,"
+                "DateFilled VARCHAR(20), "
+                "URL VARCHAR(300), "
+                "UNIQUE (Ticker, Name, Relationship, TransactionDate, TransactionType, Cost, Shares, "
+                "Value, SharesLeft, DateFilled) )")
 
-    db.execute("CREATE table IF NOT EXISTS related_tickers ("
-               "ticker TEXT, "
-               "ticker1 TEXT, "
-               "ticker2 TEXT, "
-               "ticker3 TEXT, "
-               "ticker4 TEXT, "
-               "ticker5 TEXT, "
-               "ticker6 TEXT )")
+    cur.execute("CREATE table IF NOT EXISTS latest_insider_trading_analysis ("
+                "Ticker VARCHAR(10), "
+                "Amount INTEGER, "
+                "MktCap INTEGER, "
+                "Proportion FLOAT) ")
 
-    db.execute("CREATE table IF NOT EXISTS stocktwits_trending ("
-               "rank INTEGER, "
-               "watchlist INTEGER, "
-               "symbol TEXT, "
-               "date_updated TEXT )")
+    cur.execute("CREATE table IF NOT EXISTS related_tickers ("
+                "ticker VARCHAR(10), "
+                "ticker1 VARCHAR(10), "
+                "ticker2 VARCHAR(10), "
+                "ticker3 VARCHAR(10), "
+                "ticker4 VARCHAR(10), "
+                "ticker5 VARCHAR(10), "
+                "ticker6 VARCHAR(10) )")
 
-    db.execute("CREATE table IF NOT EXISTS jim_cramer_trades ("
-               "Symbol TEXT, "
-               "Date INTEGER, "
-               "Segment TEXT, "
-               "Call TEXT,"
-               "Price TEXT )")
+    cur.execute("CREATE table IF NOT EXISTS stocktwits_trending ("
+                "`rank` INTEGER, "
+                "watchlist INTEGER, "
+                "ticker VARCHAR(10), "
+                "date_updated VARCHAR(20),"
+                "INDEX (ticker) )")
 
-    # db.execute("CREATE table IF NOT EXISTS max_pain ("
-    #            "symbol TEXT, "
-    #            "date_updated TEXT, "
-    #            "max_pain FLOAT ,"
-    #            "UNIQUE ('symbol', 'date_updated', 'max_pain') )")
+    cur.execute("CREATE table IF NOT EXISTS jim_cramer_trades ("
+                "Ticker VARCHAR(10), "
+                "`Date` VARCHAR(20), "
+                "Segment VARCHAR(50), "
+                "`Call` VARCHAR(50),"
+                "Price FLOAT )")
+
+    cur.execute("CREATE TABLE IF NOT EXISTS shares_available ("
+                "ticker VARCHAR(10), "
+                "fee  FLOAT, "
+                "available INTEGER, "
+                "date_updated VARCHAR(20), "
+                "UNIQUE(ticker, fee, available, date_updated),"
+                "INDEX (ticker) )")
 
     print("Successfully created/updated database")
+
+    cnx.close()
 
 
 if __name__ == '__main__':

@@ -55,7 +55,7 @@ function display_table() {
 var ftd_chart = null
 
 function ftd_graph(duration) {
-    var date_threshold = get_date_difference(duration, "/")
+    var date_threshold = get_date_difference(duration, "-")
 
     if (duration <= 6) {
         date_unit = "day"

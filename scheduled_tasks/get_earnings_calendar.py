@@ -1,17 +1,16 @@
 import os
 import sys
-from datetime import datetime, timedelta
 import requests
-import sqlite3
 import pandas as pd
 from bs4 import BeautifulSoup
+from datetime import datetime, timedelta
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
+from helpers import connect_mysql_database
 import scheduled_tasks.reddit.stocks.fast_yahoo as fast_yahoo
 
-conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
-db = conn.cursor()
+cnx, engine = connect_mysql_database()
+cur = cnx.cursor()
 
 
 def get_earnings_html(url_ratings: str) -> str:
@@ -59,31 +58,36 @@ def get_earnings(n_days=7, forward=True):
 
         num = 0
         for i in range(5):
-            url_ratings = "https://finance.yahoo.com/calendar/earnings?day={}&size=100&offset={}".format(processing_date, num)
+            url_ratings = "https://finance.yahoo.com/calendar/earnings?day={}" \
+                          "&size=100&offset={}".format(processing_date, num)
             print(url_ratings)
             text_soup_ratings = BeautifulSoup(get_earnings_html(url_ratings), "lxml")
 
             for stock_rows in text_soup_ratings.findAll("tr"):
                 tds = stock_rows.findAll("td")
                 if len(tds) > 0:
-                    symbol = tds[0].text
+                    ticker = tds[0].text
                     name = tds[1].text
                     earning_date = processing_date
-                    earning_time = tds[2].text.replace("After Market Close", "AMC").replace("Before Market Open", "BMO")\
+                    earning_time = tds[2].text.replace("After Market Close", "AMC")\
+                        .replace("Before Market Open", "BMO")\
                         .replace("Time Not Supplied", "TNS")
                     eps_est = tds[3].text.replace("-", "N/A") if len(tds[3].text) == 1 else tds[3].text
                     eps_act = tds[4].text.replace("-", "N/A") if len(tds[4].text) == 1 else tds[4].text
                     surprise = tds[5].text.replace("-", "N/A") if len(tds[5].text) == 1 else tds[5].text
-                    full_earnings_list.append([symbol, name, eps_est, eps_act, surprise, earning_date, earning_time])
+                    full_earnings_list.append([ticker, name, eps_est, eps_act, surprise, earning_date, earning_time])
             num += 100
         current_looking_date += 1
 
-    earnings_df = pd.DataFrame(full_earnings_list, columns=["Symbol", "name", "eps_est", "eps_act",
+    earnings_df = pd.DataFrame(full_earnings_list, columns=["Ticker", "company_name", "eps_est", "eps_act",
                                                             "surprise", "earning_date", "earning_time"])
-    mkt_cap_df = fast_yahoo.download_quick_stats(earnings_df["Symbol"].to_list(), {'marketCap': 'mkt_cap'})
+
+    mkt_cap_df = fast_yahoo.download_quick_stats(earnings_df["Ticker"].to_list(), {'marketCap': 'mkt_cap'})
     mkt_cap_df.reset_index(inplace=True)
     mkt_cap_df.replace("N/A", 0, inplace=True)
-    results_df = pd.merge(earnings_df, mkt_cap_df, on="Symbol")
+    mkt_cap_df.rename(columns={"Symbol": "Ticker"}, inplace=True)
+    results_df = pd.merge(earnings_df, mkt_cap_df, on="Ticker")
+    print(results_df)
     return results_df
 
 
@@ -96,7 +100,7 @@ def insert_earnings_into_db(earnings_df):
         Dataframe of earnings data
     """
     for index, stats in earnings_df.iterrows():
-        symbol = stats[0]
+        ticker = stats[0]
         name = stats[1]
         eps_est = stats[2]
         eps_act = stats[3]
@@ -104,15 +108,14 @@ def insert_earnings_into_db(earnings_df):
         earning_date = stats[5]
         earning_time = stats[6]
         mkt_cap = stats[7]
-
-        db.execute("""INSERT INTO earnings_calendar
-                      (name, symbol, mkt_cap, eps_est, eps_act, surprise, earning_date, earning_time)
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (name, symbol) DO UPDATE SET
-                      mkt_cap=?, eps_est=?, eps_act=?, surprise=?, earning_date=?, earning_time=? """,
-                   (name, symbol, mkt_cap, eps_est, eps_act, surprise, earning_date, earning_time,
-                    mkt_cap, eps_est, eps_act, surprise, earning_date, earning_time))
-        conn.commit()
-        print(symbol, earning_date, earning_time)
+        print(ticker, earning_date, earning_time)
+        cur.execute("""INSERT INTO earnings_calendar
+                      (company_name, ticker, mkt_cap, eps_est, eps_act, surprise, earning_date, earning_time)
+                      VALUES (%s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE
+                      mkt_cap=%s, eps_est=%s, eps_act=%s, surprise=%s, earning_date=%s, earning_time=%s """,
+                    (name, ticker, mkt_cap, eps_est, eps_act, surprise, earning_date, earning_time,
+                     mkt_cap, eps_est, eps_act, surprise, earning_date, earning_time))
+        cnx.commit()
 
 
 def update_previous_earnings(earnings_df):
@@ -124,14 +127,14 @@ def update_previous_earnings(earnings_df):
         Dataframe of earnings data
     """
     for index, stats in earnings_df.iterrows():
-        symbol = stats[0]
+        ticker = stats[0]
         eps_est = stats[2]
         eps_act = stats[3]
         surprise = stats[4]
-        print(symbol, eps_est, eps_act, surprise)
-        db.execute("UPDATE earnings_calendar SET eps_est=?, eps_act=?, surprise=? WHERE symbol=? ",
-                   (eps_est, eps_act, surprise, symbol))
-        conn.commit()
+        print(ticker, eps_est, eps_act, surprise)
+        cur.execute("UPDATE earnings_calendar SET eps_est=%s, eps_act=%s, surprise=%s WHERE ticker=%s ",
+                    (eps_est, eps_act, surprise, ticker))
+        cnx.commit()
     print("Updated previous earnings successfully")
 
 
@@ -144,11 +147,11 @@ def delete_old_earnings(n_days_ago):
         Keep earnings from n_days_ago till now
     """
     date_to_remove = str(datetime.utcnow().date() - timedelta(days=n_days_ago))
-    db.execute("DELETE FROM earnings_calendar WHERE earning_date<=?", (date_to_remove,))
-    conn.commit()
+    cur.execute("DELETE FROM earnings_calendar WHERE earning_date<=%s", (date_to_remove,))
+    cnx.commit()
 
 
 if __name__ == '__main__':
-    insert_earnings_into_db(get_earnings(7, forward=True))
-    update_previous_earnings(get_earnings(7, forward=False))
-    delete_old_earnings(14)
+    insert_earnings_into_db(get_earnings(1, forward=True))
+    # update_previous_earnings(get_earnings(7, forward=False))
+    # delete_old_earnings(14)

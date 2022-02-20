@@ -21,9 +21,9 @@ def main():
                 end_date = i["end"]
                 if end_date.endswith("00:00:00.000Z"):
                     tweet_count = i["tweet_count"]
-                    db.execute("INSERT OR IGNORE INTO twitter_trending VALUES (?, ?, ?)",
-                               (symbol, tweet_count, start_date.split("T")[0]))
-                    conn.commit()
+                    cur.execute("INSERT IGNORE INTO twitter_trending VALUES (%s, %s, %s)",
+                                (symbol, tweet_count, start_date.split("T")[0]))
+                    cnx.commit()
         time.sleep(1)
 
 

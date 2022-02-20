@@ -1,10 +1,17 @@
 import os
+import sys
 import shutil
 import requests
 import pandas as pd
 from datetime import timedelta
 from pathlib import Path
 from bs4 import BeautifulSoup
+
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
+from helpers import connect_mysql_database
+
+cnx, engine = connect_mysql_database()
+cur = cnx.cursor()
 
 
 def download_ftd():
@@ -30,41 +37,36 @@ def download_ftd():
                   index=None)
 
 
-def combine_df(folder_path):
+def upload_to_df(files_available, limit=24):
     """
     Combine all the 1/2 monthly csv into 1 large csv file
     """
     combined_df = pd.DataFrame(columns=["SETTLEMENT DATE", "SYMBOL", "QUANTITY (FAILS)", "PRICE"])
-    for file in reversed(sorted(Path(folder_path).iterdir(), key=os.path.getmtime)):
+    for file in files_available[:limit]:
         print("Processing: ", file)
         df = pd.read_csv(file)
         del df["CUSIP"]
         del df["DESCRIPTION"]
         df["SETTLEMENT DATE"] = df["SETTLEMENT DATE"].apply(lambda x: str(x[:4] + "-" + x[4:6] + "-" + x[6:]))
         combined_df = combined_df.append(df).drop_duplicates()
+
     combined_df["SETTLEMENT DATE"] = combined_df["SETTLEMENT DATE"].astype(str)
     combined_df.rename(columns={"SETTLEMENT DATE": "Date",
-                                "SYMBOL": "Symbol",
+                                "SYMBOL": "Ticker",
                                 "QUANTITY (FAILS)": "Failure to Deliver",
                                 "PRICE": "Price"}, inplace=True)
     combined_df["T+35 Date"] = pd.to_datetime(combined_df['Date'], format='%Y-%m-%d', errors="coerce") + timedelta(days=35)
-    combined_df["T+35 Date"] = combined_df["T+35 Date"].astype(str)  # .apply(lambda x: x.replace("-", "/"))
-    combined_df.to_csv("database/failure_to_deliver/ftd.csv", index=False)
+    combined_df["T+35 Date"] = combined_df["T+35 Date"].astype(str)
+    combined_df = combined_df[~combined_df["Ticker"].isna()]
+    combined_df.sort_values(by="Date", inplace=True)
+    print(combined_df)
 
-
-def get_all_tickers_csv(folder_path):
-    """
-    Save all ticker name and symbol into database/all_tickers.csv
-    """
-    df = pd.read_csv(folder_path)
-    df.dropna(inplace=True)
-
-    new_df = pd.DataFrame()
-    new_df["SYMBOL"] = df["SYMBOL"]
-    new_df["DESCRIPTION"] = df["DESCRIPTION"]
-    new_df.drop_duplicates(inplace=True)
-    new_df.sort_values(by=["SYMBOL"], inplace=True)
-    new_df.to_csv("database/all_tickers.csv", index=False)
+    start = 0
+    while start < len(combined_df):
+        print(start)
+        cur.executemany("INSERT IGNORE INTO ftd VALUES (%s, %s, %s, %s, %s)", combined_df[start:start+50000].values.tolist())
+        cnx.commit()
+        start += 50000
 
 
 def get_top_ftd(filename):
@@ -93,7 +95,8 @@ def get_top_ftd(filename):
     original_df["SETTLEMENT DATE"] = original_df["SETTLEMENT DATE"].apply(lambda x: str(x[:4] + "-" + x[4:6] + "-" + x[6:]))
     original_df["SETTLEMENT DATE"] = original_df["SETTLEMENT DATE"].astype(str)
     original_df["FTD x $"] = (original_df["QUANTITY (FAILS)"].astype(int) * original_df["PRICE"].astype(float)).astype(int)
-    original_df.rename(columns={"SETTLEMENT DATE": "Date", "SYMBOL": "Symbol",
+    original_df.rename(columns={"SETTLEMENT DATE": "Date",
+                                "SYMBOL": "Ticker",
                                 "QUANTITY (FAILS)": "FTD",
                                 "PRICE": "Price"}, inplace=True)
     original_df["T+35 Date"] = pd.to_datetime(original_df['Date'], format='%Y-%m-%d', errors="coerce") + timedelta(
@@ -101,21 +104,21 @@ def get_top_ftd(filename):
     original_df["T+35 Date"] = original_df["T+35 Date"].astype(str)  # .apply(lambda x: x.replace("-", "/"))
 
     # Sort df based on number of FTD days that meet criteria and add new row between tickers
-    combined_df = pd.DataFrame(columns=["Date", "Symbol", "FTD", "Price", "FTD x $"])
+    combined_df = pd.DataFrame(columns=["Date", "Ticker", "FTD", "Price", "FTD x $"])
     for i in df["SYMBOL"].value_counts().index:
-        individual_df = original_df[original_df["Symbol"] == i]
+        individual_df = original_df[original_df["Ticker"] == i]
         individual_df = individual_df.append([""])
         combined_df = combined_df.append(individual_df)
     del combined_df[0]
-    print(combined_df)
-    combined_df.to_csv("database/failure_to_deliver/top_ftd.csv", index=False)
+    combined_df.to_sql('top_ftd', engine, if_exists="replace", method="multi", index=False)
 
 
 def main():
     download_ftd()
     FOLDER_PATH = r"database/failure_to_deliver/csv"
-    combine_df(FOLDER_PATH)
-    get_top_ftd(sorted(Path(FOLDER_PATH).iterdir(), key=os.path.getmtime)[0])
+    files_available = sorted(Path(FOLDER_PATH).iterdir(), key=os.path.getmtime)
+    upload_to_df(files_available, limit=1)
+    get_top_ftd(files_available[0])
 
 
 if __name__ == '__main__':

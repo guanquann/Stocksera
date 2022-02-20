@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 from scheduled_tasks.get_popular_tickers import full_ticker_list
 from helpers import *

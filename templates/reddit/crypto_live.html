@@ -11,8 +11,8 @@
 {% endblock %}
 
 {% block onload_properties%}
-    load_trending_timeline_chart({{trending_list}}, '24H');
-    load_trending_timeline_chart({{trending_list_by_hour}}, '7d');
+    load_trending_chart(0, 'trending_24H', 'lightgreen');
+    load_trending_chart(2, 'trending_7days', 'lightblue');
     load_word_cloud({{crypto_word_cloud}});
     load_sentiment_chart(0, 'crypto');
     load_change_chart(1);
@@ -54,11 +54,18 @@
         <div id="tips_btn">
             <a href="/wsb_documentation" target="_blank">Guide when using Crypto Live</a>
         </div>
-        <h2 class="header">Trending Last 24H</h2>
-        <div id="trending_over_time_chart_24H" class="chart"></div>
 
-        <h2 class="header">Trending Last 7 Days</h2>
-        <div id="trending_over_time_chart_7d" class="chart"></div>
+        <div class="main_trending_graph_div">
+            <div>
+                <h2 class="header">Trending Last 24H</h2>
+                <div id="trending_24H" class="chart"></div>
+            </div>
+
+            <div>
+                <h2 class="header">Trending Last 7 Days</h2>
+                <div id="trending_7days" class="chart"></div>
+            </div>
+        </div>
 
         <h2 class="header">Change in Mentions Last 24H</h2>
         <div style="text-align: center"><i>% Change capped at 1000%</i></div>
@@ -84,6 +91,7 @@
         </div>
         <div style="display:none">
             {{change_df|safe}}
+            {{mentions_7d_df|safe}}
         </div>
     </div>
 </div>

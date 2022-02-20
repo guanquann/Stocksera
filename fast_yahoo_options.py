@@ -1,4 +1,4 @@
-from scheduled_tasks.get_popular_tickers import *
+from scheduled_tasks.others.get_popular_tickers import *
 from helpers import *
 
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -82,10 +82,10 @@ def download_options(symbol_list, timestamp="", threads=True, save_max_pain=Fals
                     merge_df["loss"] = loss_list
                     max_pain = merge_df["loss"].idxmin()
                     print(symbol, max_pain)
-                    if save_max_pain:
-                        print("Saving max pain to DB")
-                        db.execute("INSERT OR IGNORE INTO max_pain VALUES (?, ?, ?)", (symbol, str(datetime.utcnow().date()), max_pain))
-                        conn.commit()
+                    # if save_max_pain:
+                    #     print("Saving max pain to DB")
+                    #     db.execute("INSERT OR IGNORE INTO max_pain VALUES (?, ?, ?)", (symbol, str(datetime.utcnow().date()), max_pain))
+                    #     conn.commit()
                 else:
                     print(symbol, "MAX PAIN NOT PROCESS")
                     max_pain = "N/A"

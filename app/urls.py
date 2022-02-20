@@ -59,6 +59,7 @@ urlpatterns = [
     path('amd_xlnx_ratio/', views.amd_xlnx_ratio, name='amd_xlnx_ratio'),
     path('ipo_calendar/', views.ipo_calendar, name='ipo_calendar'),
     path('stocktwits/', views.stocktwits, name='stocktwits'),
+    path('jim_cramer/', views.jim_cramer, name='jim_cramer'),
     path('twitter_trending/', views.twitter_trending, name='twitter_trending'),
     path('beta/', views.beta, name='beta'),
     path('covid_beta/', views.covid_beta, name='covid_beta'),

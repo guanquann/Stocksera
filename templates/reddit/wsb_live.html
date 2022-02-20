@@ -11,13 +11,13 @@
 {% endblock %}
 
 {% block onload_properties %}
-                            load_trending_chart(1, 'trending_24H', 'lightgreen');
-                            load_trending_chart(4, 'trending_7days', 'lightblue');
-                            load_change_chart(2);
-                            load_sentiment_chart(1, 'wsb');
-                            load_yf_chart(3);
-                            load_options_chart(0);
-                            load_word_cloud({{wsb_word_cloud}});
+    load_trending_chart(1, 'trending_24H', 'lightgreen');
+    load_trending_chart(4, 'trending_7days', 'lightblue');
+    load_change_chart(2);
+    load_sentiment_chart(1, 'wsb');
+    load_yf_chart(3);
+    load_options_chart(0);
+    load_word_cloud({{wsb_word_cloud}});
 {% endblock %}
 
 {% block main_nav %}

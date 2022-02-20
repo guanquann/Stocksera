@@ -35,7 +35,7 @@ def main(request):
     trending = []
     data = requests.get(f"{BASE_URL}/stocksera_trending").json()[:10]
     for i in data:
-        trending.append([i["symbol"], i["name"]])
+        trending.append([i["ticker"], i["name"]])
 
     if request.GET.get("quote"):
         ticker_selected = request.GET['quote'].upper().replace(" ", "")
@@ -248,6 +248,8 @@ def insider_trading(request):
     ticker_selected = default_ticker(request)
     data = requests.get(f"{BASE_URL}/insider_trading/{ticker_selected}").json()
     inside_trader_df = pd.DataFrame(data)
+    if inside_trader_df.empty:
+        inside_trader_df = pd.DataFrame([{"Name": "N/A", "Relationship": "N/A", "Date": "N/A"}])
     inside_trader_df = inside_trader_df.to_html(index=False)
     return render(request, 'stock/insider_trading.html', {"inside_trader_df": inside_trader_df})
 
@@ -574,8 +576,6 @@ def short_volume(request):
             response = download_file(short_volume_data, file_name)
             return response
 
-        del short_volume_data["ticker"]
-
         data = requests.get(f"{BASE_URL}/top_short_volume").json()
         highest_short_vol = pd.DataFrame(data)["Symbol"].tolist()[:20]
 
@@ -625,8 +625,8 @@ def earnings_calendar(request):
     """
     Get earnings for the upcoming week. Data from yahoo finance
     """
-    db.execute("SELECT * FROM earnings_calendar ORDER BY earning_date ASC")
-    calendar = db.fetchall()
+    cur.execute("SELECT * FROM earnings_calendar ORDER BY earning_date ASC")
+    calendar = cur.fetchall()
     calendar = list(map(list, calendar))
     return render(request, 'market_summary/earnings_calendar.html', {"earnings_calendar": calendar})
 
@@ -642,26 +642,16 @@ def reddit_analysis(request):
     else:
         subreddit = "wallstreetbets"
 
-    db.execute("SELECT DISTINCT(date_updated) FROM {} ORDER BY ID DESC LIMIT 14".format(subreddit,))
-    all_dates = db.fetchall()
-    all_dates = list(map(convert_date, all_dates))
+    cur.execute("SELECT DISTINCT(date_updated) FROM {} ORDER BY ID DESC".format(subreddit,))
+    latest_date = cur.fetchone()[0]
 
-    if request.GET.get("date_selected"):
-        date_selected = request.GET.get("date_selected")
-        if ":" in date_selected:
-            date_selected = date_selected.replace(" ", "").split(":")[1]
-    else:
-        date_selected = all_dates[0]
-
-    db.execute("SELECT * FROM {} WHERE date_updated LIKE '{}' ORDER BY rank ASC "
-               "LIMIT 35".format(subreddit, "%" + date_selected + "%"))
-    trending_tickers = db.fetchall()
+    cur.execute("SELECT * FROM {} WHERE date_updated=%s ORDER BY `rank` ASC "
+                "LIMIT 35".format(subreddit), (latest_date,))
+    trending_tickers = cur.fetchall()
     trending_tickers = list(map(list, trending_tickers))
 
     if subreddit == "cryptocurrency":
-        return render(request, 'reddit/cryptocurrency.html', {"date_selected": date_selected,
-                                                              "all_dates": all_dates,
-                                                              "trending_tickers": trending_tickers})
+        return render(request, 'reddit/cryptocurrency.html', {"trending_tickers": trending_tickers})
 
     database_mapping = {"wallstreetbets": "Wall Street Bets",
                         "stocks": "Stocks",
@@ -671,9 +661,7 @@ def reddit_analysis(request):
                         "pennystocks": "Pennystocks"}
     subreddit = database_mapping[subreddit]
 
-    return render(request, 'reddit/reddit_sentiment.html', {"all_dates": all_dates,
-                                                            "date_selected": date_selected,
-                                                            "trending_tickers": trending_tickers,
+    return render(request, 'reddit/reddit_sentiment.html', {"trending_tickers": trending_tickers,
                                                             "subreddit_selected": subreddit,
                                                             "banned_words": sorted(stopwords_list)})
 
@@ -691,9 +679,9 @@ def reddit_ticker_analysis(request):
     else:
         subreddit = "wallstreetbets"
 
-    db.execute("SELECT rank, total, price, date_updated from {} WHERE ticker=? and rank != 0".format(subreddit),
-               (ticker_selected,))
-    ranking = db.fetchall()
+    cur.execute("SELECT `rank`, total, price, date_updated from {} WHERE ticker=%s".format(subreddit),
+                (ticker_selected,))
+    ranking = cur.fetchall()
 
     if subreddit != "cryptocurrency":
         information, related_tickers = check_market_hours(ticker_selected)
@@ -712,17 +700,17 @@ def reddit_etf(request):
     Get ETF of r/wallstreetbets
     Top 10 tickers before market open will be purchased daily
     """
-    db.execute("SELECT * FROM reddit_etf WHERE status='Open' ORDER BY open_date DESC")
-    open_trade = db.fetchall()
+    cur.execute("SELECT * FROM reddit_etf WHERE status='Open' ORDER BY open_date DESC")
+    open_trade = cur.fetchall()
 
-    db.execute("select sum(PnL) from reddit_etf WHERE status='Open'")
-    unrealized_PnL = round(db.fetchone()[0], 2)
+    cur.execute("select sum(PnL) from reddit_etf WHERE status='Open'")
+    unrealized_PnL = round(cur.fetchone()[0], 2)
 
-    db.execute("SELECT * FROM reddit_etf WHERE status='Close' ORDER BY close_date DESC")
-    close_trade = db.fetchall()
+    cur.execute("SELECT * FROM reddit_etf WHERE status='Close' ORDER BY close_date DESC")
+    close_trade = cur.fetchall()
 
-    db.execute("select sum(PnL) from reddit_etf WHERE status='Close'")
-    realized_PnL = round(db.fetchone()[0], 2)
+    cur.execute("select sum(PnL) from reddit_etf WHERE status='Close'")
+    realized_PnL = round(cur.fetchone()[0], 2)
 
     return render(request, 'reddit/reddit_etf.html', {"open_trade": open_trade,
                                                       "close_trade": close_trade,
@@ -758,9 +746,9 @@ def subreddit_count(request):
                                                                           "stats": stats[::-1].to_html(index=False),
                                                                           "interested_subreddits": all_subreddits})
     else:
-        db.execute("SELECT * FROM subreddit_count WHERE subreddit in ('wallstreetbets', 'stocks', "
-                   " 'amcstock', 'Superstonk', 'options','pennystocks', 'cryptocurrency')")
-        subscribers = db.fetchall()
+        cur.execute("SELECT * FROM subreddit_count WHERE subreddit in ('wallstreetbets', 'stocks', "
+                    " 'amcstock', 'Superstonk', 'options','pennystocks', 'cryptocurrency')")
+        subscribers = cur.fetchall()
         subscribers = list(map(list, subscribers))
     return render(request, 'reddit/subreddit_count.html', {"subscribers": subscribers,
                                                            "interested_subreddits": all_subreddits})
@@ -775,32 +763,28 @@ def wsb_live(request):
     # Get trending tickers in the past 24H
     date_threshold = str(datetime.utcnow() - timedelta(hours=24))
 
-    data = requests.get(f"{BASE_URL}/wsb_mentions/?days=1").json()
+    data = requests.get(f"{BASE_URL}/reddit/wsb/?days=1").json()
     mentions_df = pd.DataFrame(data)
 
     # Get word cloud
-    db.execute("SELECT word, SUM(mentions) FROM wsb_word_cloud WHERE date_updated >= ? GROUP BY word ORDER BY "
-               "SUM(mentions) DESC LIMIT 50", (date_threshold, ))
-    wsb_word_cloud = db.fetchall()
+    cur.execute("SELECT word, mentions FROM wsb_word_cloud WHERE date_updated >= %s GROUP BY word ORDER BY "
+                "SUM(mentions) DESC LIMIT 50", (date_threshold, ))
+    wsb_word_cloud = cur.fetchall()
     wsb_word_cloud = list(map(list, wsb_word_cloud))
 
     # Get trending tickers in the past 7 days
-    date_threshold = str(datetime.utcnow() - timedelta(hours=24*7))
-
-    mentions_7d_df = pd.read_sql_query("select ticker, sum(mentions)from wsb_trending_hourly where date_updated >= "
-                                       "'{}' GROUP BY ticker ORDER BY SUM(mentions) DESC "
-                                       "LIMIT 30".format(date_threshold), conn)
-    mentions_7d_df.reset_index(inplace=True)
+    data = requests.get(f"{BASE_URL}/reddit/wsb/?days=7").json()
+    mentions_7d_df = pd.DataFrame(data)
 
     # Get calls/puts mentions
     data = requests.get(f"{BASE_URL}/wsb_options/?days=1000").json()
     trending_options = pd.DataFrame(data)
 
     # Get change in mentions
-    change_df = pd.read_sql_query("SELECT * FROM wsb_change", conn)
+    change_df = pd.read_sql_query("SELECT * FROM wsb_change", engine)
 
     # Get yahoo financial comparison
-    wsb_yf = pd.read_sql_query("SELECT * FROM wsb_yf", conn)
+    wsb_yf = pd.read_sql_query("SELECT * FROM wsb_yf", engine)
 
     return render(request, 'reddit/wsb_live.html', {
                                                     # "trending_list": trending_list,
@@ -821,12 +805,13 @@ def wsb_live_ticker(request):
     ticker_selected = default_ticker(request, "SPY")
     information, related_tickers = check_market_hours(ticker_selected)
 
-    data = requests.get(f"{BASE_URL}/wsb_mentions/{ticker_selected}/?days=1000").json()
+    data = requests.get(f"{BASE_URL}/reddit/wsb/{ticker_selected}/?days=1000").json()
     df = pd.DataFrame(data)
 
-    sentiment_df = pd.read_sql_query("SELECT AVG(sentiment) as sentiment, strftime('%Y-%m-%d', date_updated) AS "
-                                     "date_updated FROM wsb_trending_hourly WHERE ticker='{}' GROUP "
-                                     "BY strftime('%Y-%m-%d', date_updated)".format(ticker_selected), conn)
+    sentiment_df = pd.read_sql_query('SELECT AVG(sentiment) AS sentiment, '
+                                     'date_updated FROM wsb_trending_hourly '
+                                     'WHERE ticker="{}" GROUP BY date_updated'.
+                                     format(ticker_selected), engine)
 
     if df.empty:
         recent_mention = 0
@@ -880,52 +865,25 @@ def crypto_live(request):
     # Get trending tickers in the past 24H
     date_threshold = str(datetime.utcnow() - timedelta(hours=24))
 
-    query = "SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment FROM crypto_trending_24H" \
-            " WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) DESC".format(date_threshold)
-
-    mentions_df = pd.read_sql_query(query, conn)
-    mentions_df.index += 1
-    mentions_df.reset_index(inplace=True)
-    mentions_df.rename(columns={"index": "Rank"}, inplace=True)
-
-    db.execute(query)
-    top_12 = db.fetchall()
-    trending_list = list()
-    for ticker in top_12[:12]:
-        db.execute("SELECT ticker, date_updated, SUM(mentions) OVER (ROWS UNBOUNDED PRECEDING) FROM "
-                   "crypto_trending_24H WHERE ticker=? AND date_updated >= ?", (ticker[0], date_threshold))
-        running_sum = db.fetchall()
-        running_sum = list(map(list, running_sum))
-        trending_list.append(running_sum)
+    data = requests.get(f"{BASE_URL}/reddit/crypto/?days=1").json()
+    mentions_df = pd.DataFrame(data)
 
     # Get word cloud
-    db.execute("SELECT word, SUM(mentions) FROM crypto_word_cloud WHERE date_updated >= ? GROUP BY word ORDER BY "
-               "SUM(mentions) DESC LIMIT 50", (date_threshold, ))
-    crypto_word_cloud = db.fetchall()
+    cur.execute("SELECT word, mentions FROM crypto_word_cloud WHERE date_updated >= %s GROUP BY word ORDER BY "
+                "SUM(mentions) DESC LIMIT 50", (date_threshold,))
+    crypto_word_cloud = cur.fetchall()
     crypto_word_cloud = list(map(list, crypto_word_cloud))
 
     # Get trending tickers in the past 7 days
-    date_threshold = str(datetime.utcnow() - timedelta(hours=24*7))
-    query = "SELECT ticker AS Ticker, SUM(mentions) AS Mention, AVG(sentiment) AS Sentiment FROM " \
-            "crypto_trending_hourly WHERE date_updated >= '{}' GROUP BY ticker ORDER BY " \
-            "SUM(mentions) DESC LIMIT 12".format(date_threshold)
-    db.execute(query)
-    top_12 = db.fetchall()
-    trending_list_by_hour = list()
-    for ticker in top_12:
-        db.execute("SELECT ticker, date_updated, SUM(mentions) OVER (ROWS UNBOUNDED PRECEDING) FROM "
-                   "crypto_trending_hourly WHERE ticker=? AND date_updated >= ?", (ticker[0], date_threshold))
-        running_sum = db.fetchall()
-        running_sum = list(map(list, running_sum))
-        trending_list_by_hour.append(running_sum)
+    data = requests.get(f"{BASE_URL}/reddit/crypto/?days=7").json()
+    mentions_7d_df = pd.DataFrame(data)
 
     # Get change in mentions
-    change_df = pd.read_sql_query("SELECT * FROM crypto_change", conn)
+    change_df = pd.read_sql_query("SELECT * FROM crypto_change", engine)
 
-    return render(request, 'reddit/crypto_live.html', {"trending_list": trending_list,
-                                                       "trending_list_by_hour": trending_list_by_hour,
-                                                       "crypto_word_cloud": crypto_word_cloud,
+    return render(request, 'reddit/crypto_live.html', {"crypto_word_cloud": crypto_word_cloud,
                                                        "mentions_df": mentions_df.to_html(index=False),
+                                                       "mentions_7d_df": mentions_7d_df.to_html(index=False),
                                                        "change_df": change_df.to_html(index=False),
                                                        })
 
@@ -935,11 +893,12 @@ def crypto_live_ticker(request):
     ticker_selected = default_ticker(request, "BTC")
 
     df = pd.read_sql_query("SELECT mentions, sentiment, date_updated FROM crypto_trending_hourly "
-                           "WHERE ticker='{}' ".format(ticker_selected), conn)
+                           "WHERE ticker='{}' ".format(ticker_selected), engine)
 
-    sentiment_df = pd.read_sql_query("SELECT AVG(sentiment) as sentiment, strftime('%Y-%m-%d', date_updated) AS "
-                                     "date_updated FROM crypto_trending_hourly WHERE ticker='{}' "
-                                     "group by strftime('%Y-%m-%d', date_updated)".format(ticker_selected), conn)
+    sentiment_df = pd.read_sql_query('SELECT AVG(sentiment) AS sentiment, '
+                                     'date_updated FROM crypto_trending_hourly '
+                                     'WHERE ticker="{}" GROUP BY date_updated'.
+                                     format(ticker_selected), engine)
 
     if df.empty:
         recent_mention = 0
@@ -979,7 +938,7 @@ def market_summary(request):
         return render(request, 'market_summary/market_summary.html', {"title": title})
     elif request.GET.get("type") == "wsb":
         title = "Wallstreetbets"
-        summary_df = pd.read_sql_query("SELECT ticker, mentions, mkt_cap, price_change FROM wsb_yf", conn)
+        summary_df = pd.read_sql_query("SELECT ticker, mentions, mkt_cap, price_change FROM wsb_yf", engine)
         return render(request, 'market_summary/market_summary.html', {"title": title,
                                                                       "summary_df": summary_df.to_html(index=False)})
 
@@ -1263,10 +1222,13 @@ def stocktwits(request):
     data = requests.get(f"{BASE_URL}/stocktwits").json()
     trending_df = pd.DataFrame(data)
 
-    ticker = yf.Ticker(ticker_selected)
-    price_df = ticker.history(period="1y", interval="1d").reset_index().iloc[::-1]
-    price_df = price_df[["Date", "Close", "Volume"]]
-    price_df = price_df[price_df["Date"] >= ticker_df.iloc[0]["date_updated"].split()[0]]
+    if not ticker_df.empty:
+        ticker = yf.Ticker(ticker_selected)
+        price_df = ticker.history(period="1y", interval="1d").reset_index().iloc[::-1]
+        price_df = price_df[["Date", "Close", "Volume"]]
+        price_df = price_df[price_df["Date"] >= ticker_df.iloc[0]["date_updated"].split()[0]]
+    else:
+        price_df = pd.DataFrame(columns=["Date", "Close", "Volume"])
 
     return render(request, 'social/stocktwits.html', {"ticker_selected": ticker_selected,
                                                       "ticker_df": ticker_df.to_html(index=False),
@@ -1277,11 +1239,41 @@ def stocktwits(request):
 def twitter_trending(request):
     ticker_selected = default_ticker(request, "TSLA")
     ticker_df = pd.read_sql_query("SELECT tweet_count, updated_date FROM twitter_trending WHERE "
-                                  "ticker='{}' ".format(ticker_selected), conn)
+                                  "ticker='{}' ".format(ticker_selected), engine)
     print(ticker_df)
     return render(request, 'social/twitter_trending.html', {"ticker_selected": ticker_selected,
                                                             "ticker_df": ticker_df.to_html(index=False),
                                                             })
+
+
+def jim_cramer(request):
+    pd.options.display.float_format = '{:.2f}'.format
+    ticker_selected = request.GET.get("quote")
+    BASE_URL = "https://stocksera.pythonanywhere.com/api"
+    if ticker_selected:
+        data = requests.get(f"{BASE_URL}/jim_cramer/{ticker_selected}").json()
+        ticker_df = pd.DataFrame(data)
+        if ticker_df.empty:
+            ticker_df = pd.DataFrame([{"Date": "N/A", "Segment": "N/A", "Call": "N/A", "Price": "N/A"}])
+        else:
+            del ticker_df["Symbol"]
+        history_df = yf.Ticker(ticker_selected).history(period="1y", interval="1d")
+        history_df.reset_index(inplace=True)
+        history_df = history_df[["Date", "Close"]]
+
+        latest_price = history_df.iloc[-1]["Close"]
+        ticker_df["% from Today"] = latest_price
+        ticker_df["% from Today"] = 100 * (ticker_df["% from Today"] - ticker_df["Price"]) / ticker_df["Price"]
+
+        return render(request, 'discover/jim_cramer_ticker_analysis.html', {"ticker_selected": ticker_selected.upper(),
+                                                                            "ticker_df": ticker_df.to_html(index=False),
+                                                                            "history_df": history_df.to_html(
+                                                                                index=False)})
+    else:
+        data = requests.get(f"{BASE_URL}/jim_cramer").json()
+        df = pd.DataFrame(data)
+        print(df)
+        return render(request, 'discover/jim_cramer.html')
 
 
 def beta(request):

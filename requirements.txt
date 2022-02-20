@@ -73,7 +73,8 @@ xlrd==2.0.1
 yfinance==0.1.63
 zipp==3.4.1
 zope.interface==5.4.0
-
 djangorestframework~=3.13.1
 plotly~=5.3.1
 bs4~=0.0.1
+SQLAlchemy~=1.4.31
+mysql-connector-python~=8.0.28

@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 
 
-def reset_options(date_to_remove: str = str(datetime.utcnow().date())):
+def main(date_to_remove: str = str(datetime.utcnow().date())):
     """
     Remove old dates from database/yf_cached_options.json
     Parameters
@@ -24,4 +24,4 @@ def reset_options(date_to_remove: str = str(datetime.utcnow().date())):
 
 
 if __name__ == '__main__':
-    reset_options()
+    main()

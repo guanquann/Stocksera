@@ -4,9 +4,10 @@ import yfinance as yf
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..\\..'))
 from scheduled_tasks.reddit.reddit_utils import *
+from helpers import connect_mysql_database
 
-conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
-db = conn.cursor()
+cnx, engine = connect_mysql_database()
+cur = cnx.cursor()
 
 # key of the dict is the symbol of the stock (if applicable), value is the subreddit
 interested_stocks_subreddits = {
@@ -121,10 +122,10 @@ def subreddit_count():
             active = subreddit.accounts_active
             percentage_active = round((active / subscribers)*100, 2)
 
-            db.execute("SELECT subscribers FROM subreddit_count WHERE subreddit=? ORDER BY subscribers DESC LIMIT 1",
-                       (subreddit_name, ))
+            cur.execute("SELECT subscribers FROM subreddit_count WHERE subreddit=%s ORDER BY subscribers DESC LIMIT 1",
+                        (subreddit_name, ))
             try:
-                prev_subscribers = db.fetchone()[0]
+                prev_subscribers = cur.fetchone()[0]
                 growth = round((subscribers / prev_subscribers) * 100 - 100, 2)
             except TypeError:
                 growth = 0
@@ -144,18 +145,18 @@ def subreddit_count():
             else:
                 change_price = 0
 
-            db.execute("INSERT OR IGNORE INTO subreddit_count VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                       (date_updated, key, subreddit_name, subscribers, active, percentage_active,
-                        growth, change_price))
-            conn.commit()
+            cur.execute("INSERT IGNORE INTO subreddit_count VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                        (date_updated, key, subreddit_name, subscribers, active, percentage_active,
+                         growth, change_price))
+            cnx.commit()
 
 
 def update_last_price():
     """
     Update last close price of ticker after market close
     """
-    db.execute("SELECT updated_date FROM subreddit_count WHERE ticker='AMC' ORDER BY updated_date DESC")
-    last_date = db.fetchone()[0]
+    cur.execute("SELECT updated_date FROM subreddit_count WHERE ticker='AMC' ORDER BY updated_date DESC")
+    last_date = cur.fetchone()[0]
     print(last_date)
     for key, subreddit_names in interested_stocks_subreddits.items():
         for subreddit_name in subreddit_names:
@@ -173,9 +174,9 @@ def update_last_price():
                 else:
                     change_price = 0
                 print(change_price, key)
-                db.execute("UPDATE subreddit_count SET percentage_price_change=? WHERE ticker=? AND updated_date=?",
-                           (change_price, key, last_date))
-                conn.commit()
+                cur.execute("UPDATE subreddit_count SET percentage_price_change=%s WHERE ticker=%s AND updated_date=%s",
+                            (change_price, key, last_date))
+                cnx.commit()
 
 
 def main():

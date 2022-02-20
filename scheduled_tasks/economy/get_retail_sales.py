@@ -1,14 +1,14 @@
 import os
 import sys
-import sqlite3
 import pandas as pd
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 from scheduled_tasks.economy.ychart_connection import ychart_data
+from helpers import connect_mysql_database
 
-conn = sqlite3.connect(r"database/database.db", check_same_thread=False)
-db = conn.cursor()
+cnx, engine = connect_mysql_database()
+cur = cnx.cursor()
 
 
 def retail_sales():
@@ -46,8 +46,8 @@ def retail_sales():
     combined_df.fillna(0, inplace=True)
     print(combined_df)
     for index, row in combined_df.iterrows():
-        db.execute("INSERT OR IGNORE INTO retail_sales VALUES (?, ?, ?, ?)", (row[0], row[1], row[2], row[3]))
-        conn.commit()
+        cur.execute("INSERT IGNORE INTO retail_sales VALUES (%s, %s, %s, %s)", (row[0], row[1], row[2], row[3]))
+        cnx.commit()
 
 
 if __name__ == '__main__':

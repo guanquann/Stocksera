@@ -17,21 +17,21 @@ import scheduled_tasks.reddit.buy_trending_tickers as buy_trending_tickers
 
 import scheduled_tasks.twitter.get_twitter_followers as get_twitter_followers
 import scheduled_tasks.twitter.scrape_trending_posts as scrape_twitter_posts
-import scheduled_tasks.get_stocktwits_trending as get_stocktwits_trending
+import scheduled_tasks.discover.get_stocktwits_trending as get_stocktwits_trending
 
-import scheduled_tasks.get_short_volume as get_short_volume
-import scheduled_tasks.get_ticker_info as get_ticker_info
-import scheduled_tasks.reset_options_cache as reset_options_cache
-import scheduled_tasks.get_financial as get_financial
+import scheduled_tasks.stocks.get_short_volume as get_short_volume
+import scheduled_tasks.others.get_ticker_info as get_ticker_info
+import scheduled_tasks.reset.reset_options_cache as reset_options_cache
+import scheduled_tasks.stocks.get_financial as get_financial
 import scheduled_tasks.get_earnings_calendar as get_earnings_calendar
-import scheduled_tasks.get_failure_to_deliver as get_failure_to_deliver
+import scheduled_tasks.stocks.get_failure_to_deliver as get_failure_to_deliver
 
-import scheduled_tasks.get_latest_insider_trading as get_latest_insider_trading
-import scheduled_tasks.get_stocks_summary as get_stocks_summary
+import scheduled_tasks.discover.get_latest_insider_trading as get_latest_insider_trading
+import scheduled_tasks.discover.get_stocks_summary as get_stocks_summary
 import scheduled_tasks.government.get_senate_trading as get_senate_trading
 import scheduled_tasks.government.get_house_trading as get_house_trading
-import scheduled_tasks.get_ipo_calendar as get_ipo_calendar
-import scheduled_tasks.miscellaneous as miscellaneous
+import scheduled_tasks.discover.get_ipo_calendar as get_ipo_calendar
+import scheduled_tasks.discover.miscellaneous as miscellaneous
 
 import scheduled_tasks.economy.get_reverse_repo as get_reverse_repo
 import scheduled_tasks.economy.get_inflation as get_inflation
@@ -151,7 +151,7 @@ if __name__ == '__main__':
         scrape_twitter_posts.main()
     
     if SCRAPE_STOCKTWITS_TRENDING:
-        get_stocktwits_trending.get_trending_ticker()
+        get_stocktwits_trending.main()
     
     if UPDATE_REDDIT_ETF_PRICE:
         conn = sqlite3.connect(r"database/database.db", check_same_thread=True)
@@ -166,7 +166,7 @@ if __name__ == '__main__':
         get_ticker_info.ticker_info(get_ticker_info.full_ticker_list())
 
     if RESET_TICKER_OPTIONS:
-        reset_options_cache.reset_options()
+        reset_options_cache.main()
 
     if TICKER_FINANCIAL:
         for i in get_ticker_info.full_ticker_list():
@@ -189,8 +189,9 @@ if __name__ == '__main__':
     if FTD:
         get_failure_to_deliver.download_ftd()
         FOLDER_PATH = r"/database/failure_to_deliver/csv"
-        get_failure_to_deliver.combine_df(folder_path=FOLDER_PATH)
-        get_failure_to_deliver.get_top_ftd(sorted(Path(FOLDER_PATH).iterdir(), key=os.path.getmtime)[0])
+        files_available = sorted(Path(FOLDER_PATH).iterdir(), key=os.path.getmtime)
+        get_failure_to_deliver.upload_to_df(files_available)
+        get_failure_to_deliver.get_top_ftd(files_available[0])
 
     if RRP:
         get_reverse_repo.reverse_repo()
@@ -211,7 +212,8 @@ if __name__ == '__main__':
         get_ipo_calendar.main()
     
     if INFLATION:
-        get_inflation.inflation()
+        get_inflation.usa_inflation()
+        get_inflation.world_inflation()
 
     if TREASURY:
         get_daily_treasury.download_json()

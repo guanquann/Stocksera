@@ -577,7 +577,7 @@ def short_volume(request):
             return response
 
         data = requests.get(f"{BASE_URL}/top_short_volume").json()
-        highest_short_vol = pd.DataFrame(data)["Symbol"].tolist()[:20]
+        highest_short_vol = pd.DataFrame(data)["Ticker"].tolist()[:20]
 
         return render(request, 'stock/short_volume.html', {"ticker_selected": ticker_selected,
                                                            "information": information,

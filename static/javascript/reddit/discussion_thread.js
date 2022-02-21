@@ -69,10 +69,12 @@ function load_sentiment_chart(table_index, link) {
     ticker_list = [], sentiment_list = [], mentions_list = []
     tr = document.getElementsByTagName("table")[table_index].querySelectorAll("tr")
     for (i=1; i<31; i++) {
-        td = tr[i].querySelectorAll("td")
-        ticker_list.push(td[1].innerHTML)
-        mentions_list.push(td[2].innerHTML)
-        sentiment_list.push(td[3].innerHTML)
+        if (tr[i]) {
+            td = tr[i].querySelectorAll("td")
+            ticker_list.push(td[1].innerHTML)
+            mentions_list.push(td[2].innerHTML)
+            sentiment_list.push(td[3].innerHTML)
+        }
     }
 
     for (i=1; i<tr.length; i++) {

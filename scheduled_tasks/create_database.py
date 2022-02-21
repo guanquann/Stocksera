@@ -94,7 +94,8 @@ def database():
                 "sentiment FLOAT, "
                 "calls INTEGER, "
                 "puts INTEGER, "
-                "date_updated VARCHAR(20),"
+                "date_updated VARCHAR(20), "
+                "INDEX (date_updated), "
                 "INDEX (ticker) )")
 
     cur.execute("CREATE table IF NOT EXISTS wsb_trending_hourly ("
@@ -103,7 +104,8 @@ def database():
                 "sentiment FLOAT, "
                 "calls INTEGER, "
                 "puts INTEGER, "
-                "date_updated VARCHAR(20),"
+                "date_updated VARCHAR(20), "
+                "INDEX (date_updated), "
                 "INDEX (ticker) )")
 
     cur.execute("CREATE table IF NOT EXISTS wsb_yf ("
@@ -121,14 +123,16 @@ def database():
                 "ticker VARCHAR(10), "
                 "mentions INTEGER, "
                 "sentiment FLOAT, "
-                "date_updated VARCHAR(20),"
+                "date_updated VARCHAR(20), "
+                "INDEX (date_updated), "
                 "INDEX (ticker) )")
 
     cur.execute("CREATE table IF NOT EXISTS crypto_trending_hourly ("
                 "ticker VARCHAR(10), "
                 "mentions INTEGER, "
                 "sentiment FLOAT, "
-                "date_updated VARCHAR(20),"
+                "date_updated VARCHAR(20), "
+                "INDEX (date_updated), "
                 "INDEX (ticker) )")
 
     for i in ["wsb", "crypto"]:
@@ -268,6 +272,18 @@ def database():
                 "UNIQUE (`Date`, `Ticker`), "
                 "INDEX (Ticker) )")
 
+    cur.execute("CREATE table IF NOT EXISTS highest_short_volume ("
+                "`Rank` VARCHAR(20), "
+                "`Ticker` VARCHAR(10), "
+                "`Short Vol` DOUBLE, "
+                "`Short Exempt Vol` DOUBLE, "
+                "`Total Vol` DOUBLE, "
+                "`% Shorted` FLOAT, "
+                "`Previous Close` VARCHAR(20), "
+                "`1 Day Change %` VARCHAR(20), "
+                "`Market Cap` VARCHAR(20), "
+                "INDEX (Ticker) )")
+
     cur.execute("CREATE table IF NOT EXISTS ftd ("
                 "`Date` VARCHAR(20), "
                 "`Ticker` VARCHAR(10), "
@@ -276,7 +292,15 @@ def database():
                 "`T+35 Date` VARCHAR(20), "
                 "UNIQUE (`Date`, `Ticker`), "
                 "INDEX (Ticker) )")
-    
+
+    cur.execute("CREATE table IF NOT EXISTS top_ftd ("
+                "`Date` VARCHAR(20), "
+                "`Ticker` VARCHAR(10), "
+                "`FTD` VARCHAR(20), "
+                "`Price` VARCHAR(20), "
+                "`FTD x $` VARCHAR(20), "
+                "`T+35 Date` VARCHAR(20) )")
+
     cur.execute("CREATE table IF NOT EXISTS sec_fillings ("
                 "ticker VARCHAR(10), "
                 "filling VARCHAR(100), "
@@ -355,6 +379,16 @@ def database():
                 "date_updated VARCHAR(20), "
                 "UNIQUE(ticker, fee, available, date_updated),"
                 "INDEX (ticker) )")
+
+    cur.execute("CREATE TABLE IF NOT EXISTS ipo_calendar ("
+                "`Date` VARCHAR(20), "
+                "`Symbol`  VARCHAR(10), "
+                "`Name` VARCHAR(200), "
+                "`Expected Price` VARCHAR(10), "
+                "`Number Shares` VARCHAR(20), "
+                "`Mkt Cap` VARCHAR(20), "
+                "`Status` VARCHAR(50), "
+                "`Exchange` VARCHAR(50) )")
 
     print("Successfully created/updated database")
 

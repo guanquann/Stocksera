@@ -24,7 +24,7 @@ function load_ticker_graph(duration) {
         },
         name: 'Mentions',
         hovertemplate:
-                `<b>%{x|%d/%m (%H:%M)}</b><br>` +
+                `<b>%{x|%d/%m/%Y (%H:%M)}</b><br>` +
                 "Mentions: %{y}<br>" +
                 "<extra></extra>",
         type: 'bar',
@@ -52,7 +52,7 @@ function load_ticker_graph(duration) {
                     size: 12
                 }
             },
-            tickformat: "%d/%m",
+            tickformat: "%d/%m/%y",
         },
         yaxis: {
             showgrid: false,
@@ -85,7 +85,7 @@ function load_ticker_graph(duration) {
         },
         name: 'Calls',
         hovertemplate:
-                `<b>%{x|%d/%m (%H:%M)}</b><br>` +
+                `<b>%{x|%d/%m/%Y (%H:%M)}</b><br>` +
                 "Calls: %{y}<br>" +
                 "<extra></extra>",
         type: 'bar',
@@ -99,7 +99,7 @@ function load_ticker_graph(duration) {
         },
         name: 'Puts',
         hovertemplate:
-                `<b>%{x|%d/%m (%H:%M)}</b><br>` +
+                `<b>%{x|%d/%m/%Y (%H:%M)}</b><br>` +
                 "Puts: %{y}<br>" +
                 "<extra></extra>",
         type: 'bar',
@@ -127,7 +127,7 @@ function load_ticker_graph(duration) {
                     size: 12
                 }
             },
-            tickformat: "%d/%m",
+            tickformat: "%d/%m/%y",
         },
         yaxis: {
             showgrid: false,
@@ -173,7 +173,7 @@ function load_ticker_graph(duration) {
         },
         name: 'Sentiment',
         hovertemplate:
-                `<b>%{x|%d/%m}</b><br>` +
+                `<b>%{x|%d/%m/%Y}</b><br>` +
                 "Sentiment: %{y}<br>" +
                 "<extra></extra>",
         type: 'bar',
@@ -201,7 +201,7 @@ function load_ticker_graph(duration) {
                     size: 12
                 }
             },
-            tickformat: "%d/%m",
+            tickformat: "%d/%m/%y",
         },
         yaxis: {
             showgrid: false,

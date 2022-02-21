@@ -53,7 +53,7 @@ def get_30d_data_finra():
         start += 50000
 
 
-def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date()-timedelta(days=1)):
+def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date()-timedelta(days=0)):
     """
     Get short volume data from https://cdn.finra.org/
     """
@@ -91,12 +91,13 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date
 
         highest_shorted = pd.merge(highest_shorted, stats_df, on="Symbol")
         highest_shorted.replace(np.nan, "N/A", inplace=True)
+        highest_shorted.rename(columns={"Symbol": "Ticker"}, inplace=True)
         highest_shorted.to_sql("highest_short_volume", engine, if_exists="replace", index=False)
 
 
 def main():
-    get_30d_data_finra()
-    # get_daily_data_finra()
+    # get_30d_data_finra()
+    get_daily_data_finra()
 
 
 if __name__ == '__main__':

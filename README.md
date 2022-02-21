@@ -1,6 +1,6 @@
 # StocksEra
 
-![Stocksera](./static/images/logo.png)
+![Stocksera](./static/images/github/logo.png)
 
 [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/stocksera_bot.svg?style=social&label=Follow%20%40stocksera_bot)](https://twitter.com/stocksera_bot)
 

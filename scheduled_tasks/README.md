@@ -18,10 +18,6 @@ Before continuing, register for an API in the links shown below and add them in 
 | Finnhub        | https://finnhub.io/                                 |
 | Gmail -optional| https://realpython.com/python-send-email/           |
 
-You can view a sample of the database in <a href="https://drive.google.com/drive/folders/1qR7ssxnNzOUuvYCWR-kEajyoRoGKjbcT?usp=sharing">this</a> Google Drive link.
-- Transfer graph_chart folder to static directory.
-- Transfer database folder to the main parent directory.
-
 ### NOTE: FOR FREQUENCY TO RUN THE SCRIPTS, SCROLL DOWN TO THE BOTTOM.
 
 #### scheduled_tasks/reddit/stocks/scrape_trending_posts.py

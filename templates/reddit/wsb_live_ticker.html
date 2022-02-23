@@ -41,8 +41,9 @@
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}">Analysis</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}">Options</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}">Short Vol</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'borrowed_shares' %}?quote={{ticker_selected}}">CTB</a></div>
             <div class="more_info_div"><a class="more_info_btn" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}">FTD</a></div>
-            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'wsb_live_ticker' %}?quote={{ticker_selected}}">WSB Live</a></div>
+            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'wsb_live_ticker' %}?quote={{ticker_selected}}">WSB</a></div>
         </div>
     </div>
 
@@ -104,6 +105,10 @@
         <div style="display:none">
             {{mentions_df|safe}}
             {{sentiment_df|safe}}
+        </div>
+
+        <div class="scrollable_div">
+            {{posts_df|safe}}
         </div>
     </div>
 {% endblock %}

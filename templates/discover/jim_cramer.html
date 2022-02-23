@@ -1,0 +1,47 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}StocksEra | Jim Cramer {% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/government/trading.css' %}">
+<script src="{% static 'javascript/discover/jim_cramer.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}load_table(){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/jim_cramer">Jim Cramer</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('discover')</script>
+    <div class="instructions">
+        <h2>Jim Cramer Recommendations</h2>
+        <p>
+            Add description here
+        </p>
+    </div>
+
+    <div class="instructions">
+        <h2>Other Datasets Available</h2>
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'senate' %}">Senate</a></div>
+            <div class="more_info_div"><a class="more_info_btn" href="{% url 'house' %}">House</a></div>
+        </div>
+    </div>
+
+    <div class="contents_div">
+        <div class="search_bar">
+            <input type="text" class="ticker_input" placeholder="Ticker:" onkeyup="searchTicker(this)" autocomplete="off">
+            <button class="submit_btn" type="button">
+                <span class="fa fa-search"></span>
+            </button>
+        </div>
+        <div class="scrollable_div">
+            {{df|safe}}
+        </div>
+    </div>
+{% endblock %}

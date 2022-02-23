@@ -359,11 +359,3 @@ function short_vol_graph(duration) {
 
     document.getElementById("summary").innerHTML = summary_code
 }
-
-function btn_selected(elem) {
-    date_range = document.getElementsByName("date_range")
-    for (i=0; i<date_range.length; i++) {
-        date_range[i].classList.remove("selected")
-    }
-    elem.classList.add("selected")
-}

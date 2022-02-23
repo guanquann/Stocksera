@@ -9,7 +9,7 @@ current_datetime = datetime.utcnow()
 mapping_stocks = get_mapping_stocks()
 
 
-def extract_ticker(text, tickers_dict, sentiment_dict, sentiment_score, calls_dict, calls_mentions, puts_dict,
+def extract_ticker(text, date_posted, tickers_dict, tickers_post_dict, sentiment_dict, calls_dict, calls_mentions, puts_dict,
                    puts_mentions):
     """
     Extract tickers with correct pattern from comment and add sentiment, calls, put to previous dict
@@ -21,8 +21,6 @@ def extract_ticker(text, tickers_dict, sentiment_dict, sentiment_score, calls_di
         previous dict of word cloud
     sentiment_dict: dict
         sentiment dict of tickers
-    sentiment_score: float
-        sentiment of comment
     calls_dict: dict
         calls dict of tickers
     calls_mentions: bool
@@ -32,22 +30,31 @@ def extract_ticker(text, tickers_dict, sentiment_dict, sentiment_score, calls_di
     puts_mentions: bool
         whether or not 'put(s)' or '100P' is mentioned
     """
-
-    for word in text.split():
+    upper_text = text.upper()
+    for word in upper_text.split():
         for key, value in mapping_stocks.items():
             if word in value:
-                text = text.replace(word, key)
+                upper_text = upper_text.replace(word, key)
 
-    extracted_tickers = set(re.findall(pattern, text))
+    extracted_tickers = set(re.findall(pattern, upper_text))
+
+    # Get sentiment of comment
+    vs = analyzer.polarity_scores(text)
+    sentiment_score = float(vs['compound'])
+
     for ticker in extracted_tickers:
         tickers_dict[ticker] = tickers_dict.get(ticker, 0) + 1
         sentiment_dict[ticker] = sentiment_dict.get(ticker, 0) + sentiment_score
+
+        if ticker in tickers_post_dict:
+            tickers_post_dict[ticker].append({"ticker": ticker, "text_body": text[:500], "sentiment": sentiment_score, "date_posted": date_posted})
+        else:
+            tickers_post_dict[ticker] = [{"ticker": ticker, "text_body": text[:500], "sentiment": sentiment_score, "date_posted": date_posted}]
 
         if calls_mentions:
             calls_dict[ticker] = calls_dict.get(ticker, 0) + 1
         if puts_mentions:
             puts_dict[ticker] = puts_dict.get(ticker, 0) + 1
-    return tickers_dict, sentiment_dict, calls_dict, puts_dict
 
 
 def check_for_options(text):
@@ -85,59 +92,52 @@ def wsb_live():
 
     all_words_dict = dict()
     tickers_dict = dict()
+    tickers_post_dict = dict()
     sentiment_dict = dict()
     calls_dict = dict()
     puts_dict = dict()
     for post in subreddit.hot(limit=10):
-        try:
-            # Ensure that post is stickied and the post is not an image
-            if post.stickied and ".jpg" not in post.url and ".png" not in post.url and "comments" in post.url:
-                print(post.url)
-                submission = reddit.submission(url=post.url)
+        # try:
+        # Ensure that post is stickied and the post is not an image
+        if post.stickied and ".jpg" not in post.url and ".png" not in post.url and "comments" in post.url:
+            print(post.url)
+            submission = reddit.submission(url=post.url)
 
-                submission.comment_sort = "new"
-                submission.comments.replace_more(limit=0)
+            submission.comment_sort = "new"
+            submission.comments.replace_more(limit=0)
 
-                for comment in submission.comments:
-                    if threshold_datetime < comment.created_utc:
-                        comment_body = comment.body.upper()
+            for comment in submission.comments:
+                if threshold_datetime < comment.created_utc:
+                    comment_body = comment.body
+                    print(comment.created_utc)
+                    date_posted = datetime.fromtimestamp(comment.created_utc)
 
-                        # Get sentiment of comment
-                        vs = analyzer.polarity_scores(comment_body)
-                        sentiment_score = float(vs['compound'])
-                        # print(datetime.fromtimestamp(comment.created_utc), sentiment_score, comment_body)
+                    # Remove number/special characters (clean up word cloud)
+                    all_words_dict = insert_into_word_cloud_dict(comment_body.upper(), all_words_dict)
 
-                        # Remove number/special characters (clean up word cloud)
-                        all_words_dict = insert_into_word_cloud_dict(comment_body, all_words_dict)
+                    # Check if calls and puts is mentioned in comment
+                    calls_mentions, puts_mentions = check_for_options(comment_body.upper())
+
+                    # Get ticker based on pattern
+                    extract_ticker(comment_body, date_posted, tickers_dict, tickers_post_dict, sentiment_dict, calls_dict,
+                                   calls_mentions, puts_dict, puts_mentions)
+
+                    # Read sub-comment
+                    for second_level_comment in comment.replies:
+                        second_level_comment = second_level_comment.body
+
+                        # Insert into word cloud
+                        all_words_dict = insert_into_word_cloud_dict(second_level_comment.upper(), all_words_dict)
 
                         # Check if calls and puts is mentioned in comment
-                        calls_mentions, puts_mentions = check_for_options(comment_body)
+                        calls_mentions, puts_mentions = check_for_options(second_level_comment.upper())
 
                         # Get ticker based on pattern
-                        tickers_dict, sentiment_dict, calls_dict, puts_dict = \
-                            extract_ticker(comment_body, tickers_dict, sentiment_dict, sentiment_score, calls_dict,
-                                           calls_mentions, puts_dict, puts_mentions)
-
-                        # Read sub-comment
-                        for second_level_comment in comment.replies:
-                            second_level_comment = second_level_comment.body.upper()
-
-                            # Get sentiment of comment
-                            vs = analyzer.polarity_scores(second_level_comment)
-                            sentiment_score = float(vs['compound'])
-
-                            # Insert into word cloud
-                            all_words_dict = insert_into_word_cloud_dict(second_level_comment, all_words_dict)
-
-                            # Check if calls and puts is mentioned in comment
-                            calls_mentions, puts_mentions = check_for_options(second_level_comment)
-
-                            # Get ticker based on pattern
-                            tickers_dict, sentiment_dict, calls_dict, puts_dict = \
-                                extract_ticker(second_level_comment, tickers_dict, sentiment_dict, sentiment_score,
-                                               calls_dict, calls_mentions, puts_dict, puts_mentions)
-        except:
-            pass
+                        extract_ticker(second_level_comment, date_posted, tickers_dict, tickers_post_dict, sentiment_dict,
+                                       calls_dict, calls_mentions, puts_dict, puts_mentions)
+        # except:
+        #     print("ERROR")
+        #     pass
 
     # Remove ticker if it is found in stopwords_list
     tickers_dict = dict(sorted(tickers_dict.items(), key=lambda item: item[1]))
@@ -181,11 +181,20 @@ def wsb_live():
     sentiment_list = list()
     calls_list = list()
     puts_list = list()
+    post_list = list()
+
     for ticker in valid_ticker_list:
         mentions_list.append(tickers_dict[ticker])
         sentiment_list.append(sentiment_dict[ticker])
         calls_list.append(calls_dict.get(ticker, 0))
         puts_list.append(puts_dict.get(ticker, 0))
+        post_list.append(tickers_post_dict[ticker])
+
+    for ticker_post_list in post_list:
+        for i in ticker_post_list:
+            print(i["ticker"], i["text_body"], i["sentiment"], i["date_posted"])
+            cur.execute("INSERT INTO wsb_discussions VALUES (%s, %s, %s, %s)", (i["ticker"], i["text_body"], i["sentiment"], i["date_posted"]))
+            cnx.commit()
 
     quick_stats_df["mentions"] = mentions_list
     quick_stats_df["sentiment"] = sentiment_list
@@ -207,10 +216,9 @@ def update_hourly():
     """
     threshold_datetime = str(current_datetime - timedelta(hours=1))
     threshold_hour = threshold_datetime.rsplit(":", 2)[0] + ":00"
-    # print(threshold_hour, "onwards being saved to hourly database")
 
     cur.execute("SELECT ticker, SUM(mentions), AVG(sentiment), SUM(calls), SUM(puts) FROM wsb_trending_24H WHERE "
-               "date_updated > %s GROUP BY ticker", (threshold_datetime, ))
+                "date_updated > %s GROUP BY ticker", (threshold_datetime, ))
     x = cur.fetchall()
     for row in x:
         cur.execute("INSERT INTO wsb_trending_hourly VALUES (%s, %s, %s, %s, %s, %s)", (row + (threshold_hour, )))
@@ -228,7 +236,8 @@ def wsb_change():
     threshold_hour2 = threshold_datetime2.rsplit(":", 2)[0] + ":00"
 
     cur.execute("SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment FROM wsb_trending_24H "
-               "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) DESC LIMIT 50".format(threshold_hour))
+                "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) "
+                "DESC LIMIT 50".format(threshold_hour))
     current = cur.fetchall()
     cur.execute("DELETE FROM wsb_change")
     for row in current:
@@ -254,7 +263,7 @@ def get_mkt_cap():
 
     ticker_list, mentions_list = list(), list()
     cur.execute("SELECT ticker, SUM(mentions) FROM wsb_trending_24H WHERE date_updated > %s GROUP BY "
-               "ticker ORDER BY SUM(mentions) DESC LIMIT 50", (threshold_datetime,))
+                "ticker ORDER BY SUM(mentions) DESC LIMIT 50", (threshold_datetime,))
     x = cur.fetchall()
     for row in x:
         ticker_list.append(row[0])

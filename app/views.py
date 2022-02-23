@@ -589,6 +589,20 @@ def short_volume(request):
                                                            "error": "error_true"})
 
 
+def borrowed_shares(request):
+    BASE_URL = "https://stocksera.pythonanywhere.com/api"
+    ticker_selected = default_ticker(request)
+    information, related_tickers = check_market_hours(ticker_selected)
+    data = requests.get(f"{BASE_URL}/borrowed_shares/{ticker_selected}").json()
+    df = pd.DataFrame(data)
+    del df["ticker"]
+    df.columns = ["Fee", "Available", "Updated"]
+    return render(request, 'stock/borrowed_shares.html', {"ticker_selected": ticker_selected,
+                                                          "information": information,
+                                                          "related_tickers": related_tickers,
+                                                          "df": df.to_html(index=False)})
+
+
 def failure_to_deliver(request):
     """
     Get FTD of tickers. Data from SEC
@@ -810,7 +824,7 @@ def wsb_live_ticker(request):
 
     sentiment_df = pd.read_sql_query('SELECT AVG(sentiment) AS sentiment, '
                                      'date_updated FROM wsb_trending_hourly '
-                                     'WHERE ticker="{}" GROUP BY date_updated'.
+                                     'WHERE ticker="{}" GROUP BY DATE(date_updated)'.
                                      format(ticker_selected), engine)
 
     if df.empty:
@@ -841,10 +855,14 @@ def wsb_live_ticker(request):
         recent_puts = df[df["date_updated"] >= last_7D]["puts"].sum().astype(int)
         previous_puts = df[(df["date_updated"] >= last_14D) & (df["date_updated"] < last_7D)]["puts"].sum().astype(int)
 
+    posts_df = pd.read_sql_query("SELECT text_body, sentiment, date_posted FROM wsb_discussions WHERE ticker='{}' "
+                                 "LIMIT 200".format(ticker_selected), engine)
+
     return render(request, 'reddit/wsb_live_ticker.html', {"ticker_selected": ticker_selected,
                                                            "information": information,
                                                            "mentions_df": df.to_html(index=False),
                                                            "sentiment_df": sentiment_df.to_html(index=False),
+                                                           "posts_df": posts_df.to_html(index=False),
                                                            "recent_mention": recent_mention,
                                                            "previous_mention": previous_mention,
                                                            "recent_snt": recent_snt,
@@ -897,7 +915,7 @@ def crypto_live_ticker(request):
 
     sentiment_df = pd.read_sql_query('SELECT AVG(sentiment) AS sentiment, '
                                      'date_updated FROM crypto_trending_hourly '
-                                     'WHERE ticker="{}" GROUP BY date_updated'.
+                                     'WHERE ticker="{}" GROUP BY DATE(date_updated)'.
                                      format(ticker_selected), engine)
 
     if df.empty:
@@ -1271,9 +1289,8 @@ def jim_cramer(request):
                                                                                 index=False)})
     else:
         data = requests.get(f"{BASE_URL}/jim_cramer").json()
-        df = pd.DataFrame(data)
-        print(df)
-        return render(request, 'discover/jim_cramer.html')
+        df = pd.DataFrame(data)[:500]
+        return render(request, 'discover/jim_cramer.html', {"df": df.to_html(index=False)})
 
 
 def beta(request):

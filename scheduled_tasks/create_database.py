@@ -108,6 +108,13 @@ def database():
                 "INDEX (date_updated), "
                 "INDEX (ticker) )")
 
+    cur.execute("CREATE table IF NOT EXISTS wsb_discussions ("
+                "ticker VARCHAR(10), "
+                "text_body VARCHAR(500), "
+                "sentiment FLOAT, "
+                "date_posted VARCHAR(20), "
+                "INDEX (ticker) )")
+
     cur.execute("CREATE table IF NOT EXISTS wsb_yf ("
                 "ticker VARCHAR(10), "
                 "mkt_cap VARCHAR(30), "

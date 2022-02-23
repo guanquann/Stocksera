@@ -21,7 +21,7 @@ def get_30d_data_finra():
     """
     Get short volume data from https://cdn.finra.org/ in the last 30 days
     """
-    last_date = datetime.utcnow().date() - timedelta(days=360)
+    last_date = datetime.utcnow().date() - timedelta(days=30)
     combined_df = pd.DataFrame(columns=["Date", "Symbol", "ShortVolume", "ShortExemptVolume", "TotalVolume", "%Shorted"])
     while current_date >= last_date:
         print("Looking at " + str(last_date))
@@ -96,8 +96,8 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date
 
 
 def main():
-    # get_30d_data_finra()
-    get_daily_data_finra()
+    get_30d_data_finra()
+    # get_daily_data_finra()
 
 
 if __name__ == '__main__':

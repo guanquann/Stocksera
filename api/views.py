@@ -533,7 +533,7 @@ def borrowed_shares(request, ticker_selected=None):
     else:
         cur.execute("SELECT date_updated FROM shares_available ORDER BY date_updated DESC LIMIT 1")
         latest_date = cur.fetchone()[0]
-        df = pd.read_sql_query(f"SELECT * FROM shares_available WHERE date_updated='{latest_date}' ", cnx)
+        df = pd.read_sql_query(f"SELECT * FROM shares_available WHERE date_updated='{latest_date}' LIMIT 15000", cnx)
     df = df.replace(np.nan, "")
     df = df.to_dict(orient="records")
     return JSONResponse(df)

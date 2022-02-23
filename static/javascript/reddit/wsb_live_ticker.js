@@ -176,7 +176,7 @@ function load_ticker_graph(duration) {
                 `<b>%{x|%d/%m/%Y}</b><br>` +
                 "Sentiment: %{y}<br>" +
                 "<extra></extra>",
-        type: 'bar',
+        type: 'line',
     };
 
     var layout = {

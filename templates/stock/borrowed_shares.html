@@ -23,9 +23,8 @@
     <div class="instructions">
         <h2>Borrowed Shares</h2>
         <p>
-            Short Volume measures the number of shares that have been shorted,  while Short Interest represents the number of shorted shares that have yet to be closed out or covered.
-            <br><br>
-            <b>Do note that the total and short volume data are limited. They do not represent the actual total volume as these are the volume that are reported to Finra.</b>
+            A stock loan fee is the fee charged by a brokerage for borrowing shares. Fee rate is expressed as an annualized percentage charged by Interactive Brokers.
+            Updates every 10 minutes.
         </p>
         <form action="" method="GET" autocomplete="off">
             <div class="search_bar">
@@ -57,11 +56,11 @@
         <div id="ticker_basic_stats"></div>
         <div id="ssr_msg"></div>
 
-        <div class="date_selector">
-            <button name="date_range" id="3 Months" onclick="btn_selected(this); borrowed_shares_graph(3)">3 Months</button>
-            <button name="date_range" id="6 Months" onclick="btn_selected(this); borrowed_shares_graph(6)">6 Months</button>
-            <button name="date_range" id="12 Months" onclick="btn_selected(this); borrowed_shares_graph(12)" class="selected">1 Year</button>
-        </div>
+<!--        <div class="date_selector">-->
+<!--            <button name="date_range" id="3 Months" onclick="btn_selected(this); borrowed_shares_graph(3)">3 Months</button>-->
+<!--            <button name="date_range" id="6 Months" onclick="btn_selected(this); borrowed_shares_graph(6)">6 Months</button>-->
+<!--            <button name="date_range" id="12 Months" onclick="btn_selected(this); borrowed_shares_graph(12)" class="selected">1 Year</button>-->
+<!--        </div>-->
 
         <div class="chart-container">
             <canvas id="borrowed_shares_chart"></canvas>

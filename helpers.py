@@ -245,6 +245,7 @@ def get_ticker_news(ticker_selected):
         news_df = ticker_fin.TickerNews()
         news_df = news_df.drop_duplicates(subset=['Title'])
         news_df["Date"] = news_df["Date"].dt.date
+        news_df["Date"] = news_df["Date"].astype(str)
 
         # Get sentiment of each news title and add it to a new column in news_df
         sentiment_list = list()
@@ -258,6 +259,7 @@ def get_ticker_news(ticker_selected):
             else:
                 sentiment = "Neutral"
             sentiment_list.append(sentiment)
+            print(row[0], type(row[0]))
             cur.execute("INSERT INTO daily_ticker_news VALUES (%s, %s, %s, %s, %s)",
                         (ticker_selected, row[0], row[1], row[2], sentiment))
             cnx.commit()

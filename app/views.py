@@ -590,6 +590,7 @@ def short_volume(request):
 
 
 def borrowed_shares(request):
+    pd.options.display.float_format = '{:.3f}'.format
     BASE_URL = "https://stocksera.pythonanywhere.com/api"
     ticker_selected = default_ticker(request)
     information, related_tickers = check_market_hours(ticker_selected)
@@ -597,6 +598,7 @@ def borrowed_shares(request):
     df = pd.DataFrame(data)
     del df["ticker"]
     df.columns = ["Fee", "Available", "Updated"]
+    # df = df.groupby(( (df["Fee"] != df["Fee"].shift()) & (df["Available"] != df["Available"].shift())).cumsum().values).first()
     return render(request, 'stock/borrowed_shares.html', {"ticker_selected": ticker_selected,
                                                           "information": information,
                                                           "related_tickers": related_tickers,
@@ -1271,17 +1273,19 @@ def jim_cramer(request):
     if ticker_selected:
         data = requests.get(f"{BASE_URL}/jim_cramer/{ticker_selected}").json()
         ticker_df = pd.DataFrame(data)
-        if ticker_df.empty:
-            ticker_df = pd.DataFrame([{"Date": "N/A", "Segment": "N/A", "Call": "N/A", "Price": "N/A"}])
-        else:
-            del ticker_df["Symbol"]
+
         history_df = yf.Ticker(ticker_selected).history(period="1y", interval="1d")
         history_df.reset_index(inplace=True)
         history_df = history_df[["Date", "Close"]]
 
-        latest_price = history_df.iloc[-1]["Close"]
-        ticker_df["% from Today"] = latest_price
-        ticker_df["% from Today"] = 100 * (ticker_df["% from Today"] - ticker_df["Price"]) / ticker_df["Price"]
+        if ticker_df.empty:
+            ticker_df = pd.DataFrame([{"Date": "N/A", "Segment": "N/A", "Call": "N/A", "Price": "N/A"}])
+        else:
+            del ticker_df["Symbol"]
+            latest_price = history_df.iloc[-1]["Close"]
+            ticker_df["% from Today"] = latest_price
+            ticker_df["% from Today"] = 100 * (ticker_df["% from Today"] - ticker_df["Price"]) / ticker_df["Price"]
+            # if ticker_df["% from Today"].str.contains("Negative"):
 
         return render(request, 'discover/jim_cramer_ticker_analysis.html', {"ticker_selected": ticker_selected.upper(),
                                                                             "ticker_df": ticker_df.to_html(index=False),

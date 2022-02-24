@@ -105,7 +105,7 @@ def insert_earnings_into_db(earnings_df):
         eps_est = stats[2]
         eps_act = stats[3]
         surprise = stats[4]
-        earning_date = stats[5]
+        earning_date = str(stats[5])
         earning_time = stats[6]
         mkt_cap = stats[7]
         print(ticker, earning_date, earning_time)

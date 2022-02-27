@@ -17,21 +17,20 @@ import scheduled_tasks.reddit.buy_trending_tickers as buy_trending_tickers
 
 import scheduled_tasks.twitter.get_twitter_followers as get_twitter_followers
 import scheduled_tasks.twitter.scrape_trending_posts as scrape_twitter_posts
-import scheduled_tasks.discover.get_stocktwits_trending as get_stocktwits_trending
 
 import scheduled_tasks.stocks.get_short_volume as get_short_volume
-import scheduled_tasks.others.get_ticker_info as get_ticker_info
-import scheduled_tasks.reset.reset_options_cache as reset_options_cache
 import scheduled_tasks.stocks.get_financial as get_financial
-import scheduled_tasks.get_earnings_calendar as get_earnings_calendar
 import scheduled_tasks.stocks.get_failure_to_deliver as get_failure_to_deliver
 
 import scheduled_tasks.discover.get_latest_insider_trading as get_latest_insider_trading
 import scheduled_tasks.discover.get_stocks_summary as get_stocks_summary
-import scheduled_tasks.government.get_senate_trading as get_senate_trading
-import scheduled_tasks.government.get_house_trading as get_house_trading
 import scheduled_tasks.discover.get_ipo_calendar as get_ipo_calendar
 import scheduled_tasks.discover.miscellaneous as miscellaneous
+import scheduled_tasks.discover.get_stocktwits_trending as get_stocktwits_trending
+import scheduled_tasks.discover.get_earnings_calendar as get_earnings_calendar
+
+import scheduled_tasks.government.get_senate_trading as get_senate_trading
+import scheduled_tasks.government.get_house_trading as get_house_trading
 
 import scheduled_tasks.economy.get_reverse_repo as get_reverse_repo
 import scheduled_tasks.economy.get_inflation as get_inflation
@@ -39,6 +38,8 @@ import scheduled_tasks.economy.get_daily_treasury as get_daily_treasury
 import scheduled_tasks.economy.get_retail_sales as get_retail_sales
 import scheduled_tasks.economy.get_initial_jobless_claims as get_initial_jobless_claims
 import scheduled_tasks.economy.get_upcoming_events_date as get_upcoming_events_date
+
+import scheduled_tasks.others.get_ticker_info as get_ticker_info
 
 # Get real time trending tickers from WSB
 SCRAPE_LIVE_WSB = True
@@ -67,9 +68,6 @@ SCRAPE_STOCKTWITS_TRENDING = True
 
 # Update the cached ticker info for faster processing time
 TICKER_INFO = True
-
-# Remove old dates in options data
-RESET_TICKER_OPTIONS = True
 
 # Update the cached ticker financial data for faster processing time
 TICKER_FINANCIAL = True
@@ -164,9 +162,6 @@ if __name__ == '__main__':
 
     if TICKER_INFO:
         get_ticker_info.ticker_info(get_ticker_info.full_ticker_list())
-
-    if RESET_TICKER_OPTIONS:
-        reset_options_cache.main()
 
     if TICKER_FINANCIAL:
         for i in get_ticker_info.full_ticker_list():

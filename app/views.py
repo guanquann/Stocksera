@@ -1,6 +1,6 @@
 from scheduled_tasks.reddit.get_subreddit_count import *
+from helpers import *
 from email_server import *
-from fast_yahoo_options import *
 
 import requests_cache
 import pandas as pd
@@ -24,9 +24,6 @@ pd.options.display.float_format = '{:.1f}'.format
 session = requests_cache.CachedSession('yfinance.cache')
 session.headers['User-agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) ' \
                                 'Chrome/91.0.4472.124 Safari/537.36'
-
-option_market_open_time = "110000"    # 9.30PM - 2H30MIN = 7PM   133000
-option_market_close_time = "030000"   # 4.15AM + 6H45MIN = 11AM   201500
 
 BASE_URL = "http://127.0.0.1:8000/api"
 
@@ -72,11 +69,11 @@ def ticker_recommendations(request):
     ticker = yf.Ticker(ticker_selected, session=session)
     try:
         recommendations = ticker.recommendations
-        recommendations["Action"] = recommendations["Action"].str\
-            .replace("main", "Maintain")\
-            .replace("up", "Upgrade")\
-            .replace("down", "Downgrade")\
-            .replace("init", "Initialised")\
+        recommendations["Action"] = recommendations["Action"].str \
+            .replace("main", "Maintain") \
+            .replace("up", "Upgrade") \
+            .replace("down", "Downgrade") \
+            .replace("init", "Initialised") \
             .replace("reit", "Reiterate")
         recommendations.reset_index(inplace=True)
         recommendations["Date"] = recommendations["Date"].dt.date
@@ -429,123 +426,20 @@ def financial(request):
 
 def options(request):
     """
-    Get options (Max pain, option chain, C/P ratio) of ticker.
+    Get options chain from TD Ameritrade
     """
-    pd.options.display.float_format = '{:.1f}'.format
     ticker_selected = default_ticker(request)
-
     information, related_tickers = check_market_hours(ticker_selected)
     if "longName" in information and information["regularMarketPrice"] != "N/A":
-        with open(r"database/yf_cached_options.json", "r+") as r:
-            # Update date if
-            #   1. Weekday
-            #   2. Current datetime > next update time
-            #   3. Market is open
-            current_datetime = datetime.utcnow()
-            current_str_time = str(current_datetime).split()[1].replace(":", "").split(".")[0]
-
-            data = check_json(r)
-            print("DATA SUCCESSFUL")
-            if ticker_selected in data:
-                print("{} in option data. Looking for correct date now...".format(ticker_selected))
-                options_info = data[ticker_selected]
-            else:
-                # weekday, option mkt open and current time is in range and ticker not in db
-                # if current_datetime.weekday() < 5 and option_market_open_time <= current_str_time <= \
-                #         option_market_close_time:
-                if current_datetime.weekday() < 5 and (option_market_open_time <= current_str_time <= "235959"
-                                                       or current_str_time < option_market_close_time):
-                    print("No option data for {} & mkt open. Scraping data now".format(ticker_selected))
-                    options_info = save_options_to_json([ticker_selected], data=data, r=r)[ticker_selected]
-                # weekend ... ticker not in db
-                elif current_datetime.weekday() >= 5:
-                    print("No option data for {} and its the weekend. Scraping data now.".format(ticker_selected))
-                    options_info = save_options_to_json([ticker_selected], data=data, r=r)[ticker_selected]
-
-                # weekday and current time out of range (bug in YF) and ticker not in db
-                else:
-                    return render(request, 'stock/options.html', {"ticker_selected": ticker_selected,
-                                                                  "error": "error_true",
-                                                                  "error_msg": "The market is closed & options data for"
-                                                                               " {} is currently unavailable. "
-                                                                               "Please come back nearing market open!".
-                                  format(ticker_selected)})
-
-            options_dates = options_info["ExpirationDate"]
-            if request.GET.get("date") not in ["", None] and options_dates != []:
-                date_selected = request.GET["date"]
-            elif not options_dates:
-                return render(request, 'stock/options.html', {"ticker_selected": ticker_selected,
-                                                              "error": "error_true",
-                                                              "error_msg": "There is no options data for {}.".
-                              format(ticker_selected)})
-            else:
-                date_selected = options_dates[0]
-
-            if date_selected in options_info["CurrentDate"]:
-                options_info = options_info["CurrentDate"][date_selected]
-                if str(current_datetime) > options_info["NextUpdate"] and \
-                        current_datetime.weekday() < 5 and \
-                        (option_market_open_time <= current_str_time <= "235959"
-                         or current_str_time < option_market_close_time):
-                    print("Ticker {} present, same date but outdated".format(ticker_selected))
-                    options_info = save_options_to_json([ticker_selected], int(datetime.timestamp(
-                        datetime.strptime(date_selected, "%Y-%m-%d") + timedelta(seconds=60*60*8))), data=data, r=r)[
-                        ticker_selected]["CurrentDate"][date_selected]
-                else:
-                    print("Ticker {} present, same date and not outdated".format(ticker_selected))
-
-            else:
-                # if (current_datetime.weekday() < 5 and option_market_open_time <= current_str_time <=
-                #         option_market_close_time) or current_datetime.weekday() >= 5:
-                if (current_datetime.weekday() < 5 and
-                    (option_market_open_time <= current_str_time <= "235959" or
-                     current_str_time < option_market_close_time)) or \
-                        current_datetime.weekday() >= 5:
-                    print("Ticker {} present, but not same date".format(ticker_selected))
-                    options_info = save_options_to_json([ticker_selected],
-                                                        int(datetime.timestamp(
-                                                            datetime.strptime(date_selected, "%Y-%m-%d") +
-                                                            timedelta(seconds=60*60*8))),
-                                                        data=data, r=r)[ticker_selected]["CurrentDate"][date_selected]
-                else:
-                    return render(request, 'stock/options.html', {"ticker_selected": ticker_selected,
-                                                                  "error": "error_true",
-                                                                  "error_msg": "The market is closed & options data "
-                                                                               "for {} on {} is currently unavailable. "
-                                                                               "Please come back nearing market open!".
-                                  format(ticker_selected, date_selected)})
-            max_pain = options_info["MaxPain"]
-            call_loss_list = options_info["CallLoss"]
-            put_loss_list = options_info["PutLoss"]
-
-        op_put = options_info["OptionChainPut"]
-        put_df = pd.DataFrame(op_put, columns=["Strike", "Volume", "OI"])
-
-        op_call = options_info["OptionChainCall"]
-        call_df = pd.DataFrame(op_call, columns=["Strike", "Volume", "OI"])
-
-        df_merge = pd.merge(call_df, put_df, on="Strike", how="outer")
-        df_merge.sort_values(by=["Strike"], inplace=True)
-        df_merge["Strike"] = df_merge["Strike"].apply(lambda x: "$" + str(x))
-        df_merge = df_merge[["OI_x", "Volume_x", "Strike", "OI_y", "Volume_y"]]
-        df_merge.columns = ["OI", "Volume", "", "OI", "Volume"]
-        df_merge.replace(np.nan, 0, inplace=True)
-        df_merge["OI"] = df_merge["OI"].astype(int)
-        df_merge["Volume"] = df_merge["Volume"].astype(int)
-
+        options_data = get_options_data(ticker_selected)
         return render(request, 'stock/options.html', {"ticker_selected": ticker_selected,
                                                       "information": information,
                                                       "related_tickers": related_tickers,
-                                                      "options_dates": options_dates,
-                                                      "date_selected": date_selected,
-                                                      "max_pain": max_pain,
-                                                      "call_loss_list": call_loss_list,
-                                                      "put_loss_list": put_loss_list,
-                                                      "merge": df_merge.to_html(index=False)
+                                                      "options_data": options_data
                                                       })
     else:
         return render(request, 'stock/options.html', {"ticker_selected": ticker_selected,
+                                                      "options_data": {},
                                                       "error": "error_true",
                                                       "error_msg": "There is no ticker named {} found! Please enter "
                                                                    "a ticker symbol (TSLA) instead of the name "
@@ -658,7 +552,7 @@ def reddit_analysis(request):
     else:
         subreddit = "wallstreetbets"
 
-    cur.execute("SELECT DISTINCT(date_updated) FROM {} ORDER BY ID DESC".format(subreddit,))
+    cur.execute("SELECT DISTINCT(date_updated) FROM {} ORDER BY ID DESC".format(subreddit, ))
     latest_date = cur.fetchone()[0]
 
     cur.execute("SELECT * FROM {} WHERE date_updated=%s ORDER BY `rank` ASC "
@@ -784,7 +678,7 @@ def wsb_live(request):
 
     # Get word cloud
     cur.execute("SELECT word, mentions FROM wsb_word_cloud WHERE date_updated >= %s GROUP BY word ORDER BY "
-                "SUM(mentions) DESC LIMIT 50", (date_threshold, ))
+                "SUM(mentions) DESC LIMIT 50", (date_threshold,))
     wsb_word_cloud = cur.fetchall()
     wsb_word_cloud = list(map(list, wsb_word_cloud))
 
@@ -803,14 +697,14 @@ def wsb_live(request):
     wsb_yf = pd.read_sql_query("SELECT * FROM wsb_yf", engine)
 
     return render(request, 'reddit/wsb_live.html', {
-                                                    # "trending_list": trending_list,
-                                                    # "trending_list_by_hour": trending_list_by_hour,
-                                                    "wsb_word_cloud": wsb_word_cloud,
-                                                    "mentions_df": mentions_df.to_html(index=False),
-                                                    "mentions_7d_df": mentions_7d_df.to_html(index=False),
-                                                    "change_df": change_df.to_html(index=False),
-                                                    "trending_options": trending_options.to_html(index=False),
-                                                    "wsb_yf_df": wsb_yf.to_html(index=False)})
+        # "trending_list": trending_list,
+        # "trending_list_by_hour": trending_list_by_hour,
+        "wsb_word_cloud": wsb_word_cloud,
+        "mentions_df": mentions_df.to_html(index=False),
+        "mentions_7d_df": mentions_7d_df.to_html(index=False),
+        "change_df": change_df.to_html(index=False),
+        "trending_options": trending_options.to_html(index=False),
+        "wsb_yf_df": wsb_yf.to_html(index=False)})
 
 
 def wsb_live_ticker(request):
@@ -1089,7 +983,7 @@ def house_trades(request):
         district_df = pd.DataFrame(df.groupby(["District"]).agg("count")["Ticker"])
         district_count = district_df["Ticker"].tolist()
         district = district_df.index.tolist()
-        
+
         return render(request, 'government/trading_summary.html',
                       {"gov_type": "house",
                        "group_by_people": group_by_representative.to_html(index=False),

@@ -85,18 +85,6 @@ table, th {
     text-align: center !important;
 }
 
-tr td:nth-child(3) {
-    background-color: #E9EAEA;
-}
-
-.dark_mode tr td:nth-child(3) {
-    background-color: #505050;
-}
-
-.itm {
-    background-color: #E9EAEA;
-}
-
-.dark_mode .itm {
-    background-color: #505050;
+tr, td, tr:last-child td {
+    border: 2px solid #EAE9E9;
 }

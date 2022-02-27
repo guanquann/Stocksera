@@ -5,10 +5,11 @@
 {% block title %}StocksEra | Options{% endblock %}
 
 {% block additional_script %}
+<script src="{% static 'javascript/stock/options.js' %}"></script>
 <link rel="stylesheet" href="{% static 'style/stock/options.css' %}">
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode();display_data();update_table();options_summary(latest_price);draw_max_pain(strike_list, call_loss_list, put_loss_list);draw_open_interest_and_volume();{% endblock %}
+{% block onload_properties%}restore_dark_mode();display_data();show_table({{options_data}}, null);show_max_pain();{% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -20,14 +21,17 @@
     <script>highlight_selected_nav('stocks_analysis')</script>
     <div class="instructions">
         <h2>Options</h2>
-        <p>View options chain of your favourite ticker and get the max pain price of the week! Data is updated real time. </p>
-        <form action="" method="GET" autocomplete="off" onsubmit="reset_dropdown()">
+        <p>View options chain of your favourite ticker and get the max pain price of the week! Data is updated real
+            time. </p>
+        <form action="" method="GET" autocomplete="off">
             <div class="search_bar">
-                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}"
+                       placeholder="Ticker:" autocomplete="off">
                 <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
                     <span class="fa fa-search"></span>
                 </button>
             </div>
+        </form>
     </div>
 
     <div class="instructions">
@@ -52,21 +56,14 @@
 
         <div class="navigation_menu">
             <div id="date_dropdown">
-                <select name="date" onchange="this.form.submit();this.disabled=true;">
-                    <option value="{{date_selected}}">Expiry Date: {{date_selected}}</option>
-                    {% for date in options_dates %}
-                        <option value="{{date}}">{{date}}</option>
-                    {% endfor %}
-                </select>
+                <select name="date" onchange="show_table({{options_data}}, this.value);show_max_pain()" id="expiry_date"></select>
             </div>
         </div>
 
-        <div class="options_summary">
-            <div class="header">{{date_selected}}</div>
-        </div>
+        <div class="options_summary"></div>
 
         <div id="graph_section">
-            <h2>Max Pain (${{max_pain}})</h2>
+            <h2 id="max_pain">Max Pain ($-)</h2>
             <div class="chart-container">
                 <canvas id="max_pain_chart"></canvas>
             </div>
@@ -83,10 +80,7 @@
         </div>
 
         <h2>Options Table</h2>
-
-        <div>
-            {{merge|safe}}
-        </div>
+        <div class="scrollable_div" style="max-height: 500px" id="table_div"></div>
 
         <div style="margin-top: 30px">
             <p><b>Related tickers that you might be interested:</b></p>
@@ -96,30 +90,14 @@
         </div>
         <br>
     </div>
-</form>
 {% endblock %}
 
 {% block bottom_script %}
-<script src="{% static 'javascript/stock/options.js' %}"></script>
 <script type="text/javascript">
 <!--Hack to convert python variables to javascript-->
 var None = "N/A", False = false; True = true;
 var information = {{information|safe}};
 show_ticker_price(information)
 get_ssr(information)
-
-var call_loss_list = {{ call_loss_list|safe }};
-var put_loss_list = {{ put_loss_list|safe }};
-var tr = document.getElementsByTagName("table")[0].querySelectorAll("tr");
-var strike_list = [];
-var calls_itm = 0, calls_otm = 0, puts_itm = 0, puts_otm = 0;
-var next_itm_call_oi = 0, next_itm_call_strike = 0;
-var latest_price = information["regularMarketPrice"]
-
-for (row=1; row<=call_loss_list.length; row++) {
-    var td = tr[row].querySelectorAll("td");
-    strike_price = td[2].innerHTML;
-    strike_list.push(strike_price.replace("$", ""));
-}
 </script>
 {% endblock %}

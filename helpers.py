@@ -11,6 +11,7 @@ from json.decoder import JSONDecodeError
 from fast_yahoo import *
 from custom_extensions.custom_words import *
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from scheduled_tasks.others.get_tdameritrade_access_token import get_access_token
 
 with open("config.yaml") as config_file:
     config_keys = yaml.load(config_file, Loader=yaml.Loader)
@@ -155,63 +156,21 @@ def convert_date(date):
     return date[0].split()[0]
 
 
-def get_loss_at_strike(strike, chain):
+def get_options_data(ticker):
     """
-    Function to get the loss at the given expiry
-    Parameters
-    ----------
-    strike: Union[int,float]
-        Value to calculate total loss at
-    chain: Dataframe:
-        Dataframe containing at least strike and openInterest
-    Returns
-    -------
-    loss: Union[float,int]
-        Total loss
+    Get options chain from TD Ameritrade
     """
-
-    itm_calls = chain[chain.index < strike][["OI Calls"]]
-    itm_calls["loss"] = (strike - itm_calls.index) * itm_calls["OI Calls"]
-    call_loss = round(itm_calls["loss"].sum() / 10000, 2)
-
-    # The *-1 below is due to a sign change for plotting in the _view code
-    itm_puts = chain[chain.index > strike][["OI Puts"]]
-    itm_puts["loss"] = (itm_puts.index - strike) * itm_puts["OI Puts"] * -1
-    put_loss = round(itm_puts.loss.sum() / 10000, 2)
-    loss = call_loss + put_loss
-    return loss, call_loss, put_loss
-
-
-def get_max_pain(chain):
-    """
-    Returns the max pain for a given call/put dataframe
-    Parameters
-    ----------
-    chain: DataFrame
-        Dataframe to calculate value from
-    Returns
-    -------
-    max_pain :
-        Max pain value
-    call_loss_list:
-        Total money value of the call options at the particular strike
-    put_loss_list:
-        Total money value of the put options at the particular strike
-    """
-    strikes = np.array(chain.index)
-    # if ("OI Calls" not in chain.columns) or ("OI Puts" not in chain.columns):
-    #     print("Incorrect columns.  Unable to parse max pain")
-    #     return np.nan
-    chain["oi_y"] = -chain["oi_y"]
-    loss_list, call_loss_list, put_loss_list = [], [], []
-    for price_at_exp in strikes:
-        net_loss, call_loss, put_loss = get_loss_at_strike(price_at_exp, chain)
-        loss_list.append(net_loss)
-        call_loss_list.append(call_loss)
-        put_loss_list.append(put_loss)
-    chain["loss"] = loss_list
-    max_pain = chain["loss"].idxmin()
-    return max_pain, call_loss_list, put_loss_list
+    with open("tdameritrade_config.yaml") as td_config_file:
+        td_config_keys = yaml.load(td_config_file, Loader=yaml.Loader)
+    url = f"https://api.tdameritrade.com/v1/marketdata/chains?apikey={td_config_keys['client_id']}&symbol={ticker}" \
+          f"&includeQuotes=FALSE"
+    response = requests.get(url, headers={'Authorization': f'Bearer {td_config_keys["access_token"]}'})
+    if not response.ok:
+        print("Error loading TD Ameritrade Access Token...")
+        get_access_token()
+        return get_options_data(ticker)
+    data = response.json()
+    return data
 
 
 def get_sec_fillings(ticker_selected):

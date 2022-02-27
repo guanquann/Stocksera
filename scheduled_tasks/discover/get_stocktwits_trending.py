@@ -12,6 +12,9 @@ cur = cnx.cursor()
 
 
 def main():
+    """
+    Get stocktwits trending tickers
+    """
     trending = requests.get("https://api.stocktwits.com/api/2/trending/symbols.json").json()["symbols"]
     df = pd.DataFrame.from_dict(trending)[["symbol", "watchlist_count"]]
     df["date_updated"] = str(datetime.utcnow()).split(":")[0] + ":00"

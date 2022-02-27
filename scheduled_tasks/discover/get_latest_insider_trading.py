@@ -19,6 +19,9 @@ def check_date(value, last_date):
 
 
 def latest_insider_trading():
+    """
+    Get recent insider trading data from Finviz
+    """
     for type_trading in ["buys", "sales"]:
         print("latest {}".format(type_trading))
         finsider = Insider(option="latest {}".format(type_trading))

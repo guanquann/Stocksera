@@ -110,9 +110,9 @@ function borrowed_shares_graph(duration) {
                 xAxes: [{
                     type: "time",
                     distribution: 'series',
-//                    time: {
-//                        unit: date_unit
-//                    },
+                    time: {
+                        unit: "day"// date_unit
+                    },
                     offset: true,
                     gridLines: {
                         drawOnChartArea: false,

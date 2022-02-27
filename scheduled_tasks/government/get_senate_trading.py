@@ -8,6 +8,9 @@ if not os.path.exists(OUT_PATH):
 
 
 def senate_trades():
+    """
+    Get senate trades of US Government
+    """
     df = pd.read_json("https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.json")
 
     for i in ["transaction_date", "disclosure_date"]:

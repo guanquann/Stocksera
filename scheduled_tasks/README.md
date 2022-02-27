@@ -18,6 +18,13 @@ Before continuing, register for an API in the links shown below and add them in 
 | Finnhub        | https://finnhub.io/                                 |
 | Gmail -optional| https://realpython.com/python-send-email/           |
 
+To access stock options data, sign up for TD Ameritrade Developer Account and follow the instructions in: 
+- https://www.reddit.com/r/algotrading/comments/c81vzq/td_ameritrade_api_access_2019_guide/
+- https://developer.tdameritrade.com/content/simple-auth-local-apps
+- Add your Client ID and Access Token in tdameritrade_config.yaml
+- Ignore the refresh token for now as it will be generated automatically if your Client ID and Access Token are correct.
+- NOTE: The Access Token expires every 90 days. So, remember to update it from time to time.
+
 ### NOTE: FOR FREQUENCY TO RUN THE SCRIPTS, SCROLL DOWN TO THE BOTTOM.
 
 #### scheduled_tasks/reddit/stocks/scrape_trending_posts.py
@@ -101,8 +108,8 @@ Before continuing, register for an API in the links shown below and add them in 
 #### scheduled_tasks/others/get_ticker_info.py
 - Get ticker information to cache data in order to speed up rendering time.
 
-#### scheduled_tasks/reset/reset_options_cache.py
-- Remove updated dates in database/yf_cached_options.json
+#### scheduled_tasks/others/get_tdameritrade_access_token.py
+- Get access token from TD Ameritrade. Expires every 30mins.
 
 #### scheduled_tasks/reset/reset_stocksera_trending.py
 - Reset Stocksera trending table in database.
@@ -138,5 +145,5 @@ Before continuing, register for an API in the links shown below and add them in 
 | scheduled_tasks/government/get_senate_trading.py                                      | main()                                  | Daily (AH)  |
 | scheduled_tasks/government/get_house_trading.py                                       | main()                                  | Daily (AH)  |
 | scheduled_tasks/discover/get_ipo_calendar.py                                          | main()                                  | Daily (AH)  |
-| scheduled_tasks/reset/reset_options_cache.py                                          | reset_options()                         | Daily (AH)  |
 | scheduled_tasks/reset/reset_stocksera_trending.py                                     | reset_trending_db()                     | 30 Mins     |
+| scheduled_tasks/others/get_tdameritrade_access_token.py                               | get_access_token()                      | 30 Mins     |

@@ -13,6 +13,9 @@ cur = cnx.cursor()
 
 
 def main(days=360):
+    """
+    Get the amazing Jim Cramer recent stocks recommendations
+    """
     final_list = []
     for i in range(days, 0, -1):
         try:

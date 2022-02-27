@@ -7,6 +7,9 @@ if not os.path.exists(OUT_PATH):
 
 
 def house_trades():
+    """
+    Get house trades of US Government
+    """
     df = pd.read_json("https://house-stock-watcher-data.s3-us-west-2.amazonaws.com/data/all_transactions.json")
     for i in ["transaction_date", "disclosure_date"]:
         df[i] = pd.to_datetime(df[i], errors='coerce')

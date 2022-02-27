@@ -17,6 +17,9 @@ finnhub_client = finnhub.Client(api_key=config_keys["FINNHUB_KEY1"])
 
 
 def main():
+    """
+    Get recent and past IPOs
+    """
     today_date = datetime.utcnow().date()
     data = finnhub_client.ipo_calendar(_from=str(today_date - timedelta(days=100)),
                                        to=str(today_date + timedelta(days=50)))

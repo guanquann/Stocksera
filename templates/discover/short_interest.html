@@ -2,7 +2,7 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | Short Interest{% endblock %}
+{% block title %}Stocksera | Short Interest{% endblock %}
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/discover/short_interest.css' %}">
@@ -19,23 +19,24 @@
 
 {% block main_content %}
     <script>highlight_selected_nav('discover')</script>
+
+    <div class="more_info_div_parent">
+        <div class="more_info_div"><a href="{% url 'latest_insider' %}">Insider</a></div>
+        <div class="more_info_div"><a href="{% url 'ark_trades' %}">ARK</a></div>
+        <div class="more_info_div"><a href="{% url 'jim_cramer' %}">Jim Cramer</a></div>
+        <div class="more_info_div"><a href="{% url 'ipo_calendar' %}">IPOs</a></div>
+        <div class="more_info_div"><a href="{% url 'stocktwits' %}">Stocktwits</a></div>
+        <div class="more_info_div"><a href="{% url 'beta' %}">Beta</a></div>
+        <div class="more_info_div current_link"><a href="{% url 'short_interest' %}">Short Interest</a></div>
+        <div class="more_info_div"><a href="{% url 'low_float' %}">Low Float</a></div>
+        <div class="more_info_div"><a href="{% url 'amd_xlnx_ratio' %}">AMD-XLNX</a></div>
+    </div>
+
     <div class="instructions">
         <h2>High Short Interest</h2>
         <p>Short interest (SI) is the number of shares that have been sold short but have not yet been covered.
             The higher the SI, the higher probability of short squeezing as shortable shares reduce in number.
             Stocks with high SI are highly volatile. Data is updated 2 times a month.</p>
-    </div>
-
-    <div class="instructions">
-        <h2>Other Datasets Available</h2>
-        <div class="more_info_div_parent">
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'latest_insider' %}">Insider</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ark_trades' %}">ARK</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'amd_xlnx_ratio' %}">AMD-XLNX</a></div>
-            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'short_interest' %}">SI</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ipo_calendar' %}">IPO</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'beta' %}">Beta</a></div>
-        </div>
     </div>
 
     <div class="contents_div">

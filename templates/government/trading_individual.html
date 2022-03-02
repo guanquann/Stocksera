@@ -2,7 +2,7 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | {{gov_type | title}} Watcher{% endblock %}
+{% block title %}Stocksera | {{gov_type | title}} Watcher{% endblock %}
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/government/trading.css' %}">
@@ -40,14 +40,6 @@
                     {% endfor %}
                 </datalist>
             </form>
-        </div>
-    </div>
-
-    <div class="instructions">
-        <h2>Other Datasets Available</h2>
-        <div class="more_info_div_parent">
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'senate' %}">Senate</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'house' %}">House</a></div>
         </div>
     </div>
 

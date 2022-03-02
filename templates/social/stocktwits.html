@@ -2,7 +2,7 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | Stocktwits{% endblock %}
+{% block title %}Stocksera | Stocktwits{% endblock %}
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/social/stocktwits.css' %}">
@@ -19,19 +19,23 @@
 {% block main_content %}
     <script>highlight_selected_nav('discover')</script>
 
+    <div class="more_info_div_parent">
+        <div class="more_info_div"><a href="{% url 'latest_insider' %}">Insider</a></div>
+        <div class="more_info_div"><a href="{% url 'ark_trades' %}">ARK</a></div>
+        <div class="more_info_div"><a href="{% url 'jim_cramer' %}">Jim Cramer</a></div>
+        <div class="more_info_div"><a href="{% url 'ipo_calendar' %}">IPOs</a></div>
+        <div class="more_info_div current_link"><a href="{% url 'stocktwits' %}">Stocktwits</a></div>
+        <div class="more_info_div"><a href="{% url 'beta' %}">Beta</a></div>
+        <div class="more_info_div"><a href="{% url 'short_interest' %}">Short Interest</a></div>
+        <div class="more_info_div"><a href="{% url 'low_float' %}">Low Float</a></div>
+        <div class="more_info_div"><a href="{% url 'amd_xlnx_ratio' %}">AMD-XLNX</a></div>
+    </div>
+
     <div class="instructions">
         <h2>Stocktwits Trending</h2>
             <p>Discover the ranking of popular tickers in Stocktwits over time.
                 Due to limitations in Stocktwits API, only tickers in the top 30 rank are shown.
             </p>
-    </div>
-
-    <div class="instructions">
-        <h2>Other Datasets Available</h2>
-        <div class="more_info_div_parent">
-            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'stocktwits' %}">Stocktwits</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'twitter_trending' %}">Twitter</a></div>
-        </div>
     </div>
 
     <div class="instructions">

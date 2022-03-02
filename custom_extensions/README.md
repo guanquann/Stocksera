@@ -1,4 +1,4 @@
-# StocksEra Custom Extensions
+# Stocksera Custom Extensions
 
 #### custom_extensions/custom_words.py
 - Custom sentiment score of stocks related words.

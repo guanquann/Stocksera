@@ -38,8 +38,8 @@ function top_right_nav(elem) {
     }
     else {
         elem.classList.add("opened")
-        nav_bar_div.style.height = "305px";
-        nav_bar_div.style.width = "100%";
+        nav_bar_div.style.height = "100%";
+        nav_bar_div.style.width = "200px";
         nav_bar_div.querySelector("ul").style.display = "block"
         dark_mode_btn.style.display = "block"
     }
@@ -62,12 +62,6 @@ function activate_dark_mode() {
 
             }
         }
-        if (document.querySelector("#intro_images") != null) {
-            img = document.querySelector("#intro_images").querySelectorAll("img")
-            for (i=0; i<img.length; i++) {
-                img[i].src = img[i].src.replace("light", "dark")
-            }
-        }
     }
     else {
         document.getElementsByTagName("body")[0].classList.remove("dark_mode");
@@ -80,12 +74,6 @@ function activate_dark_mode() {
                 catch {
                     console.log("error")
                 }
-            }
-        }
-        if (document.querySelector("#intro_images") != null) {
-            img = document.querySelector("#intro_images").querySelectorAll("img")
-            for (i=0; i<img.length; i++) {
-                img[i].src = img[i].src.replace("dark", "light")
             }
         }
     }
@@ -338,10 +326,18 @@ function expand_iframe(elem) {
 
 function minimise_main_div() {
     document.querySelector("body").classList.add("minimise_nav")
+    dropdown_container = document.querySelectorAll(".dropdown-container")
+    for (i=0; i<dropdown_container.length; i++) {
+        dropdown_container[i].classList.add("hide_nav_dropdown")
+    }
 }
 
 function maximise_main_div() {
     document.querySelector("body").classList.remove("minimise_nav")
+    dropdown_container = document.querySelectorAll(".dropdown-container")
+    for (i=0; i<dropdown_container.length; i++) {
+        dropdown_container[i].classList.remove("hide_nav_dropdown")
+    }
 }
 
 function activate_nav_bar() {
@@ -364,5 +360,17 @@ function activate_nav_bar() {
 function restore_nav_bar() {
     if (localStorage.getItem("nav_bar_type") == "partial") {
         minimise_main_div()
+    }
+}
+
+function expand_nav() {
+    console.log("tstt")
+    if (document.querySelector("body").classList.contains("minimise_nav")) {
+        console.log("max")
+        maximise_main_div()
+    }
+    else {
+    console.log("sm")
+//        minimise_main_div()
     }
 }

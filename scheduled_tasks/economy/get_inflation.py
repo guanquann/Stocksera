@@ -16,6 +16,7 @@ def usa_inflation():
     Get inflation data from https://www.usinflationcalculator.com/inflation/historical-inflation-rates/
     """
     df = pd.read_html("https://www.usinflationcalculator.com/inflation/historical-inflation-rates/")[0]
+    print(df)
     df = df[df["Year"] >= 1960][::-1]
 
     for col in df.columns:

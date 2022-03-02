@@ -175,6 +175,18 @@ def database():
                 "earning_time VARCHAR(20), "
                 "UNIQUE(company_name, ticker) )")
 
+    cur.execute("CREATE table IF NOT EXISTS earnings ("
+                "`date` VARCHAR(20), "
+                "`hour` VARCHAR(20), "
+                "`ticker` VARCHAR(10), "
+                "`eps_est` VARCHAR(20), "
+                "`eps_act` VARCHAR(20), "
+                "`revenue_est` VARCHAR(20), "
+                "`revenue_act` VARCHAR(20), "
+                "`year` VARCHAR(10), "
+                "`quarter` VARCHAR(10),"
+                "INDEX (`date`)  )")
+
     cur.execute("CREATE table IF NOT EXISTS subreddit_count ("
                 "updated_date VARCHAR(20),"
                 "ticker VARCHAR(10), "
@@ -396,6 +408,15 @@ def database():
                 "`Mkt Cap` VARCHAR(20), "
                 "`Status` VARCHAR(50), "
                 "`Exchange` VARCHAR(50) )")
+
+    cur.execute("CREATE TABLE IF NOT EXISTS market_news ("
+                "`Date` VARCHAR(20), "
+                "`Title`  VARCHAR(300), "
+                "`Source` VARCHAR(100), "
+                "`URL` VARCHAR(300), "
+                "`Section` VARCHAR(50), "
+                "UNIQUE(Date, Title), "
+                "INDEX (Date) )")
 
     print("Successfully created/updated database")
 

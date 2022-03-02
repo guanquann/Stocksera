@@ -128,9 +128,6 @@
         margin-top: 15px;
         padding: 5px 5px 5px 10px;
         background-color: #E9EAEA;
-        border-radius: 10px;
-        border: 2px solid gray;
-        width: 90%;
     }
 
     .instructions h2 {
@@ -200,7 +197,7 @@
 	#main_content {
 		border: 0px;
 		min-height: 100vh;
-		margin-top: 30px;
+		margin-top: 15px;
 	}
 
     .ticker_input {
@@ -301,12 +298,10 @@
     .instructions {
         margin-left: auto;
         margin-right: auto;
-        width: 97%;
+        width: 100%;
         margin-bottom: 12px;
         padding: 5px 0px 5px 10px;
         background-color: #E9EAEA;
-        border-radius: 10px;
-        border: 2px solid gray;
     }
 
     .instructions h2 {
@@ -402,30 +397,12 @@ a {
     background-color: white !important;
 }
 
-.dark_mode #nav_bar_div, .dark_mode .instructions, .dark_mode #nav_bar_div_logo, .dark_mode .top_nav_right {
+.dark_mode #nav_bar_div, .dark_mode .instructions, .dark_mode .more_info_div_parent, .dark_mode #nav_bar_div .dropdown-btn, .dark_mode #nav_bar_div_logo, .dark_mode .top_nav_right {
     background-color: #1c1f21;
-}
-
-.more_info_div_parent {
-    display: flex;
-}
-
-.more_info_div {
-    margin: 10px 5px 5px 0;
 }
 
 .subscribe_email_div {
     margin-bottom: 10px;
-}
-
-.current_link {
-    background-color: #ccc;
-    color: black !important;
-}
-
-.dark_mode .more_info_div .current_link {
-    background-color: rgb(38, 166, 154);
-    color: #121212
 }
 
 .more_info_btn {
@@ -456,6 +433,9 @@ a {
 
 #ticker_basic_stats {
     margin-bottom: 15px;
+    width: 98%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .search_bar {

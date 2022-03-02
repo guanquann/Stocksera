@@ -1,0 +1,40 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}Stocksera | News{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/news/news.css' %}">
+<script src="{% static 'javascript/news/news.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}load_table(){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/discover">News</a> /
+    <a href="/news">Market News</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('discover')</script>
+
+    <div class="instructions">
+        <h2>Market News</h2>
+        <p>Get breaking, cryptocurrency, forex and merger news here!</p>
+    </div>
+
+    <div class="contents_div">
+        <select name="timeframe" onchange="filter_table(this)">
+            <option value="all">All</option>
+            <option value="general">Breaking</option>
+            <option value="crypto">Cryptocurrency</option>
+            <option value="forex">Forex</option>
+            <option value="merger">Merger</option>
+        </select>
+        <div class="scrollable_div">
+            {{ df|safe }}
+        </div>
+    </div>
+{% endblock %}

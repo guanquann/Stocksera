@@ -18,8 +18,9 @@ function amd_xlnx_ratio_graph() {
     }
 
     document.getElementsByClassName("instructions")[0].querySelector("p").innerHTML = `
-        AMD CEO Lisa Su said its takeover of Xilinx is expected to be completed by the end of 2021.
-        When the merger goes through, each XLNX share is converted into 1.7234 AMD share.
+        On 14 Feb 2022, AMD completes the acquisition of Xilinx.
+        Each XLNX share is converted into 1.7234 AMD share.
+        This page serves as a reference to see how investors should arbitrage.
         <br>
         The percentage upside [100 * (1.7234 * AMD / XLNX - 1)] when buying XLNX is currently: <b>${upside}%</b>
     `

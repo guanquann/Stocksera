@@ -3,7 +3,7 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | FTD {% endblock %}
+{% block title %}Stocksera | FTD {% endblock %}
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/stock/ftd.css' %}">
@@ -46,25 +46,23 @@
         </form>
     </div>
 
-    <div class="instructions">
-        <h2>Other Datasets Available</h2>
-        <div class="more_info_div_parent">
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}?quote={{ticker_selected}}">Analysis</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'options' %}?quote={{ticker_selected}}">Options</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_volume' %}?quote={{ticker_selected}}">Short Vol</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'borrowed_shares' %}?quote={{ticker_selected}}">CTB</a></div>
-            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}">FTD</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'wsb_live_ticker' %}?quote={{ticker_selected}}">WSB</a></div>
-        </div>
-    </div>
-
     <div id="error_msg" style="display:none;" class="instructions {{error}}">
         <p>There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).</p>
     </div>
-    <div class="contents_div">
+
         <div id="ticker_basic_stats"></div>
         <div id="ssr_msg"></div>
 
+        <div class="more_info_div_parent">
+            <div class="more_info_div"><a href="{% url 'ticker' %}?quote={{ticker_selected}}">Analysis</a></div>
+            <div class="more_info_div"><a href="{% url 'options' %}?quote={{ticker_selected}}">Options</a></div>
+            <div class="more_info_div"><a href="{% url 'short_volume' %}?quote={{ticker_selected}}">Short Vol</a></div>
+            <div class="more_info_div"><a href="{% url 'borrowed_shares' %}?quote={{ticker_selected}}">Borrowed Shares</a></div>
+            <div class="more_info_div current_link"><a href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}">FTD</a></div>
+            <div class="more_info_div"><a href="{% url 'wsb_live_ticker' %}?quote={{ticker_selected}}">WSB Live</a></div>
+        </div>
+
+    <div class="contents_div">
         <div class="date_selector">
             <button name="date_range" id="3 Months" onclick="btn_selected(this); ftd_graph(3)">3 Months</button>
             <button name="date_range" id="6 Months" onclick="btn_selected(this); ftd_graph(6)">6 Months</button>

@@ -3,7 +3,7 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | AMD-XLNX Ratio {% endblock %}
+{% block title %}Stocksera | AMD-XLNX Ratio {% endblock %}
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/stock/ftd.css' %}">
@@ -20,24 +20,22 @@
 
 {% block main_content %}
 <script>highlight_selected_nav('discover')</script>
-<div class="instructions">
-    <h2>AMD-XLNX Share Price Ratio</h2>
-    <p style="margin-bottom: 0"></p>
-    <div class="more_info_div_parent">
-        <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}?quote=AMD">Explore AMD</a></div>
-        <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}?quote=XLNX">Explore XLNX</a></div>
-    </div>
+
+<div class="more_info_div_parent">
+    <div class="more_info_div"><a href="{% url 'latest_insider' %}">Insider</a></div>
+    <div class="more_info_div"><a href="{% url 'ark_trades' %}">ARK</a></div>
+    <div class="more_info_div"><a href="{% url 'jim_cramer' %}">Jim Cramer</a></div>
+    <div class="more_info_div"><a href="{% url 'ipo_calendar' %}">IPOs</a></div>
+    <div class="more_info_div"><a href="{% url 'stocktwits' %}">Stocktwits</a></div>
+    <div class="more_info_div"><a href="{% url 'beta' %}">Beta</a></div>
+    <div class="more_info_div"><a href="{% url 'short_interest' %}">Short Interest</a></div>
+    <div class="more_info_div"><a href="{% url 'low_float' %}">Low Float</a></div>
+    <div class="more_info_div current_link"><a href="{% url 'amd_xlnx_ratio' %}">AMD-XLNX</a></div>
 </div>
 
 <div class="instructions">
-    <h2>Other Datasets Available</h2>
-    <div class="more_info_div_parent">
-        <div class="more_info_div"><a class="more_info_btn" href="{% url 'latest_insider' %}">Insider</a></div>
-        <div class="more_info_div"><a class="more_info_btn" href="{% url 'ark_trades' %}">ARK</a></div>
-        <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'amd_xlnx_ratio' %}">AMD-XLNX</a></div>
-        <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_interest' %}">Short Interest</a></div>
-        <div class="more_info_div"><a class="more_info_btn" href="{% url 'beta' %}">Beta</a></div>
-    </div>
+    <h2>AMD-XLNX Share Price Ratio [Deprecated]</h2>
+    <p></p>
 </div>
 
 <div class="contents_div">

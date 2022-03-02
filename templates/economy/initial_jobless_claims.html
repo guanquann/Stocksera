@@ -2,7 +2,7 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | Initial Jobless Claims{% endblock %}
+{% block title %}Stocksera | Initial Jobless Claims{% endblock %}
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/economy/economy.css' %}">
@@ -19,23 +19,21 @@
 
 {% block main_content %}
     <script>highlight_selected_nav('economy')</script>
+
+    <div class="more_info_div_parent">
+        <div class="more_info_div"><a href="{% url 'reverse_repo' %}">RRP</a></div>
+        <div class="more_info_div"><a href="{% url 'daily_treasury' %}">Treasury</a></div>
+        <div class="more_info_div"><a href="{% url 'inflation' %}">Inflation</a></div>
+        <div class="more_info_div"><a href="{% url 'retail_sales' %}">Retail</a></div>
+        <div class="more_info_div current_link"><a href="{% url 'initial_jobless_claims' %}">Jobless Claims</a></div>
+    </div>
+
     <div class="instructions">
         <h2>Initial Jobless Claims</h2>
         <p>
             Initial Jobless Claims measures the number of individuals who filed for unemployment insurance for the
             first time during the past week.
         </p>
-    </div>
-
-    <div class="instructions">
-        <h2>Other Datasets Available</h2>
-        <div class="more_info_div_parent">
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reverse_repo' %}">RRP</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'daily_treasury' %}">Treasury</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'inflation' %}">Inflation</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'retail_sales' %}">Retail</a></div>
-            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'initial_jobless_claims' %}">Jobless Claims</a></div>
-        </div>
     </div>
 
     <div class="instructions" id="releases_div">

@@ -1,0 +1,15 @@
+.explore_news {
+    background-color: rgb(38, 166, 154);
+    color: white !important;
+    padding: 4px;
+    border-radius: 5px;
+    margin: 2px 7px 2px 0;
+}
+
+td, th {
+    max-width: 500px;
+    width: 50px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

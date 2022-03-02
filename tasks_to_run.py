@@ -21,6 +21,7 @@ import scheduled_tasks.twitter.scrape_trending_posts as scrape_twitter_posts
 import scheduled_tasks.stocks.get_short_volume as get_short_volume
 import scheduled_tasks.stocks.get_financial as get_financial
 import scheduled_tasks.stocks.get_failure_to_deliver as get_failure_to_deliver
+import scheduled_tasks.stocks.get_borrowed_shares as get_borrowed_shares
 
 import scheduled_tasks.discover.get_latest_insider_trading as get_latest_insider_trading
 import scheduled_tasks.discover.get_stocks_summary as get_stocks_summary
@@ -28,6 +29,8 @@ import scheduled_tasks.discover.get_ipo_calendar as get_ipo_calendar
 import scheduled_tasks.discover.miscellaneous as miscellaneous
 import scheduled_tasks.discover.get_stocktwits_trending as get_stocktwits_trending
 import scheduled_tasks.discover.get_earnings_calendar as get_earnings_calendar
+
+import scheduled_tasks.news.get_news as get_news
 
 import scheduled_tasks.government.get_senate_trading as get_senate_trading
 import scheduled_tasks.government.get_house_trading as get_house_trading
@@ -84,8 +87,14 @@ SHORT_INT = True
 # Get upcoming earnings calendar
 EARNINGS_CALENDAR = True
 
+# Get breaking, crypto, forex, merger news
+LATEST_NEWS = True
+
 # Update Failure to Deliver
 FTD = True
+
+# Get borrowed shares
+BORROWED_SHARES = True
 
 # Get latest insider trading from Finviz
 LATEST_INSIDER_TRADING = True
@@ -181,12 +190,21 @@ if __name__ == '__main__':
         get_earnings_calendar.update_previous_earnings(get_earnings_calendar.get_earnings(7, forward=True))
         get_earnings_calendar.delete_old_earnings(14)
 
+    if LATEST_NEWS:
+        get_news.main()
+        get_news.main("crypto")
+        get_news.main("forex")
+        get_news.main("merger")
+
     if FTD:
         get_failure_to_deliver.download_ftd()
         FOLDER_PATH = r"/database/failure_to_deliver/csv"
         files_available = sorted(Path(FOLDER_PATH).iterdir(), key=os.path.getmtime)
         get_failure_to_deliver.upload_to_df(files_available)
         get_failure_to_deliver.get_top_ftd(files_available[0])
+
+    if BORROWED_SHARES:
+        get_borrowed_shares.main()
 
     if RRP:
         get_reverse_repo.reverse_repo()

@@ -25,6 +25,9 @@
     </script>
     {% block additional_script %}{% endblock %}
 </head>
+<style>
+
+</style>
 <body onload="update_price_color();restore_dark_mode();{% block onload_properties%}{% endblock %}">
 <script>restore_nav_bar();restore_dark_mode();</script>
 <div>
@@ -59,42 +62,95 @@
                         <span>Home</span>
                     </li>
                 </a>
-                <a href="{% url 'ticker' %}">
-                    <li id="stocks_analysis" class="nav_bar">
+
+                <button class="dropdown-btn">
+                    <li id="stocks_analysis" class="nav_bar" onclick="expand_nav()">
                         <img class="nav_bar_logo" src="{% static 'images/nav_bar/ticker_analysis.svg' %}" style="display:none">
-                        <span>Stock</span>
+                        <span>Stock<i class="fa fa-caret-down"></i></span>
                     </li>
-                </a>
-                <a href="{% url 'wsb_live' %}">
-                    <li id="reddit" class="nav_bar">
+                </button>
+                <div class="dropdown-container">
+                    <a href="/ticker?quote={{ticker_selected}}">Analysis</a>
+                    <a href="/ticker/options?quote={{ticker_selected}}">Options</a>
+                    <a href="/ticker/short_volume?quote={{ticker_selected}}">Short Volume</a>
+                    <a href="/ticker/borrowed_shares?quote={{ticker_selected}}">Cost to Borrow</a>
+                    <a href="/ticker/failure_to_deliver?quote={{ticker_selected}}">FTD</a>
+                    <a href="/wsb_live_ticker?quote={{ticker_selected}}">WSB Live</a>
+                </div>
+
+                <button class="dropdown-btn">
+                    <li id="reddit" class="nav_bar" onclick="expand_nav()">
                         <img class="nav_bar_logo" src="{% static 'images/nav_bar/reddit.svg' %}" style="display:none">
-                        <span>Reddit</span>
+                        <span>Reddit<i class="fa fa-caret-down"></i></span>
                     </li>
-                </a>
-                <a href="{% url 'reverse_repo' %}">
-                    <li id="economy" class="nav_bar">
+                </button>
+                <div class="dropdown-container">
+                    <a href="/wsb_live">WSB Live</a>
+                    <a href="/crypto_live">Crypto Live</a>
+                    <a href="/reddit_analysis">Trending Posts</a>
+                    <a href="/reddit_etf">ETF</a>
+                    <a href="/subreddit_count">Subreddit</a>
+                </div>
+
+                <button class="dropdown-btn">
+                    <li id="economy" class="nav_bar" onclick="expand_nav()">
                         <img class="nav_bar_logo" src="{% static 'images/nav_bar/economy.svg' %}" style="display:none">
-                        <span>Economy</span>
+                        <span>Economy<i class="fa fa-caret-down"></i></span>
                     </li>
-                </a>
-                <a href="{% url 'senate' %}">
-                    <li id="government" class="nav_bar">
+                </button>
+                <div class="dropdown-container">
+                    <a href="/reverse_repo">RRP</a>
+                    <a href="/daily_treasury">Treasury</a>
+                    <a href="/inflation">Inflation</a>
+                    <a href="/retail_sales">Retail Sales</a>
+                    <a href="/initial_jobless_claims">Jobless Claims</a>
+                </div>
+
+                <button class="dropdown-btn">
+                    <li id="government" class="nav_bar" onclick="expand_nav()">
                         <img class="nav_bar_logo" src="{% static 'images/nav_bar/government.png' %}" style="display:none">
-                        <span>Government</span>
+                        <span>Government<i class="fa fa-caret-down"></i></span>
                     </li>
-                </a>
-                <a href="{% url 'market_summary' %}">
-                    <li id="market_summary" class="nav_bar">
+                </button>
+                <div class="dropdown-container">
+                    <a href="/senate">Senate</a>
+                    <a href="/house">House</a>
+                </div>
+
+                <button class="dropdown-btn">
+                    <li id="market_summary" class="nav_bar" onclick="expand_nav()">
                         <img class="nav_bar_logo" src="{% static 'images/nav_bar/treemap.png' %}" style="display:none">
-                        <span>Market Summary</span>
+                        <span>Market Summary<i class="fa fa-caret-down"></i></span>
                     </li>
-                </a>
-                <a href="{% url 'discover' %}">
-                    <li id="discover" class="nav_bar">
+                </button>
+                <div class="dropdown-container">
+                    <a href="/market_summary/?type=snp500">S&P 500</a>
+                    <a href="/market_summary/?type=nasdaq100">Nasdaq 100</a>
+                    <a href="/market_summary/?type=dia">Dow Jones</a>
+                    <a href="/market_summary/?type=crypto">Cryptocurrency</a>
+                    <a href="/market_summary/?type=wsb">Wallstreetbets</a>
+                    <a href="/futures">Futures</a>
+                    <a href="/earnings_calendar">Earnings</a>
+                </div>
+
+                <button class="dropdown-btn">
+                    <li id="discover" class="nav_bar" onclick="expand_nav()">
                         <img class="nav_bar_logo" src="{% static 'images/nav_bar/discover.svg' %}" style="display:none">
-                        <span>Discover</span>
+                        <span>Discover<i class="fa fa-caret-down"></i></span>
                     </li>
-                </a>
+                </button>
+                <div class="dropdown-container">
+                    <a href="/latest_insider">Latest Insider</a>
+                    <a href="/ark_trades">ARK Invest</a>
+                    <a href="/jim_cramer">Jim Cramer</a>
+                    <a href="/ipo_calendar">IPO Calendar</a>
+                    <a href="/stocktwits">Stocktwits</a>
+                    <a href="/beta">Beta</a>
+                    <a href="/short_interest">Short Interest</a>
+                    <a href="/low_float">Low Float</a>
+                    <a href="/amd_xlnx_ratio">AMD-XLNX</a>
+                </div>
+
                 <a href="{% url 'about' %}">
                     <li id="about" class="nav_bar">
                         <img class="nav_bar_logo" src="{% static 'images/nav_bar/about.svg' %}" style="display:none">
@@ -150,7 +206,7 @@
                     <div class="modal-body">
                         <p> Before deciding to trade, you should be fully informed of the risks and costs associated
                             with trading. You are encouraged to conduct your own Due-Diligence (DD) and seek professional
-                            advice when necessary. StocksEra will not be responsible for any losses or damages
+                            advice when necessary. Stocksera will not be responsible for any losses or damages
                             incurred as a result of your trading.
                             <br><br>
                             Do note that the price of tickers are delayed. You should depend on your broker for latest
@@ -192,64 +248,31 @@
                 </div>
                 </div>
             </div>
-
-            <div id="advertisement_model" class="modal">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <h4>WSB Live & Pre-Market Notifications</h4>
-                </div>
-                <div class="modal-body">
-                    <p style="font-size: larger; font-weight: bold">
-                        WSB Live Sentiment is now available! Have you subscribe to our FREE pre-market notifications?
-                    </p>
-                    <div class="buttons_div">
-                        <div>
-                            <a href="/wsb_live" target="_blank">
-                                Live Sentiment
-                            </a>
-                        </div>
-                        <div>
-                            <a href="/subscribe" target="_blank">
-                                Subscribe Now
-                            </a>
-                        </div>
-                        <div>
-                            <span class="adv_close">Next Time</span>
-                        </div>
-                    </div>
-                    <img src="{% static 'images/advertisements/mentions.png' %}">
-                    <br><br><br>
-                    <img src="{% static 'images/advertisements/change.png' %}">
-                    <br><br><br>
-                    <img src="{% static 'images/advertisements/price_change.png' %}">
-                    <br><br><br>
-                    <img src="{% static 'images/advertisements/ticker.png' %}">
-                </div>
-                </div>
-            </div>
-
     </div>
 </div>
 </body>
 <script src="{% static 'javascript/load_footer.js' %}"></script>
-<script>
-    if (localStorage.getItem("advertisement") == null) {
-        show_msg_time = new Date().getTime() + (30000000);
-        localStorage.setItem("advertisement", show_msg_time);
-    }
-    else {
-        if (new Date().getTime() > localStorage.getItem("advertisement")) {
-            setTimeout(function() {
-                localStorage.setItem("advertisement", "N/A");
-                document.querySelector("#advertisement").click();
-            }, 3000);
-        }
-    }
-</script>
 {% block bottom_script %} {% endblock %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script src='https://cdn.plot.ly/plotly-2.3.1.min.js'></script>
 <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
 <script src="https://cdn.anychart.com/releases/v8/js/anychart-tag-cloud.min.js"></script>
+<script>
+
+var dropdown = document.getElementsByClassName("dropdown-btn");
+var i;
+
+for (i = 0; i < dropdown.length; i++) {
+  dropdown[i].addEventListener("click", function() {
+  this.classList.toggle("active");
+  var dropdownContent = this.nextElementSibling;
+  if (dropdownContent.classList.contains("show_nav_dropdown")) {
+    dropdownContent.classList.remove("show_nav_dropdown")
+  } else {
+    dropdownContent.classList.add("show_nav_dropdown")
+  }
+  });
+}
+</script>
 </html>

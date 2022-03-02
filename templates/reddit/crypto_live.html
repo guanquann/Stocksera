@@ -2,7 +2,7 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | Crypto Live {% endblock %}
+{% block title %}Stocksera | Crypto Live {% endblock %}
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/reddit/wsb_live.css' %}">
@@ -24,76 +24,74 @@
 {% endblock %}
 
 {% block main_content %}
-<script>highlight_selected_nav('reddit')</script>
-<div>
-    <div class="instructions">
-        <h2>Live CryptoCurrency Analysis</h2>
-        <p>This page tracks & analysis trending cryptocurrencies realtime. Updates every 10 minutes.</p>
-        <form action="/crypto_live_ticker" method="GET" autocomplete="off">
+    <script>highlight_selected_nav('reddit')</script>
+
+    <div class="more_info_div_parent">
+        <div class="more_info_div"><a href="/wsb_live">WSB Live</a></div>
+        <div class="more_info_div current_link"><a href="/crypto_live">Crypto Live</a></div>
+        <div class="more_info_div"><a href="/reddit_analysis">Trending</a></div>
+        <div class="more_info_div"><a href="{% url 'reddit_etf' %}">ETF</a></div>
+        <div class="more_info_div"><a href="{% url 'subreddit_count' %}">Subreddit</a></div>
+    </div>
+
+    <div>
+        <div class="instructions">
+            <h2>Live CryptoCurrency Analysis</h2>
+            <p>This page tracks & analysis trending cryptocurrencies realtime. Updates every 10 minutes.</p>
+            <form action="/crypto_live_ticker" method="GET" autocomplete="off">
+                <div class="search_bar">
+                    <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                    <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                        <span class="fa fa-search"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    
+        <div class="contents_div">
+            <div id="tips_btn">
+                <a href="/wsb_documentation" target="_blank">Guide when using Crypto Live</a>
+            </div>
+    
+            <div class="main_trending_graph_div">
+                <div>
+                    <h2 class="header">Trending Last 24H</h2>
+                    <div id="trending_24H" class="chart"></div>
+                </div>
+    
+                <div>
+                    <h2 class="header">Trending Last 7 Days</h2>
+                    <div id="trending_7days" class="chart"></div>
+                </div>
+            </div>
+    
+            <h2 class="header">Change in Mentions Last 24H</h2>
+            <div style="text-align: center"><i>% Change capped at 1000%</i></div>
+            <div id="change_mentions" class="tree_chart"></div>
+    
+            <h2 class="header">Sentiment Last 24H</h2>
+            <div id="sentiment_chart" class="chart"></div>
+    
+            <h2 class="header">Most Mentioned Words Last 24H</h2>
+            <div id="word_cloud"></div>
+    
+            <h2 class="header">No. of Mentions Last 24H</h2>
             <div class="search_bar">
-                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
-                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                <input type="text" class="ticker_input" placeholder="Ticker: " onkeyup="searchTicker(this, 0)" autocomplete="off">
+                <button class="submit_btn" type="button">
                     <span class="fa fa-search"></span>
                 </button>
             </div>
-        </form>
-    </div>
-
-    <div class="instructions">
-        <h2>Other Datasets Available</h2>
-        <div class="more_info_div_parent">
-            <div class="more_info_div"><a class="more_info_btn" href="/wsb_live">WSB Live</a></div>
-            <div class="more_info_div"><a class="more_info_btn current_link" href="/crypto_live">Crypto Live</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="/reddit_analysis">Trending</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reddit_etf' %}">ETF</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'subreddit_count' %}">Subreddit</a></div>
-        </div>
-    </div>
-
-    <div class="contents_div">
-        <div id="tips_btn">
-            <a href="/wsb_documentation" target="_blank">Guide when using Crypto Live</a>
-        </div>
-
-        <div class="main_trending_graph_div">
-            <div>
-                <h2 class="header">Trending Last 24H</h2>
-                <div id="trending_24H" class="chart"></div>
+            <span class="click_table_info"><b>Click on ticker symbol for more info.</b></span>
+    
+            <div class="scrollable_div" style="max-height: 450px">
+                {{mentions_df|safe}}
             </div>
-
-            <div>
-                <h2 class="header">Trending Last 7 Days</h2>
-                <div id="trending_7days" class="chart"></div>
+            <div style="display:none">
+                {{change_df|safe}}
+                {{mentions_7d_df|safe}}
             </div>
         </div>
-
-        <h2 class="header">Change in Mentions Last 24H</h2>
-        <div style="text-align: center"><i>% Change capped at 1000%</i></div>
-        <div id="change_mentions" class="tree_chart"></div>
-
-        <h2 class="header">Sentiment Last 24H</h2>
-        <div id="sentiment_chart" class="chart"></div>
-
-        <h2 class="header">Most Mentioned Words Last 24H</h2>
-        <div id="word_cloud"></div>
-
-        <h2 class="header">No. of Mentions Last 24H</h2>
-        <div class="search_bar">
-            <input type="text" class="ticker_input" placeholder="Ticker: " onkeyup="searchTicker(this, 0)" autocomplete="off">
-            <button class="submit_btn" type="button">
-                <span class="fa fa-search"></span>
-            </button>
-        </div>
-        <span class="click_table_info"><b>Click on ticker symbol for more info.</b></span>
-
-        <div class="scrollable_div" style="max-height: 450px">
-            {{mentions_df|safe}}
-        </div>
-        <div style="display:none">
-            {{change_df|safe}}
-            {{mentions_7d_df|safe}}
-        </div>
     </div>
-</div>
 {% endblock %}
 

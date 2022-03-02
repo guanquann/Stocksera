@@ -2,7 +2,7 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | Overview {% endblock %}
+{% block title %}Stocksera | Overview {% endblock %}
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/market_summary/market_summary.css' %}">
@@ -54,18 +54,19 @@
 {% block main_content %}
 <script>highlight_selected_nav('market_summary')</script>
 <div>
+    <div class="more_info_div_parent">
+        <div class="more_info_div" id="S&P 500"><a href="{% url 'market_summary' %}?type=snp500">S&P</a></div>
+        <div class="more_info_div" id="Nasdaq 100"><a href="{% url 'market_summary' %}?type=nasdaq100">Nasdaq</a></div>
+        <div class="more_info_div" id="DIA"><a href="{% url 'market_summary' %}?type=dia">DIA</a></div>
+        <div class="more_info_div" id="Cryptocurrency"><a href="{% url 'market_summary' %}?type=crypto">Crypto</a></div>
+        <div class="more_info_div" id="Wallstreetbets"><a href="{% url 'market_summary' %}?type=wsb">WSB</a></div>
+        <div class="more_info_div"><a href="{% url 'futures' %}?type=wsb">Futures</a></div>
+        <div class="more_info_div"><a href="{% url 'earnings_calendar' %}">Earnings</a></div>
+    </div>
+
     <div class="instructions">
         <h2>Market Summary</h2>
-        <p style="margin: 0">Summary of the performance of the stocks and cryptocurrency market.</p>
-        <div class="more_info_div_parent" id="more_info_div">
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=snp500" id="S&P 500">S&P</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=nasdaq100" id="Nasdaq 100">Nasdaq</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=dia" id="DIA">DIA</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=crypto" id="Cryptocurrency">Crypto</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=wsb" id="Wallstreetbets">WSB</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'futures' %}?type=wsb">Futures</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'earnings_calendar' %}">Earnings</a></div>
-        </div>
+        <p>Summary of the performance of the stocks and cryptocurrency market.</p>
     </div>
 
     <div class="contents_div">

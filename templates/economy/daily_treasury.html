@@ -2,7 +2,7 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | Daily Treasury{% endblock %}
+{% block title %}Stocksera | Daily Treasury{% endblock %}
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/economy/economy.css' %}">
@@ -19,6 +19,15 @@
 
 {% block main_content %}
     <script>highlight_selected_nav('economy')</script>
+
+    <div class="more_info_div_parent">
+        <div class="more_info_div"><a href="{% url 'reverse_repo' %}">RRP</a></div>
+        <div class="more_info_div current_link"><a href="{% url 'daily_treasury' %}">Treasury</a></div>
+        <div class="more_info_div"><a href="{% url 'inflation' %}">Inflation</a></div>
+        <div class="more_info_div"><a href="{% url 'retail_sales' %}">Retail</a></div>
+        <div class="more_info_div"><a href="{% url 'initial_jobless_claims' %}">Jobless Claims</a></div>
+    </div>
+
     <div class="instructions">
         <h2>Daily Treasury</h2>
         <p>
@@ -26,17 +35,6 @@
             Government on a modified cash basis. Deposits are reported as received and withdrawals are reported as processed.
         </p>
         <div id="consecutive_text"></div>
-    </div>
-
-    <div class="instructions">
-        <h2>Other Datasets Available</h2>
-        <div class="more_info_div_parent">
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reverse_repo' %}">RRP</a></div>
-            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'daily_treasury' %}">Treasury</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'inflation' %}">Inflation</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'retail_sales' %}">Retail</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'initial_jobless_claims' %}">Jobless Claims</a></div>
-        </div>
     </div>
 
     <div class="instructions" id="releases_div">

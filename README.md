@@ -1,4 +1,4 @@
-# StocksEra
+# Stocksera
 
 ![Stocksera](./static/images/github/logo.png)
 
@@ -51,9 +51,9 @@ This website is free for everyone. But if you want to support me, please give me
 
 
 #### /ticker/options/
-- View options chain of your favourite ticker. Inspired from <a href="https://github.com/GamestonkTerminal/GamestonkTerminal/tree/main/gamestonk_terminal">Gamestonk Terminal</a>.
+- View options chain of your favourite ticker.
 - Find out the max-pain price, OTM & ITM options and Call/Put ratio of the next few weeks.
-- Data is from <a href="https://finance.yahoo.com/">yahoo finance</a>.
+- Data is from <a href="https://developer.tdameritrade.com/apis/">TD Ameritrade</a>.
 ![Options](./static/images/github/options.png)
 ![Option Chain](./static/images/github/options_chain.png)
 
@@ -63,9 +63,14 @@ This website is free for everyone. But if you want to support me, please give me
 ![Short Volume](./static/images/github/short_volume.png)
 
 #### /ticker/failure_to_deliver/
-- View failure to deliver data of some of the popular tickers.
+- View failure to deliver data of tickers.
 - Data is from <a href="https://www.sec.gov/data/foiadocsfailsdatahtm">SEC.gov</a>.
 ![Failure to Deliver](./static/images/github/ftd.png)
+
+#### /ticker/borrowed_shares/
+- View number of borrowed shares available and the borrow fee.
+- Data is from <a href="https://www.interactivebrokers.com/">IBKR</a>.
+![Borrowed Shares](./static/images/github/borrowed_shares.png)
 
 #### /wsb_live_ticker/
 - View number of mentions in WSB, calls/puts mentions and sentiment over time.
@@ -171,7 +176,7 @@ This website is free for everyone. But if you want to support me, please give me
 ![Daily Treasury](./static/images/github/daily_treasury.PNG)
 
 #### /inflation/
-- Monthly inflation rate (with heat map) from 2001
+- Monthly inflation rate (with heat map) from 1960
 - Data is from <a href="https://www.usinflationcalculator.com/inflation/current-inflation-rates/">usinflationcalculator.com/inflation</a>
 ![Inflation](./static/images/github/inflation.png)
 
@@ -198,6 +203,10 @@ This website is free for everyone. But if you want to support me, please give me
 - AMD-XLNX Share Price Ratio.
 - Percentage upside when buying XLNX
 ![AMD-XLNX Ratio](./static/images/github/amd_xlnx_ratio.PNG)
+
+#### /news/
+- View breaking, crypto, forex and merger news
+![Latest News](./static/images/github/news.png)
 
 ### For developers:
 

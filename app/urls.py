@@ -55,7 +55,6 @@ urlpatterns = [
     path('initial_jobless_claims/', views.initial_jobless_claims, name='initial_jobless_claims'),
 
     # Discover
-    path('discover/', views.discover, name='discover'),
     path('ark_trades/', views.ark_trades, name='ark_trades'),
     path('amd_xlnx_ratio/', views.amd_xlnx_ratio, name='amd_xlnx_ratio'),
     path('ipo_calendar/', views.ipo_calendar, name='ipo_calendar'),
@@ -66,6 +65,9 @@ urlpatterns = [
     path('covid_beta/', views.covid_beta, name='covid_beta'),
     path('short_interest/', views.short_interest, name='short_interest'),
     path('low_float/', views.low_float, name='low_float'),
+
+    # News
+    path('news/', views.news, name='news'),
 
     # Spinner
     path('loading/', views.loading_spinner, name='loading'),

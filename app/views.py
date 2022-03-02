@@ -1036,7 +1036,7 @@ def inflation(request):
     data = requests.get(f"{BASE_URL}/inflation/usa").json()
     inflation_stats = pd.DataFrame(data).T
     inflation_stats.reset_index(inplace=True)
-    inflation_stats.rename({"index": "Year"}, inplace=True)
+    inflation_stats.rename(columns={"index": "Year"}, inplace=True)
 
     with open(r"database/economic_date.json", "r+") as r:
         data = json.load(r)
@@ -1067,10 +1067,6 @@ def initial_jobless_claims(request):
     return render(request, 'economy/initial_jobless_claims.html',
                   {"jobless_claims": jobless_claims[::-1].to_html(index=False),
                    "next_date": data})
-
-
-def discover(request):
-    return render(request, 'discover/discover.html')
 
 
 def short_interest(request):
@@ -1189,6 +1185,15 @@ def jim_cramer(request):
         data = requests.get(f"{BASE_URL}/jim_cramer").json()
         df = pd.DataFrame(data)[:500]
         return render(request, 'discover/jim_cramer.html', {"df": df.to_html(index=False)})
+
+
+def news(request):
+    data = requests.get(f"{BASE_URL}/market_news").json()
+    df = pd.DataFrame(data)
+    df["Title"] = "[" + df["Source"] + "] " + df["Title"]
+    del df["Source"]
+    df.rename(columns={"Date": "Date [UTC]"}, inplace=True)
+    return render(request, 'news/news.html', {"df": df.to_html(index=False)})
 
 
 def beta(request):

@@ -3,7 +3,7 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | FTD {% endblock %}
+{% block title %}Stocksera | FTD {% endblock %}
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/stock/ftd.css' %}">
@@ -40,15 +40,13 @@
         </form>
     </div>
 
-    <div class="instructions">
-        <h2>Other Datasets Available</h2>
-        <div class="more_info_div_parent">
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'ticker' %}">Analysis</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'financial' %}">Financials</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'options' %}">Options</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'short_volume' %}">Short Vol</a></div>
-            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'failure_to_deliver' %}">FTD</a></div>
-        </div>
+    <div class="more_info_div_parent">
+        <div class="more_info_div"><a href="{% url 'ticker' %}?quote={{ticker_selected}}">Analysis</a></div>
+        <div class="more_info_div"><a href="{% url 'options' %}?quote={{ticker_selected}}">Options</a></div>
+        <div class="more_info_div"><a href="{% url 'short_volume' %}?quote={{ticker_selected}}">Short Vol</a></div>
+        <div class="more_info_div"><a href="{% url 'borrowed_shares' %}?quote={{ticker_selected}}">Borrowed Shares</a></div>
+        <div class="more_info_div current_link"><a href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}">FTD</a></div>
+        <div class="more_info_div"><a href="{% url 'wsb_live_ticker' %}?quote={{ticker_selected}}">WSB Live</a></div>
     </div>
 
     <div class="contents_div">

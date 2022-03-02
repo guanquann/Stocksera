@@ -2,7 +2,7 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | Reddit Sentiment{% endblock %}
+{% block title %}Stocksera | Reddit Sentiment{% endblock %}
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/reddit/reddit_sentiment.css' %}">
@@ -17,6 +17,15 @@
 
 {% block main_content %}
     <script>highlight_selected_nav('reddit')</script>
+
+    <div class="more_info_div_parent">
+        <div class="more_info_div"><a href="/wsb_live">WSB Live</a></div>
+        <div class="more_info_div"><a href="/crypto_live">Crypto Live</a></div>
+        <div class="more_info_div current_link"><a href="/reddit_analysis">Trending</a></div>
+        <div class="more_info_div"><a href="{% url 'reddit_etf' %}">ETF</a></div>
+        <div class="more_info_div"><a href="{% url 'subreddit_count' %}">Subreddit</a></div>
+    </div>
+
     <div class="instructions">
         <h2>Reddit Stocks Trending Posts</h2>
         <p>This page shows the top 35 trending tickers in Reddit in the last 48H <b>based on posts</b>. Number of posts (including deleted), comments and sentiment are taken into account. Data is refreshed daily.</p>
@@ -35,17 +44,6 @@
                 </select>
             </div>
         </form>
-    </div>
-
-    <div class="instructions">
-        <h2>Other Datasets Available</h2>
-        <div class="more_info_div_parent">
-            <div class="more_info_div"><a class="more_info_btn" href="/wsb_live">WSB Live</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="/crypto_live">Crypto Live</a></div>
-            <div class="more_info_div"><a class="more_info_btn current_link" href="/reddit_analysis">Trending</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'reddit_etf' %}">ETF</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'subreddit_count' %}">Subreddit</a></div>
-        </div>
     </div>
 
     <div class="contents_div">

@@ -6,7 +6,6 @@ function load_table() {
 //        date_list.push(td[0].innerHTML)
 //        close_list.push(td[1].innerHTML)
         td[0].innerHTML = `<a href="/jim_cramer/?quote=${td[0].innerHTML}"><b>${td[0].innerHTML}</b></a>`
-//        http://127.0.0.1:8000/jim_cramer/?quote=nio
     }
 }
 

@@ -50,8 +50,10 @@ def round_time(time_string, base=5):
     base: int
         round to the nearest base
     """
-    rounded = str(base * round(int(time_string)/base))
-    if len(rounded) == 1:
+    rounded = str(base * round(int(time_string) / base))
+    if rounded == "60":
+        rounded = "55"
+    elif len(rounded) == 1:
         rounded = "0" + rounded
     return rounded
 

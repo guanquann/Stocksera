@@ -2,7 +2,7 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}StocksEra | Calendar{% endblock %}
+{% block title %}Stocksera | Calendar{% endblock %}
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/market_summary/earnings_calendar.css' %}">
@@ -16,40 +16,38 @@
 {% endblock %}
 
 {% block main_content %}
-<script>highlight_selected_nav('market_summary')</script>
-<div id="top"></div>
-<div class="instructions">
-    <h2>Earnings Calendar</h2>
-    <p>View earnings for the week. There is usually a run-up to earning date. Good earning report often cause price to jump higher. Nonetheless, any downward revisions to future sales, earnings, cash flow could cause a tank instead! </p>
-    <div class="menu">
-        <input type="text" placeholder="Ticker:" autocomplete="off" class="filter_ticker" id="search_ticker" onkeyup="searchTicker()">
-        <span>Market Cap: </span>
-        <select onchange="sortTicker(this)">
-            <option>All</option>
-            <option>>$10B</option>
-            <option>>$20B</option>
-            <option>>$50B</option>
-        </select>
-        <span>Date: </span>
-    </div>
-</div>
+    <script>highlight_selected_nav('market_summary')</script>
+    <div id="top"></div>
 
-<div class="instructions">
-    <h2>Other Datasets Available</h2>
     <div class="more_info_div_parent">
-        <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=snp500">S&P</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=nasdaq100">Nasdaq</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=dia">DIA</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=crypto">Crypto</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'market_summary' %}?type=wsb">WSB</a></div>
-            <div class="more_info_div"><a class="more_info_btn" href="{% url 'futures' %}?type=wsb">Futures</a></div>
-            <div class="more_info_div"><a class="more_info_btn current_link" href="{% url 'earnings_calendar' %}">Earnings</a></div>
+        <div class="more_info_div"><a href="{% url 'market_summary' %}?type=snp500">S&P</a></div>
+        <div class="more_info_div"><a href="{% url 'market_summary' %}?type=nasdaq100">Nasdaq</a></div>
+        <div class="more_info_div"><a href="{% url 'market_summary' %}?type=dia">DIA</a></div>
+        <div class="more_info_div"><a href="{% url 'market_summary' %}?type=crypto">Crypto</a></div>
+        <div class="more_info_div"><a href="{% url 'market_summary' %}?type=wsb">WSB</a></div>
+        <div class="more_info_div"><a href="{% url 'futures' %}?type=wsb">Futures</a></div>
+        <div class="more_info_div current_link"><a href="{% url 'earnings_calendar' %}">Earnings</a></div>
     </div>
-</div>
 
-<div class="earnings_calendar">
-    <div id="main"></div>
-</div>
+    <div class="instructions">
+        <h2>Earnings Calendar</h2>
+        <p>View earnings for the week. There is usually a run-up to earning date. Good earning report often cause price to jump higher. Nonetheless, any downward revisions to future sales, earnings, cash flow could cause a tank instead! </p>
+        <div class="menu">
+            <input type="text" placeholder="Ticker:" autocomplete="off" class="filter_ticker" id="search_ticker" onkeyup="searchTicker()">
+            <span>Market Cap: </span>
+            <select onchange="sortTicker(this)">
+                <option>All</option>
+                <option>>$10B</option>
+                <option>>$20B</option>
+                <option>>$50B</option>
+            </select>
+            <span>Date: </span>
+        </div>
+    </div>
+
+    <div class="earnings_calendar">
+        <div id="main"></div>
+    </div>
 {% endblock %}
 
 {% block bottom_script %}

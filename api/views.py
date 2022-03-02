@@ -263,8 +263,18 @@ def earnings_calendar(request):
     """
     Get earnings for the upcoming week. Data from yahoo finance
     """
-    df = pd.read_sql_query("SELECT * FROM earnings_calendar ORDER BY earning_date ASC", cnx)
-    df = get_date(df, request.GET.get("date_to"), request.GET.get("date_from"), "earning_date")
+    df = pd.read_sql_query("SELECT * FROM earnings ORDER BY date ASC", cnx)
+    df = get_date(df, request.GET.get("date_to"), request.GET.get("date_from"), "date")
+    df = df.to_dict(orient="records")
+    return JSONResponse(df)
+
+
+@csrf_exempt
+def market_news(request):
+    """
+    Get breaking, crypto, forex and merger news from Finnhub
+    """
+    df = pd.read_sql("SELECT * FROM market_news ORDER BY Date DESC LIMIT 1000", engine)
     df = df.to_dict(orient="records")
     return JSONResponse(df)
 

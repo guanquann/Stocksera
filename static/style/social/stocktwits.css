@@ -65,7 +65,7 @@
 }
 
 .click_ticker_info {
-    text-align: right;
+    text-align: left;
     font-weight: bold;
-    margin-right: 3px;
+    margin-left: 3px;
 }

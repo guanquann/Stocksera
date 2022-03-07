@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/stock/borrowed_shares.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}borrowed_shares_graph(12);display_table(){% endblock %}
+{% block onload_properties%}display_data();borrowed_shares_graph(12);display_table(){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /

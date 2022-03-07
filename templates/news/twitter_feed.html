@@ -1,0 +1,39 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}Stocksera | Twitter Feed{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/news/news.css' %}">
+<script src="{% static 'javascript/news/news.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}load_table(){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/news">News</a> /
+    <a href="/twitter_feed">Twitter</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('news')</script>
+
+    <div class="more_info_div_parent">
+        <div class="more_info_div"><a href="{% url 'news' %}">Market News</a></div>
+        <div class="more_info_div current_link"><a href="{% url 'twitter_feed' %}">Twitter Feed</a></div>
+        <div class="more_info_div"><a href="{% url 'trading_halts' %}">Trading Halts</a></div>
+    </div>
+
+    <div class="instructions">
+        <h2>Twitter News Feed</h2>
+    </div>
+
+    <div class="contents_div">
+        <a href="https://twitter.com/stocksera_bot?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false"></a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        <div style="width: 75%; max-width: 500px; margin: auto">
+            <a class="twitter-timeline" href="https://twitter.com/stocksera_bot/lists/1448875408477212675?ref_src=twsrc%5Etfw"></a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        </div>
+    </div>
+{% endblock %}

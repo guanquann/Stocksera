@@ -68,6 +68,8 @@ urlpatterns = [
 
     # News
     path('news/', views.news, name='news'),
+    path('twitter_feed/', views.twitter_feed, name='twitter_feed'),
+    path('trading_halts/', views.trading_halts, name='trading_halts'),
 
     # Spinner
     path('loading/', views.loading_spinner, name='loading'),

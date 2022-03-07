@@ -59,9 +59,9 @@
         <div class="more_info_div"><a href="{% url 'wsb_live_ticker' %}?quote={{ticker_selected}}">WSB Live</a></div>
     </div>
 
-    <div class="contents_div">
-        <div id="summary"></div>
+    <div id="summary" class="instructions"></div>
 
+    <div class="contents_div">
         <div class="date_selector">
             <button name="date_range" id="3 Months" onclick="btn_selected(this); short_vol_graph(3)">3 Months</button>
             <button name="date_range" id="6 Months" onclick="btn_selected(this); short_vol_graph(6)">6 Months</button>

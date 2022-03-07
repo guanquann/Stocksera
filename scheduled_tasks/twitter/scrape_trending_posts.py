@@ -2,7 +2,7 @@ import os
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
-from scheduled_tasks.get_popular_tickers import *
+from scheduled_tasks.others.get_popular_tickers import *
 from scheduled_tasks.twitter.twitter_connection import *
 from scheduled_tasks.reddit.reddit_utils import *
 

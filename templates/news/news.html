@@ -13,12 +13,18 @@
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
-    <a href="/discover">News</a> /
+    <a href="/news">News</a> /
     <a href="/news">Market News</a>
 {% endblock %}
 
 {% block main_content %}
-    <script>highlight_selected_nav('discover')</script>
+    <script>highlight_selected_nav('news')</script>
+
+    <div class="more_info_div_parent">
+        <div class="more_info_div current_link"><a href="{% url 'news' %}">Market News</a></div>
+        <div class="more_info_div"><a href="{% url 'twitter_feed' %}">Twitter Feed</a></div>
+        <div class="more_info_div"><a href="{% url 'trading_halts' %}">Trading Halts</a></div>
+    </div>
 
     <div class="instructions">
         <h2>Market News</h2>

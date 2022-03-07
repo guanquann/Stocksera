@@ -26,30 +26,31 @@ finnhub_client2 = finnhub.Client(api_key=config_keys["FINNHUB_KEY2"])
 header = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/"
                         "50.0.2661.75 Safari/537.36", "X-Requested-With": "XMLHttpRequest"}
 
-# engine = create_engine(f'mysql://{config_keys["MYSQL_USER"]}:{config_keys["MYSQL_PASSWORD"]}@'
-#                        f'{config_keys["MYSQL_HOST"]}/{config_keys["MYSQL_DATABASE"]}')
-# cnx = mysql.connector.connect(user=config_keys["MYSQL_USER"],
-#                               password=config_keys["MYSQL_PASSWORD"],
-#                               host=config_keys["MYSQL_HOST"],
-#                               database=config_keys["MYSQL_DATABASE"])
-# cur = cnx.cursor()
-
-# def connect_mysql_database():
-#     return cnx, engine
+engine = create_engine(f'mysql://{config_keys["MYSQL_USER"]}:{config_keys["MYSQL_PASSWORD"]}@'
+                       f'{config_keys["MYSQL_HOST"]}/{config_keys["MYSQL_DATABASE"]}')
+cnx = mysql.connector.connect(user=config_keys["MYSQL_USER"],
+                              password=config_keys["MYSQL_PASSWORD"],
+                              host=config_keys["MYSQL_HOST"],
+                              database=config_keys["MYSQL_DATABASE"])
+cur = cnx.cursor()
 
 
 def connect_mysql_database():
-    engine = create_engine(f'mysql://{config_keys["MYSQL_USER"]}:{config_keys["MYSQL_PASSWORD"]}@'
-                           f'{config_keys["MYSQL_HOST"]}/{config_keys["MYSQL_DATABASE"]}')
-    cnx = mysql.connector.connect(user=config_keys["MYSQL_USER"],
-                                  password=config_keys["MYSQL_PASSWORD"],
-                                  host=config_keys["MYSQL_HOST"],
-                                  database=config_keys["MYSQL_DATABASE"])
+    global engine
+    global cnx
+    global cur
+    if cnx.is_connected():
+        print("SQL SERVER IS CONNECTED...")
+    else:
+        print("ERROR CONNECTING TO MYSQL... TRYING TO RECONNECT")
+        engine = create_engine(f'mysql://{config_keys["MYSQL_USER"]}:{config_keys["MYSQL_PASSWORD"]}@'
+                               f'{config_keys["MYSQL_HOST"]}/{config_keys["MYSQL_DATABASE"]}')
+        cnx = mysql.connector.connect(user=config_keys["MYSQL_USER"],
+                                      password=config_keys["MYSQL_PASSWORD"],
+                                      host=config_keys["MYSQL_HOST"],
+                                      database=config_keys["MYSQL_DATABASE"])
+        cur = cnx.cursor()
     return cnx, engine
-
-
-cnx, engine = connect_mysql_database()
-cur = cnx.cursor()
 
 
 def default_ticker(request, ticker="AAPL"):
@@ -214,7 +215,7 @@ def get_ticker_news(ticker_selected):
     """
     try:
         ticker_fin = finvizfinance(ticker_selected)
-        news_df = ticker_fin.TickerNews()
+        news_df = ticker_fin.ticker_news()
         news_df = news_df.drop_duplicates(subset=['Title'])
         news_df["Date"] = news_df["Date"].dt.date
         news_df["Date"] = news_df["Date"].astype(str)
@@ -251,7 +252,8 @@ def get_insider_trading(ticker_selected):
     """
     try:
         ticker_fin = finvizfinance(ticker_selected)
-        inside_trader_df = ticker_fin.TickerInsideTrader()
+        inside_trader_df = ticker_fin.ticker_inside_trader()
+        print(inside_trader_df)
         inside_trader_df["Insider Trading"] = inside_trader_df["Insider Trading"].str.title()
         inside_trader_df.rename(columns={"Insider Trading": "Name", "SEC Form 4 Link": ""}, inplace=True)
         inside_trader_df["Date"] = inside_trader_df["Date"] + " 2022"

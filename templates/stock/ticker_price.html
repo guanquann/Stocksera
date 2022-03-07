@@ -57,10 +57,11 @@
         </p>
         <form action="" method="GET" autocomplete="off" name="form">
             <div class="search_bar">
-                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off" onkeyup="get_tickers_suggestion(this)">
                 <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
                     <span class="fa fa-search"></span>
                 </button>
+<!--                <div id="ticker_suggestions" style="display: none"></div>-->
             </div>
         </form>
     </div>

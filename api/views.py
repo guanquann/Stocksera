@@ -207,7 +207,7 @@ def latest_insider(request):
 @csrf_exempt
 def top_short_volume(request):
     pd.options.display.float_format = '{:.2f}'.format
-    df = pd.read_sql_query("SELECT * FROM highest_short_volume", engine)
+    df = pd.read_sql_query("SELECT * FROM highest_short_volume", cnx)
     df.fillna('', inplace=True)
     df = df.to_dict(orient="records")
     return JSONResponse(df)
@@ -222,7 +222,7 @@ def short_volume(request, ticker_selected="AAPL"):
 
     ticker_selected = default_ticker(ticker_selected)
 
-    df = pd.read_sql_query("SELECT * FROM short_volume WHERE Ticker='{}' ORDER BY Date DESC".format(ticker_selected), engine)
+    df = pd.read_sql_query("SELECT * FROM short_volume WHERE Ticker='{}' ORDER BY Date DESC".format(ticker_selected), cnx)
     del df["Ticker"]
     history = pd.DataFrame(yf.Ticker(ticker_selected).history(interval="1d", period="1y")["Close"])
     history.reset_index(inplace=True)
@@ -236,7 +236,7 @@ def short_volume(request, ticker_selected="AAPL"):
 
 @csrf_exempt
 def top_failure_to_deliver(request):
-    top_ftd = pd.read_sql_query("SELECT * FROM top_ftd", engine)
+    top_ftd = pd.read_sql_query("SELECT * FROM top_ftd", cnx)
     top_ftd = top_ftd.replace(np.nan, "")
     df = top_ftd.to_dict(orient="records")
     return JSONResponse(df)
@@ -274,7 +274,17 @@ def market_news(request):
     """
     Get breaking, crypto, forex and merger news from Finnhub
     """
-    df = pd.read_sql("SELECT * FROM market_news ORDER BY Date DESC LIMIT 1000", engine)
+    df = pd.read_sql("SELECT * FROM market_news ORDER BY Date DESC LIMIT 1000", cnx)
+    df = df.to_dict(orient="records")
+    return JSONResponse(df)
+
+
+@csrf_exempt
+def trading_halts(request):
+    """
+    Get stocks with trading halts and their reasons
+    """
+    df = pd.read_sql("SELECT * FROM trading_halts ORDER BY `Halt Date` DESC LIMIT 3000", cnx)
     df = df.to_dict(orient="records")
     return JSONResponse(df)
 
@@ -330,8 +340,8 @@ def wsb_options(request):
     date_threshold = get_days_params(request, 1, 14)
 
     df = pd.read_sql_query("SELECT ticker as Ticker, CAST(SUM(calls) AS UNSIGNED) AS Calls, CAST(SUM(puts) "
-                           "AS UNSIGNED) AS Puts, CAST(SUM(calls) AS float)/SUM(puts) as Ratio FROM wsb_trending_24H "
-                           "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(puts + calls) "
+                           "AS UNSIGNED) AS Puts, CAST(SUM(calls) AS UNSIGNED)/SUM(puts) as Ratio FROM "
+                           "wsb_trending_24H WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(puts + calls) "
                            "DESC LIMIT 30".format(date_threshold), cnx)
     df.fillna(0, inplace=True)
     df = df.to_dict(orient="records")
@@ -526,7 +536,7 @@ def market_summary(request):
 def jim_cramer(request, ticker_selected=None):
     df = pd.read_sql_query("SELECT DISTINCT * FROM jim_cramer_trades ORDER BY Date DESC", cnx)
     if ticker_selected:
-        df = df[df["Symbol"] == ticker_selected.upper()]
+        df = df[df["Ticker"] == ticker_selected.upper()]
     if request.GET.get("segment"):
         df = df[df["Segment"] == request.GET.get("segment").title()]
     if request.GET.get("call"):

@@ -485,18 +485,22 @@ def short_volume(request):
 
 def borrowed_shares(request):
     pd.options.display.float_format = '{:.3f}'.format
-    BASE_URL = "https://stocksera.pythonanywhere.com/api"
+
     ticker_selected = default_ticker(request)
     information, related_tickers = check_market_hours(ticker_selected)
-    data = requests.get(f"{BASE_URL}/borrowed_shares/{ticker_selected}").json()
-    df = pd.DataFrame(data)
-    del df["ticker"]
-    df.columns = ["Fee", "Available", "Updated"]
-    # df = df.groupby(( (df["Fee"] != df["Fee"].shift()) & (df["Available"] != df["Available"].shift())).cumsum().values).first()
-    return render(request, 'stock/borrowed_shares.html', {"ticker_selected": ticker_selected,
-                                                          "information": information,
-                                                          "related_tickers": related_tickers,
-                                                          "df": df.to_html(index=False)})
+
+    if "longName" in information and information["regularMarketPrice"] != "N/A":
+        data = requests.get(f"{BASE_URL}/borrowed_shares/{ticker_selected}").json()
+        df = pd.DataFrame(data)
+        del df["ticker"]
+        df.columns = ["Fee", "Available", "Updated"]
+        return render(request, 'stock/borrowed_shares.html', {"ticker_selected": ticker_selected,
+                                                              "information": information,
+                                                              "related_tickers": related_tickers,
+                                                              "df": df.to_html(index=False)})
+    else:
+        return render(request, 'stock/borrowed_shares.html', {"ticker_selected": ticker_selected,
+                                                              "error": "error_true"})
 
 
 def failure_to_deliver(request):
@@ -677,7 +681,7 @@ def wsb_live(request):
     mentions_df = pd.DataFrame(data)
 
     # Get word cloud
-    cur.execute("SELECT word, mentions FROM wsb_word_cloud WHERE date_updated >= %s GROUP BY word ORDER BY "
+    cur.execute("SELECT word, SUM(mentions) FROM wsb_word_cloud WHERE date_updated >= %s GROUP BY word ORDER BY "
                 "SUM(mentions) DESC LIMIT 50", (date_threshold,))
     wsb_word_cloud = cur.fetchall()
     wsb_word_cloud = list(map(list, wsb_word_cloud))
@@ -691,14 +695,12 @@ def wsb_live(request):
     trending_options = pd.DataFrame(data)
 
     # Get change in mentions
-    change_df = pd.read_sql_query("SELECT * FROM wsb_change", engine)
+    change_df = pd.read_sql_query("SELECT * FROM wsb_change", cnx)
 
     # Get yahoo financial comparison
-    wsb_yf = pd.read_sql_query("SELECT * FROM wsb_yf", engine)
+    wsb_yf = pd.read_sql_query("SELECT * FROM wsb_yf", cnx)
 
     return render(request, 'reddit/wsb_live.html', {
-        # "trending_list": trending_list,
-        # "trending_list_by_hour": trending_list_by_hour,
         "wsb_word_cloud": wsb_word_cloud,
         "mentions_df": mentions_df.to_html(index=False),
         "mentions_7d_df": mentions_7d_df.to_html(index=False),
@@ -721,7 +723,7 @@ def wsb_live_ticker(request):
     sentiment_df = pd.read_sql_query('SELECT AVG(sentiment) AS sentiment, '
                                      'date_updated FROM wsb_trending_hourly '
                                      'WHERE ticker="{}" GROUP BY DATE(date_updated)'.
-                                     format(ticker_selected), engine)
+                                     format(ticker_selected), cnx)
 
     if df.empty:
         recent_mention = 0
@@ -752,7 +754,7 @@ def wsb_live_ticker(request):
         previous_puts = df[(df["date_updated"] >= last_14D) & (df["date_updated"] < last_7D)]["puts"].sum().astype(int)
 
     posts_df = pd.read_sql_query("SELECT text_body, sentiment, date_posted FROM wsb_discussions WHERE ticker='{}' "
-                                 "LIMIT 200".format(ticker_selected), engine)
+                                 "LIMIT 200".format(ticker_selected), cnx)
 
     return render(request, 'reddit/wsb_live_ticker.html', {"ticker_selected": ticker_selected,
                                                            "information": information,
@@ -783,7 +785,7 @@ def crypto_live(request):
     mentions_df = pd.DataFrame(data)
 
     # Get word cloud
-    cur.execute("SELECT word, mentions FROM crypto_word_cloud WHERE date_updated >= %s GROUP BY word ORDER BY "
+    cur.execute("SELECT word, SUM(mentions) FROM crypto_word_cloud WHERE date_updated >= %s GROUP BY word ORDER BY "
                 "SUM(mentions) DESC LIMIT 50", (date_threshold,))
     crypto_word_cloud = cur.fetchall()
     crypto_word_cloud = list(map(list, crypto_word_cloud))
@@ -793,7 +795,7 @@ def crypto_live(request):
     mentions_7d_df = pd.DataFrame(data)
 
     # Get change in mentions
-    change_df = pd.read_sql_query("SELECT * FROM crypto_change", engine)
+    change_df = pd.read_sql_query("SELECT * FROM crypto_change", cnx)
 
     return render(request, 'reddit/crypto_live.html', {"crypto_word_cloud": crypto_word_cloud,
                                                        "mentions_df": mentions_df.to_html(index=False),
@@ -807,12 +809,12 @@ def crypto_live_ticker(request):
     ticker_selected = default_ticker(request, "BTC")
 
     df = pd.read_sql_query("SELECT mentions, sentiment, date_updated FROM crypto_trending_hourly "
-                           "WHERE ticker='{}' ".format(ticker_selected), engine)
+                           "WHERE ticker='{}' ".format(ticker_selected), cnx)
 
     sentiment_df = pd.read_sql_query('SELECT AVG(sentiment) AS sentiment, '
                                      'date_updated FROM crypto_trending_hourly '
                                      'WHERE ticker="{}" GROUP BY DATE(date_updated)'.
-                                     format(ticker_selected), engine)
+                                     format(ticker_selected), cnx)
 
     if df.empty:
         recent_mention = 0
@@ -852,7 +854,7 @@ def market_summary(request):
         return render(request, 'market_summary/market_summary.html', {"title": title})
     elif request.GET.get("type") == "wsb":
         title = "Wallstreetbets"
-        summary_df = pd.read_sql_query("SELECT ticker, mentions, mkt_cap, price_change FROM wsb_yf", engine)
+        summary_df = pd.read_sql_query("SELECT ticker, mentions, mkt_cap, price_change FROM wsb_yf", cnx)
         return render(request, 'market_summary/market_summary.html', {"title": title,
                                                                       "summary_df": summary_df.to_html(index=False)})
 
@@ -1149,8 +1151,7 @@ def stocktwits(request):
 def twitter_trending(request):
     ticker_selected = default_ticker(request, "TSLA")
     ticker_df = pd.read_sql_query("SELECT tweet_count, updated_date FROM twitter_trending WHERE "
-                                  "ticker='{}' ".format(ticker_selected), engine)
-    print(ticker_df)
+                                  "ticker='{}' ".format(ticker_selected), cnx)
     return render(request, 'social/twitter_trending.html', {"ticker_selected": ticker_selected,
                                                             "ticker_df": ticker_df.to_html(index=False),
                                                             })
@@ -1159,7 +1160,6 @@ def twitter_trending(request):
 def jim_cramer(request):
     pd.options.display.float_format = '{:.2f}'.format
     ticker_selected = request.GET.get("quote")
-    BASE_URL = "https://stocksera.pythonanywhere.com/api"
     if ticker_selected:
         data = requests.get(f"{BASE_URL}/jim_cramer/{ticker_selected}").json()
         ticker_df = pd.DataFrame(data)
@@ -1171,7 +1171,7 @@ def jim_cramer(request):
         if ticker_df.empty:
             ticker_df = pd.DataFrame([{"Date": "N/A", "Segment": "N/A", "Call": "N/A", "Price": "N/A"}])
         else:
-            del ticker_df["Symbol"]
+            del ticker_df["Ticker"]
             latest_price = history_df.iloc[-1]["Close"]
             ticker_df["% from Today"] = latest_price
             ticker_df["% from Today"] = 100 * (ticker_df["% from Today"] - ticker_df["Price"]) / ticker_df["Price"]
@@ -1190,10 +1190,18 @@ def jim_cramer(request):
 def news(request):
     data = requests.get(f"{BASE_URL}/market_news").json()
     df = pd.DataFrame(data)
-    df["Title"] = "[" + df["Source"] + "] " + df["Title"]
-    del df["Source"]
     df.rename(columns={"Date": "Date [UTC]"}, inplace=True)
     return render(request, 'news/news.html', {"df": df.to_html(index=False)})
+
+
+def twitter_feed(request):
+    return render(request, 'news/twitter_feed.html')
+
+
+def trading_halts(request):
+    data = requests.get(f"{BASE_URL}/trading_halts").json()
+    df = pd.DataFrame(data)
+    return render(request, 'news/trading_halts.html', {"df": df.to_html(index=False)})
 
 
 def beta(request):

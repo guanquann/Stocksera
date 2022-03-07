@@ -25,7 +25,7 @@ def latest_insider_trading():
     for type_trading in ["buys", "sales"]:
         print("latest {}".format(type_trading))
         finsider = Insider(option="latest {}".format(type_trading))
-        insider_trader = finsider.getInsider()
+        insider_trader = finsider.get_insider()
 
         insider_trader["Owner"] = insider_trader["Owner"].str.title()
         insider_trader = insider_trader[insider_trader["Value ($)"] >= 50000]

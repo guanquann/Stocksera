@@ -9,11 +9,8 @@
     margin-right: auto;
     margin-bottom: 10px;
     text-align: center;
-    padding: 4px;
-    background-color: #E9EAEA;
-    border-radius: 10px;
-    max-width: 520px;
-    border: 2px solid gray;
+    padding: 10px;
+    max-width: 700px;
 }
 
 .dark_mode #summary {

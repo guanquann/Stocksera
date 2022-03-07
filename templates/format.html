@@ -44,7 +44,7 @@
                         {% block main_nav %} {% endblock %}
                     </div>
                     <div class="hamburger_div">
-                    <i class="hamburger" onclick="top_right_nav(this)">
+                    <i id="hamburger_icon" class="hamburger" onclick="top_right_nav(this)">
                         <span class="top"></span>
                         <span class="middle"></span>
                         <span class="bottom"></span>
@@ -149,6 +149,18 @@
                     <a href="/short_interest">Short Interest</a>
                     <a href="/low_float">Low Float</a>
                     <a href="/amd_xlnx_ratio">AMD-XLNX</a>
+                </div>
+
+                <button class="dropdown-btn">
+                    <li id="news" class="nav_bar" onclick="expand_nav()">
+                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/treemap.png' %}" style="display:none">
+                        <span>News<i class="fa fa-caret-down"></i></span>
+                    </li>
+                </button>
+                <div class="dropdown-container">
+                    <a href="/news">Market News</a>
+                    <a href="/twitter_feed">Twitter Feed</a>
+                    <a href="/trading_halts">Trading Halts</a>
                 </div>
 
                 <a href="{% url 'about' %}">
@@ -258,21 +270,20 @@
 <script src='https://cdn.plot.ly/plotly-2.3.1.min.js'></script>
 <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
 <script src="https://cdn.anychart.com/releases/v8/js/anychart-tag-cloud.min.js"></script>
+<script src="{% static 'javascript/format.js' %}"></script>
 <script>
-
 var dropdown = document.getElementsByClassName("dropdown-btn");
 var i;
-
 for (i = 0; i < dropdown.length; i++) {
-  dropdown[i].addEventListener("click", function() {
-  this.classList.toggle("active");
-  var dropdownContent = this.nextElementSibling;
-  if (dropdownContent.classList.contains("show_nav_dropdown")) {
-    dropdownContent.classList.remove("show_nav_dropdown")
-  } else {
-    dropdownContent.classList.add("show_nav_dropdown")
-  }
-  });
+    dropdown[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var dropdownContent = this.nextElementSibling;
+    if (dropdownContent.classList.contains("show_nav_dropdown")) {
+        dropdownContent.classList.remove("show_nav_dropdown")
+    } else {
+        dropdownContent.classList.add("show_nav_dropdown")
+    }
+    });
 }
 </script>
 </html>

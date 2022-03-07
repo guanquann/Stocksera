@@ -2,7 +2,7 @@ import os
 import sys
 import logging
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..\\..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..//..'))
 from fast_yahoo import *
 from helpers import connect_mysql_database
 

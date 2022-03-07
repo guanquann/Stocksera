@@ -23,6 +23,7 @@
 		min-height: 100vh;
 		border: 0px;
 		overflow-y: scroll;
+		margin-top: 15px;
 	}
 
     .ticker_input {
@@ -125,7 +126,6 @@
         margin-left: auto;
         margin-right: auto;
         margin-bottom: 12px;
-        margin-top: 15px;
         padding: 5px 5px 5px 10px;
         background-color: #E9EAEA;
     }
@@ -694,4 +694,27 @@ input[type=text], input[type=email] {
     margin: 1px auto 20px auto;
     padding: 1px 5px;
     width: 95%;
+}
+
+#ticker_suggestions {
+    position: absolute;
+    width: 400px;
+    background: #e9eaea;
+    z-index: 1;
+    border: 1px solid grey;
+    margin-top: 1px;
+}
+
+#ticker_suggestions div {
+    padding: 5px;
+}
+
+.dark_mode #ticker_suggestions, .dark_mode #ticker_suggestions div {
+    background: #1c1f21;
+}
+
+#ticker_suggestions div:hover {
+    background: #ccc;
+    color: black;
+    cursor: pointer;
 }

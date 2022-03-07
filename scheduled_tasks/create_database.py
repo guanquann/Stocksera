@@ -418,6 +418,17 @@ def database():
                 "UNIQUE(Date, Title), "
                 "INDEX (Date) )")
 
+    cur.execute("CREATE TABLE IF NOT EXISTS trading_halts ("
+                "`Halt Date` VARCHAR(20), "
+                "`Halt Time`  VARCHAR(20), "
+                "`Ticker` VARCHAR(10), "
+                "`Exchange` VARCHAR(100), "
+                "`Reason` VARCHAR(100), "
+                "`Resume Date` VARCHAR(20), "
+                "`Resume Time` VARCHAR(20), "
+                "UNIQUE(`Halt Date`, `Halt Time`, `Ticker`),"
+                "INDEX(`Halt Date`) )")
+
     print("Successfully created/updated database")
 
     cnx.close()

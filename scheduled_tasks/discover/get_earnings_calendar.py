@@ -5,7 +5,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from helpers import connect_mysql_database
 import scheduled_tasks.reddit.stocks.fast_yahoo as fast_yahoo
 
@@ -153,5 +153,5 @@ def delete_old_earnings(n_days_ago):
 
 if __name__ == '__main__':
     insert_earnings_into_db(get_earnings(1, forward=True))
-    # update_previous_earnings(get_earnings(7, forward=False))
-    # delete_old_earnings(14)
+    update_previous_earnings(get_earnings(1, forward=False))
+    delete_old_earnings(1)

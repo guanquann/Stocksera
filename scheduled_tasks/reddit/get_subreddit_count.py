@@ -2,7 +2,7 @@ import os
 import sys
 import yfinance as yf
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..\\..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..//..'))
 from scheduled_tasks.reddit.reddit_utils import *
 from helpers import connect_mysql_database
 

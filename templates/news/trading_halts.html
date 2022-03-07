@@ -1,0 +1,58 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}Stocksera | Halts{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/news/trading_halts.css' %}">
+<script src="{% static 'javascript/news/trading_halts.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}{% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/news">News</a> /
+    <a href="/trading_halts">Trading Halts</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('news')</script>
+
+    <div class="more_info_div_parent">
+        <div class="more_info_div"><a href="{% url 'news' %}">Market News</a></div>
+        <div class="more_info_div"><a href="{% url 'twitter_feed' %}">Twitter Feed</a></div>
+        <div class="more_info_div current_link"><a href="{% url 'trading_halts' %}">Trading Halts</a></div>
+    </div>
+
+    <div class="instructions">
+        <h2>Trading Halts</h2>
+        <p>Stocks with News Pending/News Dissemination and Limit Up Limit Down (LULD).</p>
+    </div>
+
+    <div class="contents_div">
+        <div class="search_bar">
+            <input type="text" class="ticker_input" placeholder="Ticker:" autocomplete="off" onkeyup="searchTicker(this)">
+            <button class="submit_btn" type="button">
+                <span class="fa fa-search"></span>
+            </button>
+        </div>
+
+        <select name="timeframe" onchange="filter_table(this)">
+            <option value="all">All</option>
+            <option value="LULD pause">LULD pause</option>
+            <option value="News pending">News pending</option>
+            <option value="News Released">News Released</option>
+            <option value="News dissemination">News dissemination</option>
+            <option value="Merger Effective">Merger Effective</option>
+            <option value="Regulatory Concern">Regulatory Concern</option>
+            <option value="New Security Offering">New Security Offering</option>
+            <option value="Corporate Action">Corporate Action</option>
+        </select>
+
+        <div class="scrollable_div">
+            {{ df|safe }}
+        </div>
+    </div>
+{% endblock %}

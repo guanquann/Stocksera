@@ -50,7 +50,6 @@
 
 @media only screen and (max-width: 900px) {
     #daily_statistics {
-        width: 90%;
         margin: auto;
     }
 
@@ -87,7 +86,6 @@
 @media only screen and (min-width: 900px) {
     #daily_statistics {
         justify-content: space-around;
-        width: 97%;
         margin: auto;
     }
 
@@ -215,9 +213,6 @@ input {
 #daily_statistics {
     display: flex;
     padding: 5px 0px 5px 10px;
-    background: #EAE9E9;
-    border-radius: 10px;
-    border: 2px solid gray;
     flex-flow: row wrap;
 }
 

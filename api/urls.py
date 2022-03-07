@@ -34,6 +34,8 @@ urlpatterns = [
 
     path('market_news/', views.market_news, name='api_market_news'),
 
+    path('trading_halts/', views.trading_halts, name='api_trading_halts'),
+
     path('subreddit_count/', views.subreddit_count, name='api_subreddit_count'),
     path('subreddit_count/<str:ticker_selected>/', views.subreddit_count, name='api_subreddit_count'),
 

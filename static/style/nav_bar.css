@@ -355,11 +355,14 @@
     background: #EAE9E9;
     padding: 0 8px;
     margin-bottom: 10px;
+    max-width: 100%;
+    overflow: auto;
 }
 
 .more_info_div {
     margin: 0 5px 0 5px;
     padding: 10px 5px 10px 5px;
+    white-space: nowrap;
 }
 
 .top_nav_right form {

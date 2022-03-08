@@ -7,7 +7,7 @@ from scheduled_tasks.reddit.reddit_utils import *
 from helpers import connect_mysql_database
 
 cnx, engine = connect_mysql_database()
-cur = cnx.cursor()
+cur = cnx.cursor(buffered=True)
 
 # key of the dict is the symbol of the stock (if applicable), value is the subreddit
 interested_stocks_subreddits = {

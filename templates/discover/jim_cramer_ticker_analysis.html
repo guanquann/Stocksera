@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/discover/jim_cramer_ticker_analysis.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}load_ticker_table(){% endblock %}
+{% block onload_properties%}display_data();load_ticker_table(){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -49,7 +49,25 @@
     </div>
 
     <div class="contents_div">
+        <div id="error_msg" style="display:none;" class="instructions {{error}}">
+            <p>There is no ticker named {{ticker_selected}} found! Please enter a ticker symbol (TSLA) instead of the name (Tesla).</p>
+        </div>
+
+        <div id="ticker_basic_stats"></div>
+        <div id="ssr_msg"></div>
+
         <div id="price_chart"></div>
+
+        <div>
+            <input type="checkbox" onclick="toggle_checkbox('pro')" id="pro" checked>Pro Cramer
+            <input type="checkbox" onclick="toggle_checkbox('inverse')" id="inverse">Inverse Cramer
+        </div>
+
+        <div  class="instructions">
+            <h2 id="cramer_performance_title">Pro Cramer's Performance</h2>
+            <div style="text-align: center; font-size: larger; font-weight: bold"><span id="cramer_performance">~</span>%</div>
+        </div>
+
         <div class="scrollable_div">
             {{ticker_df|safe}}
         </div>
@@ -57,4 +75,14 @@
             {{history_df|safe}}
         </div>
     </div>
+{% endblock %}
+
+{% block bottom_script %}
+<script>
+    <!--Hack to convert python variables to javascript-->
+    var None = "N/A", False = false; True = true;
+    var information = {{information|safe}};
+    show_ticker_price(information)
+    get_ssr(information)
+</script>
 {% endblock %}

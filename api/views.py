@@ -250,9 +250,10 @@ def failure_to_deliver(request, ticker_selected="AAPL"):
     ticker_selected = default_ticker(ticker_selected)
 
     ftd = pd.read_sql_query("SELECT * FROM ftd WHERE Ticker='{}' ORDER BY Date DESC".format(ticker_selected), cnx)
-    ftd["Amount (FTD x $)"] = (ftd["Failure to Deliver"].astype(int) * ftd["Price"].astype(float)).astype(int)
     del ftd["Ticker"]
-    ftd = ftd[['Date', 'Failure to Deliver', 'Price', 'Amount (FTD x $)', 'T+35 Date']]
+    if not ftd.empty:
+        ftd["Amount (FTD x $)"] = (ftd["Failure to Deliver"].astype(int) * ftd["Price"].astype(float)).astype(int)
+        ftd = ftd[['Date', 'Failure to Deliver', 'Price', 'Amount (FTD x $)', 'T+35 Date']]
     ftd = get_date(ftd, request.GET.get("date_to"), request.GET.get("date_from"))
     df = ftd.to_dict(orient="records")
     return JSONResponse(df)
@@ -284,7 +285,7 @@ def trading_halts(request):
     """
     Get stocks with trading halts and their reasons
     """
-    df = pd.read_sql("SELECT * FROM trading_halts ORDER BY `Halt Date` DESC LIMIT 3000", cnx)
+    df = pd.read_sql("SELECT * FROM trading_halts ORDER BY `Halt Date` DESC, `Halt Time` DESC LIMIT 3000", cnx)
     df = df.to_dict(orient="records")
     return JSONResponse(df)
 

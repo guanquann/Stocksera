@@ -427,7 +427,7 @@ def database():
                 "`Resume Date` VARCHAR(20), "
                 "`Resume Time` VARCHAR(20), "
                 "UNIQUE(`Halt Date`, `Halt Time`, `Ticker`),"
-                "INDEX(`Halt Date`) )")
+                "INDEX(`Halt Date`, `Halt Time`) )")
 
     print("Successfully created/updated database")
 

@@ -1,11 +1,9 @@
 function load_table() {
     tr = document.getElementsByTagName("table")[0].querySelectorAll("tr");
-//    date_list = [], close_list = [];
     for (i=1; i<tr.length; i++) {
         td = tr[i].querySelectorAll("td")
-//        date_list.push(td[0].innerHTML)
-//        close_list.push(td[1].innerHTML)
         td[0].innerHTML = `<a href="/jim_cramer/?quote=${td[0].innerHTML}"><b>${td[0].innerHTML}</b></a>`
+        td[4].innerHTML = "$" + td[4].innerHTML
     }
 }
 

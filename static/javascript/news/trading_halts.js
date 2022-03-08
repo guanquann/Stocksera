@@ -1,3 +1,11 @@
+function load_table() {
+    trs = document.querySelectorAll("table tr");
+    for (i=1; i<trs.length; i++) {
+        td = trs[i].querySelectorAll("td")
+        td[2].innerHTML = `<b><a href="/ticker?quote=${td[2].innerHTML}">${td[2].innerHTML}</a></b>`
+    }
+}
+
 function filter_table(elem) {
     trs = document.querySelectorAll("table tr");
     to_filter = elem.value

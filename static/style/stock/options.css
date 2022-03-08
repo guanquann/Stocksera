@@ -88,3 +88,7 @@ table, th {
 tr, td, tr:last-child td {
     border: 2px solid #EAE9E9;
 }
+
+.dark_mode tr, .dark_mode td, .dark_mode tr:last-child td {
+    border: 1px solid #636363;
+}

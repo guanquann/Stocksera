@@ -518,6 +518,10 @@ def failure_to_deliver(request):
     if "longName" in information and information["regularMarketPrice"] != "N/A":
         data = requests.get(f"{BASE_URL}/failure_to_deliver/{ticker_selected}").json()
         ftd = pd.DataFrame(data)
+        if ftd.empty:
+            top_range = 0
+        else:
+            top_range = ftd["Amount (FTD x $)"].quantile(0.90)
 
         if "download_csv" in request.GET:
             file_name = "{}_ftd.csv".format(ticker_selected)
@@ -528,7 +532,7 @@ def failure_to_deliver(request):
         return render(request, 'stock/ftd.html', {"ticker_selected": ticker_selected,
                                                   "information": information,
                                                   "related_tickers": related_tickers,
-                                                  "90th_percentile": ftd["Amount (FTD x $)"].quantile(0.90),
+                                                  "90th_percentile": top_range,
                                                   "ftd": ftd.to_html(index=False)})
     else:
         return render(request, 'stock/ftd.html', {"ticker_selected": ticker_selected,
@@ -650,7 +654,9 @@ def subreddit_count(request):
         stats = pd.DataFrame(data)
         information, related_tickers = check_market_hours(ticker_selected)
         try:
-            subreddit = stats.iloc[0][2]
+            print(stats)
+            subreddit = stats.iloc[0][1]
+            print(subreddit, "#############")
             del stats["subreddit"]
         except (TypeError, IndexError):
             subreddit = "N/A"
@@ -1161,6 +1167,9 @@ def jim_cramer(request):
     pd.options.display.float_format = '{:.2f}'.format
     ticker_selected = request.GET.get("quote")
     if ticker_selected:
+        ticker_selected = ticker_selected.upper()
+        information, related_tickers = check_market_hours(ticker_selected)
+
         data = requests.get(f"{BASE_URL}/jim_cramer/{ticker_selected}").json()
         ticker_df = pd.DataFrame(data)
 
@@ -1169,15 +1178,19 @@ def jim_cramer(request):
         history_df = history_df[["Date", "Close"]]
 
         if ticker_df.empty:
-            ticker_df = pd.DataFrame([{"Date": "N/A", "Segment": "N/A", "Call": "N/A", "Price": "N/A"}])
+            ticker_df = pd.DataFrame([{"Date": "N/A", "Segment": "N/A", "Call": "N/A", "Price": "N/A",
+                                       "Pro Cramer": "N/A", "Inverse Cramer": "N/A"}])
         else:
             del ticker_df["Ticker"]
             latest_price = history_df.iloc[-1]["Close"]
-            ticker_df["% from Today"] = latest_price
-            ticker_df["% from Today"] = 100 * (ticker_df["% from Today"] - ticker_df["Price"]) / ticker_df["Price"]
-            # if ticker_df["% from Today"].str.contains("Negative"):
+            ticker_df["Pro Cramer"] = latest_price
+            ticker_df["Pro Cramer"] = 100 * (ticker_df["Pro Cramer"] - ticker_df["Price"]) / ticker_df["Price"]
+            ticker_df.loc[ticker_df["Call"].isin(["Negative", "Sell"]), 'Pro Cramer'] *= -1
+            ticker_df["Inverse Cramer"] = ticker_df["Pro Cramer"] * -1
 
         return render(request, 'discover/jim_cramer_ticker_analysis.html', {"ticker_selected": ticker_selected.upper(),
+                                                                            "information": information,
+                                                                            "related_tickers": related_tickers,
                                                                             "ticker_df": ticker_df.to_html(index=False),
                                                                             "history_df": history_df.to_html(
                                                                                 index=False)})

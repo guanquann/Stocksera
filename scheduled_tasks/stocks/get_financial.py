@@ -9,7 +9,7 @@ import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
-from scheduled_tasks.get_popular_tickers import full_ticker_list
+from scheduled_tasks.others.get_popular_tickers import full_ticker_list
 from helpers import *
 
 session = requests_cache.CachedSession('yfinance.cache')

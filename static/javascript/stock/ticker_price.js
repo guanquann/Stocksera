@@ -56,7 +56,6 @@ function show_ticker_table(information) {
                 <td>Div. Yield: ${dividend_yield}</td>
                 <td>Dividend: ${dividend_amount}</td>
             </tr>`
-        document.getElementById("more_info_div").style.removeProperty("display");
         btn_div = document.getElementsByClassName("btn_div")
         btn_div[1].style.display = "none"
         btn_div[4].style.display = "none"
@@ -137,7 +136,6 @@ function show_ticker_table(information) {
                 <td>Employees: ${employees}</td>
                 <td>Country: ${country}</td>
             </tr>`
-        document.getElementById("more_info_div").style.removeProperty("display");
     }
 
     <!--Code to display image, full name, symbol, industry and sector-->

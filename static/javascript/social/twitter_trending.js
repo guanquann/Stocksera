@@ -30,7 +30,7 @@ function trending_ticker_graph(symbol) {
                     {
                         scaleLabel: {
                             display: true,
-                            labelString: 'Rank',
+                            labelString: 'Mentions',
                         },
                         gridLines: {
                             drawOnChartArea: false,

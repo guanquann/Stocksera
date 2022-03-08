@@ -12,6 +12,7 @@ function load_ticker_table() {
     hold_date_list = [], hold_price_list = [];
     negative_date_list = [], negative_price_list = [];
     sell_date_list = [], sell_price_list = [];
+    cramer_performance = 0;
     var tr = document.querySelector("table").querySelectorAll("tr")
     for (i=1; i<tr.length; i++) {
         td = tr[i].querySelectorAll("td")
@@ -19,22 +20,31 @@ function load_ticker_table() {
             buy_date_list.push(td[0].innerHTML)
             buy_price_list.push(td[3].innerHTML)
         }
-        if (td[2].innerHTML == "Positive") {
+        else if (td[2].innerHTML == "Positive") {
             positive_date_list.push(td[0].innerHTML)
             positive_price_list.push(td[3].innerHTML)
         }
-        if (td[2].innerHTML == "Hold") {
+        else if (td[2].innerHTML == "Hold") {
             hold_date_list.push(td[0].innerHTML)
             hold_price_list.push(td[3].innerHTML)
         }
-        if (td[2].innerHTML == "Negative") {
+        else if (td[2].innerHTML == "Negative") {
             negative_date_list.push(td[0].innerHTML)
             negative_price_list.push(td[3].innerHTML)
         }
-        if (td[2].innerHTML == "Sell") {
+        else if (td[2].innerHTML == "Sell") {
             sell_date_list.push(td[0].innerHTML)
             sell_price_list.push(td[3].innerHTML)
         }
+        else {
+            continue
+        }
+        td[3].innerHTML = "$" + td[3].innerHTML
+        cramer_performance += Number(td[4].innerHTML)
+        td[4].innerHTML += "%"
+        td[5].innerHTML += "%"
+        td[4].parentElement.style.backgroundColor = td[4].innerHTML.includes("-") ? "#ff000054" : "#00800078"
+        document.querySelector("#cramer_performance").innerHTML = Math.round(100 * cramer_performance / (tr.length-1)) / 100
     }
 
     var trace = {
@@ -164,6 +174,24 @@ function load_ticker_table() {
     };
 
     Plotly.newPlot('price_chart', data, layout, {displayModeBar: false, showTips: false, responsive: true});
+}
+
+function toggle_checkbox(elem) {
+    checkbox = document.getElementById(elem)
+    tr = document.querySelector("table").querySelectorAll("tr");
+    for (i=1; i<tr.length; i++) {
+        if (tr[i].querySelector("td").innerHTML != "N/A") {
+            tr[i].style.backgroundColor = tr[i].style.backgroundColor == "rgba(0, 128, 0, 0.47)" ? "rgba(255, 0, 0, 0.33)" : "rgba(0, 128, 0, 0.47)"
+        }
+    }
+    if (elem == "pro") {
+        document.querySelector("#inverse").checked = false
+    }
+    else {
+        document.querySelector("#pro").checked = false
+    }
+    document.querySelector("#cramer_performance_title").innerHTML = document.querySelector("#cramer_performance_title").innerHTML == "Inverse Cramer's Performance" ? "Pro Cramer's Performance" : "Inverse Cramer's Performance"
+    document.querySelector("#cramer_performance").innerHTML *= -1
 }
 
 function resize_plotly_graph() {

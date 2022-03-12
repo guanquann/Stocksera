@@ -164,6 +164,16 @@ def database():
                 "percentage FLOAT, "
                 "status VARCHAR(20))")
 
+    cur.execute("CREATE table IF NOT EXISTS wsb_etf ("
+                "ticker VARCHAR(10), "
+                "open_date VARCHAR(20), "
+                "open_price VARCHAR(20), "
+                "close_date VARCHAR(20), "
+                "close_price VARCHAR(20), "
+                "profit_per_10000 VARCHAR(20), "
+                "percentage VARCHAR(20), "
+                "status VARCHAR(20))")
+
     cur.execute("CREATE table IF NOT EXISTS earnings_calendar ("
                 "company_name VARCHAR(200), "
                 "ticker VARCHAR(10), "

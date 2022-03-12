@@ -286,10 +286,10 @@ function get_economic_releases(elem) {
         treasury_code = `<div>Treasury: ${treasury_json} </div>`
     }
     if (inflation_json == today_date) {
-        inflation_code = `<div style="color:red">Inflation: ${inflation_json} (Pre)</div>`
+        inflation_code = `<div style="color:red">CPI: ${inflation_json} (Pre)</div>`
     }
     else {
-        inflation_code = `<div>Inflation: ${inflation_json} (Pre)</div>`
+        inflation_code = `<div>CPI: ${inflation_json} (Pre)</div>`
     }
     if (retail_sales_json == today_date) {
         retail_sales_code = `<div style="color:red">Retail Sales: ${retail_sales_json} (Pre)</div>`

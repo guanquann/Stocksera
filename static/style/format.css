@@ -341,6 +341,7 @@ body {
 	font-family: Arial;
 	overflow-x:hidden;
 	background-color: white;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 .dark_mode .submit_btn {

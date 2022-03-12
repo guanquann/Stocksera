@@ -12,19 +12,22 @@ def main():
     all_symbols.extend(full_ticker_list())
 
     for symbol in all_symbols:
-        if len(symbol) > 1:
-            url = f"https://api.twitter.com/2/tweets/counts/recent?query={symbol}&granularity=day"
-            json_response = connect_to_endpoint(url)
-            print(symbol)
-            for i in json_response["data"]:
-                start_date = i["start"]
-                end_date = i["end"]
-                if end_date.endswith("00:00:00.000Z"):
-                    tweet_count = i["tweet_count"]
-                    cur.execute("INSERT IGNORE INTO twitter_trending VALUES (%s, %s, %s)",
-                                (symbol, tweet_count, start_date.split("T")[0]))
-                    cnx.commit()
-        time.sleep(1)
+        try:
+            if len(symbol) > 1:
+                url = f"https://api.twitter.com/2/tweets/counts/recent?query={symbol}&granularity=day"
+                json_response = connect_to_endpoint(url)
+                print(symbol)
+                for i in json_response["data"]:
+                    start_date = i["start"]
+                    end_date = i["end"]
+                    if end_date.endswith("00:00:00.000Z"):
+                        tweet_count = i["tweet_count"]
+                        cur.execute("INSERT IGNORE INTO twitter_trending VALUES (%s, %s, %s)",
+                                    (symbol, tweet_count, start_date.split("T")[0]))
+                        cnx.commit()
+            time.sleep(1)
+        except:
+            continue
 
 
 if __name__ == "__main__":

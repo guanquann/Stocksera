@@ -32,6 +32,7 @@ cnx = mysql.connector.connect(user=config_keys["MYSQL_USER"],
                               password=config_keys["MYSQL_PASSWORD"],
                               host=config_keys["MYSQL_HOST"],
                               database=config_keys["MYSQL_DATABASE"])
+cnx.autocommit = True
 cur = cnx.cursor()
 
 
@@ -49,6 +50,7 @@ def connect_mysql_database():
                                       password=config_keys["MYSQL_PASSWORD"],
                                       host=config_keys["MYSQL_HOST"],
                                       database=config_keys["MYSQL_DATABASE"])
+        cnx.autocommit = True
         cur = cnx.cursor()
     return cnx, engine
 

@@ -1172,19 +1172,21 @@ def jim_cramer(request):
 
         data = requests.get(f"{BASE_URL}/jim_cramer/{ticker_selected}").json()
         ticker_df = pd.DataFrame(data)
-
         history_df = yf.Ticker(ticker_selected).history(period="1y", interval="1d")
         history_df.reset_index(inplace=True)
         history_df = history_df[["Date", "Close"]]
+        history_df["Date"] = history_df["Date"].astype(str)
 
         if ticker_df.empty:
-            ticker_df = pd.DataFrame([{"Date": "N/A", "Segment": "N/A", "Call": "N/A", "Price": "N/A",
+            ticker_df = pd.DataFrame([{"Date": "N/A", "Segment": "N/A", "Call": "N/A", "Close": "N/A",
                                        "Pro Cramer": "N/A", "Inverse Cramer": "N/A"}])
         else:
             del ticker_df["Ticker"]
+            del ticker_df["Price"]
             latest_price = history_df.iloc[-1]["Close"]
+            ticker_df = ticker_df.merge(history_df, on="Date")
             ticker_df["Pro Cramer"] = latest_price
-            ticker_df["Pro Cramer"] = 100 * (ticker_df["Pro Cramer"] - ticker_df["Price"]) / ticker_df["Price"]
+            ticker_df["Pro Cramer"] = 100 * (ticker_df["Pro Cramer"] - ticker_df["Close"]) / ticker_df["Close"]
             ticker_df.loc[ticker_df["Call"].isin(["Negative", "Sell"]), 'Pro Cramer'] *= -1
             ticker_df["Inverse Cramer"] = ticker_df["Pro Cramer"] * -1
 

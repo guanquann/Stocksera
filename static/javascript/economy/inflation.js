@@ -2,10 +2,12 @@ function color_table(is_checked, whether_drs) {
     var date_list = [], avg_inflation = [];
     var table = document.getElementsByTagName("table")[0];
     var tr = table.querySelectorAll("tr");
+    tr[0].querySelectorAll("th")[13].style.display = "none"
     if (is_checked == "checked") {
         for (i=tr.length-1; i>0; i--) {
             var td = tr[i].querySelectorAll("td");
-            for (k=1; k<td.length; k++) {
+            td[13].style.display = "none"
+            for (k=1; k<td.length-1; k++) {
                 const value = td[k].innerHTML
                 if (value != "N/A") {
                     const l = 100 - (value * 11);

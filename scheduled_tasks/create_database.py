@@ -174,17 +174,6 @@ def database():
                 "percentage VARCHAR(20), "
                 "status VARCHAR(20))")
 
-    cur.execute("CREATE table IF NOT EXISTS earnings_calendar ("
-                "company_name VARCHAR(200), "
-                "ticker VARCHAR(10), "
-                "mkt_cap BIGINT, "
-                "eps_est VARCHAR(20), "
-                "eps_act VARCHAR(20), "
-                "surprise VARCHAR(20), "
-                "earning_date VARCHAR(20), "
-                "earning_time VARCHAR(20), "
-                "UNIQUE(company_name, ticker) )")
-
     cur.execute("CREATE table IF NOT EXISTS earnings ("
                 "`date` VARCHAR(20), "
                 "`hour` VARCHAR(20), "
@@ -195,6 +184,8 @@ def database():
                 "`revenue_act` VARCHAR(20), "
                 "`year` VARCHAR(10), "
                 "`quarter` VARCHAR(10),"
+                "`mkt_cap` VARCHAR(20),"
+                "UNIQUE(ticker, `hour`),"
                 "INDEX (`date`)  )")
 
     cur.execute("CREATE table IF NOT EXISTS subreddit_count ("

@@ -541,12 +541,14 @@ def failure_to_deliver(request):
 
 def earnings_calendar(request):
     """
-    Get earnings for the upcoming week. Data from yahoo finance
+    Get earnings for the upcoming weeks
     """
-    cur.execute("SELECT * FROM earnings_calendar ORDER BY earning_date ASC")
-    calendar = cur.fetchall()
-    calendar = list(map(list, calendar))
-    return render(request, 'market_summary/earnings_calendar.html', {"earnings_calendar": calendar})
+    df = pd.read_sql("SELECT * FROM earnings ORDER by `date` ASC, CAST(mkt_cap AS UNSIGNED) DESC", cnx)
+    df["FY"] = "Q" + df["quarter"] + "/" + df["year"]
+    del df["quarter"]
+    del df["year"]
+    df.columns = ["Date", "Time", "Ticker", "EPS Est", "EPS Act", "Rev Est", "Rev Act", "Mkt Cap", "FY"]
+    return render(request, 'market_summary/earnings.html', {"df": df.to_html(index=False)})
 
 
 def reddit_analysis(request):

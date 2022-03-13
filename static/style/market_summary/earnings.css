@@ -1,0 +1,33 @@
+select {
+    padding: 0.35%;
+    border: 1px solid grey;
+    border-radius: 3px;
+}
+
+input {
+    border: 1px solid grey;
+    border-radius: 3px;
+    padding: 0.4%;
+    text-transform: uppercase;
+    max-width: 70px;
+}
+
+input:focus {
+    outline: none;
+}
+
+.time_filter {
+    display: none;
+}
+
+.date_filter {
+    display: none;
+}
+
+.mkt_cap_filter {
+    display: none;
+}
+
+.ticker_filter {
+    display: none;
+}

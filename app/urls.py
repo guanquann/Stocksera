@@ -7,7 +7,6 @@ urlpatterns = [
 
     # Stock
     path('ticker/', views.stock_price, name='ticker'),
-    path('earnings_calendar/', views.earnings_calendar, name='earnings_calendar'),
     path('ticker/financial/', views.financial, name='financial'),
     path('ticker/options/', views.options, name='options'),
     path('ticker/short_volume/', views.short_volume, name='short_volume'),
@@ -65,6 +64,7 @@ urlpatterns = [
     path('covid_beta/', views.covid_beta, name='covid_beta'),
     path('short_interest/', views.short_interest, name='short_interest'),
     path('low_float/', views.low_float, name='low_float'),
+    path('earnings_calendar/', views.earnings_calendar, name='earnings_calendar'),
 
     # News
     path('news/', views.news, name='news'),

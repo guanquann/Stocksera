@@ -503,7 +503,7 @@ def stocktwits(request, ticker_selected=None):
                                "ticker='{}' ".format(ticker_selected), cnx)
     else:
         df = pd.read_sql_query("SELECT `rank`, watchlist, ticker FROM stocktwits_trending "
-                               "ORDER BY date_updated DESC LIMIT 30", cnx)
+                               "ORDER BY date_updated DESC, `rank` ASC LIMIT 30", cnx)
     df = df.to_dict(orient="records")
     return JSONResponse(df)
 

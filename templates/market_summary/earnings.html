@@ -1,0 +1,68 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}Stocksera | Earnings{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/market_summary/earnings.css' %}">
+<script src="{% static 'javascript/market_summary/earnings.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}load_table(){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/market_summary/">Market Summary</a> /
+    <a href="/earnings_calendar">Earnings</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('market_summary')</script>
+    <div id="top"></div>
+
+    <div class="more_info_div_parent">
+        <div class="more_info_div"><a href="{% url 'market_summary' %}?type=snp500">S&P</a></div>
+        <div class="more_info_div"><a href="{% url 'market_summary' %}?type=nasdaq100">Nasdaq</a></div>
+        <div class="more_info_div"><a href="{% url 'market_summary' %}?type=dia">DIA</a></div>
+        <div class="more_info_div"><a href="{% url 'market_summary' %}?type=crypto">Crypto</a></div>
+        <div class="more_info_div"><a href="{% url 'market_summary' %}?type=wsb">WSB</a></div>
+        <div class="more_info_div"><a href="{% url 'futures' %}?type=wsb">Futures</a></div>
+        <div class="more_info_div current_link"><a href="{% url 'earnings_calendar' %}">Earnings</a></div>
+    </div>
+
+    <div class="instructions">
+        <h2>Earnings Calendar</h2>
+        <p>View earnings for the week. There is usually a run-up to earning date. Good earning report often cause price to jump higher. Nonetheless, any downward revisions to future sales, earnings, cash flow could cause a tank instead! </p>
+        <div class="menu">
+            <input type="text" placeholder="Ticker:" autocomplete="off" class="filter_ticker" id="search_ticker" onkeyup="searchTicker(this)">
+            <span>Market Cap: </span>
+            <select onchange="mkt_cap_filter(this)">
+                <option>All</option>
+                <option><$1B</option>
+                <option>>$1B</option>
+                <option>>$5B</option>
+                <option>>$10B</option>
+                <option>>$20B</option>
+                <option>>$50B</option>
+            </select>
+            <span>Time: </span>
+            <select onchange="time_filter(this)">
+                <option value="All">All</option>
+                <option value="BMO">BMO</option>
+                <option value="AMC">AMC</option>
+                <option value="DMO">DMO</option>
+            </select>
+            <span>Date: </span>
+            <select onchange="date_filter(this)" id="date_filter">
+                <option value="All">All</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="contents_div">
+        <div class="scrollable_div">
+            {{df|safe}}
+        </div>
+    </div>
+{% endblock %}

@@ -170,7 +170,6 @@ def database():
                 "open_price VARCHAR(20), "
                 "close_date VARCHAR(20), "
                 "close_price VARCHAR(20), "
-                "profit_per_10000 VARCHAR(20), "
                 "percentage VARCHAR(20), "
                 "status VARCHAR(20))")
 

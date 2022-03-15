@@ -1,136 +1,91 @@
 import os
 import sys
-import logging
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..//..'))
-from fast_yahoo import *
-from helpers import connect_mysql_database
+from helpers import *
 
 cnx, engine = connect_mysql_database()
-cur = cnx.cursor()
+cur = cnx.cursor(buffered=True)
 
-logging.basicConfig(filename=r'database/logging.log', level=logging.INFO)
+from datetime import datetime, timedelta
 
-cur.execute("SELECT * FROM reddit_etf WHERE status=%s", ("Open", ))
-prev_bought = cur.fetchall()
-prev_bought_ticker = []
-for bought in prev_bought:
-    prev_bought_ticker.append(bought[0])
+start_datetime = str(datetime.utcnow() - timedelta(days=0))
+previous_datetime = str(datetime.utcnow() - timedelta(days=1))
+previous_previous_datetime = str(datetime.utcnow() - timedelta(days=2))
 
+cur.execute("SELECT ticker FROM wsb_trending_24H where date_updated >= %s AND date_updated <= %s AND ticker NOT IN "
+            "('SPY', 'QQQ', 'TQQQ', 'DIA') GROUP BY ticker ORDER BY SUM(mentions) DESC LIMIT 10",
+            (previous_previous_datetime, previous_datetime,))
+previously_bought = cur.fetchall()
+previously_bought = list(map(lambda x: x[0], previously_bought))
 
-def buy_new_ticker(date):
-    """
-    Buy ticker if ticker is inside the Top 10 popular tickers on r/wallstreetbets
-    Note: Run this function after running scheduled_tasks/main.py to get most trending tickers on Reddit
-    Parameters
-    ----------
-    date: str
-        Format: DD/MM/YYYY HH:MM:SS
-    """
-    raw_date = date
-    latest_date = date
-    if " " in latest_date:
-        latest_date = latest_date.split()[0]
-        latest_date = datetime.strptime(latest_date, "%d/%m/%Y")
-    cur.execute("SELECT ticker FROM wallstreetbets where date_updated=%s AND ticker NOT IN "
-                "('SPY', 'QQQ', 'TQQQ', 'DIA') ORDER BY total DESC LIMIT 10", (raw_date,))
-    rows = cur.fetchall()
-    rows = list(map(lambda x: x[0], rows))
-    rows = download_advanced_stats(rows)
-    for symbol, info in rows.items():
-        if symbol not in prev_bought_ticker:
-            if info["marketState"] != "REGULAR":
-                print("Market not open currently! {} not bought!".format(symbol))
-                continue
-            open_price = round(float(info["regularMarketOpen"].replace(",", "")), 2)
-            num_shares = round(10000 / open_price, 2)
-            message = "Ticker {} to be bought on {} for ${}.".format(symbol, str(latest_date).split()[0], open_price)
-            print(message)
-            logging.info(message)
-            cur.execute("INSERT INTO reddit_etf VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                        (symbol, str(latest_date).split()[0], open_price, num_shares,
-                         "N/A", "N/A", "N/A", "N/A", "Open"))
-            cnx.commit()
-        else:
-            print("{} not bought, since it is already Top-10 in the previous day!".format(symbol))
+cur.execute("SELECT ticker FROM wsb_trending_24H where date_updated >= %s AND date_updated <= %s AND ticker NOT IN "
+            "('SPY', 'QQQ', 'TQQQ', 'DIA') GROUP BY ticker ORDER BY SUM(mentions) DESC LIMIT 10", (previous_datetime, start_datetime))
+to_buy = cur.fetchall()
+to_buy = list(map(lambda x: x[0], to_buy))
+
+print("Previous: ", previously_bought)
+print("To buy: ", to_buy)
 
 
-def sell_ticker(date):
-    """
-    Sell ticker if ticker is outside the Top 10 popular tickers on r/wallstreetbets
-    Note: Run this function after running scheduled_tasks/main.py to get most trending tickers on Reddit
-    Parameters
-    ----------
-    date: str
-        Format: DD/MM/YYYY HH:MM:SS
-    """
-    raw_date = date
-    latest_date = date
-    if " " in latest_date:
-        latest_date = latest_date.split()[0]
-        latest_date = datetime.strptime(latest_date, "%d/%m/%Y")
+def get_open_price(ticker_selected, date_selected=datetime.utcnow().date()):
+    ticker = yf.Ticker(ticker_selected)
+    history_df = ticker.history(period="1y", interval="1d")
+    history_df.reset_index(inplace=True)
+    history_df["Date"] = history_df["Date"].astype(str)
+    while (str(date_selected) in history_df["Date"].values) is False:
+        date_selected = date_selected - timedelta(days=1)
+    open_price = history_df[history_df["Date"] == str(date_selected)]["Open"].values[0]
+    return open_price
 
-    cur.execute("SELECT ticker FROM wallstreetbets where date_updated=%s AND ticker NOT IN "
-                "('SPY', 'QQQ', 'TQQQ', 'DIA') ORDER BY total DESC LIMIT 10", (raw_date,))
 
-    rows = cur.fetchall()
-    rows = list(map(lambda x: x[0], rows))
-    new_bought_ticker = rows
-
-    sell = list(set(prev_bought_ticker)-set(new_bought_ticker))
-    rows = download_advanced_stats(sell)
-    print(sell, "yes")
-    for symbol in sell:
-        info = rows[symbol]
-        if info["marketState"] != "REGULAR":
-            print("Market not open currently! {} not sold!".format(symbol))
-            continue
-        close_price = round(float(info["regularMarketOpen"].replace(",", "")), 3)
-        message = "Ticker {} to be sold on {} at ${} during market open.".format(symbol, str(latest_date).split()[0],
-                                                                                 close_price)
-        print(message)
-        logging.info(message)
-        cur.execute("SELECT * FROM reddit_etf WHERE ticker=%s AND status='Open'", (symbol, ))
-        stats = cur.fetchone()
-        difference = round(close_price - stats[2], 2)
-        PnL = round(difference * stats[3], 2)
-        percentage_diff = round((difference / stats[2]) * 100, 2)
-        cur.execute("UPDATE reddit_etf SET close_date=%s, close_price=%s, PnL=%s, percentage=%s, status=%s "
-                    "WHERE ticker=%s AND status=%s", (str(latest_date).split()[0], close_price, PnL, percentage_diff,
-                                                      "Close", symbol, "Open"))
+def buy_tickers():
+    cur.execute("SELECT * FROM wsb_etf WHERE status='Open'")
+    stats = cur.fetchone()
+    if stats is None:
+        tickers_to_buy = to_buy
+    else:
+        update_previous_tickers()
+        sell_tickers()
+        tickers_to_buy = set(to_buy) - set(previously_bought)
+    print("To buy, after removing duplicates: ", tickers_to_buy)
+    for ticker_selected in tickers_to_buy:
+        open_price = get_open_price(ticker_selected)
+        print(ticker_selected, float(open_price))
+        cur.execute("INSERT INTO wsb_etf VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                    (ticker_selected, previous_datetime.split()[0], round(open_price, 2),   # previous_datetime
+                     "N/A", "N/A", "N/A", "Open"))
         cnx.commit()
-    logging.info("-" * 50)
 
 
-def update_bought_ticker_price():
-    """
-    Update price of ticker inside the Top 10 popular tickers on r/wallstreetbets
-    Note: Run this function after running scheduled_tasks/main.py to get most trending tickers on Reddit
-    """
-    print("Updating ticker price now...")
-    cur.execute("SELECT * FROM reddit_etf WHERE status='Open'")
-    open_ticker_list = cur.fetchall()
+def update_previous_tickers():
+    cur.execute("SELECT * FROM wsb_etf WHERE status='Open'")
+    tickers_bought = cur.fetchall()
+    for stats in tickers_bought:
+        ticker_selected = stats[0]
+        latest_price = get_open_price(ticker_selected)
 
-    rows = list(map(lambda x: x[0], open_ticker_list))
-    rows = download_advanced_stats(rows)
+        buy_price = float(stats[2])
 
-    for ticker in open_ticker_list:
-        info = rows[ticker[0]]
-        buy_price = ticker[2]
-        today_price = round(float(info["regularMarketPrice"].replace(",", "")), 2)
-        difference = today_price - buy_price
-        PnL = round(difference * ticker[3], 2)
-        percentage_diff = round((difference / buy_price) * 100, 2)
-        cur.execute("UPDATE reddit_etf SET close_price=%s, PnL=%s, percentage=%s "
-                    "WHERE ticker=%s AND status='Open'", (today_price, PnL, percentage_diff, ticker[0]))
+        difference = latest_price - buy_price
+        percentage = round((difference / buy_price) * 100, 2)
+        cur.execute("UPDATE wsb_etf SET percentage=%s WHERE ticker=%s AND status=%s",
+                    (percentage, ticker_selected, "Open"))
         cnx.commit()
-        print("Update {} Successful!".format(ticker[0]))
+
+
+def sell_tickers():
+    to_sell_tickers = set(previously_bought).difference(set(to_buy))
+    print("To sell: ", to_sell_tickers)
+    for ticker_selected in to_sell_tickers:
+        latest_price = get_open_price(ticker_selected)
+        print("selling {} now...".format(ticker_selected))
+        cur.execute("UPDATE wsb_etf SET close_date=%s, close_price=%s, status=%s WHERE ticker=%s AND status=%s",
+                    (start_datetime.split()[0], latest_price, "Close", ticker_selected, "Open"))
+        cnx.commit()
 
 
 if __name__ == '__main__':
-    print("Previously bought tickers: ", prev_bought_ticker)
-    cur.execute("SELECT date_updated FROM wallstreetbets ORDER BY ID DESC LIMIT 1")
-    db_date = cur.fetchone()[0]
-    buy_new_ticker(db_date)
-    sell_ticker(db_date)
-    update_bought_ticker_price()
+    # sell_tickers()
+    # update_previous_tickers()
+    buy_tickers()

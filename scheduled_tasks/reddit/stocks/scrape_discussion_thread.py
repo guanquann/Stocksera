@@ -173,7 +173,7 @@ def wsb_live():
     quick_stats_df["price"] = pd.to_numeric(quick_stats_df["price"], errors='coerce')
     quick_stats_df.dropna(inplace=True)
     quick_stats_df = quick_stats_df[quick_stats_df["price"] >= 0.5]
-    quick_stats_df = quick_stats_df[quick_stats_df["volume"] >= 500000]
+    quick_stats_df = quick_stats_df[quick_stats_df["volume"] >= 50000]
     valid_ticker_list = list(quick_stats_df.index.values)
 
     # Combine into 1 df

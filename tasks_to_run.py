@@ -28,7 +28,7 @@ import scheduled_tasks.discover.get_stocks_summary as get_stocks_summary
 import scheduled_tasks.discover.get_ipo_calendar as get_ipo_calendar
 import scheduled_tasks.discover.miscellaneous as miscellaneous
 import scheduled_tasks.discover.get_stocktwits_trending as get_stocktwits_trending
-import scheduled_tasks.discover.get_earnings_calendar as get_earnings_calendar
+import scheduled_tasks.discover.get_earnings as get_earnings
 
 import scheduled_tasks.news.get_news as get_news
 
@@ -186,9 +186,7 @@ if __name__ == '__main__':
         miscellaneous.get_high_short_interest()
 
     if EARNINGS_CALENDAR:
-        get_earnings_calendar.insert_earnings_into_db(get_earnings_calendar.get_earnings(7, forward=True))
-        get_earnings_calendar.update_previous_earnings(get_earnings_calendar.get_earnings(7, forward=True))
-        get_earnings_calendar.delete_old_earnings(14)
+        get_earnings.main()
 
     if LATEST_NEWS:
         get_news.main()

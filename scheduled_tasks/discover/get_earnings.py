@@ -34,7 +34,6 @@ def main():
     main_df.fillna("N/A", inplace=True)
     main_df["hour"] = main_df["hour"].str.upper()
     print(main_df)
-    # print(main_df[main_df["symbol"] == "GTLB"])
     cur.executemany("INSERT IGNORE INTO earnings VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                     main_df.values.tolist())
     cnx.commit()

@@ -1,4 +1,7 @@
 ---
+  # https://github.com/guanquann/Stocksera/
+  STOCKSERA_API: "API_KEY_HERE"
+
   # https://finnhub.io/
   FINNHUB_KEY1: "API_KEY_HERE"
   FINNHUB_KEY2: "API_KEY_HERE"

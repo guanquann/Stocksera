@@ -4,9 +4,6 @@ from . import views
 urlpatterns = [
     path('stocksera_trending/', views.stocksera_trending, name='api_stocksera_trending'),
 
-    path('history/', views.historical_data, name='api_history'),
-    path('history/<str:ticker_selected>/', views.historical_data, name='api_history'),
-
     path('sec_fillings/', views.sec_fillings, name='api_sec_fillings'),
     path('sec_fillings/<str:ticker_selected>/', views.sec_fillings, name='api_sec_fillings'),
 
@@ -72,4 +69,8 @@ urlpatterns = [
 
     path('borrowed_shares/', views.borrowed_shares, name='api_borrowed_shares'),
     path('borrowed_shares/<str:ticker_selected>/', views.borrowed_shares, name='api_borrowed_shares'),
+
+    path('stocksera_api_key/', views.stocksera_api_key, name='api_stocksera_api_key'),
+    path('signup/', views.signup, name='api_signup'),
+    path('login/', views.login, name='api_login'),
 ]

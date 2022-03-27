@@ -1,0 +1,154 @@
+{% extends "registration/header.html" %}
+{% load static %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/users/watchlist.css' %}">
+<script src="{% static 'javascript/users/watchlist.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+{% endblock %}
+
+{% block onload_properties%}load_table({{borrowed_shares}}, {{ftd}}, {{short_vol}}, {{wsb}}){% endblock %}
+
+{% block content %}
+    {% load crispy_forms_tags %}
+    <div class="container p-3">
+        <h2 class="font-weight-bold mt-1">Watchlist</h2>
+        <h6>@{{user.username}}</h6>
+        <hr>
+
+        <form method="GET">
+            <div class="form-inline">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ticker_selected}}</button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {% for wlist in all_wlist %}
+                            <a class="dropdown-item" href="{% url 'watchlist' %}?quote={{wlist.ticker}}">{{wlist.ticker}}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="ml-1 col">
+                  <input type="text" class="form-control" placeholder="Add Ticker:" name="quote">
+                </div>
+                <button class="btn btn-primary ml-1" type="submit">Add</button>
+                <button type="button" class="btn btn-danger ml-1" data-toggle="modal" data-target="#remove_modal">Remove</button>
+            </div>
+        </form>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="modal fade" id="remove_modal" tabindex="-1" role="dialog" aria-labelledby="remove_modal_label" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="remove_modal_label">Remove {{ticker_selected}}?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to remove {{ticker_selected}} from your watchlist?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <br>
+        <div class="row">
+            <div class="col">
+                <br>
+                <h5>
+                    <span>Borrowed Shares</span>
+                    <span class="display_icon_container">
+                        <span onclick="show_table('borrowed_shares', this)"><img style="background: #EAE9E9" class="toggle_display_icon" src="{% static 'images/users/table.svg' %}"></span>
+                        <span onclick="show_graph('borrowed_shares', this)"><img class="toggle_display_icon" src="{% static 'images/users/graph.svg' %}"></span>
+                    </span>
+                </h5>
+                <div class="table_div">
+                    <table id="borrowed_shares" class="table table-hover table-sm">
+                        <tr>
+                            <th>Fee</th>
+                            <th>Available</th>
+                            <th>Updated</th>
+                        </tr>
+                    </table>
+                </div>
+                <div class="graph_div">
+                    <canvas id="borrowed_shares_chart"></canvas>
+                </div>
+            </div>
+            <div class="col">
+                <br>
+                <h5>
+                    <span>FTD</span>
+                    <span class="display_icon_container">
+                        <span onclick="show_table('ftd', this)"><img style="background: #EAE9E9" class="toggle_display_icon" src="{% static 'images/users/table.svg' %}"></span>
+                        <span onclick="show_graph('ftd', this)"><img class="toggle_display_icon" src="{% static 'images/users/graph.svg' %}"></span>
+                    </span>
+                </h5>
+                <div class="table_div">
+                    <table id="ftd" class="table table-hover table-sm">
+                        <tr>
+                            <th>Date</th>
+                            <th>FTD</th>
+                            <th>Price</th>
+                        </tr>
+                    </table>
+                </div>
+                <div class="graph_div">
+                    <canvas id="ftd_chart"></canvas>
+                </div>
+            </div>
+            <div class="w-100"></div>
+            <div class="col">
+                <br>
+                <h5>
+                    <span>Short Vol.</span>
+                    <span class="display_icon_container">
+                        <span onclick="show_table('short_vol', this)"><img style="background: #EAE9E9" class="toggle_display_icon" src="{% static 'images/users/table.svg' %}"></span>
+                        <span onclick="show_graph('short_vol', this)"><img class="toggle_display_icon" src="{% static 'images/users/graph.svg' %}"></span>
+                    </span>
+                </h5>
+                <div class="table_div">
+                    <table id="short_vol" class="table table-hover table-sm">
+                        <tr>
+                            <th>Date</th>
+                            <th>Short Vol.</th>
+                            <th>Long Vol.</th>
+                            <th>% Shorted</th>
+                        </tr>
+                    </table>
+                </div>
+                <div class="graph_div">
+                    <canvas id="short_vol_chart"></canvas>
+                </div>
+            </div>
+            <div class="col">
+                <br>
+                <h5>
+                    <span>Wallstreetbets</span>
+                    <span class="display_icon_container">
+                        <span onclick="show_table('wsb', this)"><img style="background: #EAE9E9" class="toggle_display_icon" src="{% static 'images/users/table.svg' %}"></span>
+                        <span onclick="show_graph('wsb', this)"><img class="toggle_display_icon" src="{% static 'images/users/graph.svg' %}"></span>
+                    </span>
+                </h5>
+                <div class="table_div">
+                    <table id="wsb" class="table table-hover table-sm">
+                        <tr>
+                            <th>Mentions</th>
+                            <th>Calls</th>
+                            <th>Puts</th>
+                            <th>Updated</th>
+                        </tr>
+                    </table>
+                </div>
+                <div class="graph_div">
+                    <canvas id="wsb_chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

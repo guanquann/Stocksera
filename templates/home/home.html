@@ -1,334 +1,249 @@
-{% extends "format.html" %}
+<!DOCTYPE html>
 {% load static %}
-{% load filter %}
-
-{% block title %}Stocksera | Home{% endblock %}
-
-{% block additional_script %}
-<link rel="stylesheet" href="{% static 'style/home/home.css' %}">
-<link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
-<script src="{% static 'javascript/home/home.js' %}"></script>
-{% endblock %}
-
-{% block main_nav %}
-    <a href="/">Stocksera</a> /
-    <a href="/">Home</a>
-{% endblock %}
-
-{% block main_content %}
-<script>highlight_selected_nav('home')</script>
-<div class="section_1">
-    <div class="main_div">
-        <div>
-            <h1 style="font-size: 30px">Stocksera</h1>
-            <div>
-                We track trending tickers on social media and provide free data for easy due-diligence & analysis.
-            </div>
-            <div class="nav_bar_ticker_search_div">
-                <form action="/ticker/" method="GET" autocomplete="off">
-                    <input type="text" class="nav_bar_ticker_input" name="quote" placeholder="Ticker Search: ">
-                    <input type="submit" hidden>
-                </form>
-            </div>
-        </div>
-        <div id="intro_images">
-            <div class="introSlides fade">
-                <a href="/ticker/failure_to_deliver"><img src="{% static 'images/homepage/introduction/light_mode/ftd.png' %}"></a>
-            </div>
-            <div class="introSlides fade">
-                <a href="/inflation"><img src="{% static 'images/homepage/introduction/light_mode/inflation.png' %}"></a>
-            </div>
-            <div class="introSlides fade">
-                <a href="/ticker/options"><img src="{% static 'images/homepage/introduction/light_mode/options.png' %}"></a>
-            </div>
-            <div class="introSlides fade">
-                <a href="/reverse_repo"><img src="{% static 'images/homepage/introduction/light_mode/rrp.png' %}"></a>
-            </div>
-            <div class="introSlides fade">
-                <a href="/ticker/short_volume"><img src="{% static 'images/homepage/introduction/light_mode/short_volume.png' %}"></a>
-            </div>
-            <div class="introSlides fade">
-                <a href="/wsb_live"><img src="{% static 'images/homepage/introduction/light_mode/wsb_live.png' %}"></a>
-            </div>
-            <div class="introSlides fade">
-                <a href="/wsb_live"><img src="{% static 'images/homepage/introduction/light_mode/wsb_live2.png' %}"></a>
-            </div>
-        </div>
-
-        <div>
-            <span class="introDot"></span>
-            <span class="introDot"></span>
-            <span class="introDot"></span>
-            <span class="introDot"></span>
-            <span class="introDot"></span>
-            <span class="introDot"></span>
-            <span class="introDot"></span>
-        </div>
-
-    </div>
-</div>
-
-<div class="ranking_div">
-    <div class="section_div_left">
-        <h1>Stocksera Trending Tickers</h1>
-        <div class="ranking">
-            <div class="ranking_num"><b>Rank</b></div>
-            <div class="ranking_symbol"><b>Symbol</b></div>
-            <div class="ranking_name"><b>Name</b></div>
-        </div>
-        {% for i in trending %}
-        <div class="ranking">
-            <a href="/ticker/?quote={{i.0}}">
-                <div class="ranking_num">{{ forloop.counter }}.</div>
-                <div class="ranking_symbol">{{i.0}}</div>
-                <div class="ranking_name">{{i.1}}</div>
+<html style="font-size: 16px;">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="stocksera, stocks, FTD, GME, AMC, investing, cost to borrow, meme, inflation, wallstreetbets">
+    <meta name="description" content="Empowering retailers to take advantage of alternative data">
+    <meta name="page_type" content="np-template-header-footer-from-plugin">
+    <title>Stocksera</title>
+    <link rel="stylesheet" href="{% static 'style/home/nicepage.css' %}" media="screen">
+    <link rel="stylesheet" href="{% static 'style/home/home.css' %}" media="screen">
+    <script class="u-script" type="text/javascript" src="{% static 'javascript/home/jquery.js' %}" defer=""></script>
+    <script class="u-script" type="text/javascript" src="{% static 'javascript/home/nicepage.js' %}" defer=""></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J5Y69DW2CT"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-J5Y69DW2CT');
+    </script>
+    <meta name="generator" content="Stocksera">
+    <meta property="og:title" content="Stocksera">
+    <meta property="og:description" content="Empowering investors to take advantage of alternative data">
+    <meta property="og:image" content="{% static 'images/social_media.png' %}" />
+    <meta property="og:url" content="https://stocksera.pythonanywhere.com">
+    <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+    <link id="u-theme-google-font" rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+    <link id="u-page-google-font" rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Bai+Jamjuree:200,200i,300,300i,400,400i,500,500i,600,600i,700,700i">
+    <meta name="theme-color" content="#478ac9">
+    <meta property="og:type" content="website">
+</head>
+<body class="u-body u-overlap u-xl-mode">
+    <header class="u-clearfix u-header u-header" id="sec-96a5">
+        <div class="u-clearfix u-sheet u-sheet-1">
+            <nav class="u-menu u-menu-dropdown u-offcanvas u-menu-1">
+                <div class="menu-collapse" style="font-size: 1rem; letter-spacing: 0px;">
+                    <a class="u-button-style u-custom-border-radius u-custom-color u-custom-left-right-menu-spacing u-custom-padding-bottom u-custom-text-active-color u-custom-text-color u-custom-top-bottom-menu-spacing u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base u-text-white"
+                       href="#">
+                        <svg class="u-svg-link" viewBox="0 0 24 24">
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#menu-hamburger"></use>
+                        </svg>
+                        <svg class="u-svg-content" version="1.1" id="menu-hamburger" viewBox="0 0 16 16" x="0px" y="0px" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+                            <g>
+                                <rect y="1" width="16" height="2"></rect>
+                                <rect y="7" width="16" height="2"></rect>
+                                <rect y="13" width="16" height="2"></rect>
+                            </g>
+                        </svg>
+                    </a>
+                </div>
+                <div class="u-custom-menu u-nav-container">
+                    <ul class="u-nav u-unstyled u-nav-1">
+                        <li class="u-nav-item"><a
+                                class="u-button-style u-nav-link u-text-active-white u-text-body-alt-color u-text-hover-palette-2-base"
+                                href="/ticker" style="padding: 22px 20px;">Stock</a>
+                        </li>
+                        <li class="u-nav-item"><a
+                                class="u-button-style u-nav-link u-text-active-white u-text-body-alt-color u-text-hover-palette-2-base"
+                                href="/wsb_live" style="padding: 22px 20px;">Reddit</a>
+                        </li>
+                        <li class="u-nav-item"><a
+                                class="u-button-style u-nav-link u-text-active-white u-text-body-alt-color u-text-hover-palette-2-base"
+                                href="/reverse_repo" style="padding: 22px 20px;">Economy</a>
+                        </li>
+                        <li class="u-nav-item"><a
+                                class="u-button-style u-nav-link u-text-active-white u-text-body-alt-color u-text-hover-palette-2-base"
+                                href="/senate" style="padding: 22px 20px;">Government</a>
+                        </li>
+                        <li class="u-nav-item"><a
+                                class="u-button-style u-nav-link u-text-active-white u-text-body-alt-color u-text-hover-palette-2-base"
+                                href="/latest_insider" style="padding: 22px 20px;">Discover</a>
+                        </li>
+                        <li class="u-nav-item"><a
+                                class="u-button-style u-nav-link u-text-active-white u-text-body-alt-color u-text-hover-palette-2-base"
+                                href="/news" style="padding: 22px 20px;">News</a>
+                        </li>
+                        <li class="u-nav-item"><a
+                                class="u-button-style u-nav-link u-text-active-white u-text-body-alt-color u-text-hover-palette-2-base"
+                                href="/accounts/login" style="padding: 22px 20px;">{% if user.is_authenticated %}Profile{% else %}Login{% endif %}</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="u-custom-menu u-nav-container-collapse">
+                    <div class="u-black u-container-style u-inner-container-layout u-opacity u-opacity-95 u-sidenav">
+                        <div class="u-inner-container-layout u-sidenav-overflow">
+                            <div class="u-menu-close"></div>
+                            <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2">
+                                <li class="u-nav-item"><a class="u-button-style u-nav-link" style="padding: 22px 20px;" href="/ticker">Stock</a></li>
+                                <li class="u-nav-item"><a class="u-button-style u-nav-link" style="padding: 22px 20px;" href="/wsb_live">Reddit</a></li>
+                                <li class="u-nav-item"><a class="u-button-style u-nav-link" style="padding: 22px 20px;" href="/reverse_repo">Economy</a>
+                                <li class="u-nav-item"><a class="u-button-style u-nav-link" style="padding: 22px 20px;" href="/senate">Government</a>
+                                <li class="u-nav-item"><a class="u-button-style u-nav-link" style="padding: 22px 20px;" href="/latest_insider">Discover</a>
+                                <li class="u-nav-item"><a class="u-button-style u-nav-link" style="padding: 22px 20px;" href="/news">News</a>
+                                <li class="u-nav-item"><a class="u-button-style u-nav-link" style="padding: 22px 20px;" href="/accounts/login">{% if user.is_authenticated %}Profile{% else %}Login{% endif %}</a>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="u-black u-menu-overlay u-opacity u-opacity-70"></div>
+                </div>
+            </nav>
+            <a href="/" class="u-image u-logo u-image-1" data-image-width="470" data-image-height="222">
+              <img src="{% static 'images/logo.svg' %}" class="u-logo-image u-logo-image-1">
             </a>
         </div>
-        {% endfor %}
-        <span><i>Data is updated real time</i></span>
-    </div>
-    <div class="section_div_right ranking_img"><img src="{% static 'images/homepage/trending.png' %}"></div>
-</div>
-
-<div class="section_div">
-    <div class="section_div_left">
-        <h1>Due-Diligence</h1>
-        <div class="dd_btn">
-            <button onclick="show_dd('analysis', this)" class="selected">Analysis</button>
-            <button onclick="show_dd('options', this)">Options</button>
-            <button onclick="show_dd('short_volume', this)">Short Volume</button>
-            <button onclick="show_dd('ftd', this)">FTD</button>
-            <button onclick="show_dd('wsb_live', this)">WSB Live</button>
-        </div>
-
-        <div class="section_div_description" id="dd_description">
-            <div class="section_div_text">
-                View latest price, key statistics, major holders, institutional holders, earnings, recommendations and sort
-                historical data.
-            </div>
-            <div class="href_btn"><a href="/ticker/">VIEW MORE</a></div>
-        </div>
-    </div>
-    <div class="section_div_right"><img src="{% static 'images/homepage/dd.png' %}"></div>
-</div>
-
-<div class="section_div">
-    <div class="section_div_left">
-        <h1>Reddit Analysis</h1>
-        <div class="reddit_btn">
-            <button onclick="show_reddit('wsb_live', this)" class="selected">WSB Live</button>
-            <button onclick="show_reddit('crypto_live', this)">Crypto Live</button>
-            <button onclick="show_reddit('reddit_trending', this)">Trending</button>
-            <button onclick="show_reddit('reddit_etf', this)">WSB ETF</button>
-            <button onclick="show_reddit('subreddit', this)">Subreddit</button>
-        </div>
-
-        <div class="section_div_description" id="reddit_description">
-            <div class="section_div_text">
-                Get live sentiment and analysis on most mentioned tickers in WSB discussion thread.
-            </div>
-            <div class="href_btn"><a href="/wsb_live/">VIEW MORE</a></div>
-        </div>
-    </div>
-    <div class="section_div_right"><img src="{% static 'images/homepage/reddit.png' %}"></div>
-</div>
-
-<div class="section_div">
-    <div class="section_div_left">
-        <h1>Economy</h1>
-        <div class="economy_btn">
-            <button onclick="show_economy('rrp', this)" class="selected">RRP</button>
-            <button onclick="show_economy('treasury', this)">Treasury</button>
-            <button onclick="show_economy('inflation', this)">Inflation</button>
-            <button onclick="show_economy('retail', this)">Retail Sales</button>
-            <button onclick="show_economy('initial_jobless_claims', this)">Jobless Claims</button>
-        </div>
-
-        <div class="section_div_description" id="economy_description">
-            <div class="section_div_text">
-                View record high reverse-repo transaction.
-            </div>
-            <div class="href_btn"><a href="/reverse_repo/">VIEW MORE</a></div>
-        </div>
-    </div>
-    <div class="section_div_right"><img src="{% static 'images/homepage/economy.png' %}"></div>
-</div>
-
-
-<div class="section_div">
-    <div class="section_div_left">
-        <h1>Stocks Beta</h1>
-        <div class="beta_btn">
-            <button onclick="show_beta('true_beta', this)" class="selected">True Beta</button>
-            <button onclick="show_beta('covid_beta', this)">Covid Beta</button>
-        </div>
-
-        <div class="section_div_description" id="beta_description">
-            <div class="section_div_text">
-                Ever wonder why different websites show different beta values for the same stock? Find out here!
-            </div>
-            <div class="href_btn"><a href="/beta/">VIEW MORE</a></div>
-        </div>
-    </div>
-    <div class="section_div_right"><img src="{% static 'images/homepage/beta.png' %}"></div>
-</div>
-
-<div class="section_div">
-    <div class="section_div_left">
-        <h1>Discover</h1>
-        <div class="discover_btn">
-            <button onclick="show_discover('latest_insider', this)" class="selected">Insider</button>
-            <button onclick="show_discover('ark', this)">ARK</button>
-            <button onclick="show_discover('amd_xlnx_ratio', this)">AMD-XLNX</button>
-            <button onclick="show_discover('short_int', this)">Short Interest</button>
-            <button onclick="show_discover('heatmap', this)">Heatmap</button>
-            <button onclick="show_discover('earnings', this)">Earnings</button>
-        </div>
-
-        <div class="section_div_description" id="discover_description">
-            <div class="section_div_text">
-                Get trending tickers on Reddit based on indicators such as sentiment, number of posts,
-                comments and upvotes.
-            </div>
-            <div class="href_btn"><a href="/market_overview/">VIEW MORE</a></div>
-        </div>
-    </div>
-    <div class="section_div_right"><img src="{% static 'images/homepage/discover.png' %}"></div>
-</div>
-
-<div class="section_div">
-    <div class="section_div_left">
-        <h1>We're Open-Sourced</h1>
-        <div class="op_btn">
-            <button onclick="show_op('donate', this)" class="selected">Donate</button>
-            <button onclick="show_op('code', this)">Source Code</button>
-            <button onclick="show_op('video', this)">Video</button>
-        </div>
-
-        <div class="section_div_description" id="op_description">
-            <div class="section_div_text">
-                Stocksera is an open-source application.
-                I spent months creating this application, without monetary benefits.
-                If you like this project, you can support me via <a href="https://www.paypal.me/stocksera" target="_blank">Paypal</a> or <a href="https://www.patreon.com/stocksera" target="_blank">Patreon</a>.
-            </div>
-            <div class="href_btn"><a href="https://www.paypal.com/paypalme/stocksera" target="_blank">VIEW MORE</a></div>
-        </div>
-    </div>
-    <div class="section_div_right"><img src="{% static 'images/homepage/opensource.png' %}"></div>
-</div>
-
-<div class="section_div">
-    <div class="section_div_left">
-        <h1>Find out trending tickers real-time</h1>
-        <div class="section_div_description">
-            <div class="section_div_text">
-                <p class="experience_text">
-                    Follow <a href="https://twitter.com/stocksera_bot" target="_blank" style="color: rgb(38, 166, 154); text-decoration: underline">@stocksera_bot</a> on Twitter, or
-                    <a href="subscribe" target="_blank" style="color: rgb(38, 166, 154); text-decoration: underline">subscribe to our pre-market notifcations</a> to receive trending tickers in WSB real-time,
-                    free of charge.
-                </p>
+    </header>
+    <section class="u-clearfix u-image u-shading u-section-1" id="carousel_5f65" data-image-width="1280" data-image-height="853" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('{% static "images/home/background.png" %}');">
+        <div class="u-clearfix u-sheet u-sheet-1">
+            <div class="u-clearfix u-expanded-width u-gutter-0 u-layout-spacing-vertical u-layout-wrap u-layout-wrap-1">
+                <div class="u-gutter-0 u-layout">
+                    <div class="u-layout-row">
+                        <div class="u-size-33-lg u-size-33-md u-size-33-sm u-size-33-xs u-size-34-xl">
+                            <div class="u-layout-col">
+                                <div class="u-container-style u-layout-cell u-left-cell u-size-60 u-layout-cell-1">
+                                    <div class="u-container-layout u-container-layout-1">
+<!--                                        <div class="u-gradient u-shape u-shape-circle u-shape-1"></div>-->
+<!--                                        <div class="u-gradient u-shape u-shape-circle u-shape-2"></div>-->
+                                        <h6 class="u-custom-font u-text u-text-body-alt-color u-text-font u-text-1">STOCKSERA</h6>
+                                        <h1 class="u-custom-font u-text u-title u-text-2">Empowering investors to take advantage of alternative data</h1>
+<!--                                        <div class="u-gradient u-shape u-shape-circle u-shape-3"></div>-->
+<!--                                        <div class="u-gradient u-shape u-shape-circle u-shape-4"></div>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="u-size-26-xl u-size-27-lg u-size-27-md u-size-27-sm u-size-27-xs">
+                            <div class="u-layout-row">
+                                <div class="u-align-left u-container-style u-layout-cell u-right-cell u-size-60 u-layout-cell-2">
+                                    <div class="u-container-layout u-container-layout-2">
+                                        <p class="u-text u-text-palette-5-light-3 u-text-3">
+                                            <span style="font-weight: 700;">We track trending tickers on social media and provide alternative data for easy due-diligence &amp; analysis.</span>
+                                            <br>
+                                        </p>
+                                        <a href="/ticker"
+                                           class="u-border-none u-btn u-btn-round u-button-style u-color-scheme-summer-time u-color-style-multicolor-1 u-palette-1-base u-radius-50 u-btn-1">EXPLORE NOW</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="section_div_right"><a href="https://twitter.com/stocksera_bot" target="_blank"><img src="{% static 'images/homepage/subscribe.png' %}"></a></div>
-</div>
+    </section>
 
-<div class="section_div">
-    <div class="section_div_left">
-        <h1>Your Experience Matters</h1>
-        <div class="section_div_description">
-            <div class="section_div_text">
-                <p class="experience_text">
-                    Responsive web design, dark mode available and most importantly, no annoying advertisements -
-                    because we care about your experience.
-                </p>
+    <section class="u-align-center u-clearfix u-gradient u-section-2" id="carousel_48f4">
+      <div class="u-clearfix u-sheet u-sheet-1">
+        <div class="u-clearfix u-expanded-width u-gutter-18 u-layout-custom-sm u-layout-custom-xs u-layout-wrap u-layout-wrap-1">
+          <div class="u-gutter-0 u-layout">
+            <div class="u-layout-row">
+              <div class="u-size-12-lg u-size-12-xl u-size-30-md u-size-30-sm u-size-60-xs">
+                <div class="u-layout-col">
+                  <div class="u-align-center u-container-style u-layout-cell u-radius-9 u-size-20 u-white u-layout-cell-1">
+                    <div class="u-container-layout u-valign-top u-container-layout-1"><span class="u-file-icon u-icon u-icon-circle u-palette-1-light-3 u-spacing-18 u-text-palette-1-base u-icon-1"><img src="{% static 'images/home/ftd.png' %}" alt=""></span>
+                      <h5 class="u-text u-text-palette-1-base u-text-1">ftd</h5>
+                      <p class="u-text u-text-palette-5-dark-2 u-text-2">The Failure to Deliver section is our most popular feature since inception</p>
+                      <a href="/ticker/failure_to_deliver" class="u-active-none u-align-center u-border-1 u-border-active-grey-60 u-border-black u-border-hover-grey-60 u-btn u-button-style u-hover-none u-none u-text-body-color u-btn-1">more</a>
+                    </div>
+                  </div>
+                  <div class="u-container-style u-hidden-md u-hidden-sm u-hidden-xs u-layout-cell u-shape-round u-size-40 u-layout-cell-2">
+                    <div class="u-container-layout u-container-layout-2"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="u-size-12-lg u-size-12-xl u-size-30-md u-size-30-sm u-size-60-xs">
+                <div class="u-layout-col">
+                  <div class="u-container-style u-hidden-md u-hidden-sm u-hidden-xs u-layout-cell u-shape-round u-size-40 u-layout-cell-3">
+                    <div class="u-container-layout u-container-layout-3"></div>
+                  </div>
+                  <div class="u-align-center u-container-style u-layout-cell u-radius-10 u-size-20 u-white u-layout-cell-4">
+                    <div class="u-container-layout u-valign-top u-container-layout-4"><span class="u-file-icon u-icon u-icon-circle u-palette-2-light-3 u-spacing-18 u-text-palette-2-base u-icon-2"><img src="{% static 'images/home/inflation.png' %}" alt=""></span>
+                      <h5 class="u-text u-text-palette-2-base u-text-3">CPI</h5>
+                      <p class="u-text u-text-palette-5-dark-2 u-text-4">We're perhaps the first in displaying CPI data in the form of heatmap</p>
+                      <a href="/inflation" class="u-active-none u-align-center u-border-1 u-border-active-grey-60 u-border-black u-border-hover-grey-60 u-btn u-button-style u-hover-none u-none u-text-body-color u-btn-2">more</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="u-size-12-lg u-size-12-xl u-size-30-md u-size-30-sm u-size-60-xs">
+                <div class="u-layout-col">
+                  <div class="u-align-center u-container-style u-layout-cell u-radius-10 u-size-20 u-white u-layout-cell-5">
+                    <div class="u-container-layout u-container-layout-5"><span class="u-file-icon u-icon u-icon-circle u-palette-1-light-3 u-spacing-18 u-text-palette-1-base u-icon-3"><img src="{% static 'images/home/options.png' %}" alt=""></span>
+                      <h5 class="u-text u-text-palette-1-base u-text-5">options chain</h5>
+                      <p class="u-text u-text-palette-5-dark-2 u-text-6">Analyse max pain of any ticker</p>
+                      <a href="/ticker/options" class="u-active-none u-align-center u-border-1 u-border-active-grey-60 u-border-black u-border-hover-grey-60 u-btn u-button-style u-hover-none u-none u-text-body-color u-btn-3">more</a>
+                    </div>
+                  </div>
+                  <div class="u-container-style u-hidden-md u-hidden-sm u-hidden-xs u-layout-cell u-shape-round u-size-40 u-layout-cell-6">
+                    <div class="u-container-layout u-container-layout-6"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="u-size-12-lg u-size-12-xl u-size-30-md u-size-30-sm u-size-60-xs">
+                <div class="u-layout-col">
+                  <div class="u-container-style u-hidden-md u-hidden-sm u-hidden-xs u-layout-cell u-shape-round u-size-40 u-layout-cell-7">
+                    <div class="u-container-layout u-container-layout-7"></div>
+                  </div>
+                  <div class="u-align-center u-container-style u-layout-cell u-radius-10 u-size-20 u-white u-layout-cell-8">
+                    <div class="u-container-layout u-valign-top u-container-layout-8"><span class="u-file-icon u-icon u-icon-circle u-palette-2-light-3 u-spacing-18 u-text-palette-2-base u-icon-4"><img src="{% static 'images/home/reddit.png' %}" alt=""></span>
+                      <h5 class="u-text u-text-palette-2-base u-text-7">reddit Live</h5>
+                      <p class="u-text u-text-palette-5-dark-2 u-text-8">Find out trending stocks and tickers on Reddit realtime&nbsp;</p>
+                      <a href="/wsb_live" class="u-active-none u-align-center u-border-1 u-border-active-grey-60 u-border-black u-border-hover-grey-60 u-btn u-button-style u-hover-none u-none u-text-body-color u-btn-4">more</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="u-size-12-lg u-size-12-xl u-size-60-md u-size-60-sm u-size-60-xs">
+                <div class="u-layout-col">
+                  <div class="u-align-center u-container-style u-layout-cell u-radius-10 u-size-20 u-white u-layout-cell-9">
+                    <div class="u-container-layout u-valign-top u-container-layout-9"><span class="u-file-icon u-icon u-icon-circle u-palette-1-light-3 u-spacing-18 u-text-palette-1-base u-icon-5"><img src="{% static 'images/home/congress.png' %}" alt=""></span>
+                      <h5 class="u-text u-text-palette-1-base u-text-9">congress</h5>
+                      <p class="u-text u-text-palette-5-dark-2 u-text-10">View trades and performance of House of Rep. and the Senate</p>
+                      <a href="/senate" class="u-active-none u-align-center u-border-1 u-border-active-grey-60 u-border-black u-border-hover-grey-60 u-btn u-button-style u-hover-none u-none u-text-body-color u-btn-5">more</a>
+                    </div>
+                  </div>
+                  <div class="u-container-style u-hidden-md u-hidden-sm u-hidden-xs u-layout-cell u-shape-round u-size-40 u-layout-cell-10">
+                    <div class="u-container-layout u-container-layout-10"></div>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-    <div class="section_div_right"><img src="{% static 'images/homepage/responsive.png' %}"></div>
-</div>
+        <a href="/ticker" class="u-btn u-btn-round u-button-style u-color-scheme-summer-time u-color-style-multicolor-1 u-palette-2-base u-radius-50 u-btn-6">AND MANY MORE!</a>
+      </div>
+    </section>
 
-<div class="showcase_div">
-    <div class="slideshow-container">
-        <div class="slides fade">
-            <img src="{% static 'images/homepage/showcase.png' %}" class="showcase1">
-            <div class="text">More than 5k upvotes in r/superstonk, a forum on Reddit to discuss about GME stock.</div>
-        </div>
+    <section class="u-align-center u-clearfix u-grey-15 u-section-3" id="carousel_d4a6">
+      <div class="u-clearfix u-sheet u-sheet-1">
+        <p class="u-text u-text-1">We strongly believe in open source. Our<a href="https://github.com/guanquann/Stocksera" class="u-active-none u-border-none u-btn u-button-link u-button-style u-hover-none u-none u-text-palette-1-base u-btn-1" target="_blank"> GitHub source code</a> are available for everyone to take a look and contribute. Give us a star if you like it!&nbsp;
+        </p>
+        <img class="u-image u-image-contain u-image-default u-image-1" src="{% static 'images/github.svg' %}" alt="" data-image-width="512" data-image-height="512" data-href="https://github.com/guanquann/Stocksera" data-target="_blank">
+        <img class="u-expanded-width-sm u-expanded-width-xs u-image u-image-contain u-image-default u-image-2" src="{% static 'images/home/github.png' %}" alt="" data-image-width="1910" data-image-height="1000">
+      </div>
+    </section>
 
-        <div class="slides fade">
-            <img src="{% static 'images/homepage/showcase2.png' %}" class="showcase2">
-            <div class="text">Top awarded post in r/amcstock, a forum on Reddit to discuss about AMC stock.</div>
-        </div>
-
-        <div class="slides fade" style="display:table-cell">
-            <img src="{% static 'images/homepage/showcase3.png' %}" class="showcase3">
-            <div class="text">Review by a redditor in Reddit.</div>
-        </div>
-
-        <div class="slides fade">
-            <img src="{% static 'images/homepage/showcase4.png' %}" class="showcase4">
-            <div class="text">Review by a redditor in Reddit.</div>
-        </div>
-    </div>
-
-    <div class="dot_div">
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-    </div>
-</div>
-{% endblock %}
-
-{% block bottom_script %}
-<script>
-var introSlideIndex = 0;
-showIntroSlides(introSlideIndex);
-
-function plusSlides(n) {
-  showIntroSlides(introSlideIndex += n);
-}
-
-function currentSlide(n) {
-  showIntroSlides(introSlideIndex = n);
-}
-
-function showIntroSlides(n) {
-    var i;
-    var introSlides = document.getElementsByClassName("introSlides");
-    var introDots = document.getElementsByClassName("introDot");
-
-    for (i = 0; i < introSlides.length; i++) {
-        introSlides[i].style.display = "none";
-    }
-    introSlideIndex++;
-    if (introSlideIndex > introSlides.length) {introSlideIndex = 1}
-    for (i = 0; i < introDots.length; i++) {
-        introDots[i].className = introDots[i].className.replace(" active", "");
-    }
-    introSlides[introSlideIndex-1].style.display = "table-cell";
-    introDots[introSlideIndex-1].className += " active";
-    setTimeout(showIntroSlides, 3000);
-}
-</script>
-<script>
-var slideIndex = 0;
-showSlides();
-function showSlides() {
-    var i;
-    var slides = document.getElementsByClassName("slides");
-    var dots = document.getElementsByClassName("dot");
-    for (i = 0; i < slides.length; i++) {
-        slides[i].style.display = "none";
-    }
-    slideIndex++;
-    if (slideIndex > slides.length) {slideIndex = 1}
-    for (i = 0; i < dots.length; i++) {
-        dots[i].className = dots[i].className.replace(" active", "");
-    }
-    slides[slideIndex-1].style.display = "table-cell";
-    dots[slideIndex-1].className += " active";
-    setTimeout(showSlides, 4000);
-}
-</script>
-{% endblock %}
+    <footer class="u-align-center-md u-align-center-sm u-align-center-xs u-clearfix u-footer u-grey-80" id="sec-912a">
+        <div class="u-clearfix u-sheet u-sheet-1">
+            <a href="/" class="u-image u-logo u-image-1" data-image-width="470" data-image-height="222">
+              <img src="{% static 'images/logo.svg' %}" class="u-logo-image u-logo-image-1">
+            </a>
+        <p class="u-align-center-lg u-align-center-md u-align-center-xl u-text u-text-1"> © 2022 Stocksera - All Rights Reserved.</p>
+      </div>
+    </footer>
+</body>
+</html>

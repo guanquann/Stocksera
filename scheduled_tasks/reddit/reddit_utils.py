@@ -67,7 +67,7 @@ def words_to_remove():
                             "GUYS", "PEOPLE", "ALREADY", "IMGEMOTET_TH", "BANBET", "VISUALMOD", "TODAY", "LOOKS",
                             "MADE", "YESTERDAY", "TOMORROW", "TMR", "EDT", "KEEP", "ANYONE", "GOES", "PLEASE", "BET",
                             "BAN", "AROUND", "ANYONE", "ACTUALLY", "SEEN", "ALSO", "RIGHT", "THERES", "MAY", "MIGHT",
-                            "DAY", "MAKING", "AWAY", "KIND"]
+                            "DAY", "MAKING", "AWAY", "KIND", "COM", "EOD", "MUST", "RYAN", "JOE", "FILL", "EM"]
     return basic_stopwords_list
 
 

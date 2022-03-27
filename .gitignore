@@ -14,8 +14,8 @@ logging.log
 staticfiles
 yfinance.cache
 test.py
-test1.py
-admin.py
 templates/admin
 twitter_img
 finnhub_csv
+admin.py
+migrations/

@@ -24,10 +24,11 @@ function borrowed_shares_graph(duration) {
     for (tr=trs.length-1; tr>0; tr--) {
         var total_td = trs[tr].querySelectorAll("td");
         date_string = total_td[2].innerHTML;
-
-        date_list.push(date_string)
-        fee_list.push(total_td[0].innerHTML)
-        available_list.push(total_td[1].innerHTML)
+        if (total_td[1].innerHTML != 0 || tr==1) {
+            date_list.push(date_string)
+            fee_list.push(total_td[0].innerHTML)
+            available_list.push(total_td[1].innerHTML)
+        }
     }
 
     if (borrowed_shares_chart != null) {

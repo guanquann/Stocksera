@@ -1,7 +1,7 @@
 @media only screen and (max-width: 900px) {
     .main_logo {
-        margin: 13px auto;
-        width: 85%;
+        margin: 0px 5px;
+        width: 65%;
         border-radius: 0;
         border: 0;
         display: inherit;
@@ -145,8 +145,8 @@
 
 @media only screen and (min-width: 900px) {
     .main_logo {
-        margin: 10px auto;
-        width: 65%;
+        margin: -15px auto;
+        width: 50%;
         border-radius: 0;
         border: 0;
         display: inherit;

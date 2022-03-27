@@ -1,0 +1,37 @@
+{% extends 'registration/header.html' %}
+
+{% block content %}
+	{% load crispy_forms_tags %}
+	<div class="container p-3">
+  	 	<h2 class="font-weight-bold mt-1">Settings</h2>
+        <h6>@{{user.username}}</h6>
+		<hr>
+        <ul>
+            <li class="nav-item">
+                <a href="{% url 'password_change' %}">Change Password</a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'password_reset' %}">Reset Password</a>
+            </li>
+        </ul>
+        <div class="btn btn-danger ml-1" data-toggle="modal" data-target="#remove_modal">Delete Account</div>
+        <div class="modal fade" id="remove_modal" tabindex="-1" role="dialog" aria-labelledby="remove_modal_label" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="remove_modal_label">Delete Account?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete your account?
+                        This is an irreversible move after confirming!
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" onclick="location.href='{% url 'delete_account' %}'">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+  	</div>
+{% endblock %}

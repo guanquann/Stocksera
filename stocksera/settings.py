@@ -11,7 +11,12 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
+import yaml
 from pathlib import Path
+from django.contrib.messages import constants as messages
+
+with open("config.yaml") as config_file:
+    config_keys = yaml.load(config_file, Loader=yaml.Loader)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,8 +46,25 @@ INSTALLED_APPS = [
     'templatetags.filter',
     'app',
     'api',
-    'rest_framework'
+    'users',
+    'rest_framework',
+    'rest_framework_api_key',
+    'rest_framework.authtoken',
+    'crispy_forms',
 ]
+
+CRISPY_TEMPLATE_PACK = 'uni_form'
+
+LOGIN_REDIRECT_URL = '/accounts/watchlist'
+LOGOUT_REDIRECT_URL = '/accounts/login'
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-secondary',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -78,17 +100,38 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'stocksera.wsgi.application'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+       'rest_framework.authentication.TokenAuthentication',
+    ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        # from rest_framework.decorators import api_view
+        # @api_view(['GET'])
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': config_keys["MYSQL_DATABASE"],
+        'ENGINE': 'mysql.connector.django',
+        'USER': config_keys["MYSQL_USER"],
+        'PASSWORD': config_keys["MYSQL_PASSWORD"],
+        'OPTIONS': {
+          'autocommit': True,
+        },
     }
 }
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_HOST_USER = config_keys["GMAIL_SENDER_EMAIL"]
+EMAIL_HOST_PASSWORD = config_keys["GMAIL_SENDER_PASSWORD"]
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = f'Stocksera Admin <{config_keys["GMAIL_SENDER_EMAIL"]}>'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -107,7 +150,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

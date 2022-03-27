@@ -1,0 +1,16 @@
+{% extends "registration/header.html" %}
+
+{% block content %}
+    {% load crispy_forms_tags %}
+    <div class="container p-3">
+        <h2 class="font-weight-bold mt-1">Login</h2>
+        <hr>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button class="btn btn-primary" type="submit">Login</button>
+        </form>
+        <p class="text-center">Don't have an account? <a href="{% url 'signup' %}">Create an account</a>.</p>
+        <p class="text-center">Lost Password? <a href="{% url 'password_reset' %}">Click me</a></p>
+    </div>
+{% endblock %}

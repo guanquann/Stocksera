@@ -234,7 +234,6 @@ def get_ticker_news(ticker_selected):
             else:
                 sentiment = "Neutral"
             sentiment_list.append(sentiment)
-            print(row[0], type(row[0]))
             cur.execute("INSERT INTO daily_ticker_news VALUES (%s, %s, %s, %s, %s)",
                         (ticker_selected, row[0], row[1], row[2], sentiment))
             cnx.commit()

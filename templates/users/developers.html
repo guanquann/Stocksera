@@ -1,0 +1,60 @@
+{% extends "registration/header.html" %}
+{% load static %}
+
+{% block additional_script %}
+    <script>
+    function copy_to_clipboard(id, elem) {
+        var r = document.createRange();
+        r.selectNode(document.getElementById(id));
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(r);
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+        elem.innerHTML = "Copied";
+    }
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="container p-3">
+        <h2 class="font-weight-bold mt-1">API for Developers</h2>
+        <h6>@{{user.username}}</h6>
+        <hr>
+        <p>
+            Your API key is unique and is only known to you.
+            Please make sure you do not lose it. <b>Each account can only have a maximum of <u>1 API key</u>.</b>
+        </p>
+        <div>
+            Your {% if "*****" in prefix %}old{% else %}new{% endif %} API key is:
+        </div>
+        <div style="background: #eae9e9; display: flex; justify-content: space-between; padding: 5px;">
+            <div style="overflow-x: auto; margin: 0 7px; line-height: 38px;"><div id="sample" style="vertical-align: middle; display: inline-block;">{{prefix}}</div></div>
+            {% if "*****" in prefix %}
+                <form method="POST" onsubmit="confirm('Are you sure you want to generate a new API key? This could be a potentially dangerous move!')">
+                {% csrf_token %}
+                    <button class="btn btn-danger" type="submit">
+                        Regenerate
+                    </button>
+                </form>
+            {% elif prefix == "" %}
+                <form method="POST">
+                {% csrf_token %}
+                    <button class="btn btn-info" type="submit">
+                        Generate
+                    </button>
+                </form>
+            {% else %}
+                <button class="btn btn-primary" type="button" onclick="copy_to_clipboard('sample', this);return false;">
+                    Copy API
+                </button>
+            {% endif %}
+        </div>
+        <br>
+        <p>
+            To use your API, visit <a href="https://github.com/guanquann/Stocksera-API" target="_blank">https://github.com/guanquann/Stocksera-API</a> if you are using the Stocksera pypi library.
+        </p>
+        <p>
+            Else, add <span style="background: #eae9e9; padding: 3px; border-radius: 5px">{'Authorization': "Api-Key [YOUR API KEY]"}</span> to your request headers.
+        </p>
+    </div>
+{% endblock %}

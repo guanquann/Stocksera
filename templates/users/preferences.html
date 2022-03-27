@@ -1,0 +1,55 @@
+{% extends "registration/header.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="container p-3">
+        <h2 class="font-weight-bold mt-1">Preferences</h2>
+        <h6>@{{user.username}}</h6>
+        <hr>
+        <div>
+            <div class="card bg-warning">
+                <div class="card-body">
+                    NOTICE: This page is still under development. You may opt in your preferences for now.
+                </div>
+            </div>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="wsb_trending" id="wsb_trending" {% if query.wsb_trending == True %} checked {% endif %}>
+                    <label class="form-check-label" for="wsb_trending">WSB Trending</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="crypto_trending" id="crypto_trending" {% if query.crypto_trending == True %} checked {% endif %}>
+                    <label class="form-check-label" for="crypto_trending">Crypto Trending</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="government" id="government" {% if query.government == True %} checked {% endif %}>
+                    <label class="form-check-label" for="government">Government Trades</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="insider" id="insider" {% if query.insider == True %} checked {% endif %}>
+                    <label class="form-check-label" for="insider">Insider Trading</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="jim_cramer" id="jim_cramer" {% if query.jim_cramer == True %} checked {% endif %}>
+                    <label class="form-check-label" for="jim_cramer">Jim Cramer Trades</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="earnings" id="earnings" {% if query.earnings == True %} checked {% endif %}>
+                    <label class="form-check-label" for="earnings">Earnings Calendar</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="short_vol" id="short_vol" {% if query.short_vol == True %} checked {% endif %}>
+                    <label class="form-check-label" for="short_vol">Short Volume</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="ctb" id="ctb" {% if query.ctb == True %} checked {% endif %}>
+                    <label class="form-check-label" for="ctb">Cost to Borrow</label>
+                </div>
+                <button class="btn btn-primary" type="submit">
+                    Confirm
+                </button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

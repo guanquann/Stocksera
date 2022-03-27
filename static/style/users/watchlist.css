@@ -1,0 +1,28 @@
+.table_div {
+    overflow: auto;
+    max-height: 330px;
+    margin-bottom: 15px;
+}
+
+.graph_div {
+    height: 330px;
+    min-width: 200px;
+    display: none;
+}
+
+.display_icon_container {
+    float: right;
+    padding-right: 15px;
+    z-index: 9999;
+}
+
+.toggle_display_icon {
+    width: 30px;
+    height: 30px;
+    padding: 4px;
+}
+
+.toggle_display_icon:hover {
+    cursor: pointer;
+    background: #EAE9E9;
+}

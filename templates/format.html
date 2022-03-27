@@ -7,11 +7,14 @@
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
     <meta name="format-detection" content="telephone=no">
     <meta property="og:image" content="{% static 'images/social_media.png' %}" />
+    <meta name="description" content="Empowering investors to take advantage of alternative data">
+    <meta name="keywords" content="stocksera, stocks, FTD, GME, AMC, investing, cost to borrow, meme, inflation, wallstreetbets">
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'style/format.css' %}">
     <link rel="stylesheet" href="{% static 'style/nav_bar.css' %}">
     <link rel="stylesheet" href="{% static 'style/footer.css' %}">
-    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
+    <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="{% static 'javascript/format.js' %}"></script>
@@ -34,7 +37,7 @@
     <div id="top_nav_bar">
         <div id="nav_bar_div_logo">
             <ul>
-                <a href="/"><li><img class="main_logo" src="{% static 'images/logo.png' %}"></li></a>
+                <a href="/"><li><img class="main_logo" src="{% static 'images/logo.svg' %}"></li></a>
             </ul>
         </div>
         <div>
@@ -153,7 +156,7 @@
 
                 <button class="dropdown-btn">
                     <li id="news" class="nav_bar" onclick="expand_nav()">
-                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/treemap.png' %}" style="display:none">
+                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/news.png' %}" style="display:none">
                         <span>News<i class="fa fa-caret-down"></i></span>
                     </li>
                 </button>
@@ -162,6 +165,13 @@
                     <a href="/twitter_feed">Twitter Feed</a>
                     <a href="/trading_halts">Trading Halts</a>
                 </div>
+
+                <a href="{% url 'login' %}">
+                    <li class="nav_bar">
+                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/login.png' %}" style="display:none">
+                        <span>{% if user.is_authenticated %}Profile{% else %}Login{% endif%}</span>
+                    </li>
+                </a>
 
                 <a href="{% url 'about' %}">
                     <li id="about" class="nav_bar">

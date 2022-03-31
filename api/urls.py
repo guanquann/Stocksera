@@ -1,7 +1,25 @@
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 from django.urls import path
 from . import views
 
+schema_view = get_schema_view(
+   openapi.Info(
+      title="Stocksera API",
+      default_version='v1',
+      description="Official API for Stocksera",
+      terms_of_service="https://stocksera.pythonanywhere.com",
+      contact=openapi.Contact(email="stocksera@gmail.com"),
+      license=openapi.License(name="MIT License"),
+   ),
+   public=True,
+)
+
 urlpatterns = [
+    path(r'swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    # path(r'redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+
     path('stocksera_trending/', views.stocksera_trending, name='api_stocksera_trending'),
 
     path('sec_fillings/', views.sec_fillings, name='api_sec_fillings'),

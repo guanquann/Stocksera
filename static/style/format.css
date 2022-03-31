@@ -295,6 +295,15 @@
         cursor: pointer;
     }
 
+    .add_to_watchlist {
+        width: 40px;
+        margin-left: 5px;
+        padding: 7px;
+        border: 1px solid grey;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
     .instructions {
         margin-left: auto;
         margin-right: auto;

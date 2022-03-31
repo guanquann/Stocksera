@@ -100,8 +100,41 @@ def login(request):
         return JSONResponse({"Anonymous": "Error logging in"})
 
 
+from rest_framework.decorators import api_view, schema
+from rest_framework.schemas.openapi import AutoSchema
+import yaml
+
+
+class AutoDocstringSchema(AutoSchema):
+    @property
+    def documentation(self):
+        if not hasattr(self, "_documentation"):
+            try:
+                self._documentation = yaml.safe_load(self.view.__doc__)
+            except yaml.scanner.ScannerError:
+                self._documentation = {}
+        return self._documentation
+
+    def get_components(self, path, method):
+        components = super().get_components(path, method)
+        doc_components = self.documentation.get("components", {})
+        components.update(doc_components)
+        return components
+
+    def get_operation(self, path, method):
+        operation = super().get_operation(path, method)
+        doc_operation = self.documentation.get(method.lower(), {})
+        operation.update(doc_operation)
+        return operation
+
+
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def stocksera_trending(request):
+    """
+    Get most searched tickers in Stocksera.
+    """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
         df = pd.read_sql_query("SELECT * FROM stocksera_trending ORDER BY count DESC LIMIT 10", cnx)
@@ -112,7 +145,12 @@ def stocksera_trending(request):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def sec_fillings(request, ticker_selected="AAPL"):
+    """
+    Get SEC fillings of tickers.
+    """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
         ticker_selected = default_ticker(ticker_selected)
@@ -131,10 +169,11 @@ def sec_fillings(request, ticker_selected="AAPL"):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def news_sentiment(request, ticker_selected="AAPL"):
     """
-    Show news and sentiment of ticker in /ticker?quote={TICKER}. Data from Finviz
-    Note: News are only available if hosted locally. Read README.md for more details
+    Show news and sentiment of tickers.
     """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
@@ -151,9 +190,11 @@ def news_sentiment(request, ticker_selected="AAPL"):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def insider_trading(request, ticker_selected="AAPL"):
     """
-    Get a specific ticker's insider trading data from Finviz
+    Get ticker's insider trading data.
     """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
@@ -177,9 +218,11 @@ def insider_trading(request, ticker_selected="AAPL"):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def latest_insider_summary(request):
     """
-    Get latest insider trading data from Finviz and perform analysis
+    Get latest insider trading summary.
     """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
@@ -193,9 +236,11 @@ def latest_insider_summary(request):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def latest_insider(request):
     """
-    Get latest insider trading data from Finviz and perform analysis
+    Get latest insider trading data of all tickers.
     """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
@@ -223,7 +268,12 @@ def latest_insider(request):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def top_short_volume(request):
+    """
+    Get tickers with highest short volume for the day.
+    """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
         pd.options.display.float_format = '{:.2f}'.format
@@ -236,9 +286,11 @@ def top_short_volume(request):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def short_volume(request, ticker_selected="AAPL"):
     """
-    Get short volume of tickers (only popular ones). Data from Finra
+    Get short volume of tickers.
     """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
@@ -262,7 +314,12 @@ def short_volume(request, ticker_selected="AAPL"):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def top_failure_to_deliver(request):
+    """
+    Get tickers with most FTD.
+    """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
         top_ftd = pd.read_sql_query("SELECT * FROM top_ftd", cnx)
@@ -274,9 +331,11 @@ def top_failure_to_deliver(request):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def failure_to_deliver(request, ticker_selected="AAPL"):
     """
-    Get FTD of tickers. Data from SEC
+    Get FTD of tickers.
     """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
@@ -295,9 +354,11 @@ def failure_to_deliver(request, ticker_selected="AAPL"):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def earnings_calendar(request):
     """
-    Get earnings for the upcoming week. Data from yahoo finance
+    Get tickers with upcoming earnings.
     """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
@@ -310,9 +371,11 @@ def earnings_calendar(request):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def market_news(request):
     """
-    Get breaking, crypto, forex and merger news from Finnhub
+    Get breaking, crypto, forex and merger news.
     """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
@@ -324,9 +387,11 @@ def market_news(request):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def trading_halts(request):
     """
-    Get stocks with trading halts and their reasons
+    Get stocks with trading halts.
     """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
@@ -337,9 +402,11 @@ def trading_halts(request):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def subreddit_count(request, ticker_selected="GME"):
     """
-    Get subreddit user count, growth, active users over time.
+    Get Reddit subreddit user count, growth, active users over time.
     """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
@@ -358,7 +425,12 @@ def subreddit_count(request, ticker_selected="GME"):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def reddit_mentions(request, subreddit="wsb", ticker_selected=None):
+    """
+    Get most mentioned tickers on Reddit.
+    """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
         if subreddit.lower() != "crypto":
@@ -391,7 +463,12 @@ def reddit_mentions(request, subreddit="wsb", ticker_selected=None):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def wsb_options(request):
+    """
+    Get stock options activity on Reddit r/wallstreetbets.
+    """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
         date_threshold = get_days_params(request, 1, 14)
@@ -407,7 +484,12 @@ def wsb_options(request):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def government(request, gov_type="senate"):
+    """
+    Get congress trading data.
+    """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
         mapping_dict = {"senate": "Senator", "house": "Representative"}
@@ -449,7 +531,12 @@ def government(request, gov_type="senate"):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def reverse_repo(request):
+    """
+    Get reverse repo data.
+    """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
         pd.options.display.float_format = '{:.2f}'.format
@@ -466,7 +553,12 @@ def reverse_repo(request):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def daily_treasury(request):
+    """
+    Get daily treasury data.
+    """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
         pd.options.display.float_format = '{:.2f}'.format
@@ -485,7 +577,12 @@ def daily_treasury(request):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def inflation(request, area="usa"):
+    """
+    Get inflation data.
+    """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
         pd.options.display.float_format = '{:.1f}'.format
@@ -501,9 +598,11 @@ def inflation(request, area="usa"):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def retail_sales(request):
     """
-    Get retail sales. Data is from https://ycharts.com/indicators/us_retail_and_food_services_sales
+    Get retail sales data.
     """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
@@ -520,7 +619,12 @@ def retail_sales(request):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def initial_jobless_claims(request):
+    """
+    Get initial jobless claims data.
+    """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
         pd.options.display.float_format = '{:.2f}'.format
@@ -536,9 +640,11 @@ def initial_jobless_claims(request):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def short_interest(request):
     """
-    Get short interest of ticker. Data from https://www.stockgrid.io/shortinterest
+    Get tickers with highest short interest.
     """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
@@ -553,9 +659,11 @@ def short_interest(request):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def low_float(request):
     """
-    Get short interest of ticker. Data if from lowfloat.com
+    Get tickers with low float.
     """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
@@ -570,7 +678,12 @@ def low_float(request):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def ipo_calendar(request):
+    """
+    Get upcoming and past IPOs.
+    """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
         df = pd.read_sql_query("SELECT * FROM ipo_calendar", con=cnx)
@@ -580,7 +693,12 @@ def ipo_calendar(request):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def stocktwits(request, ticker_selected=None):
+    """
+    Get popular tickers on Stocktwits.
+    """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
         if ticker_selected:
@@ -596,7 +714,12 @@ def stocktwits(request, ticker_selected=None):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def market_summary(request):
+    """
+    Get market summary of Nasdaq/DOW/S&P500.
+    """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
         pd.options.display.float_format = '{:.2f}'.format
@@ -624,7 +747,12 @@ def market_summary(request):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def jim_cramer(request, ticker_selected=None):
+    """
+    Get Jim Cramer's recommendations.
+    """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
         df = pd.read_sql_query("SELECT DISTINCT * FROM jim_cramer_trades ORDER BY Date DESC", cnx)
@@ -640,7 +768,13 @@ def jim_cramer(request, ticker_selected=None):
     return ERROR_MSG
 
 
-def borrowed_shares(request, ticker_selected=None):
+@csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
+def borrowed_shares(request, ticker_selected=""):
+    """
+    Get borrow fees and shares available.
+    """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
         if ticker_selected:

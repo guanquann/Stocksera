@@ -45,7 +45,7 @@
                 </form>
             {% else %}
                 <button class="btn btn-primary" type="button" onclick="copy_to_clipboard('sample', this);return false;">
-                    Copy API
+                    Copy
                 </button>
             {% endif %}
         </div>
@@ -54,7 +54,7 @@
             To use your API, visit <a href="https://github.com/guanquann/Stocksera-API" target="_blank">https://github.com/guanquann/Stocksera-API</a> if you are using the Stocksera pypi library.
         </p>
         <p>
-            Else, add <span style="background: #eae9e9; padding: 3px; border-radius: 5px">{'Authorization': "Api-Key [YOUR API KEY]"}</span> to your request headers.
+            Else, add <span style="background: #eae9e9; padding: 3px; border-radius: 5px">{'Authorization': "Api-Key [YOUR API KEY]"}</span> to your GET request headers.
         </p>
     </div>
 {% endblock %}

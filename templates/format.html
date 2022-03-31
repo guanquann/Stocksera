@@ -157,14 +157,21 @@
                 <button class="dropdown-btn">
                     <li id="news" class="nav_bar" onclick="expand_nav()">
                         <img class="nav_bar_logo" src="{% static 'images/nav_bar/news.png' %}" style="display:none">
-                        <span>News<i class="fa fa-caret-down"></i></span>
+                        <span>Market News<i class="fa fa-caret-down"></i></span>
                     </li>
                 </button>
                 <div class="dropdown-container">
-                    <a href="/news">Market News</a>
+                    <a href="/news">Latest News</a>
                     <a href="/twitter_feed">Twitter Feed</a>
                     <a href="/trading_halts">Trading Halts</a>
                 </div>
+
+                <a href="https://substack.com/profile/48025572-stocksera" target="_blank">
+                    <li class="nav_bar">
+                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/book.png' %}" style="display:none">
+                        <span>Blog [Substack]</span>
+                    </li>
+                </a>
 
                 <a href="{% url 'login' %}">
                     <li class="nav_bar">

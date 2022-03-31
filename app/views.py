@@ -25,7 +25,7 @@ session = requests_cache.CachedSession('yfinance.cache')
 session.headers['User-agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) ' \
                                 'Chrome/91.0.4472.124 Safari/537.36'
 
-BASE_URL = "http://127.0.0.1:8000/api"
+BASE_URL = config_keys['STOCKSERA_BASE_URL']
 HEADERS = {f'Authorization': f"Api-Key {config_keys['STOCKSERA_API']}"}
 
 
@@ -491,7 +491,6 @@ def borrowed_shares(request):
     information, related_tickers = check_market_hours(ticker_selected)
 
     if "longName" in information and information["regularMarketPrice"] != "N/A":
-        BASE_URL = "https://stocksera.pythonanywhere.com/api"
         data = requests.get(f"{BASE_URL}/borrowed_shares/{ticker_selected}", headers=HEADERS).json()
         df = pd.DataFrame(data)
         del df["ticker"]

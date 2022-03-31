@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'rest_framework_api_key',
     'rest_framework.authtoken',
     'crispy_forms',
+    'drf_yasg',
 ]
 
 CRISPY_TEMPLATE_PACK = 'uni_form'
@@ -107,8 +108,20 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         # from rest_framework.decorators import api_view
         # @api_view(['GET'])
-        'rest_framework.permissions.IsAuthenticated',
-    ]
+        # 'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
+}
+
+SWAGGER_SETTINGS = {
+   'SECURITY_DEFINITIONS': {
+      'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      },
+   },
+   'USE_SESSION_AUTH': False,
 }
 
 # Database

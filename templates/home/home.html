@@ -33,6 +33,79 @@
     <meta name="theme-color" content="#478ac9">
     <meta property="og:type" content="website">
 </head>
+<style>
+    @media only screen and (max-width: 700px) {
+        .ranking_div {
+            padding: 12px;
+        }
+
+        .ranking {
+            width: 95%;
+            padding: 5px;
+            margin: 4px auto;
+            border: 1.5px solid gray;
+            border-radius: 5px;
+            display: flex;
+        }
+
+        .ranking_num {
+            width: 15%;
+        }
+
+        .ranking_symbol {
+            width: 20%
+        }
+
+        .ranking_name {
+            width: 68%;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            text-align: left;
+        }
+    }
+
+    @media only screen and (min-width: 700px) {
+        .ranking_div {
+            width: 52%;
+            height: 94%;
+            padding: 0 12px 12px;
+            margin: auto;
+        }
+
+        .ranking {
+            padding: 2px;
+            margin: 4px auto;
+            border: 1.5px solid gray;
+            border-radius: 5px;
+            display: flex;
+        }
+
+        .ranking_num {
+            width: 10%;
+        }
+
+        .ranking_symbol {
+            width: 20%
+        }
+    }
+
+    @media only screen and (min-width: 1400px) {
+        .ranking_div {
+            width: 45%;
+        }
+    }
+
+    .ranking a {
+        display: inherit;
+        width: 100%;
+        color: black;
+    }
+
+    .ranking:not(:first-of-type):hover {
+        background-color: gray;
+        transition: 1.5s;
+    }
+</style>
 <body class="u-body u-overlap u-xl-mode">
     <header class="u-clearfix u-header u-header" id="sec-96a5">
         <div class="u-clearfix u-sheet u-sheet-1">
@@ -80,6 +153,10 @@
                         </li>
                         <li class="u-nav-item"><a
                                 class="u-button-style u-nav-link u-text-active-white u-text-body-alt-color u-text-hover-palette-2-base"
+                                href="https://substack.com/profile/48025572-stocksera" style="padding: 22px 20px;" target="_blank">Blog</a>
+                        </li>
+                        <li class="u-nav-item"><a
+                                class="u-button-style u-nav-link u-text-active-white u-text-body-alt-color u-text-hover-palette-2-base"
                                 href="/accounts/login" style="padding: 22px 20px;">{% if user.is_authenticated %}Profile{% else %}Login{% endif %}</a>
                         </li>
                     </ul>
@@ -95,6 +172,7 @@
                                 <li class="u-nav-item"><a class="u-button-style u-nav-link" style="padding: 22px 20px;" href="/senate">Government</a>
                                 <li class="u-nav-item"><a class="u-button-style u-nav-link" style="padding: 22px 20px;" href="/latest_insider">Discover</a>
                                 <li class="u-nav-item"><a class="u-button-style u-nav-link" style="padding: 22px 20px;" href="/news">News</a>
+                                <li class="u-nav-item"><a class="u-button-style u-nav-link" style="padding: 22px 20px;" href="https://substack.com/profile/48025572-stocksera" target="_blank">Blog</a>
                                 <li class="u-nav-item"><a class="u-button-style u-nav-link" style="padding: 22px 20px;" href="/accounts/login">{% if user.is_authenticated %}Profile{% else %}Login{% endif %}</a>
                             </ul>
                         </div>
@@ -107,7 +185,7 @@
             </a>
         </div>
     </header>
-    <section class="u-clearfix u-image u-shading u-section-1" id="carousel_5f65" data-image-width="1280" data-image-height="853" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('{% static "images/home/background.png" %}');">
+    <section class="u-clearfix u-image u-shading u-section-1" id="carousel_5f65" data-image-width="1280" data-image-height="853" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('{% static "images/home/background-1.png" %}');">
         <div class="u-clearfix u-sheet u-sheet-1">
             <div class="u-clearfix u-expanded-width u-gutter-0 u-layout-spacing-vertical u-layout-wrap u-layout-wrap-1">
                 <div class="u-gutter-0 u-layout">
@@ -143,6 +221,27 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section class="u-align-center u-clearfix u-grey-15 u-section-3">
+        <div class="ranking_div">
+            <h3 class="u-custom-font u-text u-title">Stocksera Trending Tickers</h3>
+            <div class="ranking">
+                <div class="ranking_num"><b>Rank</b></div>
+                <div class="ranking_symbol"><b>Symbol</b></div>
+                <div class="ranking_name"><b>Name</b></div>
+            </div>
+            {% for i in trending %}
+            <div class="ranking">
+                <a href="/ticker/?quote={{i.0}}">
+                    <div class="ranking_num">{{ forloop.counter }}.</div>
+                    <div class="ranking_symbol">{{i.0}}</div>
+                    <div class="ranking_name">{{i.1}}</div>
+                </a>
+            </div>
+            {% endfor %}
+            <span><i>Data is updated real time</i></span>
         </div>
     </section>
 

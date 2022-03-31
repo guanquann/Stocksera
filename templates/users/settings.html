@@ -6,15 +6,13 @@
   	 	<h2 class="font-weight-bold mt-1">Settings</h2>
         <h6>@{{user.username}}</h6>
 		<hr>
-        <ul>
-            <li class="nav-item">
-                <a href="{% url 'password_change' %}">Change Password</a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'password_reset' %}">Reset Password</a>
-            </li>
-        </ul>
-        <div class="btn btn-danger ml-1" data-toggle="modal" data-target="#remove_modal">Delete Account</div>
+
+        <div class="btn btn-primary"><a href="{% url 'password_change' %}" style="color: white;text-decoration: none !important">Change Password</a></div>
+        <br>
+        <div class="btn btn-secondary mt-2"><a href="{% url 'password_reset' %}" style="color: white;text-decoration: none !important">Reset Password</a></div>
+        <br>
+        <div class="btn btn-danger mt-2" data-toggle="modal" data-target="#remove_modal">Delete Account</div>
+
         <div class="modal fade" id="remove_modal" tabindex="-1" role="dialog" aria-labelledby="remove_modal_label" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">

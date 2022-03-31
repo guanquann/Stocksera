@@ -5,6 +5,9 @@
     <div class="container p-3">
         <h2 class="font-weight-bold mt-1">Login</h2>
         <hr>
+        <div class="mt-3 mb-3">
+            Create an account to add tickers to watchlist, get your free API key and receive alerts.
+        </div>
         <form method="POST">
             {% csrf_token %}
             {{ form|crispy }}

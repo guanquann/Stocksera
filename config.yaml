@@ -1,6 +1,7 @@
 ---
   # https://github.com/guanquann/Stocksera/
   STOCKSERA_API: "API_KEY_HERE"
+  STOCKSERA_BASE_URL: "http://127.0.0.1:8000/api"
 
   # https://finnhub.io/
   FINNHUB_KEY1: "API_KEY_HERE"

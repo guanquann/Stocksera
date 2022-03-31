@@ -3,13 +3,15 @@ function load_table(borrowed_shares, ftd, short_vol, wsb) {
     date_list = [], fee_list = [], available_list = []
     for (i in borrowed_shares) {
         fees = borrowed_shares[i]["fee"]
-        date = borrowed_shares[i]["date_updated"]
-        available = borrowed_shares[i]["available"]
+        if (fees != 0 || i == 0) {
+            date = borrowed_shares[i]["date_updated"]
+            available = borrowed_shares[i]["available"]
 
-        fee_list.push(fees)
-        available_list.push(available)
-        date_list.push(date)
-        
+            fee_list.push(fees)
+            available_list.push(available)
+            date_list.push(date)
+        }
+
         code += `
             <tr>
                 <td>${fees}%</td>

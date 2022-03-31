@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from rest_framework_api_key.models import APIKey
 # from rest_framework.authtoken.models import Token
 
-BASE_URL = "http://127.0.0.1:8000/api"
+BASE_URL = config_keys['STOCKSERA_BASE_URL']
 HEADERS = {f'Authorization': f"Api-Key {config_keys['STOCKSERA_API']}"}
 
 
@@ -133,6 +133,7 @@ def watchlist(request):
                                                         "wsb": wsb,
                                                         "all_wlist": all_wlist})
     else:
+        messages.warning(request, f"Sign in or create an account first before adding to watchlist.")
         return redirect("/accounts/login")
 
 

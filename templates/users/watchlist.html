@@ -55,7 +55,39 @@
             </div>
         </form>
 
-        <br>
+        <button class="btn btn-info mb-2 mt-2"><a href="{% url 'ticker' %}?quote={{ticker_selected}}" style="color: white;text-decoration: none !important">View More</a></button>
+
+        <div style="height: 310px">
+            <div class="tradingview-widget-container">
+                <div id="tradingview_b8225"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                <script type="text/javascript">
+                new TradingView.MediumWidget(
+                    {
+                    "symbols": [["{{ticker_selected}}","{{ticker_selected}}"]],
+                    "chartOnly": false,
+                    "width": "100%",
+                    "height": "100%",
+                    "locale": "en",
+                    "colorTheme": "light",
+                    "gridLineColor": "rgba(240, 243, 250, 0)",
+                    "fontColor": "#787B86",
+                    "isTransparent": false,
+                    "autosize": true,
+                    "showVolume": true,
+                    "scalePosition": "left",
+                    "scaleMode": "Normal",
+                    "fontFamily": "-apple-system, BlinkMacSystemFont, Trebuchet MS, Roboto, Ubuntu, sans-serif",
+                    "noTimeScale": false,
+                    "valuesTracking": "1",
+                    "chartType": "line",
+                    "container_id": "tradingview_b8225"
+                    }
+                );
+                </script>
+                </div>
+            </div>
+
         <div class="row">
             <div class="col">
                 <br>

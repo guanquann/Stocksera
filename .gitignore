@@ -19,3 +19,4 @@ twitter_img
 finnhub_csv
 admin.py
 migrations/
+static/javascript/plotly-2.3.1.min.js

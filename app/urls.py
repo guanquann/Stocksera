@@ -50,6 +50,7 @@ urlpatterns = [
     path('reverse_repo/', views.reverse_repo, name='reverse_repo'),
     path('daily_treasury/', views.daily_treasury, name='daily_treasury'),
     path('inflation/', views.inflation, name='inflation'),
+    path('world_inflation/', views.world_inflation, name='world_inflation'),
     path('retail_sales/', views.retail_sales, name='retail_sales'),
     path('initial_jobless_claims/', views.initial_jobless_claims, name='initial_jobless_claims'),
 
@@ -65,6 +66,7 @@ urlpatterns = [
     path('short_interest/', views.short_interest, name='short_interest'),
     path('low_float/', views.low_float, name='low_float'),
     path('earnings_calendar/', views.earnings_calendar, name='earnings_calendar'),
+    path('correlation/', views.correlation, name='correlation'),
 
     # News
     path('news/', views.news, name='news'),

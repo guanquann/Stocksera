@@ -1,0 +1,61 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}Stocksera | Inflation{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/economy/economy.css' %}">
+<script src="{% static 'javascript/economy/world_inflation.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}inflation('world'){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/reverse_repo">Economy</a> /
+    <a href="/inflation">Inflation</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('economy')</script>
+
+    <div class="more_info_div_parent">
+        <div class="more_info_div"><a href="{% url 'reverse_repo' %}">RRP</a></div>
+        <div class="more_info_div"><a href="{% url 'daily_treasury' %}">Treasury</a></div>
+        <div class="more_info_div current_link"><a href="{% url 'inflation' %}">CPI</a></div>
+        <div class="more_info_div"><a href="{% url 'retail_sales' %}">Retail</a></div>
+        <div class="more_info_div"><a href="{% url 'initial_jobless_claims' %}">Jobless Claims</a></div>
+    </div>
+
+    <div class="instructions">
+        <h2>CPI</h2>
+        <p> The Consumer Price Index (CPI) is a measure of the 12-month average change in the prices
+            paid by consumers for a market basket of consumer goods and services.
+        </p>
+    </div>
+
+    <div class="more_info_div_parent">
+        <div class="more_info_div"><a href="{% url 'inflation' %}">USA</a></div>
+        <div class="more_info_div current_link"><a href="{% url 'world_inflation' %}">World</a></div>
+    </div>
+
+    <div class="contents_div">
+        <div class="date_selector">
+            <button name="date_range" onclick="btn_selected(this); inflation('world')" class="selected">World</button>
+            <button name="date_range" onclick="btn_selected(this); inflation('north america')">NA</button>
+            <button name="date_range" onclick="btn_selected(this); inflation('south america')">SA</button>
+            <button name="date_range" onclick="btn_selected(this); inflation('europe')">Europe</button>
+            <button name="date_range" onclick="btn_selected(this); inflation('asia')">Asia</button>
+            <button name="date_range" onclick="btn_selected(this); inflation('africa')">Africa</button>
+        </div>
+        <br>
+        <div style="height: 100%;padding:0; margin: 0">
+            <div id="inflation_chart"></div>
+        </div>
+        <br>
+        <div class="scrollable_div">
+            {{inflation_stats|safe}}
+        </div>
+    </div>
+{% endblock %}

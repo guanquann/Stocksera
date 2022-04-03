@@ -1055,6 +1055,15 @@ def inflation(request):
                                                       "next_date": data})
 
 
+def world_inflation(request):
+    """
+    Get world inflation.
+    """
+    data = requests.get(f"{BASE_URL}/inflation/world", headers=HEADERS).json()
+    inflation_stats = pd.DataFrame(data)
+    return render(request, 'economy/world_inflation.html', {"inflation_stats": inflation_stats.to_html(index=False)})
+
+
 def retail_sales(request):
     """
     Get retail sales. Data is from https://ycharts.com/indicators/us_retail_and_food_services_sales
@@ -1132,6 +1141,23 @@ def ipo_calendar(request):
     data = requests.get(f"{BASE_URL}/ipo_calendar", headers=HEADERS).json()
     df = pd.DataFrame(data)
     return render(request, 'discover/ipo_calendar.html', {"ipo_df": df.to_html(index=False)})
+
+
+def correlation(request):
+    pd.options.display.float_format = '{:.3f}'.format
+    if request.GET.get("quotes"):
+        symbols_list = request.GET['quotes'].upper().replace(" ", "")
+    else:
+        symbols_list = "AAPL, TSLA, SPY, AMC, GME, NVDA, XOM"
+    # start = datetime(2017, 1, 1)
+    try:
+        df = yf.Tickers(symbols_list).history(period="1y")
+    except KeyError:
+        df = yf.Tickers("AAPL, TSLA, SPY, AMC, GME, NVDA, XOM").history(period="1y")
+    df = df["Close"].corr(method='pearson')
+    df.replace(1, "-", inplace=True)
+    return render(request, 'discover/correlation.html', {"df": df.to_html(),
+                                                         "symbols_list": symbols_list})
 
 
 def stocktwits(request):

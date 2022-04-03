@@ -588,11 +588,13 @@ def inflation(request, area="usa"):
         pd.options.display.float_format = '{:.1f}'.format
         if area == "world":
             inflation_stats = pd.read_sql_query("SELECT * FROM world_inflation", cnx)
+            inflation_stats.fillna(0, inplace=True)
+            df = inflation_stats.to_dict(orient="records")
         else:
             inflation_stats = pd.read_sql_query("SELECT * FROM usa_inflation", cnx)
             inflation_stats.set_index("Year", inplace=True)
-        inflation_stats.fillna(0, inplace=True)
-        df = inflation_stats.to_dict(orient="index")
+            inflation_stats.fillna(0, inplace=True)
+            df = inflation_stats.to_dict(orient="index")
         return JSONResponse(df)
     return ERROR_MSG
 

@@ -2,19 +2,18 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}Stocksera | IPO{% endblock %}
+{% block title %}Stocksera | Correlation{% endblock %}
 
 {% block additional_script %}
-<link rel="stylesheet" href="{% static 'style/discover/short_interest.css' %}">
-<script src="{% static 'javascript/discover/ipo.js' %}"></script>
+<script src="{% static 'javascript/discover/correlation.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}load_ipo(){% endblock %}
+{% block onload_properties%}load_heatmap(){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
     <a href="/discover">Discover</a> /
-    <a href="/ipo_calendar">IPO Calendar</a>
+    <a href="/correlation">Correlation</a>
 {% endblock %}
 
 {% block main_content %}
@@ -24,33 +23,32 @@
         <div class="more_info_div"><a href="{% url 'latest_insider' %}">Insider</a></div>
         <div class="more_info_div"><a href="{% url 'ark_trades' %}">ARK</a></div>
         <div class="more_info_div"><a href="{% url 'jim_cramer' %}">Jim Cramer</a></div>
-        <div class="more_info_div current_link"><a href="{% url 'ipo_calendar' %}">IPOs</a></div>
+        <div class="more_info_div"><a href="{% url 'ipo_calendar' %}">IPOs</a></div>
         <div class="more_info_div"><a href="{% url 'stocktwits' %}">Stocktwits</a></div>
         <div class="more_info_div"><a href="{% url 'beta' %}">Beta</a></div>
-        <div class="more_info_div"><a href="{% url 'correlation' %}">Correlation</a></div>
+        <div class="more_info_div current_link"><a href="{% url 'correlation' %}">Correlation</a></div>
         <div class="more_info_div"><a href="{% url 'short_interest' %}">Short Interest</a></div>
         <div class="more_info_div"><a href="{% url 'low_float' %}">Low Float</a></div>
         <div class="more_info_div"><a href="{% url 'amd_xlnx_ratio' %}">AMD-XLNX</a></div>
     </div>
 
     <div class="instructions">
-        <h2>IPO Calendar</h2>
-        <p>Get recent and past IPOs.</p>
+        <h2>Correlation</h2>
+        <p>View correlation between stocks. The larger the value implies more correlation with each other. </p>
     </div>
 
     <div class="contents_div">
-        <div class="search_bar">
-            <input type="text" class="ticker_input" placeholder="Ticker:" onkeyup="searchTicker(this)" autocomplete="off">
-            <button class="submit_btn" type="button">
-                <span class="fa fa-search"></span>
-            </button>
-        </div>
-        <span class="click_table_info"><b>Click on ticker for more info</b></span>
+        <form action="" method="GET" autocomplete="off">
+            <div class="search_bar">
+                <input type="text" class="ticker_input" placeholder="Tickers:" autocomplete="off" name="quotes" value="{{symbols_list}}" style="max-width: 200px">
+                <button class="submit_btn" type="button">
+                    <span class="fa fa-search"></span>
+                </button>
+            </div>
+        </form>
+        <br>
         <div class="table_div">
-            {{ ipo_df|safe }}
+            {{ df|safe }}
         </div>
     </div>
-{% endblock %}
-
-{% block bottom_script %}
 {% endblock %}

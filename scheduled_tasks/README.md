@@ -16,6 +16,7 @@ Before continuing, register for an API in the links shown below and add them in 
 | Reddit         | https://www.reddit.com/prefs/apps                   |
 | Twitter        | https://developer.twitter.com/en/portal/dashboard   |
 | Finnhub        | https://finnhub.io/                                 |
+| Polygon        | https://polygon.io/                                 |
 | Gmail -optional| https://realpython.com/python-send-email/           |
 
 To access stock options data, sign up for TD Ameritrade Developer Account and follow the instructions in: 
@@ -93,11 +94,17 @@ To access stock options data, sign up for TD Ameritrade Developer Account and fo
 #### scheduled_tasks/discover/miscellaneous.py
 - Get stocks with low float and high short interest.
 
-#### scheduled_tasks/discover/get_earnings_calendar.py
+#### scheduled_tasks/discover/get_earnings.py
 - Get upcoming earnings calendar
 
 #### scheduled_tasks/discover/get_stocks_summary.py 
 - Get heatmap of S&P 500, DOW and Nasdaq 100.
+
+#### scheduled_tasks/discover/get_stock_splits.py 
+- Get stocks with recent/upcoming stock splits.
+
+#### scheduled_tasks/discover/get_dividends.py 
+- Get stocks with recent/upcoming dividends.
 
 #### scheduled_tasks/government/get_senate_trading.py     
 - Get recent senate trading.
@@ -145,11 +152,13 @@ To access stock options data, sign up for TD Ameritrade Developer Account and fo
 | scheduled_tasks/stocks/get_short_volume.py                                            | main()                                  | 6.00PM      | 
 | scheduled_tasks/stocks/get_borrowed_shares.py                                         | main()                                  | 10 Mins     |
 | scheduled_tasks/discover/miscellaneous.py                                             | main()                                  | Daily (AH)  |
-| scheduled_tasks/discover/get_earnings_calendar.py                                     | main()                                  | Daily (AH)  |
+| scheduled_tasks/discover/get_earnings.py                                              | main()                                  | Daily (AH)  |
 | scheduled_tasks/discover/get_latest_insider_trading.py                                | main()                                  | 2 Hours     |
 | scheduled_tasks/discover/get_stocks_summary.py                                        | main()                                  | 10 Mins     |
 | scheduled_tasks/discover/get_stocktwits_summary.py                                    | main()                                  | Hourly      |
 | scheduled_tasks/discover/get_ipo_calendar.py                                          | main()                                  | Daily (AH)  |
+| scheduled_tasks/discover/get_stock_splits.py                                          | main()                                  | Daily (AH)  |
+| scheduled_tasks/discover/get_dividends.py                                             | main()                                  | Daily (AH)  |
 | scheduled_tasks/government/get_senate_trading.py                                      | main()                                  | Daily (AH)  |
 | scheduled_tasks/government/get_house_trading.py                                       | main()                                  | Daily (AH)  |
 | scheduled_tasks/news/get_news.py                                                      | main()                                  | 10 Mins     |

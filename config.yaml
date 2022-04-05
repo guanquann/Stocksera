@@ -7,6 +7,9 @@
   FINNHUB_KEY1: "API_KEY_HERE"
   FINNHUB_KEY2: "API_KEY_HERE"
 
+  # https://polygon.io/
+  POLYGON_KEY: "API_KEY_HERE"
+
   # https://developer.twitter.com/en/portal/dashboard/
   TWITTER_BEARER_TOKEN: "API_KEY_HERE"
 

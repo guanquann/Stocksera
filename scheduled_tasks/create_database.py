@@ -279,7 +279,8 @@ def database():
                 "Country VARCHAR(100), "
                 "Last FLOAT, "
                 "Previous FLOAT, "
-                "Reference VARCHAR(20) ) ")
+                "Reference VARCHAR(20), "
+                "Continent VARCHAR(50) )")
 
     cur.execute("CREATE table IF NOT EXISTS short_volume ("
                 "`Date` VARCHAR(20), "
@@ -426,8 +427,29 @@ def database():
                 "`Reason` VARCHAR(100), "
                 "`Resume Date` VARCHAR(20), "
                 "`Resume Time` VARCHAR(20), "
-                "UNIQUE(`Halt Date`, `Halt Time`, `Ticker`),"
+                "UNIQUE(`Halt Date`, `Halt Time`, `Ticker`), "
                 "INDEX(`Halt Date`, `Halt Time`) )")
+
+    cur.execute("CREATE TABLE IF NOT EXISTS stock_splits ("
+                "`Date` VARCHAR(20), "
+                "`Split From`  VARCHAR(20), "
+                "`Split To` VARCHAR(20), "
+                "`Ticker` VARCHAR(10), "
+                "`Reverse` VARCHAR(10), "
+                "UNIQUE(`Date`, `Split From`, `Split To`, `Ticker`, `Reverse`), "
+                "INDEX(`Date`) )")
+
+    cur.execute("CREATE TABLE IF NOT EXISTS dividends ("
+                "`Ticker` VARCHAR(10), "
+                "`Cash` FLOAT, "
+                "`Declaration Date`  VARCHAR(10), "
+                "`Ex-Div Date` VARCHAR(10), "
+                "`Pay Date` VARCHAR(10), "
+                "`Record Date` VARCHAR(10), "
+                "`Type` VARCHAR(10), "
+                "`Frequency` VARCHAR(10), "
+                "UNIQUE(`Ticker`, `Declaration Date`), "
+                "INDEX(`Declaration Date`) )")
 
     print("Successfully created/updated database")
 

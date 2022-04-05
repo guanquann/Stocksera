@@ -791,3 +791,35 @@ def borrowed_shares(request, ticker_selected=""):
         df = df.to_dict(orient="records")
         return JSONResponse(df)
     return ERROR_MSG
+
+
+@csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
+def stock_split(request):
+    """
+    Get stock split history.
+    """
+    key = get_user_api(request)
+    if APIKey.objects.is_valid(key):
+        df = pd.read_sql_query(f"SELECT * FROM stock_splits ORDER BY `Date` DESC", cnx)
+        df = df.replace(np.nan, "")
+        df = df.to_dict(orient="records")
+        return JSONResponse(df)
+    return ERROR_MSG
+
+
+@csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
+def dividend_history(request):
+    """
+    Get dividend history.
+    """
+    key = get_user_api(request)
+    if APIKey.objects.is_valid(key):
+        df = pd.read_sql_query(f"SELECT * FROM dividends ORDER BY `Declaration Date` DESC", cnx)
+        df = df.replace(np.nan, "")
+        df = df.to_dict(orient="records")
+        return JSONResponse(df)
+    return ERROR_MSG

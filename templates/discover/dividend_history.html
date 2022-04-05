@@ -2,18 +2,19 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}Stocksera | Jim Cramer {% endblock %}
+{% block title %}Stocksera | Dividend History{% endblock %}
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/government/trading.css' %}">
-<script src="{% static 'javascript/discover/jim_cramer.js' %}"></script>
+<script src="{% static 'javascript/discover/dividend_history.js' %}"></script>
 {% endblock %}
 
 {% block onload_properties%}load_table(){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
-    <a href="/jim_cramer">Jim Cramer</a>
+    <a href="/discover">Discover</a> /
+    <a href="/dividend_history">Dividend History</a>
 {% endblock %}
 
 {% block main_content %}
@@ -22,7 +23,7 @@
     <div class="more_info_div_parent">
         <div class="more_info_div"><a href="{% url 'latest_insider' %}">Insider</a></div>
         <div class="more_info_div"><a href="{% url 'ark_trades' %}">ARK</a></div>
-        <div class="more_info_div current_link"><a href="{% url 'jim_cramer' %}">Jim Cramer</a></div>
+        <div class="more_info_div"><a href="{% url 'jim_cramer' %}">Jim Cramer</a></div>
         <div class="more_info_div"><a href="{% url 'ipo_calendar' %}">IPOs</a></div>
         <div class="more_info_div"><a href="{% url 'stocktwits' %}">Stocktwits</a></div>
         <div class="more_info_div"><a href="{% url 'beta' %}">Beta</a></div>
@@ -35,8 +36,8 @@
     </div>
 
     <div class="instructions">
-        <h2>Jim Cramer Recommendations</h2>
-        <p>Jim Cramer... the (pump and dump) dude in CNBC Mad Money. Is he really that good?</p>
+        <h2>Dividend History</h2>
+        <p>Add content here.</p>
     </div>
 
     <div class="contents_div">
@@ -45,6 +46,24 @@
             <button class="submit_btn" type="button">
                 <span class="fa fa-search"></span>
             </button>
+        </div>
+        <div class="select_div">
+            <form action="" method="GET" autocomplete="off">
+                <select name="sort" onchange="this.form.submit()">
+                    <option>Sort By: {{sort_by}}</option>
+                    <option value="Ticker">Ticker</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Declaration Date">Declaration Date</option>
+                    <option value="Ex-Div Date">Ex-Div Date</option>
+                    <option value="Pay Date">Pay Date</option>
+                    <option value="Record Date">Record Date</option>
+                </select>
+                 <select name="order" onchange="this.form.submit()">
+                    <option>Order: {{order}}</option>
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+            </form>
         </div>
         <div class="scrollable_div">
             {{df|safe}}

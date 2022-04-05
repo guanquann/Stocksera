@@ -88,6 +88,10 @@ urlpatterns = [
     path('borrowed_shares/', views.borrowed_shares, name='api_borrowed_shares'),
     path('borrowed_shares/<str:ticker_selected>/', views.borrowed_shares, name='api_borrowed_shares'),
 
+    path('stock_split/', views.stock_split, name='api_stock_split'),
+
+    path('dividend_history/', views.dividend_history, name='api_dividend_history'),
+
     path('stocksera_api_key/', views.stocksera_api_key, name='api_stocksera_api_key'),
     path('signup/', views.signup, name='api_signup'),
     path('login/', views.login, name='api_login'),

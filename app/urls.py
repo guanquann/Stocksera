@@ -66,6 +66,8 @@ urlpatterns = [
     path('short_interest/', views.short_interest, name='short_interest'),
     path('low_float/', views.low_float, name='low_float'),
     path('earnings_calendar/', views.earnings_calendar, name='earnings_calendar'),
+    path('stock_split/', views.stock_split, name='stock_split'),
+    path('dividend_history/', views.dividend_history, name='dividend_history'),
     path('correlation/', views.correlation, name='correlation'),
 
     # News

@@ -1059,6 +1059,7 @@ def world_inflation(request):
     """
     Get world inflation.
     """
+    pd.options.display.float_format = '{:.2f}'.format
     data = requests.get(f"{BASE_URL}/inflation/world", headers=HEADERS).json()
     inflation_stats = pd.DataFrame(data)
     return render(request, 'economy/world_inflation.html', {"inflation_stats": inflation_stats.to_html(index=False)})
@@ -1158,6 +1159,40 @@ def correlation(request):
     df.replace(1, "-", inplace=True)
     return render(request, 'discover/correlation.html', {"df": df.to_html(),
                                                          "symbols_list": symbols_list})
+
+
+def stock_split(request):
+    pd.options.display.float_format = '{:.3f}'.format
+    data = requests.get(f"{BASE_URL}/stock_split", headers=HEADERS).json()
+    df = pd.DataFrame(data)
+    return render(request, 'discover/stock_split.html', {"df": df.to_html(index=False)})
+
+
+def dividend_history(request):
+    pd.options.display.float_format = '{:.3f}'.format
+    data = requests.get(f"{BASE_URL}/dividend_history", headers=HEADERS).json()
+    df = pd.DataFrame(data)
+
+    if request.GET.get("order"):
+        order = request.GET['order'].replace("Order: ", "")
+        if order == "asc":
+            order = True
+        else:
+            order = False
+    else:
+        order = False
+
+    if request.GET.get("sort"):
+        sort_by = request.GET['sort'].replace("Sort By: ", "")
+        df.sort_values(by=[sort_by], ascending=order, inplace=True)
+    else:
+        sort_by = "Declaration Date"
+
+    order = "Ascending" if order is True else "Descending"
+
+    return render(request, 'discover/dividend_history.html', {"df": df.to_html(index=False),
+                                                              "sort_by": sort_by,
+                                                              "order": order})
 
 
 def stocktwits(request):

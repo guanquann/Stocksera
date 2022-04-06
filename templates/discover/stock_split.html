@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/discover/stock_split.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}{% endblock %}
+{% block onload_properties%}load_table(){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -37,7 +37,7 @@
 
     <div class="instructions">
         <h2>Stock Split</h2>
-        <p>Add content here.</p>
+        <p>View upcoming and past stock splits.</p>
     </div>
 
     <div class="contents_div">
@@ -47,8 +47,24 @@
                 <span class="fa fa-search"></span>
             </button>
         </div>
+        <div class="select_div">
+            Type:
+             <select name="order" onchange="filter_table(this)">
+                <option value="All">All</option>
+                <option value="False">Non-Reverse</option>
+                <option value="True">Reverse</option>
+            </select>
+        </div>
         <div class="scrollable_div">
             {{df|safe}}
         </div>
     </div>
+{% endblock %}
+
+{% block bottom_script %}
+<style>
+    .filter {
+        display: none;
+    }
+</style>
 {% endblock %}

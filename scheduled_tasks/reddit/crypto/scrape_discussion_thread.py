@@ -39,7 +39,7 @@ def extract_ticker(text, tickers_dict, sentiment_dict, sentiment_score):
 
 def crypto_live():
     """
-    Get real time sentiment from r/cryptocurrency discussion thread
+    Get mentions from r/cryptocurrency discussion thread in the last 10 minutes
     """
     current_datetime_str = str(current_datetime).rsplit(":", 1)[0]
 
@@ -124,6 +124,46 @@ def crypto_live():
     trending_df.to_sql("crypto_trending_24H", engine, if_exists="append", index=False)
 
 
+def crypto_live_stream():
+    """
+    Get mentions from r/cryptocurrency discussion thread realtime. Data is streamed continuously.
+    """
+    while True:
+        count = 0
+        sentiment_dict = {}
+        tickers_dict = {}
+        while count <= 20:
+            try:
+                subreddit = reddit.subreddit("cryptocurrency")
+                for comment in subreddit.stream.comments(skip_existing=True):
+                    current_datetime_str = str(datetime.utcnow()).rsplit(":", 1)[0]
+                    body = str(comment.body)
+
+                    vs = analyzer.polarity_scores(body)
+                    sentiment = vs['compound']
+                    tickers_dict, sentiment_dict = extract_ticker(body.upper(), tickers_dict, sentiment_dict, sentiment)
+                    count += 1
+
+                    if count > 20:
+                        trending_df = pd.DataFrame()
+                        trending_df["ticker"] = tickers_dict.keys()
+                        trending_df["mentions"] = tickers_dict.values()
+                        trending_df["sentiment"] = sentiment_dict.values()
+                        trending_df["sentiment"] = trending_df["sentiment"] / trending_df["mentions"]
+                        trending_df["sentiment"] = trending_df["sentiment"].round(2)
+                        trending_df["date_updated"] = current_datetime_str
+                        trending_df.sort_values(by=["mentions"], ascending=False, inplace=True)
+                        print(trending_df)
+                        trending_df.to_sql("crypto_trending_24H", engine, if_exists="append", index=False)
+                        count = 0
+                        sentiment_dict = {}
+                        tickers_dict = {}
+
+            except Exception as e:
+                print(e)
+                time.sleep(10)
+
+
 def update_hourly():
     """
     Group all mentions in the last hour together
@@ -174,7 +214,8 @@ def crypto_change():
 
 
 if __name__ == '__main__':
-    crypto_live()
+    # crypto_live()
+    crypto_live_stream()
     update_hourly()
     crypto_change()
 

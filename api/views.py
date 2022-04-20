@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework.permissions import AllowAny
 from rest_framework.renderers import JSONRenderer
+from rest_framework.decorators import schema
+from rest_framework.schemas.openapi import AutoSchema
 from rest_framework_api_key.models import APIKey
 from rest_framework.decorators import api_view, permission_classes
 
@@ -98,11 +100,6 @@ def login(request):
     else:
         # No backend authenticated the credentials
         return JSONResponse({"Anonymous": "Error logging in"})
-
-
-from rest_framework.decorators import api_view, schema
-from rest_framework.schemas.openapi import AutoSchema
-import yaml
 
 
 class AutoDocstringSchema(AutoSchema):
@@ -809,13 +806,59 @@ def stock_split(request):
     return ERROR_MSG
 
 
+# """
+#     Get dividend history.
+#     """
 @csrf_exempt
 @api_view(['GET'])
 @schema(AutoDocstringSchema())
 def dividend_history(request):
     """
-    Get dividend history.
-    """
+   Get dividend history.
+   ---
+   type:
+     name:
+       required: true
+       type: string
+     url:
+       required: false
+       type: url
+     created_at:
+       required: true
+       type: string
+       format: date-time
+
+   serializer: .serializers.FooSerializer
+   omit_serializer: false
+   many: true
+
+   parameters_strategy: merge
+   omit_parameters:
+       - path
+   parameters:
+       - name: name
+         description: Foobar long description goes here
+         required: true
+         type: string
+         paramType: form
+       - name: other_foo
+         paramType: query
+       - name: other_bar
+         paramType: query
+       - name: avatar
+         type: file
+
+   responseMessages:
+       - code: 401
+         message: Not authenticated
+
+   consumes:
+       - application/json
+       - application/xml
+   produces:
+       - application/json
+       - application/xml
+   """
     key = get_user_api(request)
     if APIKey.objects.is_valid(key):
         df = pd.read_sql_query(f"SELECT * FROM dividends ORDER BY `Declaration Date` DESC", cnx)

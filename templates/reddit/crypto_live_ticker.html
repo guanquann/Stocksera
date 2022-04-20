@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/reddit/crypto_live_ticker.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}load_ticker_graph();load_ticker_change(){% endblock %}
+{% block onload_properties%}load_ticker_graph(12);load_ticker_change(){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -64,9 +64,22 @@
                 </div>
             </div>
         </div>
-        <div id="ticker_chart" class="chart"></div>
+
+        <div class="date_selector">
+            <button name="date_range" onclick="btn_selected(this); load_ticker_graph(1)">1 Month</button>
+            <button name="date_range" onclick="btn_selected(this); load_ticker_graph(3)">3 Months</button>
+            <button name="date_range" onclick="btn_selected(this); load_ticker_graph(48)" class="selected">Max</button>
+        </div>
+
+        <h2 class="header">Number of Mentions</h2>
+        <div id="mentions_chart" class="chart"></div>
+
+        <h2 class="header">Daily Sentiment</h2>
+        <div id="sentiment_chart" class="chart"></div>
+
         <div style="display:none">
             {{mentions_df|safe}}
+            {{sentiment_df|safe}}
         </div>
     </div>
 {% endblock %}

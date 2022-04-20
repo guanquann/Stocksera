@@ -400,6 +400,12 @@ def database():
                 "UNIQUE(ticker, fee, available, date_updated),"
                 "INDEX (ticker) )")
 
+    cur.execute("CREATE TABLE IF NOT EXISTS threshold_securities ("
+                "ticker VARCHAR(10), "
+                "date_updated VARCHAR(20), "
+                "UNIQUE(ticker, date_updated),"
+                "INDEX (ticker) )")
+
     cur.execute("CREATE TABLE IF NOT EXISTS ipo_calendar ("
                 "`Date` VARCHAR(20), "
                 "`Symbol`  VARCHAR(10), "

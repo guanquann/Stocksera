@@ -221,7 +221,7 @@ def sec_fillings(request):
     Get SEC filling from Finnhub of ticker selected
     """
     ticker_selected = default_ticker(request)
-    data = requests.get(f"{BASE_URL}/sec_fillings/{ticker_selected}", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/stocks/sec_fillings/{ticker_selected}", headers=HEADERS).json()
     df = pd.DataFrame(data)
     df = df.to_html(index=False)
     return render(request, 'stock/sec_fillings.html', {"sec_fillings_df": df})
@@ -233,7 +233,7 @@ def news_sentiment(request):
     Note: News are only available if hosted locally. Read README.md for more details
     """
     ticker_selected = default_ticker(request)
-    data = requests.get(f"{BASE_URL}/news_sentiment/{ticker_selected}", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/stocks/news_sentiment/{ticker_selected}", headers=HEADERS).json()
     news_df = pd.DataFrame(data)
     news_df = news_df.to_html(index=False)
     return render(request, 'stock/recent_news.html', {"title": "News", "recent_news_df": news_df})
@@ -244,7 +244,7 @@ def insider_trading(request):
     Get a specific ticker's insider trading data from Finviz
     """
     ticker_selected = default_ticker(request)
-    data = requests.get(f"{BASE_URL}/insider_trading/{ticker_selected}", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/stocks/insider_trading/{ticker_selected}", headers=HEADERS).json()
     inside_trader_df = pd.DataFrame(data)
     if inside_trader_df.empty:
         inside_trader_df = pd.DataFrame([{"Name": "N/A", "Relationship": "N/A", "Date": "N/A"}])
@@ -256,10 +256,10 @@ def latest_insider(request):
     """
     Get latest insider trading data from Finviz and perform analysis
     """
-    data = requests.get(f"{BASE_URL}/latest_insider/?limit=2000", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/discover/latest_insider/?limit=2000", headers=HEADERS).json()
     recent_activity = pd.DataFrame(data)
 
-    data = requests.get(f"{BASE_URL}/latest_insider_summary", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/discover/latest_insider_summary", headers=HEADERS).json()
     insider_analysis = pd.DataFrame(data)
     return render(request, 'discover/latest_insider_trading.html',
                   {"insider_analysis": insider_analysis.to_html(index=False),
@@ -454,7 +454,7 @@ def short_volume(request):
     ticker_selected = default_ticker(request)
 
     if ticker_selected == "TOP_SHORT_VOLUME":
-        data = requests.get(f"{BASE_URL}/top_short_volume", headers=HEADERS).json()
+        data = requests.get(f"{BASE_URL}/stocks/top_short_volume", headers=HEADERS).json()
         highest_short_vol = pd.DataFrame(data)
         return render(request, 'stock/top_short_volume.html',
                       {"highest_short_vol": highest_short_vol.to_html(index=False)})
@@ -462,7 +462,7 @@ def short_volume(request):
     information, related_tickers = check_market_hours(ticker_selected)
 
     if "longName" in information and information["regularMarketPrice"] != "N/A":
-        data = requests.get(f"{BASE_URL}/short_volume/{ticker_selected}/", headers=HEADERS).json()
+        data = requests.get(f"{BASE_URL}/stocks/short_volume/{ticker_selected}/", headers=HEADERS).json()
         short_volume_data = pd.DataFrame(data)
 
         if "download_csv" in request.GET:
@@ -471,7 +471,7 @@ def short_volume(request):
             response = download_file(short_volume_data, file_name)
             return response
 
-        data = requests.get(f"{BASE_URL}/top_short_volume", headers=HEADERS).json()
+        data = requests.get(f"{BASE_URL}/stocks/top_short_volume", headers=HEADERS).json()
         highest_short_vol = pd.DataFrame(data)["Ticker"].tolist()[:20]
 
         return render(request, 'stock/short_volume.html', {"ticker_selected": ticker_selected,
@@ -491,7 +491,7 @@ def borrowed_shares(request):
     information, related_tickers = check_market_hours(ticker_selected)
 
     if "longName" in information and information["regularMarketPrice"] != "N/A":
-        data = requests.get(f"{BASE_URL}/borrowed_shares/{ticker_selected}", headers=HEADERS).json()
+        data = requests.get(f"{BASE_URL}/stocks/borrowed_shares/{ticker_selected}", headers=HEADERS).json()
         df = pd.DataFrame(data)
         del df["ticker"]
         df.columns = ["Fee", "Available", "Updated"]
@@ -511,13 +511,13 @@ def failure_to_deliver(request):
     ticker_selected = default_ticker(request)
 
     if ticker_selected == "TOP_FTD":
-        data = requests.get(f"{BASE_URL}/top_failure_to_deliver", headers=HEADERS).json()
+        data = requests.get(f"{BASE_URL}/stocks/top_failure_to_deliver", headers=HEADERS).json()
         top_ftd = pd.DataFrame(data)
         return render(request, 'stock/top_ftd.html', {"top_ftd": top_ftd.to_html(index=False)})
 
     information, related_tickers = check_market_hours(ticker_selected)
     if "longName" in information and information["regularMarketPrice"] != "N/A":
-        data = requests.get(f"{BASE_URL}/failure_to_deliver/{ticker_selected}", headers=HEADERS).json()
+        data = requests.get(f"{BASE_URL}/stocks/failure_to_deliver/{ticker_selected}", headers=HEADERS).json()
         ftd = pd.DataFrame(data)
         if ftd.empty:
             top_range = 0
@@ -653,7 +653,7 @@ def subreddit_count(request):
     all_subreddits = sorted(interested_stocks_subreddits)
     if ticker_selected and ticker_selected.upper() != "SUMMARY":
         ticker_selected = ticker_selected.upper().replace(" ", "")
-        data = requests.get(f"{BASE_URL}/subreddit_count/{ticker_selected}/?days=1000", headers=HEADERS).json()
+        data = requests.get(f"{BASE_URL}/reddit/subreddit_count/{ticker_selected}/?days=1000", headers=HEADERS).json()
         stats = pd.DataFrame(data)
         information, related_tickers = check_market_hours(ticker_selected)
         try:
@@ -700,7 +700,7 @@ def wsb_live(request):
     mentions_7d_df = pd.DataFrame(data)
 
     # Get calls/puts mentions
-    data = requests.get(f"{BASE_URL}/wsb_options/?days=1000", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/reddit/wsb_options/?days=1000", headers=HEADERS).json()
     trending_options = pd.DataFrame(data)
 
     # Get change in mentions
@@ -817,8 +817,8 @@ def crypto_live_ticker(request):
     pd.options.display.float_format = '{:.2f}'.format
     ticker_selected = default_ticker(request, "BTC")
 
-    df = pd.read_sql_query("SELECT mentions, sentiment, date_updated FROM crypto_trending_hourly "
-                           "WHERE ticker='{}' ".format(ticker_selected), cnx)
+    data = requests.get(f"{BASE_URL}/reddit/crypto/{ticker_selected}/?days=1000", headers=HEADERS).json()
+    df = pd.DataFrame(data)
 
     sentiment_df = pd.read_sql_query('SELECT AVG(sentiment) AS sentiment, '
                                      'date_updated FROM crypto_trending_hourly '
@@ -867,7 +867,7 @@ def market_summary(request):
         return render(request, 'market_summary/market_summary.html', {"title": title,
                                                                       "summary_df": summary_df.to_html(index=False)})
 
-    data = requests.get(f"{BASE_URL}/market_summary/?type={request.GET.get('type')}", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/news/market_summary/?type={request.GET.get('type')}", headers=HEADERS).json()
     title = list(data.keys())[0]
     data = list(data.values())[0]
 
@@ -1014,7 +1014,7 @@ def reverse_repo(request):
     """
     Get reverse repo. Data is from https://apps.newyorkfed.org/
     """
-    data = requests.get(f"{BASE_URL}/reverse_repo/?days=1000", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/economy/reverse_repo/?days=1000", headers=HEADERS).json()
     reverse_repo_stats = pd.DataFrame(data)
 
     with open(r"database/economic_date.json", "r+") as r:
@@ -1030,7 +1030,7 @@ def daily_treasury(request):
     Get daily treasury.
     Data is from https://fiscaldata.treasury.gov/datasets/daily-treasury-statement/operating-cash-balance
     """
-    data = requests.get(f"{BASE_URL}/daily_treasury/?days=1000", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/economy/daily_treasury/?days=1000", headers=HEADERS).json()
     daily_treasury_stats = pd.DataFrame(data)
 
     with open(r"database/economic_date.json", "r+") as r:
@@ -1044,7 +1044,7 @@ def inflation(request):
     """
     Get inflation. Data is from https://www.usinflationcalculator.com/inflation/current-inflation-rates/
     """
-    data = requests.get(f"{BASE_URL}/inflation/usa", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/economy/inflation/usa", headers=HEADERS).json()
     inflation_stats = pd.DataFrame(data).T
     inflation_stats.reset_index(inplace=True)
     inflation_stats.rename(columns={"index": "Year"}, inplace=True)
@@ -1060,7 +1060,7 @@ def world_inflation(request):
     Get world inflation.
     """
     pd.options.display.float_format = '{:.2f}'.format
-    data = requests.get(f"{BASE_URL}/inflation/world", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/economy/inflation/world", headers=HEADERS).json()
     inflation_stats = pd.DataFrame(data)
     return render(request, 'economy/world_inflation.html', {"inflation_stats": inflation_stats.to_html(index=False)})
 
@@ -1069,7 +1069,7 @@ def retail_sales(request):
     """
     Get retail sales. Data is from https://ycharts.com/indicators/us_retail_and_food_services_sales
     """
-    data = requests.get(f"{BASE_URL}/retail_sales/?days=1000", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/economy/retail_sales/?days=1000", headers=HEADERS).json()
     retail_stats = pd.DataFrame(data)
 
     with open(r"database/economic_date.json", "r+") as r:
@@ -1080,7 +1080,7 @@ def retail_sales(request):
 
 
 def initial_jobless_claims(request):
-    data = requests.get(f"{BASE_URL}/initial_jobless_claims/?days=1000", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/economy/initial_jobless_claims/?days=1000", headers=HEADERS).json()
     jobless_claims = pd.DataFrame(data)
 
     with open(r"database/economic_date.json", "r+") as r:
@@ -1094,7 +1094,7 @@ def short_interest(request):
     """
     Get short interest of ticker. Data from https://www.stockgrid.io/shortinterest
     """
-    data = requests.get(f"{BASE_URL}/short_interest", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/discover/short_interest", headers=HEADERS).json()
     df_high_short_interest = pd.DataFrame(data)
 
     return render(request, 'discover/short_interest.html',
@@ -1105,7 +1105,7 @@ def low_float(request):
     """
     Get short interest of ticker. Data if from lowfloat.com
     """
-    data = requests.get(f"{BASE_URL}/low_float", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/discover/low_float", headers=HEADERS).json()
     df_low_float = pd.DataFrame(data)
 
     return render(request, 'discover/low_float.html',
@@ -1139,7 +1139,7 @@ def amd_xlnx_ratio(request):
 
 
 def ipo_calendar(request):
-    data = requests.get(f"{BASE_URL}/ipo_calendar", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/discover/ipo_calendar", headers=HEADERS).json()
     df = pd.DataFrame(data)
     return render(request, 'discover/ipo_calendar.html', {"ipo_df": df.to_html(index=False)})
 
@@ -1163,14 +1163,14 @@ def correlation(request):
 
 def stock_split(request):
     pd.options.display.float_format = '{:.3f}'.format
-    data = requests.get(f"{BASE_URL}/stock_split", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/discover/stock_split", headers=HEADERS).json()
     df = pd.DataFrame(data)
     return render(request, 'discover/stock_split.html', {"df": df.to_html(index=False)})
 
 
 def dividend_history(request):
     pd.options.display.float_format = '{:.3f}'.format
-    data = requests.get(f"{BASE_URL}/dividend_history", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/discover/dividend_history", headers=HEADERS).json()
     df = pd.DataFrame(data)
 
     if request.GET.get("order"):
@@ -1234,7 +1234,7 @@ def jim_cramer(request):
         ticker_selected = ticker_selected.upper()
         information, related_tickers = check_market_hours(ticker_selected)
 
-        data = requests.get(f"{BASE_URL}/jim_cramer/{ticker_selected}", headers=HEADERS).json()
+        data = requests.get(f"{BASE_URL}/discover/jim_cramer/{ticker_selected}", headers=HEADERS).json()
         ticker_df = pd.DataFrame(data)
         history_df = yf.Ticker(ticker_selected).history(period="1y", interval="1d")
         history_df.reset_index(inplace=True)
@@ -1261,13 +1261,13 @@ def jim_cramer(request):
                                                                             "history_df": history_df.to_html(
                                                                                 index=False)})
     else:
-        data = requests.get(f"{BASE_URL}/jim_cramer", headers=HEADERS).json()
+        data = requests.get(f"{BASE_URL}/discover/jim_cramer", headers=HEADERS).json()
         df = pd.DataFrame(data)[:500]
         return render(request, 'discover/jim_cramer.html', {"df": df.to_html(index=False)})
 
 
 def news(request):
-    data = requests.get(f"{BASE_URL}/market_news", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/news/market_news", headers=HEADERS).json()
     df = pd.DataFrame(data)
     df.rename(columns={"Date": "Date [UTC]"}, inplace=True)
     return render(request, 'news/news.html', {"df": df.to_html(index=False)})
@@ -1278,7 +1278,7 @@ def twitter_feed(request):
 
 
 def trading_halts(request):
-    data = requests.get(f"{BASE_URL}/trading_halts", headers=HEADERS).json()
+    data = requests.get(f"{BASE_URL}/news/trading_halts", headers=HEADERS).json()
     df = pd.DataFrame(data)
     return render(request, 'news/trading_halts.html', {"df": df.to_html(index=False)})
 

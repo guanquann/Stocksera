@@ -1,12 +1,17 @@
-function load_ticker_graph() {
-    tr = document.querySelectorAll("tr")
-    mentions_list = [], sentiment_list = [], date_list = []
+function load_ticker_graph(duration) {
+    var date_threshold = get_date_difference(duration, "-")
+
+    tr = document.getElementsByTagName("table")[0].querySelectorAll("tr")
+    mentions_list = [], date_list = []
 
     for (i=1; i<tr.length; i++) {
         td = tr[i].querySelectorAll("td")
-        mentions_list.push(td[0].innerHTML)
-        sentiment_list.push(td[1].innerHTML)
-        date_list.push(td[2].innerHTML)
+
+        date_string = td[1].innerHTML
+        if (date_string >= date_threshold) {
+            mentions_list.push(td[0].innerHTML)
+            date_list.push(date_string)
+        }
     }
 
     var trace1 = {
@@ -17,25 +22,10 @@ function load_ticker_graph() {
         },
         name: 'Mentions',
         hovertemplate:
-                `<b>%{x|%d/%m (%H:%M)}</b><br>` +
+                `<b>%{x|%d/%m/%Y (%H:%M)}</b><br>` +
                 "Mentions: %{y}<br>" +
                 "<extra></extra>",
         type: 'bar',
-    };
-
-    var trace2 = {
-        x: date_list,
-        y: sentiment_list,
-        marker: {
-            color: '#ffa500c4'
-        },
-        name: 'Sentiment',
-        hovertemplate:
-                `<b>%{x|%d/%m (%H:%M)}</b><br>` +
-                "Sentiment: %{y}<br>" +
-                "<extra></extra>",
-        type: 'line',
-        yaxis: 'y2'
     };
 
     var layout = {
@@ -43,7 +33,7 @@ function load_ticker_graph() {
         margin: {
             t:0,
             l:50,
-            r:50,
+            r:20,
             pad: 0
         },
         automargin: true,
@@ -60,7 +50,7 @@ function load_ticker_graph() {
                     size: 12
                 }
             },
-            tickformat: "%d/%m",
+            tickformat: "%d/%m/%y",
         },
         yaxis: {
             showgrid: false,
@@ -74,20 +64,79 @@ function load_ticker_graph() {
                 }
             },
         },
-        yaxis2: {
+        legend: {
+            x: 0.5,
+            xanchor: 'center',
+            y: 1.1,
+            orientation: 'h',
+        },
+    };
+
+    var data = [trace1]
+    Plotly.newPlot('mentions_chart', data, layout, {displayModeBar: false, showTips: false, responsive: true});
+
+    tr = document.getElementsByTagName("table")[1].querySelectorAll("tr")
+    sentiment_list = [], date_list = []
+
+    for (i=1; i<tr.length; i++) {
+        td = tr[i].querySelectorAll("td")
+
+        date_string = td[1].innerHTML
+        if (date_string >= date_threshold) {
+            sentiment_list.push(td[0].innerHTML)
+            date_list.push(date_string)
+        }
+    }
+
+    var trace1 = {
+        x: date_list,
+        y: sentiment_list,
+        marker: {
+            color: 'orange'
+        },
+        name: 'Sentiment',
+        hovertemplate:
+                `<b>%{x|%d/%m/%Y}</b><br>` +
+                "Sentiment: %{y}<br>" +
+                "<extra></extra>",
+        type: 'line',
+    };
+
+    var layout = {
+        autosize: true,
+        margin: {
+            t:0,
+            l:50,
+            r:20,
+            pad: 0
+        },
+        automargin: true,
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: 'transparent',
+        xaxis: {
+            showgrid: false,
+            showline: true,
+            color: "gray",
+            rangemode: 'tozero',
+            title: {
+                text: "Date (UTC)",
+                font: {
+                    size: 12
+                }
+            },
+            tickformat: "%d/%m/%y",
+        },
+        yaxis: {
             showgrid: false,
             showline: true,
             rangemode: 'tozero',
-            range: [-1, 1],
+            color: "gray",
             title: {
                 text: 'Sentiment',
                 font: {
                     size: 12,
                 }
             },
-            color: "gray",
-            overlaying: 'y',
-            side: 'right'
         },
         legend: {
             x: 0.5,
@@ -97,8 +146,8 @@ function load_ticker_graph() {
         },
     };
 
-    var data = [trace1, trace2]
-    Plotly.newPlot('ticker_chart', data, layout, {displayModeBar: false, showTips: false, responsive: true});
+    var data = [trace1]
+    Plotly.newPlot('sentiment_chart', data, layout, {displayModeBar: false, showTips: false, responsive: true});
 }
 
 function load_ticker_change() {
@@ -112,5 +161,6 @@ function load_ticker_change() {
 }
 
 function resize_plotly_graph() {
-    Plotly.Plots.resize('ticker_chart')
+    Plotly.Plots.resize('mentions_chart')
+    Plotly.Plots.resize('sentiment_chart')
 }

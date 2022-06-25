@@ -227,6 +227,7 @@ docker compose run --rm web python scheduled_tasks/create_database.py
 You can view the application in 127.0.0.1:8000.
 
 #### tasks_to_run.py
+
 - Compilation of tasks that are needed to be completed.
 - Get trending tickers in Reddit, subreddit subscribers statistics, stocks with low float and high short interest.
 ```

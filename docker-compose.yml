@@ -1,16 +1,27 @@
-web:
-  build: .
-  environment:
-    MYENV: EXAMPLE
-  volumes:
-    - .:/code
-scheduled_tasks:
-  extends:
-    service: web
-  command: python tasks_to_run.py
-web_run:
-  extends:
-    service: web
-  command: python manage.py runserver 0.0.0.0:8000
-  ports:
-    - "8000:8000"
+version: "3"
+
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=stocksera
+      - MYSQL_PASSWORD=admin
+
+  db:
+    image: mysql:8
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/:ro
+    ports:
+      - "3308:3306"
+    expose:
+      - 3308
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=stocksera
+      - MYSQL_PASSWORD=admin

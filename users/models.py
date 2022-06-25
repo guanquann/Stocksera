@@ -16,4 +16,4 @@ class Preferences(models.Model):
 
 class Watchlist(models.Model):
     username = models.ForeignKey(User, on_delete=models.CASCADE)
-    ticker = models.CharField(max_length=20)
+    ticker = models.CharField(max_length=20, default="SPY")

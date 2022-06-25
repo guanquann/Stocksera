@@ -7,8 +7,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from scheduled_tasks.twitter.twitter_connection import *
 from helpers import connect_mysql_database
 
-cnx, engine = connect_mysql_database()
-cur = cnx.cursor()
+cnx, cur, engine = connect_mysql_database()
 
 # key of the dict is the symbol of the ticker, while the value is the username of the Twitter account
 interested_accounts = {
@@ -44,7 +43,6 @@ interested_accounts = {
     "WKHS": "Workhorse_Group",
     "TLRY": "tilray",
     "WISH": "WishShopping",
-    "CLF": "CliffsNR",
     "GOEV": "canoo",
     "DKNG": "DraftKings",
     "AMZN": "amazon",

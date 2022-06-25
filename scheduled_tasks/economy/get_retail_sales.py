@@ -7,8 +7,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from scheduled_tasks.economy.ychart_connection import ychart_data
 from helpers import connect_mysql_database
 
-cnx, engine = connect_mysql_database()
-cur = cnx.cursor()
+cnx, cur, engine = connect_mysql_database()
 
 
 def retail_sales():

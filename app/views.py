@@ -464,6 +464,7 @@ def short_volume(request):
     if "longName" in information and information["regularMarketPrice"] != "N/A":
         data = requests.get(f"{BASE_URL}/stocks/short_volume/{ticker_selected}/", headers=HEADERS).json()
         short_volume_data = pd.DataFrame(data)
+        print(short_volume_data)
 
         if "download_csv" in request.GET:
             file_name = "{}_short_volume.csv".format(ticker_selected)

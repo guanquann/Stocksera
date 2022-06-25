@@ -4,8 +4,7 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 from helpers import connect_mysql_database
 
-cnx, engine = connect_mysql_database()
-cur = cnx.cursor()
+cnx, cur, engine = connect_mysql_database()
 
 
 def main():

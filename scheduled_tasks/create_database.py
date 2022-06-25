@@ -9,10 +9,12 @@ import mysql.connector
 sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
 
 try:
+    print("Trying to connect to database...")
     from helpers import connect_mysql_database
-    cnx, engine = connect_mysql_database()
-    cur = cnx.cursor()
+    cnx, cur, engine = connect_mysql_database()
+    print("Connection successful!")
 except mysql.connector.ProgrammingError:
+    print("No database detected... Creating one now.")
     with open("config.yaml") as config_file:
         config_keys = yaml.load(config_file, Loader=yaml.Loader)
     cnx = mysql.connector.connect(user=config_keys["MYSQL_USER"],
@@ -20,11 +22,18 @@ except mysql.connector.ProgrammingError:
                                   host=config_keys["MYSQL_HOST"])
     cur = cnx.cursor()
     cur.execute("CREATE DATABASE IF NOT EXISTS stocksera")
-    cnx, engine = connect_mysql_database()
-    cur = cnx.cursor()
+    cnx, cur, engine = connect_mysql_database()
 
 
 def database():
+
+    if not os.path.exists("database"):
+        os.mkdir("database")
+        os.mkdir("database/failure_to_deliver")
+        os.mkdir("database/failure_to_deliver/csv")
+        os.mkdir("database/government")
+        with open("database/yf_cached_api.json", "w") as r:
+            r.write("{}")
 
     cur.execute("CREATE TABLE IF NOT EXISTS stocksera_trending ("
                 "ticker VARCHAR(10), "
@@ -458,8 +467,6 @@ def database():
                 "INDEX(`Declaration Date`) )")
 
     print("Successfully created/updated database")
-
-    cnx.close()
 
 
 if __name__ == '__main__':

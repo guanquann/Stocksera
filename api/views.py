@@ -10,8 +10,7 @@ from rest_framework.schemas.openapi import AutoSchema
 from rest_framework_api_key.models import APIKey
 from rest_framework.decorators import api_view, permission_classes
 
-cnx, engine = connect_mysql_database()
-cur = cnx.cursor()
+cnx, cur, engine = connect_mysql_database()
 
 
 def default_ticker(ticker):
@@ -48,6 +47,17 @@ def get_user_api(request):
         return meta["HTTP_AUTHORIZATION"].split()[1]
     else:
         return ""
+
+
+def check_validity(key):
+    key = APIKey.objects.is_valid(key)
+    local_url = config_keys["IS_LOCALLY_HOSTED"] is True
+    if local_url:
+        return True
+    elif key and not local_url:
+        return True
+    else:
+        return False
 
 
 class JSONResponse(HttpResponse):
@@ -133,7 +143,7 @@ def stocksera_trending(request):
     Get most searched tickers in Stocksera.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         df = pd.read_sql_query("SELECT * FROM stocksera_trending ORDER BY count DESC LIMIT 10", cnx)
         df = df.to_dict(orient="records")
         return JSONResponse(df)
@@ -149,7 +159,7 @@ def sec_fillings(request, ticker_selected="AAPL"):
     Get SEC fillings of tickers.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         ticker_selected = default_ticker(ticker_selected)
         df = pd.read_sql_query("SELECT * FROM sec_fillings WHERE ticker='{}' ".format(ticker_selected), cnx)
         if df.empty:
@@ -173,7 +183,7 @@ def news_sentiment(request, ticker_selected="AAPL"):
     Show news and sentiment of tickers.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         ticker_selected = default_ticker(ticker_selected)
         df = pd.read_sql_query("SELECT * FROM daily_ticker_news WHERE ticker='{}' ".format(ticker_selected), cnx)
         if df.empty:
@@ -194,7 +204,7 @@ def insider_trading(request, ticker_selected="AAPL"):
     Get ticker's insider trading data.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
         ticker_selected = default_ticker(ticker_selected)
         df = pd.read_sql_query("SELECT * FROM insider_trading WHERE Ticker='{}' ".format(ticker_selected), cnx)
@@ -222,7 +232,7 @@ def latest_insider_summary(request):
     Get latest insider trading summary.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
         df = pd.read_sql_query("SELECT * FROM latest_insider_trading_analysis", cnx)
         df.rename(columns={"MktCap": "Market Cap", "Proportion": "% of Mkt Cap"}, inplace=True)
@@ -240,7 +250,7 @@ def latest_insider(request):
     Get latest insider trading data of all tickers.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
         try:
             n_rows = int(request.GET.get("limit", 500))
@@ -272,7 +282,7 @@ def top_short_volume(request):
     Get tickers with highest short volume for the day.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
         df = pd.read_sql_query("SELECT * FROM highest_short_volume", cnx)
         df.fillna('', inplace=True)
@@ -290,7 +300,7 @@ def short_volume(request, ticker_selected="AAPL"):
     Get short volume of tickers.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
 
         ticker_selected = default_ticker(ticker_selected)
@@ -318,7 +328,7 @@ def top_failure_to_deliver(request):
     Get tickers with most FTD.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         top_ftd = pd.read_sql_query("SELECT * FROM top_ftd", cnx)
         top_ftd = top_ftd.replace(np.nan, "")
         df = top_ftd.to_dict(orient="records")
@@ -335,7 +345,7 @@ def failure_to_deliver(request, ticker_selected="AAPL"):
     Get FTD of tickers.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         ticker_selected = default_ticker(ticker_selected)
 
         ftd = pd.read_sql_query("SELECT * FROM ftd WHERE Ticker='{}' ORDER BY Date DESC".format(ticker_selected), cnx)
@@ -358,7 +368,7 @@ def earnings_calendar(request):
     Get tickers with upcoming earnings.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         df = pd.read_sql_query("SELECT * FROM earnings ORDER BY date ASC", cnx)
         df = get_date(df, request.GET.get("date_to"), request.GET.get("date_from"), "date")
         df = df.to_dict(orient="records")
@@ -375,7 +385,7 @@ def market_news(request):
     Get breaking, crypto, forex and merger news.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         df = pd.read_sql("SELECT * FROM market_news ORDER BY Date DESC LIMIT 1000", cnx)
         df = df.to_dict(orient="records")
         return JSONResponse(df)
@@ -391,7 +401,7 @@ def trading_halts(request):
     Get stocks with trading halts.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         df = pd.read_sql("SELECT * FROM trading_halts ORDER BY `Halt Date` DESC, `Halt Time` DESC LIMIT 3000", cnx)
         df = df.to_dict(orient="records")
         return JSONResponse(df)
@@ -406,7 +416,7 @@ def subreddit_count(request, ticker_selected="GME"):
     Get Reddit subreddit user count, growth, active users over time.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
         ticker_selected = default_ticker(ticker_selected)
         date_threshold = get_days_params(request, 100, 1000)
@@ -429,7 +439,7 @@ def reddit_mentions(request, subreddit="wsb", ticker_selected=None):
     Get most mentioned tickers on Reddit.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         if subreddit.lower() != "crypto":
             subreddit = "wsb"
             fields = "mentions, calls, puts"
@@ -467,7 +477,7 @@ def wsb_options(request):
     Get stock options activity on Reddit r/wallstreetbets.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         date_threshold = get_days_params(request, 1, 14)
 
         df = pd.read_sql_query("SELECT ticker as Ticker, CAST(SUM(calls) AS UNSIGNED) AS Calls, CAST(SUM(puts) "
@@ -488,7 +498,7 @@ def government(request, gov_type="senate"):
     Get congress trading data.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         mapping_dict = {"senate": "Senator", "house": "Representative"}
         col_name = mapping_dict[gov_type]
 
@@ -535,7 +545,7 @@ def reverse_repo(request):
     Get reverse repo data.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
         date_threshold = get_days_params(request, 100, 10000)
         reverse_repo_stats = pd.read_sql_query("SELECT * FROM reverse_repo "
@@ -557,7 +567,7 @@ def daily_treasury(request):
     Get daily treasury data.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
         date_threshold = get_days_params(request, 100, 10000)
         daily_treasury_stats = pd.read_sql_query("SELECT * FROM daily_treasury WHERE record_date >= '{}' "
@@ -581,7 +591,7 @@ def inflation(request, area="usa"):
     Get inflation data.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         pd.options.display.float_format = '{:.1f}'.format
         if area == "world":
             inflation_stats = pd.read_sql_query("SELECT * FROM world_inflation", cnx)
@@ -604,7 +614,7 @@ def retail_sales(request):
     Get retail sales data.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
         date_threshold = get_days_params(request, 100, 10000)
         retail_stats = pd.read_sql_query("SELECT * FROM retail_sales "
@@ -625,7 +635,7 @@ def initial_jobless_claims(request):
     Get initial jobless claims data.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
         date_threshold = get_days_params(request, 100, 10000)
         jobless_claims = pd.read_sql_query("SELECT * FROM initial_jobless_claims "
@@ -646,7 +656,7 @@ def short_interest(request):
     Get tickers with highest short interest.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
         df_high_short_interest = pd.read_sql_query("SELECT * FROM short_interest", con=cnx)
         df_high_short_interest.reset_index(inplace=True)
@@ -665,7 +675,7 @@ def low_float(request):
     Get tickers with low float.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
         df_low_float = pd.read_sql_query("SELECT * FROM low_float", con=cnx)
         df_low_float.reset_index(inplace=True)
@@ -684,7 +694,7 @@ def ipo_calendar(request):
     Get upcoming and past IPOs.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         df = pd.read_sql_query("SELECT * FROM ipo_calendar", con=cnx)
         df = df.to_dict(orient="records")
         return JSONResponse(df)
@@ -699,7 +709,7 @@ def stocktwits(request, ticker_selected=None):
     Get popular tickers on Stocktwits.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         if ticker_selected:
             ticker_selected = default_ticker(ticker_selected)
             df = pd.read_sql_query("SELECT `rank`, watchlist, date_updated FROM stocktwits_trending WHERE "
@@ -720,7 +730,7 @@ def market_summary(request):
     Get market summary of Nasdaq/DOW/S&P500.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
 
         if request.GET.get("type") == "nasdaq100":
@@ -753,7 +763,7 @@ def jim_cramer(request, ticker_selected=None):
     Get Jim Cramer's recommendations.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         df = pd.read_sql_query("SELECT DISTINCT * FROM jim_cramer_trades ORDER BY Date DESC", cnx)
         if ticker_selected:
             df = df[df["Ticker"] == ticker_selected.upper()]
@@ -775,7 +785,7 @@ def borrowed_shares(request, ticker_selected=""):
     Get borrow fees and shares available.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         if ticker_selected:
             df = pd.read_sql_query(f"SELECT * FROM shares_available WHERE ticker='{ticker_selected.upper()}' "
                                    f"ORDER BY date_updated DESC", cnx)
@@ -798,7 +808,7 @@ def stock_split(request):
     Get stock split history.
     """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         df = pd.read_sql_query(f"SELECT * FROM stock_splits ORDER BY `Date` DESC", cnx)
         df = df.replace(np.nan, "")
         df = df.to_dict(orient="records")
@@ -860,7 +870,7 @@ def dividend_history(request):
        - application/xml
    """
     key = get_user_api(request)
-    if APIKey.objects.is_valid(key):
+    if check_validity(key):
         df = pd.read_sql_query(f"SELECT * FROM dividends ORDER BY `Declaration Date` DESC", cnx)
         df = df.replace(np.nan, "")
         df = df.to_dict(orient="records")

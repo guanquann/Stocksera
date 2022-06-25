@@ -31,7 +31,7 @@ SECRET_KEY = 'a))wx9tv*r$*5u2+_jd=wlubdxfyyvh=hv_ujc#t0k$ciyj3&y'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "0.0.0.0", "localhost"]
+ALLOWED_HOSTS = ["127.0.0.1", "0.0.0.0", "localhost", "db"]
 
 
 # Application definition
@@ -131,6 +131,8 @@ DATABASES = {
         'NAME': config_keys["MYSQL_DATABASE"],
         'ENGINE': 'mysql.connector.django',
         'USER': config_keys["MYSQL_USER"],
+        'HOST': config_keys["MYSQL_HOST"],
+        'PORT': config_keys["MYSQL_PORT"],
         'PASSWORD': config_keys["MYSQL_PASSWORD"],
         'OPTIONS': {
           'autocommit': True,

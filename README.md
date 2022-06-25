@@ -210,47 +210,31 @@ This website is free for everyone. But if you want to support me, please give me
 
 ### For developers:
 
-#### Setting up and installing dependencies
+#### Setting up in Docker
 ```
 # Clone the project
 git clone https://github.com/guanquann/Stocksera.git
 
-# Create environment
-py -m venv venv
+# Dockerise
+docker-compose build
 
-# Navigate into project's folder and activate venv
-cd Stockera/venv/Scripts
-activate
-cd .. / ..
+docker-compose up
 
-# Install modules
-pip install -r requirements.txt
-```
+docker-compose run --rm web python3 manage.py migrate
 
-Download nltk data for sentiment analysis. Type the following in console:
+docker compose run --rm web python scheduled_tasks/create_database.py
 ```
->>> import nltk
->>> nltk.download("vader_lexicon")
-```
+You can view the application in 127.0.0.1:8000.
 
 #### tasks_to_run.py
 - Compilation of tasks that are needed to be completed.
 - Get trending tickers in Reddit, subreddit subscribers statistics, stocks with low float and high short interest.
+```
+docker compose run --rm web python tasks_to_run.py
+```
 
 #### Run scheduled tasks
 - Please refer to [Scheduled Tasks Guide](https://github.com/guanquann/Stocksera/tree/master/scheduled_tasks) for more information on how to run scheduled tasks.
-
-#### Running the application
-You can run run_app.bat.
-
-Alternatively, you can run using your terminal:
-```
-cd venv/Scripts
-activate
-cd ../..
-py manange.py runserver
-```
-You can view the application in 127.0.0.1:8000.
 
 ### License:
 This project is under the <a href="https://github.com/guanquann/stocksera/blob/master/LICENSE">MIT</a> license.

@@ -8,8 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 from scheduled_tasks.reddit.stocks.fast_yahoo import download_quick_stats
 from helpers import connect_mysql_database
 
-cnx, engine = connect_mysql_database()
-cur = cnx.cursor()
+cnx, cur, engine = connect_mysql_database()
 
 
 def check_date(value, last_date):

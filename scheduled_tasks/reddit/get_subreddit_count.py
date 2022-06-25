@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..//..'))
 from scheduled_tasks.reddit.reddit_utils import *
 from helpers import connect_mysql_database
 
-cnx, engine = connect_mysql_database()
+cnx, cur, engine = connect_mysql_database()
 cur = cnx.cursor(buffered=True)
 
 # key of the dict is the symbol of the stock (if applicable), value is the subreddit

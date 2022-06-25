@@ -52,7 +52,7 @@ def connect_mysql_database():
                                       database=config_keys["MYSQL_DATABASE"])
         cnx.autocommit = True
         cur = cnx.cursor()
-    return cnx, engine
+    return cnx, cur, engine
 
 
 def default_ticker(request, ticker="AAPL"):

@@ -109,7 +109,7 @@ def wsb_live():
             for comment in submission.comments:
                 if threshold_datetime < comment.created_utc:
                     comment_body = comment.body
-                    print(comment.created_utc)
+
                     date_posted = datetime.fromtimestamp(comment.created_utc)
 
                     # Remove number/special characters (clean up word cloud)

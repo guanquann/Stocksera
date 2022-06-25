@@ -7,8 +7,7 @@ from helpers import connect_mysql_database, finnhub_client
 import scheduled_tasks.reddit.stocks.fast_yahoo as fast_yahoo
 
 
-cnx, engine = connect_mysql_database()
-cur = cnx.cursor()
+cnx, cur, engine = connect_mysql_database()
 
 
 def main():

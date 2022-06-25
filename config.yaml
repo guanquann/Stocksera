@@ -1,5 +1,6 @@
 ---
   # https://github.com/guanquann/Stocksera/
+  IS_LOCALLY_HOSTED: true
   STOCKSERA_API: "API_KEY_HERE"
   STOCKSERA_BASE_URL: "http://127.0.0.1:8000/api"
 
@@ -28,5 +29,7 @@
   # mysql credentials
   MYSQL_USER: "root"
   MYSQL_PASSWORD: "admin"
-  MYSQL_HOST: "127.0.0.1"
+#  MYSQL_HOST: "127.0.0.1"
+  MYSQL_HOST: "db"
+  MYSQL_PORT: "3306"
   MYSQL_DATABASE: "stocksera"

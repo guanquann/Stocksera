@@ -118,11 +118,11 @@ def watchlist(request):
                 messages.success(request, f"{ticker_selected} successfully added to watchlist.")
 
         # BASE_URL = "http://stocksera.pythonanywhere.com/api"
-        borrowed_shares = requests.get(f"{BASE_URL}/borrowed_shares/{ticker_selected}", headers=HEADERS).json()
+        borrowed_shares = requests.get(f"{BASE_URL}/stocks/borrowed_shares/{ticker_selected}", headers=HEADERS).json()
 
-        ftd = requests.get(f"{BASE_URL}/failure_to_deliver/{ticker_selected}", headers=HEADERS).json()
+        ftd = requests.get(f"{BASE_URL}/stocks/failure_to_deliver/{ticker_selected}", headers=HEADERS).json()
 
-        short_vol = requests.get(f"{BASE_URL}/short_volume/{ticker_selected}/", headers=HEADERS).json()
+        short_vol = requests.get(f"{BASE_URL}/stocks/short_volume/{ticker_selected}/", headers=HEADERS).json()
 
         wsb = requests.get(f"{BASE_URL}/reddit/wsb/{ticker_selected}/?days=100", headers=HEADERS).json()
 

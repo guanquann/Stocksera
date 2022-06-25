@@ -6,8 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from helpers import *
 import scheduled_tasks.reddit.stocks.fast_yahoo as fast_yahoo
 
-cnx, engine = connect_mysql_database()
-cur = cnx.cursor()
+cnx, cur, engine = connect_mysql_database()
 
 
 def get_high_short_interest():

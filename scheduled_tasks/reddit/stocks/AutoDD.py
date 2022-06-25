@@ -34,6 +34,8 @@ pattern = "(?<=\$)?\\b[A-Z]{2,5}\\b(?:\.[A-Z]{1,2})?"
 # Create folder to store price chart
 if not os.path.exists("static/graph_chart"):
     os.mkdir("static/graph_chart")
+    os.mkdir("static/graph_chart/stocks")
+    os.mkdir("static/graph_chart/crypto")
 
 
 def get_sentiment(text, increment):

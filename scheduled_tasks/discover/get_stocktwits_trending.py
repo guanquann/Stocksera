@@ -7,8 +7,7 @@ from datetime import datetime
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 from helpers import connect_mysql_database
 
-cnx, engine = connect_mysql_database()
-cur = cnx.cursor()
+cnx, cur, engine = connect_mysql_database()
 
 
 def main():
@@ -22,10 +21,6 @@ def main():
     df.reset_index(inplace=True)
     df.rename(columns={"index": "rank", "symbol": "ticker", "watchlist_count": "watchlist"}, inplace=True)
     print(df.head(5))
-    cur.execute("DELETE FROM short_interest")
-    cur.executemany("INSERT INTO short_interest VALUES (%s, %s, %s, %s, %s, %s)",
-                    df.values.tolist())
-    cnx.commit()
     df.to_sql("stocktwits_trending", engine, if_exists="append", index=False)
 
 

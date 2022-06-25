@@ -160,21 +160,21 @@ if __name__ == '__main__':
     if SCRAPE_STOCKTWITS_TRENDING:
         get_stocktwits_trending.main()
     
-    if UPDATE_REDDIT_ETF_PRICE:
-        conn = sqlite3.connect(r"database/database.db", check_same_thread=True)
-        db = conn.cursor()
-        db.execute("SELECT date_updated FROM wallstreetbets ORDER BY ID DESC LIMIT 1")
-        db_date = db.fetchone()[0]
-        buy_trending_tickers.buy_new_ticker(db_date)
-        buy_trending_tickers.sell_ticker(db_date)
-        buy_trending_tickers.update_bought_ticker_price()
+    # if UPDATE_REDDIT_ETF_PRICE:
+    #     conn = sqlite3.connect(r"database/database.db", check_same_thread=True)
+    #     db = conn.cursor()
+    #     db.execute("SELECT date_updated FROM wallstreetbets ORDER BY ID DESC LIMIT 1")
+    #     db_date = db.fetchone()[0]
+    #     buy_trending_tickers.buy_new_ticker(db_date)
+    #     buy_trending_tickers.sell_ticker(db_date)
+    #     buy_trending_tickers.update_bought_ticker_price()
 
     if TICKER_INFO:
         get_ticker_info.ticker_info(get_ticker_info.full_ticker_list())
 
-    if TICKER_FINANCIAL:
-        for i in get_ticker_info.full_ticker_list():
-            get_financial.financial(i)
+    # if TICKER_FINANCIAL:
+    #     for i in get_ticker_info.full_ticker_list():
+    #         get_financial.financial(i)
 
     if SHORT_VOL:
         get_short_volume.main()
@@ -208,7 +208,7 @@ if __name__ == '__main__':
         get_reverse_repo.reverse_repo()
 
     if LATEST_INSIDER_TRADING:
-        get_latest_insider_trading.latest_insider_trading()
+        get_latest_insider_trading.main()
 
     if STOCKS_HEATMAP:
         get_stocks_summary.main()
@@ -221,7 +221,7 @@ if __name__ == '__main__':
 
     if IPO_calendar:
         get_ipo_calendar.main()
-    
+
     if INFLATION:
         get_inflation.usa_inflation()
         get_inflation.world_inflation()

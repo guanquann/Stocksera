@@ -10,8 +10,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from helpers import connect_mysql_database
 import scheduled_tasks.reddit.stocks.fast_yahoo as fast_yahoo
 
-cnx, engine = connect_mysql_database()
-cur = cnx.cursor()
+cnx, cur, engine = connect_mysql_database()
 
 
 current_date = datetime.utcnow().date()
@@ -53,7 +52,7 @@ def get_30d_data_finra():
         start += 50000
 
 
-def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date()-timedelta(days=0)):
+def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date()-timedelta(days=1)):
     """
     Get short volume data from https://cdn.finra.org/
     """
@@ -97,7 +96,7 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date
 
 def main():
     get_30d_data_finra()
-    # get_daily_data_finra()
+    get_daily_data_finra()
 
 
 if __name__ == '__main__':

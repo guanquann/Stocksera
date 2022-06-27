@@ -220,6 +220,7 @@ docker-compose build
 
 docker-compose up
 
+# Run the following steps if you are setting up for the first time. You might need to restart your container after running the following commands.
 docker-compose run --rm web python3 manage.py migrate
 
 docker compose run --rm web python scheduled_tasks/create_database.py

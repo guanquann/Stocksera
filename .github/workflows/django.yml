@@ -25,9 +25,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        mkdir -p /home/runner/nltk_data
-        curl https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/stopwords.zip > /home/runner/nltk_data/corpora/stopwords.zip
-        curl https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/sentiment/vader_lexicon.zip > /home/runner/nltk_data/sentiment/vader_lexicon.zip
+        python -m nltk.downloader vader_lexicon stopwords
     - name: Run Testsme
       run: |
         python manage.py test

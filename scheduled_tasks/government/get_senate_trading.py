@@ -19,6 +19,9 @@ def senate_trades():
 
     df = df[df["disclosure_date"] >= str(datetime.utcnow().date() - timedelta(days=365*5))]
 
+    df = df[["transaction_date", "owner", "ticker", "asset_description", "asset_type", "type", "amount", "comment",
+             "senator", "ptr_link", "disclosure_date"]]
+
     df.columns = ["Transaction Date", "Owner", "Ticker", "Asset Description", "Asset Type", "Type", "Amount", "Comment",
                   "Senator", "Link", "Disclosure Date"]
 

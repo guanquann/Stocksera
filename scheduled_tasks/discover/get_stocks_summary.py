@@ -17,7 +17,7 @@ def main():
         snp500_df = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")[0]
         snp500_df["Symbol"].to_csv(os.path.join(INDICES_PATH, "snp500.csv"), index=False)
 
-        nasdaq_df = pd.read_html("https://en.wikipedia.org/wiki/Nasdaq-100")[3]
+        nasdaq_df = pd.read_html("https://en.wikipedia.org/wiki/Nasdaq-100")[4]
         nasdaq_df.rename(columns={"Ticker": "Symbol"}, inplace=True)
         nasdaq_df["Symbol"].to_csv(os.path.join(INDICES_PATH, "nasdaq100.csv"), index=False)
 

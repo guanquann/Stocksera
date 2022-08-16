@@ -8,9 +8,10 @@ import mysql.connector
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
 
+from helpers import connect_mysql_database
+
 try:
     print("Trying to connect to database...")
-    from helpers import connect_mysql_database
     cnx, cur, engine = connect_mysql_database()
     print("Connection successful!")
 except mysql.connector.ProgrammingError:
@@ -21,7 +22,7 @@ except mysql.connector.ProgrammingError:
                                   password=config_keys["MYSQL_PASSWORD"],
                                   host=config_keys["MYSQL_HOST"])
     cur = cnx.cursor()
-    cur.execute("CREATE DATABASE IF NOT EXISTS stocksera")
+    cur.execute(f"CREATE DATABASE IF NOT EXISTS {config_keys['MYSQL_DATABASE']}")
     cnx, cur, engine = connect_mysql_database()
 
 

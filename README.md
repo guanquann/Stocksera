@@ -210,22 +210,40 @@ This website is free for everyone. But if you want to support me, please give me
 
 ### For developers:
 
-#### Setting up in Docker
+#### Cloning project
 ```
-# Clone the project
 git clone https://github.com/guanquann/Stocksera.git
-
-# Dockerise
-docker-compose build
-
-docker-compose up
-
-# Run the following steps if you are setting up for the first time. You might need to restart your container after running the following commands.
-docker-compose run --rm web python3 manage.py migrate
-
-docker compose run --rm web python scheduled_tasks/create_database.py
 ```
-You can view the application in 127.0.0.1:8000.
+
+#### Setting up WITHOUT docker
+```
+# Setting up environment
+py -m venv venv
+cd venv/Scripts
+activate
+cd ../..
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Setting up database and configs
+# Ensure that line 32 of config.yaml is uncommented
+# Ensure that line 33 of config.yaml is commented
+py setup/local.py
+```
+
+#### Setting up WITH Docker
+```
+# Dockerise
+# Ensure that line 32 of config.yaml is commented
+# Ensure that line 33 of config.yaml is uncommented
+py setup/docker.py
+```
+
+```
+# Run the following if you are setting up for the first time using Docker. You might need to rerun setup/docker.py
+py setup/docker_db.py
+```
 
 #### tasks_to_run.py
 

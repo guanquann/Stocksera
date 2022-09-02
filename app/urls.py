@@ -12,6 +12,7 @@ urlpatterns = [
     path('ticker/short_volume/', views.short_volume, name='short_volume'),
     path('ticker/borrowed_shares/', views.borrowed_shares, name='borrowed_shares'),
     path('ticker/failure_to_deliver/', views.failure_to_deliver, name='failure_to_deliver'),
+    path('ticker/regsho/', views.regsho, name='regsho'),
     path('historical_data/', views.historical_data, name='historical_data'),
     path('sub_news/', views.news_sentiment, name='sub_news'),
     path('google_trends/', views.google_trends, name='google_trends'),

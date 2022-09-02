@@ -40,9 +40,7 @@ def connect_mysql_database():
     global engine
     global cnx
     global cur
-    if cnx.is_connected():
-        print("SQL SERVER IS CONNECTED...")
-    else:
+    if not cnx.is_connected():
         print("ERROR CONNECTING TO MYSQL... TRYING TO RECONNECT")
         engine = create_engine(f'mysql://{config_keys["MYSQL_USER"]}:{config_keys["MYSQL_PASSWORD"]}@'
                                f'{config_keys["MYSQL_HOST"]}/{config_keys["MYSQL_DATABASE"]}')
@@ -102,7 +100,6 @@ def check_market_hours(ticker_selected):
         data = check_json(r)
         if ticker_selected in data and str(current_datetime) < data[ticker_selected]["next_update"]:
             information = data[ticker_selected]
-            print("Using cached data for {}".format(ticker_selected))
         else:
             information = download_advanced_stats([ticker_selected])
             data.update(information)
@@ -112,7 +109,6 @@ def check_market_hours(ticker_selected):
             r.seek(0)
             r.truncate()
             json.dump(data, r, indent=4)
-            print("Scraping data for {}".format(ticker_selected))
 
     if "longName" in information and information["regularMarketPrice"] != "N/A":
         if "." not in ticker_selected:

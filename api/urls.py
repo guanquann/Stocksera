@@ -40,6 +40,9 @@ urlpatterns = [
 
     path('stocks/failure_to_deliver/<str:ticker_selected>/', views.failure_to_deliver, name='api_failure_to_deliver'),
 
+    path('stocks/regsho/', views.regsho, name='api_regsho'),
+    path('stocks/regsho/<str:ticker_selected>/', views.regsho, name='api_regsho'),
+
     path('news/earnings_calendar/', views.earnings_calendar, name='api_earnings_calendar'),
 
     path('news/market_news/', views.market_news, name='api_market_news'),

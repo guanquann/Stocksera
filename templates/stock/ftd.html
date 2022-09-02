@@ -15,7 +15,7 @@
 {% block main_nav %}
     <a href="/">Stocksera</a> /
     <a href="/ticker/?quote={{ticker_selected}}">Analysis</a> /
-    <a href="/ticker/options/?failure_to_deliver={{ticker_selected}}">FTD [{{ticker_selected}}]</a>
+    <a href="/ticker/failure_to_deliver?quote={{ticker_selected}}">FTD [{{ticker_selected}}]</a>
 {% endblock %}
 
 {% block main_content %}
@@ -59,6 +59,7 @@
             <div class="more_info_div"><a href="{% url 'short_volume' %}?quote={{ticker_selected}}">Short Vol</a></div>
             <div class="more_info_div"><a href="{% url 'borrowed_shares' %}?quote={{ticker_selected}}">Borrowed Shares</a></div>
             <div class="more_info_div current_link"><a href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}">FTD</a></div>
+            <div class="more_info_div"><a href="{% url 'regsho' %}?quote={{ticker_selected}}">RegSHO</a></div>
             <div class="more_info_div"><a href="{% url 'wsb_live_ticker' %}?quote={{ticker_selected}}">WSB Live</a></div>
         </div>
 

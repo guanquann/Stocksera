@@ -363,6 +363,40 @@ def failure_to_deliver(request, ticker_selected="AAPL"):
 @csrf_exempt
 @api_view(['GET'])
 @schema(AutoDocstringSchema())
+def regsho(request, ticker_selected=None):
+    """
+    Get Regulation SHO data from SEC
+    """
+    key = get_user_api(request)
+    if check_validity(key):
+        pd.options.display.float_format = '{:.2f}'.format
+
+        if ticker_selected:
+            ticker_selected = default_ticker(ticker_selected)
+            df = pd.read_sql_query("SELECT * FROM threshold_securities WHERE ticker='{}' ORDER BY date_updated DESC"
+                                   .format(ticker_selected), cnx)
+            df.rename(columns={"ticker": "Ticker", "date_updated": "Date"}, inplace=True)
+            if df.empty:
+                df = pd.DataFrame({"Ticker": [ticker_selected], "Close": ["N/A"], "Date": ["N/A"]})
+            else:
+                history = pd.DataFrame(yf.Ticker(ticker_selected).history(interval="1d", period="1y")["Close"])
+                history.reset_index(inplace=True)
+                history["Date"] = history["Date"].astype(str)
+                df = pd.merge(df, history, on=["Date"], how="left")
+                df = df[["Ticker", "Close", "Date"]]
+
+        else:
+            df = pd.read_sql_query("SELECT * FROM threshold_securities ORDER BY date_updated DESC", cnx)
+            df.rename(columns={"ticker": "Ticker", "date_updated": "Date"}, inplace=True)
+        df = df.to_dict(orient="records")
+        return JSONResponse(df)
+    else:
+        return ERROR_MSG
+
+
+@csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def earnings_calendar(request):
     """
     Get tickers with upcoming earnings.

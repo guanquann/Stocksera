@@ -1,0 +1,81 @@
+
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}Stocksera | RegSHO {% endblock %}
+
+{% block additional_script %}
+<script src="{% static 'javascript/stock/regsho.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}{% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/ticker/?quote={{ticker_selected}}">Analysis</a> /
+    <a href="/ticker/regsho">RegSHO</a>
+{% endblock %}
+
+{% block main_content %}
+<script>highlight_selected_nav('stocks_analysis')</script>
+<div>
+    <div class="instructions">
+        <h2>Regulation SHO Threshold List</h2>
+        <p>
+            As defined in Rule 203(c)(6) of Regulation SHO, a “threshold security” is any equity security of any issuer that is registered under Section 12 of the Exchange Act, or that is required to file reports under Section 15(d) of the Exchange Act (commonly referred to as reporting securities), where, for five consecutive settlement days:
+            <br>
+            <ul>
+                <li>1. There are aggregate fails to deliver at a registered clearing agency of 10,000 shares or more per security;</li>
+                <li>2. The level of fails is equal to at least one-half of one percent of the issuer’s total shares outstanding; and</li>
+                <li>3. The security is included on a list published by a self-regulatory organization (SRO).</li>
+            </ul>
+            <br>
+            A security ceases to be a threshold security if it does not exceed the specified level of fails for five consecutive settlement days.
+        </p>
+        <form action="" method="GET" autocomplete="off">
+            <div class="search_bar">
+                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                    <span class="fa fa-search"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="more_info_div_parent">
+        <div class="more_info_div"><a href="{% url 'ticker' %}?quote={{ticker_selected}}">Analysis</a></div>
+        <div class="more_info_div"><a href="{% url 'options' %}?quote={{ticker_selected}}">Options</a></div>
+        <div class="more_info_div"><a href="{% url 'short_volume' %}?quote={{ticker_selected}}">Short Vol</a></div>
+        <div class="more_info_div"><a href="{% url 'borrowed_shares' %}?quote={{ticker_selected}}">Borrowed Shares</a></div>
+        <div class="more_info_div"><a href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}">FTD</a></div>
+        <div class="more_info_div current_link"><a href="{% url 'regsho' %}?quote={{ticker_selected}}">RegSHO</a></div>
+        <div class="more_info_div"><a href="{% url 'wsb_live_ticker' %}?quote={{ticker_selected}}">WSB Live</a></div>
+    </div>
+
+    <div class="contents_div">
+        <select name="date_sort" onchange="searchDate()" id="date_selector">
+            <option>Date: {{date_list.0}}</option>
+            {% for date in date_list %}
+                <option value="{{date}}">{{date}}</option>
+            {% endfor %}
+        </select>
+
+        <form action="" method="GET" autocomplete="off">
+            <button type="submit" name="download_csv" class="download_btn"><u>➥ Download</u></button>
+            <input name="quote" value="{{ticker_selected}}" style="display:none">
+        </form>
+
+        <div class="scrollable_div">
+            {{df|safe}}
+        </div>
+
+        <br>
+        <p>Data from: <a href="http://www.nasdaqtrader.com" target="_blank">Nasdaq</a>, <a href="https://www.nyse.com/regulation/threshold-securities" target="_blank">NYSE</a></p>
+    </div>
+</div>
+{% endblock %}
+
+{% block bottom_script %}
+<script src="{% static 'javascript/stock/regsho.js' %}"></script>
+{% endblock %}

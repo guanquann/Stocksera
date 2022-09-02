@@ -541,6 +541,44 @@ def failure_to_deliver(request):
                                                   "error": "error_true"})
 
 
+def regsho(request):
+    """
+    Get Regulation SHO data from SEC
+    """
+
+    ticker_selected = request.GET.get("quote")
+
+    if ticker_selected:
+        ticker_selected = ticker_selected.upper()
+        information, related_tickers = check_market_hours(ticker_selected)
+
+        data = requests.get(f"{BASE_URL}/stocks/regsho/{ticker_selected}", headers=HEADERS).json()
+        df = pd.DataFrame(data)
+
+        if "download_csv" in request.GET:
+            file_name = "{}_regsho.csv".format(ticker_selected)
+            df.to_csv(file_name, index=False)
+            response = download_file(df, file_name)
+            return response
+
+        return render(request, 'stock/regsho.html', {"ticker_selected": ticker_selected,
+                                                     "information": information,
+                                                     "related_tickers": related_tickers,
+                                                     "df": df.to_html(index=False)})
+    else:
+        data = requests.get(f"{BASE_URL}/stocks/regsho", headers=HEADERS).json()
+        df = pd.DataFrame(data)
+        date_list = df["Date"].unique().tolist()
+
+        if "download_csv" in request.GET:
+            file_name = "summary_regsho.csv"
+            df.to_csv(file_name, index=False)
+            response = download_file(df, file_name)
+            return response
+
+        return render(request, 'stock/regsho_summary.html', {"df": df.to_html(index=False), "date_list": date_list})
+
+
 def earnings_calendar(request):
     """
     Get earnings for the upcoming weeks

@@ -379,7 +379,7 @@ def regsho(request, ticker_selected=None):
             if df.empty:
                 df = pd.DataFrame({"Ticker": [ticker_selected], "Close": ["N/A"], "Date": ["N/A"]})
             else:
-                history = pd.DataFrame(yf.Ticker(ticker_selected).history(interval="1d", period="1y")["Close"])
+                history = pd.DataFrame(yf.Ticker(ticker_selected).history(interval="1d", period="5y")["Close"])
                 history.reset_index(inplace=True)
                 history["Date"] = history["Date"].astype(str)
                 df = pd.merge(df, history, on=["Date"], how="left")

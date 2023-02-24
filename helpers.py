@@ -4,6 +4,7 @@ import numpy as np
 import finnhub
 import yfinance as yf
 import mysql.connector
+from datetime import date
 from sqlalchemy import create_engine
 from django.http import HttpResponse
 from finvizfinance.quote import finvizfinance
@@ -250,10 +251,10 @@ def get_insider_trading(ticker_selected):
     try:
         ticker_fin = finvizfinance(ticker_selected)
         inside_trader_df = ticker_fin.ticker_inside_trader()
-        print(inside_trader_df)
+        # print(inside_trader_df)
         inside_trader_df["Insider Trading"] = inside_trader_df["Insider Trading"].str.title()
         inside_trader_df.rename(columns={"Insider Trading": "Name", "SEC Form 4 Link": ""}, inplace=True)
-        inside_trader_df["Date"] = inside_trader_df["Date"] + " 2022"
+        inside_trader_df["Date"] = inside_trader_df["Date"] + " {}".format(str(date.today().year))
         inside_trader_df["Date"] = pd.to_datetime(inside_trader_df["Date"], format="%b %d %Y")
         del inside_trader_df["Insider_id"]
         del inside_trader_df["SEC Form 4"]

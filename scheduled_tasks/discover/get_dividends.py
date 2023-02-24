@@ -17,7 +17,7 @@ def main():
     df = pd.DataFrame(requests.get(url).json()["results"])
     df = df[["ticker", "cash_amount", "declaration_date", "ex_dividend_date", "pay_date", "record_date",
              "dividend_type", "frequency"]]
-    print(df)
+    df.fillna(0, inplace=True)
     cur.executemany("INSERT IGNORE INTO dividends VALUES (%s ,%s ,%s ,%s, %s ,%s ,%s ,%s)", df.values.tolist())
     cnx.commit()
 

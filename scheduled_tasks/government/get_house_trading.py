@@ -14,7 +14,10 @@ def house_trades():
     for i in ["transaction_date", "disclosure_date"]:
         df[i] = pd.to_datetime(df[i], errors='coerce')
         df[i] = df[i].dt.strftime('%Y-%m-%d')
-
+    del df["state"]
+    del df["industry"]
+    del df["sector"]
+    del df["party"]
     df.columns = ["Disclosure Year", "Disclosure Date", "Transaction Date", "Owner", "Ticker", "Asset Description",
                   "Type", "Amount", "Representative", "District", "Link", "Cap Gains Over 200USD"]
 

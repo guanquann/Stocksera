@@ -35,8 +35,15 @@ function load_individual_table(gov_type) {
             raw_amount = td[6].innerHTML
 
             if (raw_amount != "Unknown") {
-                num_list = raw_amount.split("- $")
-                formatted_amount = Math.round(Number(num_list[1].replace(/\D/g,'')) - Number(num_list[0].replace(/\D/g,'')) / 2)
+                console.log(raw_amount)
+                if (raw_amount.includes("- $")) {
+                    num_list = raw_amount.split("- $")
+                    formatted_amount = Math.round(Number(num_list[1].replace(/\D/g,'')) - Number(num_list[0].replace(/\D/g,'')) / 2)
+                } else {
+                    raw_amount = raw_amount.replace(" -", "")
+                    formatted_amount = Number(raw_amount.replace(/\D/g,''))
+                }
+
             }
             else {
                 formatted_amount = 0

@@ -4,14 +4,12 @@
 
 [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/stocksera_bot.svg?style=social&label=Follow%20%40stocksera)](https://twitter.com/stockseraapp)
 
-<b>NEW RELEASE: Stocksera API now available at https://pypi.org/project/stocksera or via `pip install stocksera`. View documentation at https://github.com/guanquann/Stocksera-API. </b>
+<b>Stocksera API now available at https://pypi.org/project/stocksera or via `pip install stocksera`. View documentation at https://github.com/guanquann/Stocksera-API. </b>
 
 You can view the application in <a href="https://stocksera.pythonanywhere.com" target="_blank">stocksera.pythonanywhere.com</a>.
 
-Live demo is available at https://youtu.be/jkAZu7DvhvY.
-
 ### Support:
-This website is free for everyone. But if you want to support me, please give me a star on Github or you can PayPal to <a href="https://www.paypal.me/stocksera">paypal.me/stocksera</a>. Patreon is also available <a href="https://www.patreon.com/stocksera" target="_blank">here</a>.
+This website is free for everyone. If you wish to support this project, please star it on Github or PayPal to <a href="https://www.paypal.me/stocksera">paypal.me/stocksera</a>. Patreon is also available <a href="https://www.patreon.com/stocksera" target="_blank">here</a>.
 
 ### User Guide:
 
@@ -93,12 +91,6 @@ This website is free for everyone. But if you want to support me, please give me
 #### /crypto_live/
 - Track trending crypto, sentiment, price change and more on r/CryptoCurrency realtime.
 ![Crypto Live](./static/images/github/crypto_live.png)
-
-#### /reddit_etf/
-- Analyse the performance of trending tickers on r/wallstreetbets.
-- Top 10 most mentioned tickers with the highest sentiment will be added to the "Reddit ETF" when market opens.
-- Tickers that fall outside the Top 10 list will be sold.
-![Reddit ETF](./static/images/github/etf.png)
 
 #### /reddit_ticker_analysis/
 - View ranking of popular tickers in Reddit over time and compare it with its price.

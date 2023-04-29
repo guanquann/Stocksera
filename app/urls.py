@@ -36,7 +36,6 @@ urlpatterns = [
     path('wsb_documentation/', views.wsb_documentation, name="wsb_documentation"),
     path('reddit_ticker_analysis/', views.reddit_ticker_analysis, name='reddit_ticker_analysis'),
     path('subreddit_count/', views.subreddit_count, name='subreddit_count'),
-    path('reddit_etf/', views.reddit_etf, name='reddit_etf'),
 
     # Market Summary
     path('latest_insider/', views.latest_insider, name='latest_insider'),

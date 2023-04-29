@@ -2,6 +2,7 @@ from scheduled_tasks.reddit.get_subreddit_count import *
 from helpers import *
 from email_server import *
 
+import requests
 import requests_cache
 import pandas as pd
 import yfinance as yf
@@ -15,7 +16,11 @@ except ModuleNotFoundError:
     print("Not authorised to have access to admin functions")
 
 try:
-    trends = TrendReq(hl='en-US', tz=360)
+    session = requests.Session()
+    session.get('https://trends.google.com')
+    cookies_map = session.cookies.get_dict()
+    nid_cookie = cookies_map['NID']
+    trends = TrendReq(hl='en-US', tz=360, retries=3, requests_args={'headers': {'Cookie': f'NID={nid_cookie}'}})
 except:
     print("Timeout for Google Trend")
 
@@ -653,29 +658,6 @@ def reddit_ticker_analysis(request):
     else:
         return render(request, 'reddit/reddit_crypto_analysis.html', {"ticker_selected": ticker_selected,
                                                                       "ranking": ranking})
-
-
-def reddit_etf(request):
-    """
-    Get ETF of r/wallstreetbets
-    Top 10 tickers before market open will be purchased daily
-    """
-    cur.execute("SELECT * FROM reddit_etf WHERE status='Open' ORDER BY open_date DESC")
-    open_trade = cur.fetchall()
-
-    cur.execute("select sum(PnL) from reddit_etf WHERE status='Open'")
-    unrealized_PnL = round(cur.fetchone()[0], 2)
-
-    cur.execute("SELECT * FROM reddit_etf WHERE status='Close' ORDER BY close_date DESC")
-    close_trade = cur.fetchall()
-
-    cur.execute("select sum(PnL) from reddit_etf WHERE status='Close'")
-    realized_PnL = round(cur.fetchone()[0], 2)
-
-    return render(request, 'reddit/reddit_etf.html', {"open_trade": open_trade,
-                                                      "close_trade": close_trade,
-                                                      "unrealized_PnL": unrealized_PnL,
-                                                      "realized_PnL": realized_PnL})
 
 
 def subreddit_count(request):

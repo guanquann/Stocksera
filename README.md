@@ -4,9 +4,11 @@
 
 [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/stocksera_bot.svg?style=social&label=Follow%20%40stocksera)](https://twitter.com/stockseraapp)
 
-<b>Stocksera API now available at https://pypi.org/project/stocksera or via `pip install stocksera`. View documentation at https://github.com/guanquann/Stocksera-API. </b>
+[![Downloads](https://static.pepy.tech/badge/stocksera)](https://pepy.tech/project/stocksera) [![Downloads](https://static.pepy.tech/badge/stocksera/month)](https://pepy.tech/project/stocksera)
 
 You can view the application in <a href="https://stocksera.pythonanywhere.com" target="_blank">stocksera.pythonanywhere.com</a>.
+
+<b>Stocksera API available at https://pypi.org/project/stocksera or via `pip install stocksera`. View documentation at https://github.com/guanquann/Stocksera-API. </b>
 
 ### Support:
 This website is free for use. If you wish to support this project, please star it on Github or PayPal to <a href="https://www.paypal.me/stocksera">paypal.me/stocksera</a>. Patreon is also available <a href="https://www.patreon.com/stocksera" target="_blank">here</a>.
@@ -203,6 +205,22 @@ This website is free for use. If you wish to support this project, please star i
 #### /trading_halts/
 - View trading halts
 ![Trading Halts](./static/images/github/trading_halt.png)
+
+#### /correlation/
+- View correlation between tickers
+![Correlation](./static/images/github/correlation.png)
+
+#### /dividend_history/
+- View dividend history of tickers
+![Dividend](./static/images/github/dividend.png)
+
+#### /stock_split/
+- View stock split of tickers
+![Stock Split](./static/images/github/split.png)
+
+#### /accounts/login/
+- Sign up for a free account to have access to all-in-one-dashboard and Stocksera API key.
+![Stock Split](./static/images/github/profile.png)
 
 ### For developers:
 

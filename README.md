@@ -9,7 +9,7 @@
 You can view the application in <a href="https://stocksera.pythonanywhere.com" target="_blank">stocksera.pythonanywhere.com</a>.
 
 ### Support:
-This website is free for everyone. If you wish to support this project, please star it on Github or PayPal to <a href="https://www.paypal.me/stocksera">paypal.me/stocksera</a>. Patreon is also available <a href="https://www.patreon.com/stocksera" target="_blank">here</a>.
+This website is free for use. If you wish to support this project, please star it on Github or PayPal to <a href="https://www.paypal.me/stocksera">paypal.me/stocksera</a>. Patreon is also available <a href="https://www.patreon.com/stocksera" target="_blank">here</a>.
 
 ### User Guide:
 
@@ -69,6 +69,11 @@ This website is free for everyone. If you wish to support this project, please s
 - View number of borrowed shares available and the borrow fee.
 - Data is from <a href="https://www.interactivebrokers.com/">IBKR</a>.
 ![Borrowed Shares](./static/images/github/borrowed_shares.png)
+
+#### /ticker/regsho/
+- View days when ticker is in Regulation SHO Threshold List.
+- Data is from <a href="https://www.nyse.com/api/regulatory/threshold-securities/">NYSE</a>.
+![Borrowed Shares](./static/images/github/regsho.png)
 
 #### /wsb_live_ticker/
 - View number of mentions in WSB, calls/puts mentions and sentiment over time.
@@ -191,14 +196,13 @@ This website is free for everyone. If you wish to support this project, please s
 - Calculate the true beta value of any stock real-time.
 ![Beta](./static/images/github/beta.png)
 
-#### /amd_xlnx_ratio/
-- AMD-XLNX Share Price Ratio.
-- Percentage upside when buying XLNX
-![AMD-XLNX Ratio](./static/images/github/amd_xlnx_ratio.PNG)
-
 #### /news/
 - View breaking, crypto, forex and merger news
 ![Latest News](./static/images/github/news.png)
+
+#### /trading_halts/
+- View trading halts
+![Trading Halts](./static/images/github/trading_halt.png)
 
 ### For developers:
 

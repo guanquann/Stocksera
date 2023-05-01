@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="{% static 'style/stock/options.css' %}">
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode();display_data();show_table({{options_data}}, null);show_max_pain();{% endblock %}
+{% block onload_properties%}restore_dark_mode();display_data();init_table({{options_data}});show_table({{options_data}}, null);show_max_pain();{% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /

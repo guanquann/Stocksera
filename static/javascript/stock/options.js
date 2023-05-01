@@ -2,6 +2,15 @@ var oi_chart = null;
 var vol_chart = null;
 var max_pain_chart = null;
 
+function init_table(response) {
+    date_dropdown = document.getElementById("expiry_date")
+    puts_json = response["putExpDateMap"]
+    all_dates_list = Object.keys(puts_json)
+    for (i=0; i<all_dates_list.length; i++) {
+        date_dropdown.innerHTML += `<option value=${i}>${all_dates_list[i].split(":")[0]}</option>`
+    }
+}
+
 function show_table(response, date_index) {
     date_dropdown = document.getElementById("expiry_date")
 
@@ -9,9 +18,6 @@ function show_table(response, date_index) {
     calls_json = response["callExpDateMap"]
 
     all_dates_list = Object.keys(puts_json)
-    for (i=0; i<all_dates_list.length; i++) {
-        date_dropdown.innerHTML += `<option value=${i}>${all_dates_list[i].split(":")[0]}</option>`
-    }
 
     if (!date_index) {
         date_index = 0

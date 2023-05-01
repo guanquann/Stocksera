@@ -1,0 +1,55 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}Stocksera | Interest Rate{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/economy/economy.css' %}">
+<script src="{% static 'javascript/economy/interest_rate.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}interest_rate(1000);display_table(){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/reverse_repo">Economy</a> /
+    <a href="/interest_rate">Interest Rate</a>
+{% endblock %}
+
+{% block main_content %}
+    <script>highlight_selected_nav('economy')</script>
+
+    <div class="more_info_div_parent">
+        <div class="more_info_div"><a href="{% url 'reverse_repo' %}">RRP</a></div>
+        <div class="more_info_div"><a href="{% url 'daily_treasury' %}">Treasury</a></div>
+        <div class="more_info_div"><a href="{% url 'inflation' %}">CPI</a></div>
+        <div class="more_info_div"><a href="{% url 'retail_sales' %}">Retail</a></div>
+        <div class="more_info_div"><a href="{% url 'initial_jobless_claims' %}">Jobless Claims</a></div>
+        <div class="more_info_div current_link"><a href="{% url 'interest_rate' %}">Interest Rate</a></div>
+    </div>
+
+    <div class="instructions">
+        <h2>Interest Rate</h2>
+        <p>
+            United States Fed Funds Rate
+        </p>
+    </div>
+
+    <div class="contents_div">
+        <div class="date_selector">
+              <button name="date_range" onclick="btn_selected(this); interest_rate(12)">1 Year</button>
+              <button name="date_range" onclick="btn_selected(this); interest_rate(60)">5 Year</button>
+              <button name="date_range" onclick="btn_selected(this); interest_rate(120)">10 Year</button>
+              <button name="date_range" onclick="btn_selected(this); interest_rate(1000)" class="selected">Max</button>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="ir_chart"></canvas>
+        </div>
+
+        <div class="scrollable_div" style="display:none">
+            {{df|safe}}
+        </div>
+    </div>
+{% endblock %}

@@ -38,7 +38,7 @@ This website is free for use. If you wish to support this project, please star i
 ![Google Trend](./static/images/github/ticker_main4.png)
 
 
-- Upgrades & Downgrades of a stock.
+- Recommendations of a stock.
 ![Recommendations](./static/images/github/ticker_main5.png)
 
 
@@ -188,6 +188,10 @@ This website is free for use. If you wish to support this project, please star i
 #### /initial_jobless_claims/
 - View weekly initial jobless claims
 ![Initial Jobless Claims](./static/images/github/jobless_claims.png)
+
+#### /interest_rate/
+- View United States Fed Funds Rate
+![Interest Rate](./static/images/github/interest_rate.png)
 
 #### /insider/
 - Get latest insider trading in the last 1 month

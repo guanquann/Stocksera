@@ -72,26 +72,10 @@ def ticker_recommendations(request):
     Show upgrades/downgrades of ticker. Data from yahoo finance
     """
     ticker_selected = default_ticker(request)
-    ticker = yf.Ticker(ticker_selected, session=session)
-    try:
-        recommendations = ticker.recommendations
-        recommendations["Action"] = recommendations["Action"].str \
-            .replace("main", "Maintain") \
-            .replace("up", "Upgrade") \
-            .replace("down", "Downgrade") \
-            .replace("init", "Initialised") \
-            .replace("reit", "Reiterate")
-        recommendations.reset_index(inplace=True)
-        recommendations["Date"] = recommendations["Date"].dt.date
-        recommendations.sort_values(by=["Date"], ascending=False, inplace=True)
-    except TypeError:
-        recommendations = pd.DataFrame()
-        recommendations["Date"] = ["N/A"]
-        recommendations["Firm"] = ["N/A"]
-        recommendations["To Grade"] = ["N/A"]
-        recommendations["From Grade"] = ["N/A"]
-        recommendations["Action"] = ["N/A"]
-    return render(request, 'stock/recommendations.html', {"table": recommendations[:100].to_html(index=False)})
+    df = pd.DataFrame(client.recommendation_trends(symbol=ticker_selected))
+    df = df[["strongBuy", "buy", "hold", "sell", "strongSell", "period"]]
+    df.columns = ["Strong Buy", "Buy", "Hold", "Sell", "Strong Sell", "Period"]
+    return render(request, 'stock/recommendations.html', {"table": df.to_html(index=False)})
 
 
 def ticker_major_holders(request):
@@ -1098,6 +1082,15 @@ def retail_sales(request):
     return render(request, 'economy/retail_sales.html',
                   {"retail_stats": retail_stats[::-1].to_html(index=False),
                    "next_date": data})
+
+
+def interest_rate(request):
+    """
+    Get interest rate. Data is from https://fred.stlouisfed.org
+    """
+    data = requests.get(f"{BASE_URL}/economy/interest_rate", headers=HEADERS).json()
+    df = pd.DataFrame(data)
+    return render(request, 'economy/interest_rate.html', {"df": df.to_html(index=False)})
 
 
 def initial_jobless_claims(request):

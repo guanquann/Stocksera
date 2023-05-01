@@ -61,10 +61,6 @@
                 <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
                     <span class="fa fa-search"></span>
                 </button>
-<!--                <div id="ticker_suggestions" style="display: none"></div>-->
-<!--                <button class="add_to_watchlist" type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to Watchlist" onclick="location.href='{% url 'watchlist' %}?ticker={{ticker_selected}}' ">-->
-<!--                    {% if user.is_authenticated%}<img src="{% static 'images/check.svg' %}" />{% else %}{% endif %}-->
-<!--                </button>-->
             </div>
         </form>
     </div>
@@ -173,9 +169,9 @@
 <!--                        </div>-->
 
                         <div class="btn_div">
-                            <form action="/recommendations" method="GET" autocomplete="off" target="Upgrades & Downgrades">
+                            <form action="/recommendations" method="GET" autocomplete="off" target="Recommendations">
                                 <input style="display: none" name="quote" value="{{ticker_selected}}">
-                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Upgrades & Downgrades');">Upgrades & Downgrades</button>
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Recommendations');">Recommendations</button>
                             </form>
                         </div>
 
@@ -211,7 +207,7 @@
                 <iframe src="/loading/" style="display: none" class="more_details" name="Mutual-Fund Holders" scrolling="no" onload="expand_iframe(this)"></iframe>
                 <iframe src="/loading/" style="display: none" class="more_details" name="Dividend & Splits" scrolling="no" onload="expand_iframe(this)"></iframe>
 <!--                <iframe src="/loading/" style="display: none" class="more_details" name="Earnings" scrolling="no" onload="expand_iframe(this)"></iframe>-->
-                <iframe src="/loading/" style="display: none" class="more_details" name="Upgrades & Downgrades" scrolling="no" onload="expand_iframe(this)"></iframe>
+                <iframe src="/loading/" style="display: none" class="more_details" name="Recommendations" scrolling="no" onload="expand_iframe(this)"></iframe>
                 <iframe src="/loading/" style="display: none" class="more_details" name="SEC Fillings" scrolling="no" onload="expand_iframe(this)"></iframe>
                 <iframe src="/loading/" style="display: none" class="more_details" name="Google Trends" scrolling="no" onload="expand_iframe(this)"></iframe>
                 <iframe src="/loading/" style="display: none" class="more_details" name="News Sentiment" scrolling="no" onload="expand_iframe(this)"></iframe>

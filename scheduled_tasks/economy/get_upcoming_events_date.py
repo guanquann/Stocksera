@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import tabula
+import requests
 import pandas as pd
 from datetime import datetime, timedelta
 
@@ -40,7 +41,11 @@ def get_next_cpi_date():
     """
     Get next CPI release date
     """
-    df = pd.read_html(r"https://www.bls.gov/schedule/news_release/cpi.htm")[0][:-1]
+    header = {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.75 Safari/537.36",
+        "X-Requested-With": "XMLHttpRequest"
+    }
+    df = pd.read_html(requests.get(r"https://www.bls.gov/schedule/news_release/cpi.htm", headers=header).text)[0][:-1]
     df["Release Date"] = pd.to_datetime(df["Release Date"], errors='coerce')
     df = df[df["Release Date"] >= current_date].iloc[0]
     df['Release Date'] = df['Release Date'].strftime('%Y-%m-%d')

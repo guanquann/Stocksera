@@ -52,6 +52,7 @@ urlpatterns = [
     path('inflation/', views.inflation, name='inflation'),
     path('world_inflation/', views.world_inflation, name='world_inflation'),
     path('retail_sales/', views.retail_sales, name='retail_sales'),
+    path('interest_rate/', views.interest_rate, name='interest_rate'),
     path('initial_jobless_claims/', views.initial_jobless_claims, name='initial_jobless_claims'),
 
     # Discover

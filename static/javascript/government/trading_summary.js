@@ -129,9 +129,12 @@ function load_daily_summary(gov_type) {
 
         if (i > 0) {
             type = td[5].innerHTML
-            if (td[6].innerHTML.includes("$")) {
+            if (td[6].innerHTML.includes("- $")) {
                 num_list = td[6].innerHTML.split("- $")
                 amount = Math.round(Number(num_list[1].replace(/\D/g,'')) - Number(num_list[0].replace(/\D/g,'')) / 2)
+            }
+            else if (td[6].innerHTML.includes(" +")) {
+                amount = Math.round(Number(td[6].innerHTML.slice(1,td[6].innerHTML.length-2).replace(/\D/g,'')))
             }
             else {
                 amount = 0

@@ -64,6 +64,7 @@ urlpatterns = [
     path('economy/inflation/<str:area>/', views.inflation, name='api_inflation'),
 
     path('economy/retail_sales/', views.retail_sales, name='api_retail_sales'),
+    path('economy/interest_rate/', views.interest_rate, name='api_interest_rate'),
     path('economy/initial_jobless_claims/', views.initial_jobless_claims, name='api_initial_jobless_claims'),
 
     path('discover/short_interest/', views.short_interest, name='api_short_interest'),

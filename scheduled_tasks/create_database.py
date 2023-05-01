@@ -256,6 +256,11 @@ def database():
                 "percent_change FLOAT, "
                 "UNIQUE (record_date) )")
 
+    cur.execute("CREATE table IF NOT EXISTS interest_rates ("
+                "record_date VARCHAR(20), "
+                "interest FLOAT, "
+                "UNIQUE (record_date) )")
+
     cur.execute("CREATE table IF NOT EXISTS retail_sales ("
                 "record_date VARCHAR(20), "
                 "value FLOAT, "

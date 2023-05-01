@@ -664,6 +664,23 @@ def retail_sales(request):
 @csrf_exempt
 @api_view(['GET'])
 @schema(AutoDocstringSchema())
+def interest_rate(request):
+    """
+    Get interest rate data.
+    """
+    key = get_user_api(request)
+    if check_validity(key):
+        pd.options.display.float_format = '{:.2f}'.format
+        df = pd.read_sql_query("SELECT * FROM interest_rates", cnx)
+        df.rename(columns={"record_date": "Date", "interest": "Rate"}, inplace=True)
+        df.fillna(0, inplace=True)
+        return JSONResponse(df)
+    return ERROR_MSG
+
+
+@csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def initial_jobless_claims(request):
     """
     Get initial jobless claims data.

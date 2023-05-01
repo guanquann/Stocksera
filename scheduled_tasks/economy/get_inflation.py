@@ -1,5 +1,6 @@
 import os
 import sys
+import requests
 import numpy as np
 import pandas as pd
 import pycountry_convert as pc
@@ -41,8 +42,13 @@ def usa_inflation():
 
 
 def world_inflation():
-    url = "https://tradingeconomics.com/country-list/inflation-rate?continent=world"
-    df = pd.read_html(url)[0]
+    header = {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                      "Chrome/50.0.2661.75 Safari/537.36",
+        "X-Requested-With": "XMLHttpRequest"
+    }
+    df = pd.read_html(requests.get("https://tradingeconomics.com/country-list/inflation-rate?continent=world",
+                                   headers=header).text)[0]
     del df["Unit"]
     df.sort_values(by="Last", ascending=False, inplace=True)
     df["Continent"] = df["Country"].apply(lambda x: country_to_continent(x))

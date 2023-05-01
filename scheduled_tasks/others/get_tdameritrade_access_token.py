@@ -5,13 +5,13 @@ import requests
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
-with open("tdameritrade_config.yaml") as config_file:
+with open("config.yaml") as config_file:
     td_config_keys = yaml.load(config_file, Loader=yaml.Loader)
     if not td_config_keys:
         print("Please create an TD Ameritrade Developer Account first!")
         exit()
-    client_id = td_config_keys["client_id"]
-    refresh_token = td_config_keys["refresh_token"]
+    client_id = td_config_keys["tda_client_id"]
+    refresh_token = td_config_keys["tda_refresh_token"]
 
 
 def get_access_token():
@@ -29,12 +29,12 @@ def get_access_token():
     access_token = r.json()["access_token"]
 
     data = {
-        'client_id': client_id,
-        'refresh_token': refresh_token,
-        "access_token": access_token,
+        'tda_client_id': client_id,
+        'tda_refresh_token': refresh_token,
+        "tda_access_token": access_token,
     }
 
-    with open('tdameritrade_config.yaml', 'w') as outfile:
+    with open('config.yaml', 'w') as outfile:
         yaml.dump(data, outfile, default_flow_style=False)
 
     return data

@@ -173,11 +173,11 @@ def get_options_data(ticker):
     """
     Get options chain from TD Ameritrade
     """
-    with open("tdameritrade_config.yaml") as td_config_file:
+    with open("config.yaml") as td_config_file:
         td_config_keys = yaml.load(td_config_file, Loader=yaml.Loader)
-    url = f"https://api.tdameritrade.com/v1/marketdata/chains?apikey={td_config_keys['client_id']}&symbol={ticker}" \
-          f"&includeQuotes=FALSE"
-    response = requests.get(url, headers={'Authorization': f'Bearer {td_config_keys["access_token"]}'})
+    url = f"https://api.tdameritrade.com/v1/marketdata/chains?apikey={td_config_keys['tda_client_id']}" \
+          f"&symbol={ticker}&includeQuotes=FALSE"
+    response = requests.get(url, headers={'Authorization': f'Bearer {td_config_keys["tda_access_token"]}'})
     if not response.ok:
         print("Error loading TD Ameritrade Access Token...")
         get_access_token()

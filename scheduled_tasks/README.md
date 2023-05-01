@@ -22,7 +22,7 @@ Before continuing, register for an API in the links shown below and add them in 
 To access stock options data, sign up for TD Ameritrade Developer Account and follow the instructions in: 
 - https://www.reddit.com/r/algotrading/comments/c81vzq/td_ameritrade_api_access_2019_guide/
 - https://developer.tdameritrade.com/content/simple-auth-local-apps
-- Add your Client ID and Access Token in tdameritrade_config.yaml
+- Add your Client ID and Access Token in config.yaml
 - Ignore the refresh token for now as it will be generated automatically if your Client ID and Access Token are correct.
 - NOTE: The Access Token expires every 90 days. So, remember to update it from time to time.
 

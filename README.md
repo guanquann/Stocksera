@@ -274,5 +274,8 @@ docker compose run --rm web python tasks_to_run.py
 #### Run scheduled tasks
 - Please refer to [Scheduled Tasks Guide](https://github.com/guanquann/Stocksera/tree/master/scheduled_tasks) for more information on how to run scheduled tasks.
 
-### License:
+### Star History
+[![Star History Chart](https://api.star-history.com/svg?repos=guanquann/Stocksera&type=Date)](https://star-history.com/#guanquann/Stocksera&Date)
+
+### License
 This project is under the <a href="https://github.com/guanquann/stocksera/blob/master/LICENSE">MIT</a> license.

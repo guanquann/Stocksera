@@ -194,7 +194,7 @@ def quick_stats_request(request_symbol_list, field_list):
         'symbols': ','.join(request_symbol_list),
         'fields': ','.join(field_list),
     }
-    result = requests.get("https://query1.finance.yahoo.com/v7/finance/quote", params=params, headers=headers)
+    result = requests.get("https://query1.finance.yahoo.com/v6/finance/quote", params=params, headers=headers)
     if result.status_code != 200 and result.status_code != 404:
         result.raise_for_status()
 

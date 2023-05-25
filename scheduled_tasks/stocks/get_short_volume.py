@@ -41,6 +41,7 @@ def get_30d_data_finra():
     combined_df["Date"] = combined_df["Date"].apply(lambda x: x[0:4] + "-" + x[4:6] + "-" + x[6:])
     combined_df.columns = ["Date", "Ticker", "Short Vol", "Short Exempt Vol", "Total Vol", "% Shorted"]
     combined_df = combined_df[~combined_df["% Shorted"].isna()]
+    combined_df = combined_df.dropna()
     print(combined_df)
 
     start = 0
@@ -69,6 +70,7 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date
 
         del df["Market"]
         df = df[~df["%Shorted"].isna()]
+        df = df.dropna()
 
         cur.executemany("INSERT IGNORE INTO short_volume VALUES (%s, %s, %s, %s, %s, %s)", df.values.tolist())
         cnx.commit()

@@ -244,31 +244,35 @@ cd ../..
 # Install dependencies
 pip install -r requirements.txt
 
-# Setting up database and configs
-# Ensure that line 32 of config.yaml is uncommented
-# Ensure that line 33 of config.yaml is commented
+# Setting up database and configs in http://localhost:8000/tasks
+# Ensure that MYSQL_HOST is set to your local MYSQL hostname
 py setup/local.py
 ```
 
 #### Setting up WITH Docker
 ```
 # Dockerise
-# Ensure that line 32 of config.yaml is commented
-# Ensure that line 33 of config.yaml is uncommented
+# Ensure that MYSQL_HOST is set to your docker MYSQL db name
 py setup/docker.py
 ```
 
 ```
-# Run the following if you are setting up for the first time using Docker. You might need to rerun setup/docker.py
+# Run the following if you are setting up for the first time using Docker. 
+# You might need to rerun setup/docker.py
 py setup/docker_db.py
 ```
 
 #### tasks_to_run.py
 
 - Compilation of tasks that are needed to be completed.
-- Get trending tickers in Reddit, subreddit subscribers statistics, stocks with low float and high short interest.
+- tasks_to_run.py is customisable according to your needs. Do change the boolean value of the variable if you wish.
+- DO ENSURE THAT YOU HAVE ALL THE API KEYS NECESSARY IN http://localhost:8000/tasks/ FIRST BEFORE PROCEEDING.
 ```
 docker compose run --rm web python tasks_to_run.py
+```
+
+```
+py tasks_to_run.py
 ```
 
 #### Run scheduled tasks

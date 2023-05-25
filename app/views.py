@@ -1363,6 +1363,29 @@ def about(request):
     return render(request, 'about.html')
 
 
+def tasks(request):
+    if request.POST.get("finnhub_api"):
+        config_keys[request.POST.get("finnhub_api")] = request.POST.get("finnhub_api_value")
+        config_keys[request.POST.get("polygon_api")] = request.POST.get("polygon_api_value")
+        config_keys[request.POST.get("twitter_api")] = request.POST.get("twitter_api_value")
+        config_keys[request.POST.get("reddit_id_api")] = request.POST.get("reddit_id_api_value")
+        config_keys[request.POST.get("reddit_sec_api")] = request.POST.get("reddit_sec_api_value")
+        config_keys[request.POST.get("whalealert_api")] = request.POST.get("whalealert_api_value")
+        config_keys[request.POST.get("tda_access_api")] = request.POST.get("tda_access_api_value")
+        config_keys[request.POST.get("tda_client_api")] = request.POST.get("tda_client_api_value")
+        config_keys[request.POST.get("tda_refresh_api")] = request.POST.get("tda_refresh_api_value")
+
+        config_keys[request.POST.get("mysql_db")] = request.POST.get("mysql_db_value")
+        config_keys[request.POST.get("mysql_host")] = request.POST.get("mysql_host_value")
+        config_keys[request.POST.get("mysql_pw")] = request.POST.get("mysql_pw_value")
+        config_keys[request.POST.get("mysql_port")] = request.POST.get("mysql_port_value")
+        config_keys[request.POST.get("mysql_user")] = request.POST.get("mysql_user_value")
+
+        with open('config.yaml', 'w') as outfile:
+            yaml.dump(config_keys, outfile, default_flow_style=False)
+    return render(request, 'run_tasks.html', {"config": config_keys})
+
+
 def loading_spinner(request):
     """
     Spinner display for iframe

@@ -32,9 +32,9 @@ with open("config.yaml") as config_file:
 analyzer = SentimentIntensityAnalyzer()
 analyzer.lexicon.update(new_words)
 
-reddit = praw.Reddit(client_id=config_keys["API_REDDIT_CLIENT_ID"],
-                     client_secret=config_keys["API_REDDIT_CLIENT_SECRET"],
-                     user_agent=config_keys["API_REDDIT_USER_AGENT"])
+reddit = praw.Reddit(client_id=config_keys["REDDIT_CLIENT_ID"],
+                     client_secret=config_keys["REDDIT_CLIENT_SECRET"],
+                     user_agent=config_keys["REDDIT_USER_AGENT"])
 
 pattern = "(?<=\$)?\\b[A-Z]{1,5}\\b(?:\.[A-Z]{1,2})?"
 

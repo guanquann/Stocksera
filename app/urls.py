@@ -87,4 +87,7 @@ urlpatterns = [
 
     # About
     path('about/', views.about, name='about'),
+
+    # Run tasks
+    path('tasks/', views.tasks, name='tasks'),
 ]

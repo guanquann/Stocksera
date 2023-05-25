@@ -2,9 +2,9 @@ import os
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
-# from scheduled_tasks.others.get_popular_tickers import *
+from scheduled_tasks.others.get_popular_tickers import *
 from scheduled_tasks.twitter.twitter_connection import *
-# from scheduled_tasks.reddit.reddit_utils import *
+from scheduled_tasks.reddit.reddit_utils import *
 
 def connect_to_endpoint_delete(url):
     response = requests.request("DELETE", url, auth=bearer_oauth,)
@@ -18,35 +18,26 @@ def connect_to_endpoint_delete(url):
 
 
 def main():
-    url = "https://api.twitter.com/2/users/1388805305186721792/tweets?max_results=100&media.fields=public_metrics"
-    json_response = connect_to_endpoint(url)
-    for i in json_response["data"]:
-        if i["id"] != "1486399017579864066":
-            print(i)
-            test = "https://api.twitter.com/2/tweets/" + i["id"]
-            json_response = connect_to_endpoint_delete(test)
-            print(json_response)
-            exit()
-    # all_symbols = list(get_mapping_coins().keys())
-    # all_symbols.extend(full_ticker_list())
+    all_symbols = list(get_mapping_coins().keys())
+    all_symbols.extend(full_ticker_list())
 
-    # for symbol in all_symbols:
-    #     try:
-    #         if len(symbol) > 1:
-    #             url = f"https://api.twitter.com/2/tweets/counts/recent?query={symbol}&granularity=day"
-    #             json_response = connect_to_endpoint(url)
-    #             print(symbol)
-    #             for i in json_response["data"]:
-    #                 start_date = i["start"]
-    #                 end_date = i["end"]
-    #                 if end_date.endswith("00:00:00.000Z"):
-    #                     tweet_count = i["tweet_count"]
-    #                     cur.execute("INSERT IGNORE INTO twitter_trending VALUES (%s, %s, %s)",
-    #                                 (symbol, tweet_count, start_date.split("T")[0]))
-    #                     cnx.commit()
-    #         time.sleep(1)
-    #     except:
-    #         continue
+    for symbol in all_symbols:
+        try:
+            if len(symbol) > 1:
+                url = f"https://api.twitter.com/2/tweets/counts/recent?query={symbol}&granularity=day"
+                json_response = connect_to_endpoint(url)
+                print(symbol)
+                for i in json_response["data"]:
+                    start_date = i["start"]
+                    end_date = i["end"]
+                    if end_date.endswith("00:00:00.000Z"):
+                        tweet_count = i["tweet_count"]
+                        cur.execute("INSERT IGNORE INTO twitter_trending VALUES (%s, %s, %s)",
+                                    (symbol, tweet_count, start_date.split("T")[0]))
+                        cnx.commit()
+            time.sleep(1)
+        except:
+            continue
 
 
 if __name__ == "__main__":

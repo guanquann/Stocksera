@@ -15,7 +15,7 @@ def main():
     t = datetime.now() - timedelta(minutes=10)
     unix_time = int(mktime(t.timetuple()))
 
-    api_key = config_keys["API_WHALE_ALERT"]
+    api_key = config_keys["WHALE_ALERT"]
     x = requests.get(f"https://api.whale-alert.io/v1/transactions?api_key={api_key}&min_value=1000000&start={unix_time}")
     for index, i in enumerate(x.json()["transactions"]):
         print(index, i["symbol"], i["amount_usd"], datetime.fromtimestamp(i["timestamp"]))

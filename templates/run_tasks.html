@@ -1,0 +1,138 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}Stocksera | Setup {% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/run_tasks.css' %}">
+<script src="{% static 'javascript/stock/borrowed_shares.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}{% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/tasks">Setup & Run Tasks</a>
+{% endblock %}
+
+{% block main_content %}
+<script>highlight_selected_nav('tasks')</script>
+<div>
+    <div class="instructions">
+        <h2>Setup & Run Tasks</h2>
+        <p>
+            All-in-one-dashboard for you to setup and run your tasks!
+        </p>
+    </div>
+
+    <div class="contents_div">
+        <div class="scrollable_div" style="max-height: 800px">
+            {{ df|safe }}
+        </div>
+        <form action="/tasks/" method="POST"> {% csrf_token %}
+            <table>
+                <tr>
+                    <th>API</th>
+                    <th>Key</th>
+                </tr>
+                <tr>
+                    <td>Finnhub</td>
+                    <input placeholder="Value" value="FINNHUB_KEY1" name="finnhub_api" style="display: none">
+                    <td><input placeholder="Value" value="{{config.FINNHUB_KEY1}}" name="finnhub_api_value"></td>
+                </tr>
+                <tr>
+                    <td>Polygon</td>
+                    <input placeholder="Value" value="POLYGON_KEY" name="polygon_api" style="display: none">
+                    <td><input placeholder="Value" value="{{config.POLYGON_KEY}}" name="polygon_api_value"></td>
+                </tr>
+                <tr>
+                    <td>Twitter Bearer Token</td>
+                    <input placeholder="Value" value="TWITTER_BEARER_TOKEN" name="twitter_api" style="display: none">
+                    <td><input placeholder="Value" value="{{config.TWITTER_BEARER_TOKEN}}" name="twitter_api_value"></td>
+                </tr>
+                <tr>
+                    <td>Reddit Client ID</td>
+                    <input placeholder="Value" value="REDDIT_CLIENT_ID" name="reddit_id_api" style="display: none">
+                    <td><input placeholder="Value" value="{{config.REDDIT_CLIENT_ID}}" name="reddit_id_api_value"></td>
+                </tr>
+                <tr>
+                    <td>Reddit Client Secret</td>
+                    <input placeholder="Value" value="REDDIT_CLIENT_SECRET" name="reddit_sec_api" style="display: none">
+                    <td><input placeholder="Value" value="{{config.REDDIT_CLIENT_SECRET}}" name="reddit_sec_api_value"></td>
+                </tr>
+                <tr>
+                    <td>Whale Alert</td>
+                    <input placeholder="Value" value="WHALE_ALERT" name="whalealert_api" style="display: none">
+                    <td><input placeholder="Value" value="{{config.WHALE_ALERT}}" name="whalealert_api_value"></td>
+                </tr>
+                <tr>
+                    <td>TDA Access Token</td>
+                    <input placeholder="Value" value="TDA_ACCESS_TOKEN" name="tda_access_api" style="display: none">
+                    <td><input placeholder="Value" value="{{config.TDA_ACCESS_TOKEN}}" name="tda_access_api_value"></td>
+                </tr>
+                <tr>
+                    <td>TDA Client ID</td>
+                    <input placeholder="Value" value="TDA_CLIENT_ID" name="tda_client_api" style="display: none">
+                    <td><input placeholder="Value" value="{{config.TDA_CLIENT_ID}}" name="tda_client_api_value"></td>
+                </tr>
+                <tr>
+                    <td>TDA Refresh Token</td>
+                    <input placeholder="Value" value="TDA_REFRESH_TOKEN" name="tda_refresh_api" style="display: none">
+                    <td><input placeholder="Value" value="{{config.TDA_REFRESH_TOKEN}}" name="tda_refresh_api_value"></td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <th>Database</th>
+                    <th>Key</th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td>MYSQL Database</td>
+                    <input placeholder="Value" value="MYSQL_DATABASE" name="mysql_db" style="display: none">
+                    <td><input placeholder="Value" value="{{config.MYSQL_DATABASE}}" name="mysql_db_value"></td>
+                </tr>
+                <tr>
+                    <td>MYSQL Host</td>
+                    <input placeholder="Value" value="MYSQL_HOST" name="mysql_host" style="display: none">
+                    <td><input placeholder="Value" value="{{config.MYSQL_HOST}}" name="mysql_host_value"></td>
+                </tr>
+                <tr>
+                    <td>MYSQL Password</td>
+                    <input placeholder="Value" value="MYSQL_PASSWORD" name="mysql_pw" style="display: none">
+                    <td><input placeholder="Value" value="{{config.MYSQL_PASSWORD}}" name="mysql_pw_value"></td>
+                </tr>
+                <tr>
+                    <td>MYSQL Port</td>
+                    <input placeholder="Value" value="MYSQL_PORT" name="mysql_port" style="display: none">
+                    <td><input placeholder="Value" value="{{config.MYSQL_PORT}}" name="mysql_port_value"></td>
+                </tr>
+                <tr>
+                    <td>MYSQL User</td>
+                    <input placeholder="Value" value="MYSQL_USER" name="mysql_user" style="display: none">
+                    <td><input placeholder="Value" value="{{config.MYSQL_USER}}" name="mysql_user_value"></td>
+                </tr>
+
+            </table>
+
+            <button class="submit_button">Confirm Changes</button>
+        </form>
+
+<!--        <table>-->
+<!--            <tr>-->
+<!--                <th>Script</th>-->
+<!--                <th></th>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>Get short volume</td>-->
+<!--                <td><button>Run</button></td>-->
+<!--            </tr>-->
+<!--        </table>-->
+    </div>
+    <div>
+
+    </div>
+</div>
+{% endblock %}

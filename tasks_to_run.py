@@ -3,7 +3,6 @@ Compilation of scheduled tasks to run
 """
 
 import os
-import sqlite3
 from pathlib import Path
 
 import scheduled_tasks.create_database as create_database
@@ -13,7 +12,6 @@ import scheduled_tasks.reddit.stocks.scrape_discussion_thread as scrape_stocks_d
 import scheduled_tasks.reddit.crypto.scrape_trending_posts as scrape_reddit_crypto
 import scheduled_tasks.reddit.crypto.scrape_discussion_thread as scrape_crypto_discussion_thread
 import scheduled_tasks.reddit.get_subreddit_count as get_subreddit_count
-import scheduled_tasks.reddit.buy_trending_tickers as buy_trending_tickers
 
 import scheduled_tasks.twitter.get_twitter_followers as get_twitter_followers
 import scheduled_tasks.twitter.scrape_trending_posts as scrape_twitter_posts
@@ -39,6 +37,7 @@ import scheduled_tasks.economy.get_reverse_repo as get_reverse_repo
 import scheduled_tasks.economy.get_inflation as get_inflation
 import scheduled_tasks.economy.get_daily_treasury as get_daily_treasury
 import scheduled_tasks.economy.get_retail_sales as get_retail_sales
+import scheduled_tasks.economy.get_interest_rate as get_interest_rate
 import scheduled_tasks.economy.get_initial_jobless_claims as get_initial_jobless_claims
 import scheduled_tasks.economy.get_upcoming_events_date as get_upcoming_events_date
 
@@ -57,9 +56,6 @@ SCRAPE_REDDIT_CRYPTO_POSTS = True
 # Get subreddit count
 SCRAPE_SUBREDDIT_COUNT = True
 
-# Update latest price of Reddit ETF.
-UPDATE_REDDIT_ETF_PRICE = True
-
 # Update number of followers of company in Twitter
 UPDATE_TWITTER_FOLLOWERS = True
 
@@ -68,9 +64,6 @@ SCRAPE_TWEET_COUNTS = True
 
 # Get trending tickers in Stocktwits
 SCRAPE_STOCKTWITS_TRENDING = True
-
-# Update the cached ticker info for faster processing time
-TICKER_INFO = True
 
 # Update the cached ticker financial data for faster processing time
 TICKER_FINANCIAL = True
@@ -117,11 +110,14 @@ RRP = True
 # Get inflation data
 INFLATION = True
 
-# Gget daily treasury data
+# Get daily treasury data
 TREASURY = True
 
 # Compare retail sale vs covid cases
 RETAIL_SALES = True
+
+# FED Reserve Interest rate
+INTEREST_RATE = True
 
 # Get initial jobless claims
 INITIAL_JOBLESS_CLAIMS = True
@@ -156,21 +152,9 @@ if __name__ == '__main__':
 
     if SCRAPE_TWEET_COUNTS:
         scrape_twitter_posts.main()
-    
+
     if SCRAPE_STOCKTWITS_TRENDING:
         get_stocktwits_trending.main()
-    
-    # if UPDATE_REDDIT_ETF_PRICE:
-    #     conn = sqlite3.connect(r"database/database.db", check_same_thread=True)
-    #     db = conn.cursor()
-    #     db.execute("SELECT date_updated FROM wallstreetbets ORDER BY ID DESC LIMIT 1")
-    #     db_date = db.fetchone()[0]
-    #     buy_trending_tickers.buy_new_ticker(db_date)
-    #     buy_trending_tickers.sell_ticker(db_date)
-    #     buy_trending_tickers.update_bought_ticker_price()
-
-    if TICKER_INFO:
-        get_ticker_info.ticker_info(get_ticker_info.full_ticker_list())
 
     # if TICKER_FINANCIAL:
     #     for i in get_ticker_info.full_ticker_list():
@@ -231,6 +215,9 @@ if __name__ == '__main__':
 
     if RETAIL_SALES:
         get_retail_sales.retail_sales()
+
+    if INTEREST_RATE:
+        get_interest_rate.interest_rate()
 
     if INITIAL_JOBLESS_CLAIMS:
         get_initial_jobless_claims.jobless_claims()

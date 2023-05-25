@@ -170,17 +170,17 @@
                     <a href="/trading_halts">Trading Halts</a>
                 </div>
 
-<!--                <a href="https://substack.com/profile/48025572-stocksera" target="_blank">-->
-<!--                    <li class="nav_bar">-->
-<!--                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/book.png' %}" style="display:none">-->
-<!--                        <span>Blog [Substack]</span>-->
-<!--                    </li>-->
-<!--                </a>-->
-
                 <a href="{% url 'login' %}">
                     <li class="nav_bar">
                         <img class="nav_bar_logo" src="{% static 'images/nav_bar/login.png' %}" style="display:none">
                         <span>{% if user.is_authenticated %}Profile{% else %}Login{% endif%}</span>
+                    </li>
+                </a>
+
+                <a href="{% url 'tasks' %}">
+                    <li id="tasks" class="nav_bar">
+                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/settings.png' %}" style="display:none">
+                        <span>Setup & Tasks</span>
                     </li>
                 </a>
 

@@ -1,0 +1,21 @@
+table {
+    margin-bottom: 14px;
+}
+
+td {
+    max-width: 75vw;
+}
+
+input {
+    padding: 7px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    width: 98%;
+}
+
+.submit_button {
+    padding: 7px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    background: rgb(38, 166, 154);
+}

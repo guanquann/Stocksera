@@ -10,8 +10,8 @@ with open("config.yaml") as config_file:
     if not td_config_keys:
         print("Please create an TD Ameritrade Developer Account first!")
         exit()
-    client_id = td_config_keys["tda_client_id"]
-    refresh_token = td_config_keys["tda_refresh_token"]
+    client_id = td_config_keys["TDA_CLIENT_ID"]
+    refresh_token = td_config_keys["TDA_REFRESH_TOKEN"]
 
 
 def get_access_token():
@@ -28,16 +28,14 @@ def get_access_token():
     )
     access_token = r.json()["access_token"]
 
-    data = {
-        'tda_client_id': client_id,
-        'tda_refresh_token': refresh_token,
-        "tda_access_token": access_token,
-    }
+    td_config_keys["TDA_CLIENT_ID"] = client_id
+    td_config_keys["TDA_REFRESH_TOKEN"] = refresh_token
+    td_config_keys["TDA_ACCESS_TOKEN"] = access_token
 
     with open('config.yaml', 'w') as outfile:
-        yaml.dump(data, outfile, default_flow_style=False)
+        yaml.dump(td_config_keys, outfile, default_flow_style=False)
 
-    return data
+    return td_config_keys
 
 
 if __name__ == '__main__':

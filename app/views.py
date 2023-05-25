@@ -878,6 +878,7 @@ def market_summary(request):
 
     summary_df = pd.DataFrame(data)
     summary_df = summary_df.replace("N/A", np.nan)
+    summary_df = summary_df[summary_df['Industry'].notna()]
 
     x = summary_df.copy()
     x["% Change / Mkt Cap"] = (x["% Change"] * x["Market Cap"])

@@ -252,7 +252,7 @@ py setup/local.py
 #### Setting up WITH Docker
 ```
 # Dockerise
-# Ensure that MYSQL_HOST is set to your docker MYSQL db name
+# Ensure that MYSQL_HOST in config.yaml is set to your docker MYSQL db name
 py setup/docker.py
 ```
 

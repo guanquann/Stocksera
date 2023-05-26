@@ -7,9 +7,20 @@
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/run_tasks.css' %}">
 <script src="{% static 'javascript/stock/borrowed_shares.js' %}"></script>
+<script>
+    function isLocallyHosted() {
+        if (document.getElementById("locally_hosted").value == "True") {
+            document.getElementById("locally_hosted_options_api_key").style.display = "none";
+            document.getElementById("stocksera_base_url_value").value = "http://127.0.0.1:8000/api";
+        } else {
+            document.getElementById("locally_hosted_options_api_key").style.removeProperty("display");
+            document.getElementById("stocksera_base_url_value").value = "https://stocksera.pythonanywhere.com/api";
+        }
+    }
+</script>
 {% endblock %}
 
-{% block onload_properties%}{% endblock %}
+{% block onload_properties%}isLocallyHosted(){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -31,6 +42,35 @@
             {{ df|safe }}
         </div>
         <form action="/tasks/" method="POST"> {% csrf_token %}
+            <table>
+                <tr>
+                    <th>Settings</th>
+                    <th>Key</th>
+                </tr>
+                <tr>
+                    <td>Is Locally Hosted</td>
+                    <input placeholder="Value" value="IS_LOCALLY_HOSTED" name="locally_hosted" style="display: none">
+                    <td>
+                        <select name="locally_hosted_value" onchange="isLocallyHosted()" id="locally_hosted">
+                            <option value="{{config.IS_LOCALLY_HOSTED}}">{{config.IS_LOCALLY_HOSTED}}</option>
+                            <option>True</option>
+                            <option>False</option>
+                        </select>
+                    </td>
+                    <tr>
+                        <td>Stocksera Base URL</td>
+                        <input placeholder="Value" value="STOCKSERA_BASE_URL" name="stocksera_base_url" style="display: none">
+                        <td><input id="stocksera_base_url_value" placeholder="Value" value="{{config.STOCKSERA_BASE_URL}}" name="stocksera_base_url_value"></td>
+                    </tr>
+                    <tr id="locally_hosted_options_api_key" style="display: none">
+                        <td>Stocksera API</td>
+                        <input placeholder="Value" value="STOCKSERA_API" name="stocksera_api" style="display: none">
+                        <td><input placeholder="Value" value="{{config.STOCKSERA_API}}" name="stocksera_api_value"></td>
+                    </tr>
+                </tr>
+                <tr></tr>
+            </table>
+
             <table>
                 <tr>
                     <th>API</th>
@@ -81,6 +121,7 @@
                     <input placeholder="Value" value="TDA_REFRESH_TOKEN" name="tda_refresh_api" style="display: none">
                     <td><input placeholder="Value" value="{{config.TDA_REFRESH_TOKEN}}" name="tda_refresh_api_value"></td>
                 </tr>
+                <tr></tr>
             </table>
 
             <table>
@@ -114,7 +155,7 @@
                     <input placeholder="Value" value="MYSQL_USER" name="mysql_user" style="display: none">
                     <td><input placeholder="Value" value="{{config.MYSQL_USER}}" name="mysql_user_value"></td>
                 </tr>
-
+                <tr></tr>
             </table>
 
             <button class="submit_button">Confirm Changes</button>
@@ -130,9 +171,6 @@
 <!--                <td><button>Run</button></td>-->
 <!--            </tr>-->
 <!--        </table>-->
-    </div>
-    <div>
-
     </div>
 </div>
 {% endblock %}

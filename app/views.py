@@ -453,7 +453,6 @@ def short_volume(request):
     if "longName" in information and information["regularMarketPrice"] != "N/A":
         data = requests.get(f"{BASE_URL}/stocks/short_volume/{ticker_selected}/", headers=HEADERS).json()
         short_volume_data = pd.DataFrame(data)
-        print(short_volume_data)
 
         if "download_csv" in request.GET:
             file_name = "{}_short_volume.csv".format(ticker_selected)
@@ -584,6 +583,7 @@ def reddit_analysis(request):
     """
     Get trending tickers on Reddit
     """
+    cnx, cur, engine = connect_mysql_database()
     if request.GET.get("subreddit"):
         subreddit = request.GET.get("subreddit").lower().replace(" ", "")
         if ":" in subreddit:
@@ -619,6 +619,7 @@ def reddit_ticker_analysis(request):
     """
     Get analysis of ranking of tickers in popular subreddits and compare it with its price
     """
+    cnx, cur, engine = connect_mysql_database()
     if request.GET.get("quote"):
         ticker_selected = request.GET.get("quote").upper()
     else:
@@ -674,6 +675,7 @@ def subreddit_count(request):
                                                                           "stats": stats[::-1].to_html(index=False),
                                                                           "interested_subreddits": all_subreddits})
     else:
+        cnx, cur, engine = connect_mysql_database()
         cur.execute("SELECT * FROM subreddit_count WHERE subreddit in ('wallstreetbets', 'stocks', "
                     " 'amcstock', 'Superstonk', 'options','pennystocks', 'cryptocurrency')")
         subscribers = cur.fetchall()
@@ -687,6 +689,7 @@ def wsb_live(request):
     Get live sentiment from WSB discussion thread
     """
     pd.options.display.float_format = '{:.2f}'.format
+    cnx, cur, engine = connect_mysql_database()
 
     # Get trending tickers in the past 24H
     date_threshold = str(datetime.utcnow() - timedelta(hours=24))
@@ -791,6 +794,7 @@ def crypto_live(request):
     Get live sentiment from crypto discussion thread
     """
     pd.options.display.float_format = '{:.2f}'.format
+    cnx, cur, engine = connect_mysql_database()
 
     # Get trending tickers in the past 24H
     date_threshold = str(datetime.utcnow() - timedelta(hours=24))
@@ -1364,7 +1368,14 @@ def about(request):
 
 
 def tasks(request):
-    if request.POST.get("finnhub_api"):
+    if request.POST:
+        if request.POST.get("locally_hosted_value") == "True":
+            config_keys[request.POST.get("locally_hosted")] = True
+        else:
+            config_keys[request.POST.get("locally_hosted")] = False
+        config_keys[request.POST.get("stocksera_base_url")] = request.POST.get("stocksera_base_url_value")
+        config_keys[request.POST.get("stocksera_api")] = request.POST.get("stocksera_api_value")
+
         config_keys[request.POST.get("finnhub_api")] = request.POST.get("finnhub_api_value")
         config_keys[request.POST.get("polygon_api")] = request.POST.get("polygon_api_value")
         config_keys[request.POST.get("twitter_api")] = request.POST.get("twitter_api_value")

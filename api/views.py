@@ -144,6 +144,7 @@ def stocksera_trending(request):
     """
     key = get_user_api(request)
     if check_validity(key):
+        cnx, cur, engine = connect_mysql_database()
         df = pd.read_sql_query("SELECT * FROM stocksera_trending ORDER BY count DESC LIMIT 10", cnx)
         df = df.to_dict(orient="records")
         return JSONResponse(df)
@@ -160,6 +161,7 @@ def sec_fillings(request, ticker_selected="AAPL"):
     """
     key = get_user_api(request)
     if check_validity(key):
+        cnx, cur, engine = connect_mysql_database()
         ticker_selected = default_ticker(ticker_selected)
         df = pd.read_sql_query("SELECT * FROM sec_fillings WHERE ticker='{}' ".format(ticker_selected), cnx)
         if df.empty:
@@ -184,6 +186,7 @@ def news_sentiment(request, ticker_selected="AAPL"):
     """
     key = get_user_api(request)
     if check_validity(key):
+        cnx, cur, engine = connect_mysql_database()
         ticker_selected = default_ticker(ticker_selected)
         df = pd.read_sql_query("SELECT * FROM daily_ticker_news WHERE ticker='{}' ".format(ticker_selected), cnx)
         if df.empty:
@@ -206,6 +209,7 @@ def insider_trading(request, ticker_selected="AAPL"):
     key = get_user_api(request)
     if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
+        cnx, cur, engine = connect_mysql_database()
         ticker_selected = default_ticker(ticker_selected)
         df = pd.read_sql_query("SELECT * FROM insider_trading WHERE Ticker='{}' ".format(ticker_selected), cnx)
         if df.empty:
@@ -234,6 +238,7 @@ def latest_insider_summary(request):
     key = get_user_api(request)
     if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
+        cnx, cur, engine = connect_mysql_database()
         df = pd.read_sql_query("SELECT * FROM latest_insider_trading_analysis", cnx)
         df.rename(columns={"MktCap": "Market Cap", "Proportion": "% of Mkt Cap"}, inplace=True)
         df = df.to_dict(orient="records")
@@ -252,6 +257,7 @@ def latest_insider(request):
     key = get_user_api(request)
     if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
+        cnx, cur, engine = connect_mysql_database()
         try:
             n_rows = int(request.GET.get("limit", 500))
             if n_rows <= 0 or n_rows > 5000:
@@ -283,6 +289,7 @@ def top_short_volume(request):
     """
     key = get_user_api(request)
     if check_validity(key):
+        cnx, cur, engine = connect_mysql_database()
         pd.options.display.float_format = '{:.2f}'.format
         df = pd.read_sql_query("SELECT * FROM highest_short_volume", cnx)
         df.fillna('', inplace=True)
@@ -302,6 +309,7 @@ def short_volume(request, ticker_selected="AAPL"):
     key = get_user_api(request)
     if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
+        cnx, cur, engine = connect_mysql_database()
 
         ticker_selected = default_ticker(ticker_selected)
 
@@ -329,6 +337,7 @@ def top_failure_to_deliver(request):
     """
     key = get_user_api(request)
     if check_validity(key):
+        cnx, cur, engine = connect_mysql_database()
         top_ftd = pd.read_sql_query("SELECT * FROM top_ftd", cnx)
         top_ftd = top_ftd.replace(np.nan, "")
         df = top_ftd.to_dict(orient="records")
@@ -346,6 +355,7 @@ def failure_to_deliver(request, ticker_selected="AAPL"):
     """
     key = get_user_api(request)
     if check_validity(key):
+        cnx, cur, engine = connect_mysql_database()
         ticker_selected = default_ticker(ticker_selected)
 
         ftd = pd.read_sql_query("SELECT * FROM ftd WHERE Ticker='{}' ORDER BY Date DESC".format(ticker_selected), cnx)
@@ -370,6 +380,7 @@ def regsho(request, ticker_selected=None):
     key = get_user_api(request)
     if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
+        cnx, cur, engine = connect_mysql_database()
 
         if ticker_selected:
             ticker_selected = default_ticker(ticker_selected)
@@ -403,6 +414,7 @@ def earnings_calendar(request):
     """
     key = get_user_api(request)
     if check_validity(key):
+        cnx, cur, engine = connect_mysql_database()
         df = pd.read_sql_query("SELECT * FROM earnings ORDER BY date ASC", cnx)
         df = get_date(df, request.GET.get("date_to"), request.GET.get("date_from"), "date")
         df = df.to_dict(orient="records")
@@ -420,6 +432,7 @@ def market_news(request):
     """
     key = get_user_api(request)
     if check_validity(key):
+        cnx, cur, engine = connect_mysql_database()
         df = pd.read_sql("SELECT * FROM market_news ORDER BY Date DESC LIMIT 1000", cnx)
         df = df.to_dict(orient="records")
         return JSONResponse(df)
@@ -436,6 +449,7 @@ def trading_halts(request):
     """
     key = get_user_api(request)
     if check_validity(key):
+        cnx, cur, engine = connect_mysql_database()
         df = pd.read_sql("SELECT * FROM trading_halts ORDER BY `Halt Date` DESC, `Halt Time` DESC LIMIT 3000", cnx)
         df = df.to_dict(orient="records")
         return JSONResponse(df)
@@ -452,6 +466,7 @@ def subreddit_count(request, ticker_selected="GME"):
     key = get_user_api(request)
     if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
+        cnx, cur, engine = connect_mysql_database()
         ticker_selected = default_ticker(ticker_selected)
         date_threshold = get_days_params(request, 100, 1000)
         df = pd.read_sql_query("SELECT * FROM subreddit_count WHERE ticker = '{}' AND "
@@ -474,6 +489,7 @@ def reddit_mentions(request, subreddit="wsb", ticker_selected=None):
     """
     key = get_user_api(request)
     if check_validity(key):
+        cnx, cur, engine = connect_mysql_database()
         if subreddit.lower() != "crypto":
             subreddit = "wsb"
             fields = "mentions, calls, puts"
@@ -512,6 +528,7 @@ def wsb_options(request):
     """
     key = get_user_api(request)
     if check_validity(key):
+        cnx, cur, engine = connect_mysql_database()
         date_threshold = get_days_params(request, 1, 14)
 
         df = pd.read_sql_query("SELECT ticker as Ticker, CAST(SUM(calls) AS UNSIGNED) AS Calls, CAST(SUM(puts) "
@@ -581,6 +598,7 @@ def reverse_repo(request):
     key = get_user_api(request)
     if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
+        cnx, cur, engine = connect_mysql_database()
         date_threshold = get_days_params(request, 100, 10000)
         reverse_repo_stats = pd.read_sql_query("SELECT * FROM reverse_repo "
                                                "WHERE record_date >= '{}' ".format(date_threshold), cnx)
@@ -603,6 +621,7 @@ def daily_treasury(request):
     key = get_user_api(request)
     if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
+        cnx, cur, engine = connect_mysql_database()
         date_threshold = get_days_params(request, 100, 10000)
         daily_treasury_stats = pd.read_sql_query("SELECT * FROM daily_treasury WHERE record_date >= '{}' "
                                                  "ORDER BY record_date".format(date_threshold), cnx)
@@ -627,6 +646,7 @@ def inflation(request, area="usa"):
     key = get_user_api(request)
     if check_validity(key):
         pd.options.display.float_format = '{:.1f}'.format
+        cnx, cur, engine = connect_mysql_database()
         if area == "world":
             inflation_stats = pd.read_sql_query("SELECT * FROM world_inflation", cnx)
             inflation_stats.fillna(0, inplace=True)
@@ -650,6 +670,7 @@ def retail_sales(request):
     key = get_user_api(request)
     if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
+        cnx, cur, engine = connect_mysql_database()
         date_threshold = get_days_params(request, 100, 10000)
         retail_stats = pd.read_sql_query("SELECT * FROM retail_sales "
                                          "WHERE record_date >= '{}' ".format(date_threshold), cnx)
@@ -671,6 +692,7 @@ def interest_rate(request):
     key = get_user_api(request)
     if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
+        cnx, cur, engine = connect_mysql_database()
         df = pd.read_sql_query("SELECT * FROM interest_rates", cnx)
         df.rename(columns={"record_date": "Date", "interest": "Rate"}, inplace=True)
         df.fillna(0, inplace=True)
@@ -688,6 +710,7 @@ def initial_jobless_claims(request):
     key = get_user_api(request)
     if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
+        cnx, cur, engine = connect_mysql_database()
         date_threshold = get_days_params(request, 100, 10000)
         jobless_claims = pd.read_sql_query("SELECT * FROM initial_jobless_claims "
                                            "WHERE record_date >= '{}' ".format(date_threshold), cnx)
@@ -709,6 +732,7 @@ def short_interest(request):
     key = get_user_api(request)
     if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
+        cnx, cur, engine = connect_mysql_database()
         df_high_short_interest = pd.read_sql_query("SELECT * FROM short_interest", con=cnx)
         df_high_short_interest.reset_index(inplace=True)
         df_high_short_interest.rename(columns={"index": "Rank"}, inplace=True)
@@ -728,6 +752,7 @@ def low_float(request):
     key = get_user_api(request)
     if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
+        cnx, cur, engine = connect_mysql_database()
         df_low_float = pd.read_sql_query("SELECT * FROM low_float", con=cnx)
         df_low_float.reset_index(inplace=True)
         df_low_float.rename(columns={"index": "Rank"}, inplace=True)
@@ -746,6 +771,7 @@ def ipo_calendar(request):
     """
     key = get_user_api(request)
     if check_validity(key):
+        cnx, cur, engine = connect_mysql_database()
         df = pd.read_sql_query("SELECT * FROM ipo_calendar", con=cnx)
         df = df.to_dict(orient="records")
         return JSONResponse(df)
@@ -761,6 +787,7 @@ def stocktwits(request, ticker_selected=None):
     """
     key = get_user_api(request)
     if check_validity(key):
+        cnx, cur, engine = connect_mysql_database()
         if ticker_selected:
             ticker_selected = default_ticker(ticker_selected)
             df = pd.read_sql_query("SELECT `rank`, watchlist, date_updated FROM stocktwits_trending WHERE "
@@ -783,6 +810,7 @@ def market_summary(request):
     key = get_user_api(request)
     if check_validity(key):
         pd.options.display.float_format = '{:.2f}'.format
+        cnx, cur, engine = connect_mysql_database()
 
         if request.GET.get("type") == "nasdaq100":
             filename = "database/indices/nasdaq100_heatmap.csv"
@@ -815,6 +843,7 @@ def jim_cramer(request, ticker_selected=None):
     """
     key = get_user_api(request)
     if check_validity(key):
+        cnx, cur, engine = connect_mysql_database()
         df = pd.read_sql_query("SELECT DISTINCT * FROM jim_cramer_trades ORDER BY Date DESC", cnx)
         if ticker_selected:
             df = df[df["Ticker"] == ticker_selected.upper()]
@@ -837,6 +866,7 @@ def borrowed_shares(request, ticker_selected=""):
     """
     key = get_user_api(request)
     if check_validity(key):
+        cnx, cur, engine = connect_mysql_database()
         if ticker_selected:
             df = pd.read_sql_query(f"SELECT * FROM shares_available WHERE ticker='{ticker_selected.upper()}' "
                                    f"ORDER BY date_updated DESC", cnx)
@@ -860,6 +890,7 @@ def stock_split(request):
     """
     key = get_user_api(request)
     if check_validity(key):
+        cnx, cur, engine = connect_mysql_database()
         df = pd.read_sql_query(f"SELECT * FROM stock_splits ORDER BY `Date` DESC", cnx)
         df = df.replace(np.nan, "")
         df = df.to_dict(orient="records")
@@ -867,61 +898,13 @@ def stock_split(request):
     return ERROR_MSG
 
 
-# """
-#     Get dividend history.
-#     """
 @csrf_exempt
 @api_view(['GET'])
 @schema(AutoDocstringSchema())
 def dividend_history(request):
-    """
-   Get dividend history.
-   ---
-   type:
-     name:
-       required: true
-       type: string
-     url:
-       required: false
-       type: url
-     created_at:
-       required: true
-       type: string
-       format: date-time
-
-   serializer: .serializers.FooSerializer
-   omit_serializer: false
-   many: true
-
-   parameters_strategy: merge
-   omit_parameters:
-       - path
-   parameters:
-       - name: name
-         description: Foobar long description goes here
-         required: true
-         type: string
-         paramType: form
-       - name: other_foo
-         paramType: query
-       - name: other_bar
-         paramType: query
-       - name: avatar
-         type: file
-
-   responseMessages:
-       - code: 401
-         message: Not authenticated
-
-   consumes:
-       - application/json
-       - application/xml
-   produces:
-       - application/json
-       - application/xml
-   """
     key = get_user_api(request)
     if check_validity(key):
+        cnx, cur, engine = connect_mysql_database()
         df = pd.read_sql_query(f"SELECT * FROM dividends ORDER BY `Declaration Date` DESC", cnx)
         df = df.replace(np.nan, "")
         df = df.to_dict(orient="records")

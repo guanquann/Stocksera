@@ -1,5 +1,6 @@
 import os
 import sys
+import pandas as pd
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 from scheduled_tasks.reddit.reddit_utils import *
@@ -162,11 +163,24 @@ def wsb_live():
     df["date_updated"] = current_datetime_str
     df.to_sql("wsb_word_cloud", engine, if_exists="append", index=False)
 
-    quick_stats = {'regularMarketPreviousClose': 'prvCls',
-                   'regularMarketVolume': 'volume',
-                   'regularMarketPrice': 'price',
-                   'marketCap': 'mkt_cap'}
-    quick_stats_df = download_quick_stats(list(tickers_dict.keys()), quick_stats, threads=True)
+    # quick_stats = {'regularMarketPreviousClose': 'prvCls',
+    #                'regularMarketVolume': 'volume',
+    #                'regularMarketPrice': 'price',
+    #                'marketCap': 'mkt_cap'}
+    # quick_stats_df = download_quick_stats(list(tickers_dict.keys()), quick_stats, threads=True)
+
+    quick_stats = {'price': {"marketCap": "mkt_cap",
+                             "regularMarketPreviousClose": "prvCls",
+                             "regularMarketVolume": "volume",
+                             "regularMarketPrice": "price"}}
+    quick_stats_df = pd.DataFrame()
+    current_index = 0
+    while current_index < len(list(tickers_dict.keys())):
+        quick_stats_df = pd.concat([download_advanced_stats(list(tickers_dict.keys())
+                                                            [current_index:current_index + 100],
+                                                            quick_stats, threads=True), quick_stats_df])
+        current_index += 100
+    # quick_stats_df = download_advanced_stats(list(tickers_dict.keys()), quick_stats, threads=True)
 
     # Ticker must be active in order to be valid
     quick_stats_df["volume"] = pd.to_numeric(quick_stats_df["volume"], errors='coerce')

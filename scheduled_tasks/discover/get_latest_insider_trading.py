@@ -5,7 +5,7 @@ from datetime import date, datetime, timedelta
 from finvizfinance.insider import Insider
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
-from scheduled_tasks.reddit.stocks.fast_yahoo import download_quick_stats
+from scheduled_tasks.reddit.stocks.fast_yahoo import download_quick_stats, download_advanced_stats
 from helpers import connect_mysql_database
 
 cnx, cur, engine = connect_mysql_database()
@@ -74,9 +74,19 @@ def latest_insider_trading_analysis():
     insider_df.reset_index(inplace=True)
     insider_df.rename(columns={"Value": "Amount"}, inplace=True)
 
-    quick_stats = {'marketCap': 'MktCap'}
-    quick_stats_df = download_quick_stats(insider_df["Ticker"].to_list(), quick_stats, threads=True).reset_index()
+    # quick_stats = {'marketCap': 'MktCap'}
+    # quick_stats_df = download_quick_stats(insider_df["Ticker"].to_list(), quick_stats, threads=True).reset_index()
+
+    quick_stats_df = pd.DataFrame()
+    current_index = 0
+    while current_index < len(insider_df["Ticker"].to_list()):
+        df = download_advanced_stats(insider_df["Ticker"].tolist()[current_index:current_index + 100],
+                                     {'price': {"marketCap": "MktCap"}}, threads=True)
+        quick_stats_df = pd.concat([quick_stats_df, df])
+        current_index += 100
+
     quick_stats_df = quick_stats_df[quick_stats_df["MktCap"] != "N/A"]
+    quick_stats_df.reset_index(inplace=True)
     quick_stats_df.rename(columns={"Symbol": "Ticker"}, inplace=True)
 
     insider_df = insider_df.merge(quick_stats_df, on="Ticker")
@@ -86,7 +96,7 @@ def latest_insider_trading_analysis():
 
 
 def main():
-    latest_insider_trading()
+    # latest_insider_trading()
     latest_insider_trading_analysis()
 
 

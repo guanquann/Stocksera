@@ -85,10 +85,11 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date
                                         "TotalVolume": "Total Volume",
                                         "%Shorted": "% Shorted"}, inplace=True)
 
-        quick_stats = {'regularMarketPreviousClose': 'Previous Close',
-                       'regularMarketChangePercent': '1 Day Change %',
-                       'marketCap': 'Market Cap'}
-        stats_df = fast_yahoo.download_quick_stats(highest_shorted["Symbol"].to_list(), quick_stats)
+        quick_stats = {'price': {"marketCap": "Market Cap",
+                                 "regularMarketChangePercent": "1 Day Change %",
+                                 "regularMarketPreviousClose": "Previous Close",
+                                 "regularMarketVolume": "volume"}}
+        stats_df = fast_yahoo.download_advanced_stats(highest_shorted["Symbol"].to_list(), quick_stats, threads=True)
 
         highest_shorted = pd.merge(highest_shorted, stats_df, on="Symbol")
         highest_shorted.replace(np.nan, "N/A", inplace=True)
@@ -97,7 +98,7 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date
 
 
 def main():
-    get_30d_data_finra()
+    # get_30d_data_finra()
     get_daily_data_finra()
 
 

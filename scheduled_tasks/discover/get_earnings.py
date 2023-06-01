@@ -25,7 +25,17 @@ def main():
         current_index += 7
         main_df = main_df.append(df)
 
-    mkt_cap_df = fast_yahoo.download_quick_stats(main_df["symbol"].tolist(), {'marketCap': 'mkt_cap'})
+    # mkt_cap_df = fast_yahoo.download_quick_stats(main_df["symbol"].tolist(), {'marketCap': 'mkt_cap'})
+
+    mkt_cap_df = pd.DataFrame()
+    current_index = 0
+    while current_index < len(main_df["symbol"].tolist()):
+        quick_stats_df = fast_yahoo.download_advanced_stats(main_df["symbol"].tolist()
+                                                            [current_index:current_index + 100],
+                                                            {'price': {"marketCap": "mkt_cap"}}, threads=True)
+        mkt_cap_df = pd.concat([mkt_cap_df, quick_stats_df])
+        current_index += 100
+
     mkt_cap_df.reset_index(inplace=True)
     mkt_cap_df.replace("N/A", 0, inplace=True)
     mkt_cap_df.rename(columns={"Symbol": "symbol"}, inplace=True)

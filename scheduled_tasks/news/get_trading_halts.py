@@ -8,6 +8,7 @@ cnx, cur, engine = connect_mysql_database()
 
 
 def main(method=""):
+    print("Getting Trading Halt...")
     if method != "historical":
         url = "https://www.nyse.com/api/trade-halts/current/download"
     else:
@@ -17,13 +18,14 @@ def main(method=""):
     df["Halt Date"] = df["Halt Date"].astype(str)
     df["Halt Date"] = df["Halt Date"].apply(lambda x: str(x[6:] + "-" + x[:2] + "-" + x[3:5] if x != "N/A" else "N/A"))
     df["Resume Date"] = df["Resume Date"].astype(str)
-    df["Resume Date"] = df["Resume Date"].apply(lambda x: str(x[6:] + "-" + x[:2] + "-" + x[3:5] if x != "N/A" else "N/A"))
+    df["Resume Date"] = df["Resume Date"].apply(lambda x: str(x[6:] + "-" + x[:2] + "-" + x[3:5] if x != "N/A"
+                                                              else "N/A"))
     del df["Name"]
-    print(df)
     cur.executemany("INSERT IGNORE INTO trading_halts VALUES (%s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE "
                     "`Resume Date`=VALUES(`Resume Date`), `Resume Time`=VALUES(`Resume Time`)",
                     df.values.tolist())
     cnx.commit()
+    print("Trading Halt Successfully Completed...\n")
 
 
 if __name__ == '__main__':

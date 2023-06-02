@@ -146,7 +146,6 @@ def get_financial_data(stats_table, crypto_id, symbol):
         try:
             market_data = client.get_coin_by_id(crypto_id)['market_data']
         except:
-            print("errors")
             time.sleep(15)
         else:
             break
@@ -208,6 +207,7 @@ def get_graph_chart(crypto_id, symbol):
 
 
 def main():
+    print("Getting Reddit Crypto Trending Post...")
     current_scores, total_rocket_score, total_posts_score, total_upvotes_score, total_comments_score = \
         get_submission_generators(24, "cryptocurrency")
     results_df = populate_df(current_scores)
@@ -230,11 +230,9 @@ def main():
         else:
             break
 
-    print(len(ticker_list), "number of tickers")
     for index, symbol in enumerate(ticker_list):
         for i in coingecko_coin_list:
             if symbol.lower() == i["symbol"].lower():
-                print(index, ": ", symbol)
                 try:
                     crypto_id = i['id']
                     stats_table = get_financial_data(stats_table, crypto_id, symbol)
@@ -298,6 +296,7 @@ def main():
         "(NULL, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
         results_df.values.tolist())
     cnx.commit()
+    print("Reddit Crypto Trending Post Successfully Completed...\n")
 
 
 if __name__ == '__main__':

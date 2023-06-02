@@ -13,6 +13,7 @@ with open("config.yaml") as config_file:
 
 
 def main():
+    print("Getting Dividends...")
     url = f"https://api.polygon.io/v3/reference/dividends?limit=1000&apiKey={config_keys['POLYGON_KEY']}"
     df = pd.DataFrame(requests.get(url).json()["results"])
     df = df[["ticker", "cash_amount", "declaration_date", "ex_dividend_date", "pay_date", "record_date",
@@ -20,6 +21,7 @@ def main():
     df.fillna(0, inplace=True)
     cur.executemany("INSERT IGNORE INTO dividends VALUES (%s ,%s ,%s ,%s, %s ,%s ,%s ,%s)", df.values.tolist())
     cnx.commit()
+    print("Dividends Successfully Completed...\n")
 
 
 if __name__ == '__main__':

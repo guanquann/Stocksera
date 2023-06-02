@@ -105,10 +105,8 @@ def login(request):
     from django.contrib.auth import authenticate
     user = authenticate(username=username, password=password)
     if user is not None:
-        # A backend authenticated the credentials
         return JSONResponse({str(user): "No error"})
     else:
-        # No backend authenticated the credentials
         return JSONResponse({"Anonymous": "Error logging in"})
 
 
@@ -161,15 +159,8 @@ def sec_fillings(request, ticker_selected="AAPL"):
     """
     key = get_user_api(request)
     if check_validity(key):
-        cnx, cur, engine = connect_mysql_database()
         ticker_selected = default_ticker(ticker_selected)
-        df = pd.read_sql_query("SELECT * FROM sec_fillings WHERE ticker='{}' ".format(ticker_selected), cnx)
-        if df.empty:
-            df = get_sec_fillings(ticker_selected)
-        else:
-            del df["ticker"]
-            df.rename(columns={"filling": "Filling", "description": "Description", "filling_date": "Filling Date"},
-                      inplace=True)
+        df = get_sec_fillings(ticker_selected)
         df = get_date(df, request.GET.get("date_to"), request.GET.get("date_from"), "Filling Date")
         df = df.to_dict(orient="records")
         return JSONResponse(df)
@@ -186,13 +177,8 @@ def news_sentiment(request, ticker_selected="AAPL"):
     """
     key = get_user_api(request)
     if check_validity(key):
-        cnx, cur, engine = connect_mysql_database()
         ticker_selected = default_ticker(ticker_selected)
-        df = pd.read_sql_query("SELECT * FROM daily_ticker_news WHERE ticker='{}' ".format(ticker_selected), cnx)
-        if df.empty:
-            df = get_ticker_news(ticker_selected)
-        else:
-            del df["Ticker"]
+        df = get_ticker_news(ticker_selected)
         df = df.to_dict(orient="records")
         return JSONResponse(df)
     else:
@@ -211,10 +197,8 @@ def insider_trading(request, ticker_selected="AAPL"):
         pd.options.display.float_format = '{:.2f}'.format
         cnx, cur, engine = connect_mysql_database()
         ticker_selected = default_ticker(ticker_selected)
+        get_insider_trading(ticker_selected)
         df = pd.read_sql_query("SELECT * FROM insider_trading WHERE Ticker='{}' ".format(ticker_selected), cnx)
-        if df.empty:
-            get_insider_trading(ticker_selected)
-            df = pd.read_sql_query("SELECT * FROM insider_trading WHERE Ticker='{}' ".format(ticker_selected), cnx)
         df.rename(columns={"TransactionDate": "Date",
                            "TransactionType": "Transaction",
                            "Value": "Value ($)",
@@ -285,7 +269,7 @@ def latest_insider(request):
 @schema(AutoDocstringSchema())
 def top_short_volume(request):
     """
-    Get tickers with highest short volume for the day.
+    Get tickers with the highest short volume for the day.
     """
     key = get_user_api(request)
     if check_validity(key):

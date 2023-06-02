@@ -22,10 +22,8 @@ def latest_insider_trading():
     Get recent insider trading data from Finviz
     """
     for type_trading in ["buys", "sales"]:
-        print("latest {}".format(type_trading))
         finsider = Insider(option="latest {}".format(type_trading))
         insider_trader = finsider.get_insider()
-        print(insider_trader.columns)
         insider_trader["Owner"] = insider_trader["Owner"].str.title()
         insider_trader = insider_trader[insider_trader["Value ($)"] >= 50000]
 
@@ -45,7 +43,6 @@ def latest_insider_trading():
         insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"].apply(lambda x: check_date(x, last_date))
         insider_trader["Date"] = insider_trader["Date"].astype(str)
         insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"].astype(str)
-        print(insider_trader)
 
         for index, row in insider_trader.iterrows():
             cur.execute("INSERT IGNORE INTO latest_insider_trading VALUES "
@@ -90,8 +87,10 @@ def latest_insider_trading_analysis():
 
 
 def main():
+    print("Getting Latest Insider Trading...")
     latest_insider_trading()
     latest_insider_trading_analysis()
+    print("Latest Insider Trading Successfully Completed...\n")
 
 
 if __name__ == '__main__':

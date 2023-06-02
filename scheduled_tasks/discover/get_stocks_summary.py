@@ -12,6 +12,7 @@ def main():
     """
     Get performance of stocks in DIA, S&P500 and Nasdaq
     """
+    print("Getting Stocks Summary...")
     if not os.path.exists(INDICES_PATH):
         os.mkdir(INDICES_PATH)
         snp500_df = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")[0]
@@ -50,7 +51,7 @@ def main():
     original_df["Current Price"] = pd.to_numeric(original_df["Current Price"], errors='coerce')
     original_df["Prev Close"] = pd.to_numeric(original_df["Prev Close"], errors='coerce')
     original_df["% Change"] = (original_df["Current Price"] - original_df["Prev Close"]) * 100 / \
-                              original_df["Prev Close"]
+                               original_df["Prev Close"]
     original_df = original_df.reindex(symbol_list)
     original_df.reset_index(inplace=True)
 
@@ -59,15 +60,14 @@ def main():
 
     snp_out = pd.merge(snp, original_df, on="Symbol", how="left")
     snp_out.to_csv(f"database/indices/snp500_heatmap.csv", index=False)
-    print(snp_out)
 
     nasdaq_out = pd.merge(nasdaq, original_df, on="Symbol", how="left")
     nasdaq_out.to_csv(f"database/indices/nasdaq100_heatmap.csv", index=False)
-    print(nasdaq_out)
 
     dia_out = pd.merge(dia, original_df, on="Symbol", how="left")
     dia_out.to_csv(f"database/indices/dia_heatmap.csv", index=False)
-    print(dia_out)
+
+    print("Stocks Summary Successfully Completed...\n")
 
 
 if __name__ == '__main__':

@@ -18,6 +18,7 @@ def connect_to_endpoint_delete(url):
 
 
 def main():
+    print("Getting Twitter Stock Trending...")
     all_symbols = list(get_mapping_coins().keys())
     all_symbols.extend(full_ticker_list())
 
@@ -26,7 +27,6 @@ def main():
             if len(symbol) > 1:
                 url = f"https://api.twitter.com/2/tweets/counts/recent?query={symbol}&granularity=day"
                 json_response = connect_to_endpoint(url)
-                print(symbol)
                 for i in json_response["data"]:
                     start_date = i["start"]
                     end_date = i["end"]
@@ -38,6 +38,7 @@ def main():
             time.sleep(1)
         except:
             continue
+    print("Twitter Stock Trending Successfully Completed...\n")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,244 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}Stocksera | Tasks {% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/setup.css' %}">
+{% endblock %}
+
+{% block onload_properties%}{% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/tasks">Tasks</a>
+{% endblock %}
+
+{% block main_content %}
+<script>highlight_selected_nav('tasks')</script>
+<div>
+    <div class="more_info_div_parent">
+        <div class="more_info_div"><a href="/setup">Setup</a></div>
+        <div class="more_info_div current_link"><a href="/tasks">Tasks</a></div>
+    </div>
+
+    <div class="instructions">
+        <h2>Tasks</h2>
+        <p>
+            All-in-one-dashboard for you to easily run your tasks.
+        </p>
+    </div>
+
+    <div class="contents_div">
+        <div class="scrollable_div" style="max-height: 800px">
+            {{ df|safe }}
+        </div>
+        <form action="/tasks/" method="POST"> {% csrf_token %}
+            <table>
+                <tr>
+                    <th>Task</th>
+                    <th>Last Updated</th>
+                    <th>Run</th>
+                </tr>
+                <tr>
+                    <td>Create Database</td>
+                    <td>{{ data.create_db }}</td>
+                    <td>
+                        <button name="create_db" value="create_db" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Wallstreetbets Trending</td>
+                    <td>{{ data.wsb_trending }}</td>
+                    <td>
+                        <button name="wsb_trending" value="wsb_trending" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Crypto Trending</td>
+                    <td>{{ data.crypto_trending }}</td>
+                    <td>
+                        <button name="crypto_trending" value="crypto_trending" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Reddit Trending</td>
+                    <td>{{ data.reddit_trending }}</td>
+                    <td>
+                        <button name="reddit_trending" value="reddit_trending" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Subreddit Subscriber Count</td>
+                    <td>{{ data.subreddit_trending }}</td>
+                    <td>
+                        <button name="subreddit_trending" value="subreddit_trending" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Twitter Followers</td>
+                    <td>{{ data.twitter_followers }}</td>
+                    <td>
+                        <button name="twitter_followers" value="twitter_followers" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Twitter Stock Trending</td>
+                    <td>{{ data.twitter_stock_trending }}</td>
+                    <td>
+                        <button name="twitter_stock_trending" value="twitter_stock_trending" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Stocktwits Trending</td>
+                    <td>{{ data.stocktwits_trending }}</td>
+                    <td>
+                        <button name="stocktwits_trending" value="stocktwits_trending" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Short Volume</td>
+                    <td>{{ data.short_vol }}</td>
+                    <td>
+                        <button name="short_vol" value="short_vol" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Dividends</td>
+                    <td>{{ data.dividends }}</td>
+                    <td>
+                        <button name="dividends" value="dividends" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Stock Split</td>
+                    <td>{{ data.stock_split }}</td>
+                    <td>
+                        <button name="stock_split" value="stock_split" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Earnings Calendar</td>
+                    <td>{{ data.earning_calendar }}</td>
+                    <td>
+                        <button name="earning_calendar" value="earning_calendar" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Latest News</td>
+                    <td>{{ data.latest_news }}</td>
+                    <td>
+                        <button name="latest_news" value="latest_news" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Trading Halt</td>
+                    <td>{{ data.trading_halt }}</td>
+                    <td>
+                        <button name="trading_halt" value="trading_halt" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Failure to Deliver</td>
+                    <td>{{ data.ftd }}</td>
+                    <td>
+                        <button name="ftd" value="ftd" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Borrowed Shares</td>
+                    <td>{{ data.ctb }}</td>
+                    <td>
+                        <button name="ctb" value="ctb" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Threshold Securities</td>
+                    <td>{{ data.threshold_sec }}</td>
+                    <td>
+                        <button name="threshold_sec" value="threshold_sec" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Latest Insider Trading</td>
+                    <td>{{ data.insider_trading }}</td>
+                    <td>
+                        <button name="insider_trading" value="insider_trading" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Market Heatmap</td>
+                    <td>{{ data.heatmap }}</td>
+                    <td>
+                        <button name="heatmap" value="heatmap" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Senate & House Trading</td>
+                    <td>{{ data.govt_trading }}</td>
+                    <td>
+                        <button name="govt_trading" value="govt_trading" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>IPO Calendar</td>
+                    <td>{{ data.ipo }}</td>
+                    <td>
+                        <button name="ipo" value="ipo" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Reverse Repo</td>
+                    <td>{{ data.rrp }}</td>
+                    <td>
+                        <button name="rrp" value="rrp" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Inflation</td>
+                    <td>{{ data.inflation }}</td>
+                    <td>
+                        <button name="inflation" value="inflation" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Daily Treasury</td>
+                    <td>{{ data.treasury }}</td>
+                    <td>
+                        <button name="treasury" value="treasury" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Retail Sales</td>
+                    <td>{{ data.retail }}</td>
+                    <td>
+                        <button name="retail" value="retail" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Interest Rate</td>
+                    <td>{{ data.interest_rate }}</td>
+                    <td>
+                        <button name="interest_rate" value="interest_rate" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Initial Jobless Claims</td>
+                    <td>{{ data.initial_jobless_claims }}</td>
+                    <td>
+                        <button name="initial_jobless_claims" value="initial_jobless_claims" class="submit_button">Run</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Upcoming Economic Release Date</td>
+                    <td>{{ data.upcoming_economic_dates }}</td>
+                    <td>
+                        <button name="upcoming_economic_dates" value="upcoming_economic_dates" class="submit_button">Run</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -38,7 +38,6 @@ def usa_inflation():
     df.at[df[df["Year"] == df.iloc[0]["Year"]].index[0], 'Ave'] = most_recent_yr_avg
 
     df.to_sql("usa_inflation", engine, if_exists="replace", index=False)
-    print(df)
 
 
 def world_inflation():
@@ -53,9 +52,14 @@ def world_inflation():
     df.sort_values(by="Last", ascending=False, inplace=True)
     df["Continent"] = df["Country"].apply(lambda x: country_to_continent(x))
     df.to_sql("world_inflation", engine, if_exists="replace", index=False)
-    print(df)
+
+
+def main():
+    print("Getting Inflation...")
+    usa_inflation()
+    world_inflation()
+    print("Inflation Successfully Completed...\n")
 
 
 if __name__ == '__main__':
-    usa_inflation()
-    world_inflation()
+    main()

@@ -20,7 +20,6 @@ def main():
     for row in top_10:
         row = list(row)
         row[2] = count
-        print(row)
         cur.execute("INSERT IGNORE INTO stocksera_trending VALUES (%s, %s, %s)", tuple(row))
         cnx.commit()
         count -= 1

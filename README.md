@@ -247,6 +247,10 @@ pip install -r requirements.txt
 # Setting up database and configs in http://localhost:8000/tasks
 # Ensure that MYSQL_HOST is set to your local MYSQL hostname
 py setup/local.py
+
+# Run application
+# DO ENSURE THAT YOU HAVE ALL THE API KEYS NECESSARY IN http://localhost:8000/setup/ TO PREVENT UNWANTED ERRORS.
+py manage.py runserver
 ```
 
 #### Setting up WITH Docker
@@ -260,19 +264,8 @@ py setup/docker.py
 # Run the following if you are setting up for the first time using Docker. 
 # You might need to rerun setup/docker.py
 py setup/docker_db.py
-```
 
-#### tasks_to_run.py
-
-- Compilation of tasks that are needed to be completed.
-- tasks_to_run.py is customisable according to your needs. Do change the boolean value of the variable if you wish.
-- DO ENSURE THAT YOU HAVE ALL THE API KEYS NECESSARY IN http://localhost:8000/tasks/ FIRST BEFORE PROCEEDING.
-```
-docker compose run --rm web python tasks_to_run.py
-```
-
-```
-py tasks_to_run.py
+# DO ENSURE THAT YOU HAVE ALL THE API KEYS NECESSARY IN http://localhost:8000/setup/ TO PREVENT UNWANTED ERRORS.
 ```
 
 #### Run scheduled tasks

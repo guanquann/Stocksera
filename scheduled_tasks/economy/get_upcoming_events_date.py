@@ -75,11 +75,11 @@ def get_holidays():
     """
     holidays_df = pd.read_html(r"https://www.sec.gov/edgar/filer-information/calendar")[0]
     holidays_df["Date"] = pd.to_datetime(holidays_df["Date"], errors='coerce')
-    print(holidays_df)
     return holidays_df
 
 
 def main():
+    print("Getting Upcoming Economic Release Date...")
     get_next_initial_jobless_date()
     cur.execute("SELECT record_date from reverse_repo ORDER BY record_date DESC LIMIT 1")
     record_date = cur.fetchone()
@@ -97,6 +97,7 @@ def main():
             "Reverse Repo": {"Release Date": rrp_treasury_date},
         }
         json.dump(information, r, indent=4)
+    print("Upcoming Economic Release Date Successfully Completed...\n")
 
 
 if __name__ == '__main__':

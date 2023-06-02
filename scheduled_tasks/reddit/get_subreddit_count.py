@@ -7,7 +7,6 @@ from scheduled_tasks.reddit.reddit_utils import *
 from helpers import connect_mysql_database
 
 cnx, cur, engine = connect_mysql_database()
-cur = cnx.cursor(buffered=True)
 
 # key of the dict is the symbol of the stock (if applicable), value is the subreddit
 interested_stocks_subreddits = {
@@ -113,12 +112,10 @@ def subreddit_count():
     """
     Get number of redditors, percentage of active redditors and growth in new redditors
     """
-    print("Getting Subreddit Stats now ...")
     for key, subreddit_names in {**interested_stocks_subreddits, **interested_crypto_subreddits}.items():
         for subreddit_name in subreddit_names:
             subreddit = reddit.subreddit(subreddit_name)
             subscribers = subreddit.subscribers
-            print("Looking at r/{} now with {} subscribers.".format(subreddit, subscribers))
             active = subreddit.accounts_active
             percentage_active = round((active / subscribers)*100, 2)
 
@@ -157,7 +154,6 @@ def update_last_price():
     """
     cur.execute("SELECT updated_date FROM subreddit_count WHERE ticker='AMC' ORDER BY updated_date DESC")
     last_date = cur.fetchone()[0]
-    print(last_date)
     for key, subreddit_names in interested_stocks_subreddits.items():
         for subreddit_name in subreddit_names:
             if key != "SUMMARY":
@@ -172,15 +168,16 @@ def update_last_price():
                     change_price = change_price[0]
                 else:
                     change_price = 0
-                print(change_price, key)
                 cur.execute("UPDATE subreddit_count SET percentage_price_change=%s WHERE ticker=%s AND updated_date=%s",
                             (change_price, key, last_date))
                 cnx.commit()
 
 
 def main():
+    print("Getting Subreddit Subscriber Count...")
     subreddit_count()
     update_last_price()
+    print("Subreddit Subscriber Count Successfully Completed...\n")
 
 
 if __name__ == '__main__':

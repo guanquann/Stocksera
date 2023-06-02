@@ -57,13 +57,11 @@ urlpatterns = [
 
     # Discover
     path('ark_trades/', views.ark_trades, name='ark_trades'),
-    path('amd_xlnx_ratio/', views.amd_xlnx_ratio, name='amd_xlnx_ratio'),
     path('ipo_calendar/', views.ipo_calendar, name='ipo_calendar'),
     path('stocktwits/', views.stocktwits, name='stocktwits'),
     path('jim_cramer/', views.jim_cramer, name='jim_cramer'),
     path('twitter_trending/', views.twitter_trending, name='twitter_trending'),
     path('beta/', views.beta, name='beta'),
-    path('covid_beta/', views.covid_beta, name='covid_beta'),
     path('short_interest/', views.short_interest, name='short_interest'),
     path('low_float/', views.low_float, name='low_float'),
     path('earnings_calendar/', views.earnings_calendar, name='earnings_calendar'),
@@ -90,4 +88,5 @@ urlpatterns = [
 
     # Run tasks
     path('tasks/', views.tasks, name='tasks'),
+    path('setup/', views.setup, name='setup'),
 ]

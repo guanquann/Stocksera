@@ -20,6 +20,7 @@ def main():
     """
     Get recent and past IPOs
     """
+    print("Getting IPO...")
     today_date = datetime.utcnow().date()
     data = finnhub_client.ipo_calendar(_from=str(today_date - timedelta(days=100)),
                                        to=str(today_date + timedelta(days=50)))
@@ -30,8 +31,8 @@ def main():
     df.fillna("-", inplace=True)
     df.replace("", "-", inplace=True)
     df["Status"] = df["Status"].str.capitalize()
-    print(df)
     df.to_sql("ipo_calendar", engine, if_exists="replace", index=False)
+    print("IPO Successfully Completed...\n")
 
 
 if __name__ == '__main__':

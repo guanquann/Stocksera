@@ -363,8 +363,6 @@ def print_df(df, filename, writesql, writecsv, subreddit):
 
     # Save to sql database
     if writesql:
-        print(df)
-        print(df.columns)
         cur.executemany(
             "INSERT INTO {} VALUES (NULL, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, "
             "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(subreddit),

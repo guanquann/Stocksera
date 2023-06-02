@@ -13,8 +13,8 @@ def main(start_date=datetime.utcnow() - timedelta(days=5), end_date=datetime.utc
     """
     Get stocks in threshold securities list
     """
+    print("Getting Threshold Security...")
     while start_date != end_date:
-        print(start_date)
         current_date = start_date
 
         formatted_date = current_date.strftime("%d-%b-%Y")
@@ -35,11 +35,11 @@ def main(start_date=datetime.utcnow() - timedelta(days=5), end_date=datetime.utc
 
         df["date_updated"] = str(current_date).split()[0]
         df = df.rename(columns={"Symbol": "ticker"})
-        print(df)
 
         cur.executemany("INSERT IGNORE INTO threshold_securities VALUES (%s, %s)", df.values.tolist())
         cnx.commit()
         start_date += timedelta(days=1)
+    print("Threshold Security Successfully Completed...\n")
 
 
 if __name__ == '__main__':

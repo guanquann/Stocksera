@@ -1,7 +1,6 @@
 import os
 import sys
 import requests
-import pandas as pd
 
 from datetime import datetime, timedelta
 
@@ -19,6 +18,7 @@ def download_json(date_to_start: str = str(datetime.utcnow().date() - timedelta(
     date_to_start : str
         format: YYYY-MM-DD
     """
+    print("Getting Daily Treasury...")
     url = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/dts/dts_table_1" \
           "?fields=record_date,account_type,close_today_bal,open_today_bal,open_month_bal&" \
           "filter=record_date:gte:{}".format(date_to_start)
@@ -34,6 +34,7 @@ def download_json(date_to_start: str = str(datetime.utcnow().date() - timedelta(
             cur.execute("INSERT IGNORE INTO daily_treasury VALUES (%s, %s, %s, %s, %s)",
                         (record_date, close_today, open_today, amount_change, percent_change))
             cnx.commit()
+    print("Daily Treasury Successfully Completed...\n")
 
 
 if __name__ == '__main__':

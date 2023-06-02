@@ -11,6 +11,7 @@ def senate_trades():
     """
     Get senate trades of US Government
     """
+    print("Getting Senate Trades...")
     df = pd.read_json("https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.json")
 
     for i in ["transaction_date", "disclosure_date"]:
@@ -28,8 +29,8 @@ def senate_trades():
     del df["Comment"]
     df.replace("--", "Unknown", inplace=True)
     df.replace("N/A", "Unknown", inplace=True)
-    print(df)
     df.to_csv(os.path.join(OUT_PATH, "senate.csv"), index=False)
+    print("Senate Trades Successfully Completed...\n")
 
 
 if __name__ == '__main__':

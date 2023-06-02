@@ -14,7 +14,7 @@ def interest_rate():
     """
     Get retail sales and compare it with avg monthly covid cases
     """
-
+    print("Getting Interest Rate...")
     current_date_time = str(datetime.utcnow().date())
     url = "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20" \
           "sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&" \
@@ -25,6 +25,7 @@ def interest_rate():
           f"revision_date={current_date_time}&nd=1954-07-01"
     df = pd.read_csv(url)
     cur.executemany("INSERT IGNORE INTO interest_rates VALUES (%s, %s)", df.values.tolist())
+    print("Interest Rate Successfully Completed...\n")
 
 
 if __name__ == '__main__':

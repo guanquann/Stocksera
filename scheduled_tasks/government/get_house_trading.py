@@ -10,6 +10,7 @@ def house_trades():
     """
     Get house trades of US Government
     """
+    print("Getting House Trades...")
     df = pd.read_json("https://house-stock-watcher-data.s3-us-west-2.amazonaws.com/data/all_transactions.json")
     for i in ["transaction_date", "disclosure_date"]:
         df[i] = pd.to_datetime(df[i], errors='coerce')
@@ -38,8 +39,8 @@ def house_trades():
              "Representative", "Link", "Disclosure Date", "District", "Cap Gains Over 200USD"]]
 
     df["Representative"] = df["Representative"].str.replace("^Hon. |^Mr. |^Mrs. |^None ", "")
-    print(df)
     df.to_csv(os.path.join(OUT_PATH, "house.csv"), index=False)
+    print("House Trades Successfully Completed...\n")
 
 
 if __name__ == '__main__':

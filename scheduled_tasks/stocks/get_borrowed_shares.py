@@ -15,6 +15,8 @@ def main():
     """
     Get shares available to borrow and fee to borrow from Interactive Brokers
     """
+    print("Getting CTB...")
+
     full_ticker_df = pd.read_sql("SELECT DISTINCT(ticker) FROM shares_available", cnx)
 
     ftp = ftplib.FTP('ftp3.interactivebrokers.com', 'shortstock')
@@ -26,7 +28,6 @@ def main():
     df = pd.read_csv(flo, sep="|", skiprows=1)
     df = df[["#SYM", "FEERATE", "AVAILABLE"]]
     df.columns = ["ticker", "fee", "available"]
-    # df = df[~df["fee"].isna()]
     df["available"] = df["available"].replace(">10000000", 10000000)
     df = df.append(full_ticker_df)
     df = df.drop_duplicates(subset="ticker", keep="first")
@@ -37,6 +38,7 @@ def main():
     cnx.commit()
 
     ftp.quit()
+    print("CTB Successfully Completed...\n")
 
 
 if __name__ == '__main__':

@@ -5,8 +5,7 @@
 {% block title %}Stocksera | Setup {% endblock %}
 
 {% block additional_script %}
-<link rel="stylesheet" href="{% static 'style/run_tasks.css' %}">
-<script src="{% static 'javascript/stock/borrowed_shares.js' %}"></script>
+<link rel="stylesheet" href="{% static 'style/setup.css' %}">
 <script>
     function isLocallyHosted() {
         if (document.getElementById("locally_hosted").value == "True") {
@@ -30,6 +29,11 @@
 {% block main_content %}
 <script>highlight_selected_nav('tasks')</script>
 <div>
+    <div class="more_info_div_parent">
+        <div class="more_info_div current_link"><a href="/setup">Setup</a></div>
+        <div class="more_info_div"><a href="/tasks">Tasks</a></div>
+    </div>
+
     <div class="instructions">
         <h2>Setup</h2>
         <p>
@@ -41,7 +45,7 @@
         <div class="scrollable_div" style="max-height: 800px">
             {{ df|safe }}
         </div>
-        <form action="/tasks/" method="POST"> {% csrf_token %}
+        <form action="/setup/" method="POST"> {% csrf_token %}
             <table>
                 <tr>
                     <th>Settings</th>

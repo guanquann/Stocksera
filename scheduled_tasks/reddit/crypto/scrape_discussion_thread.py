@@ -47,7 +47,6 @@ def upload_to_database(tickers_dict, sentiment_dict, current_datetime_str):
     trending_df["sentiment"] = trending_df["sentiment"].round(2)
     trending_df["date_updated"] = current_datetime_str
     trending_df.sort_values(by=["mentions"], ascending=False, inplace=True)
-    print(trending_df)
     trending_df.to_sql("crypto_trending_24H", engine, if_exists="append", index=False)
 
 
@@ -73,7 +72,6 @@ def crypto_live():
         # Ensure that post is stickied and the post is not an image
         if post.stickied and ".jpg" not in post.url and ".png" not in post.url and "https" in post.url and \
                 "comments" in post.url:
-            print(post.url)
             submission = reddit.submission(url=post.url)
 
             submission.comment_sort = "new"
@@ -134,7 +132,6 @@ def update_hourly():
     """
     threshold_datetime = str(current_datetime - timedelta(hours=1))
     threshold_hour = threshold_datetime.rsplit(":", 2)[0] + ":00"
-    print(threshold_hour, "onwards being saved to hourly database")
 
     cur.execute("SELECT ticker, SUM(mentions), AVG(sentiment) FROM crypto_trending_24H WHERE "
                 "date_updated > %s GROUP BY ticker", (threshold_datetime, ))
@@ -177,8 +174,14 @@ def crypto_change():
         cnx.commit()
 
 
-if __name__ == '__main__':
+def main():
+    print("Getting Crypto Live Thread Trending...")
     crypto_live()
     update_hourly()
     crypto_change()
+    print("Crypto Live Thread Successfully Completed...\n")
+
+
+if __name__ == '__main__':
+    main()
 

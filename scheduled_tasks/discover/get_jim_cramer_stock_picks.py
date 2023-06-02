@@ -15,6 +15,7 @@ def main(days=360):
     """
     Get the amazing Jim Cramer recent stocks recommendations
     """
+    print("Getting Jim Cramer...")
     final_list = []
     for i in range(days, 0, -1):
         try:
@@ -35,7 +36,6 @@ def main(days=360):
                     ticker = ticker[ticker.find("(") + 1:ticker.find(")")]
                     call = call_dict[tds[3].find("img")["alt"]]
                     price = float(tds[4].get_text().replace("$", ""))
-                    print(ticker, date, segment, call, price)
                     final_list.append({"Ticker": ticker,
                                        "Date": date,
                                        "Segment": segment,
@@ -44,8 +44,8 @@ def main(days=360):
         except IndexError:
             pass
     df = pd.DataFrame(final_list)
-    print(df)
     df.to_sql("jim_cramer_trades", engine, if_exists="append", index=False)
+    print("Jim Cramer Successfully Completed...\n")
 
 
 if __name__ == '__main__':

@@ -19,7 +19,7 @@ def reverse_repo(start_date="2014-01-01", end_date=None):
     end_date : str
         format: YYYY-MM-DD
     """
-
+    print("Getting RRP...")
     if end_date is None:
         end_date = str(datetime.utcnow().date())
 
@@ -39,9 +39,9 @@ def reverse_repo(start_date="2014-01-01", end_date=None):
         amount = row["Total Amt Submitted ($Billions)"]
         participants = row["Participating Counterparties"]
         avg = row["Average"]
-        print(date, amount, participants, avg)
         cur.execute("INSERT IGNORE INTO reverse_repo VALUES (%s, %s, %s, %s)", (date, amount, participants, avg))
         cnx.commit()
+    print("RRP Successfully Completed...\n")
 
 
 if __name__ == '__main__':

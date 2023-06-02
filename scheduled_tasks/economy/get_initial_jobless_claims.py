@@ -13,7 +13,7 @@ def jobless_claims():
     """
     Get initial jobless claims
     """
-
+    print("Getting Initial Jobless Claims...")
     url = "https://ycharts.com/indicators/us_initial_claims_for_unemployment_insurance"
     df = ychart_data(url)
     df = df[6][::-1].append(df[5][::-1])
@@ -27,11 +27,11 @@ def jobless_claims():
 
     df["Date"] = df["Date"].astype('datetime64[ns]').astype(str)
     df.fillna(0, inplace=True)
-    print(df)
 
     for index, row in df.iterrows():
         cur.execute("INSERT IGNORE INTO initial_jobless_claims VALUES (%s, %s, %s)", (row[0], row[1], row[2]))
         cnx.commit()
+    print("Initial Jobless Claims Successfully Completed...\n")
 
 
 if __name__ == '__main__':

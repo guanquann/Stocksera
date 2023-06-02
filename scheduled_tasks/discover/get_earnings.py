@@ -6,11 +6,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from helpers import connect_mysql_database, finnhub_client
 from scheduled_tasks.reddit.stocks.fast_yahoo import download_advanced_stats_multi_thread
 
-
 cnx, cur, engine = connect_mysql_database()
 
 
 def main():
+    print("Getting Earnings...")
     current_date = datetime.utcnow().date()
     current_index = 0
 
@@ -33,10 +33,10 @@ def main():
     main_df = pd.merge(main_df, mkt_cap_df, on="symbol", how="left")
     main_df.fillna("N/A", inplace=True)
     main_df["hour"] = main_df["hour"].str.upper()
-    print(main_df)
     cur.executemany("INSERT IGNORE INTO earnings VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                     main_df.values.tolist())
     cnx.commit()
+    print("Earnings Successfully Completed...\n")
 
 
 if __name__ == '__main__':

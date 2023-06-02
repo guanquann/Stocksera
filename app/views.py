@@ -1,5 +1,6 @@
 from scheduled_tasks.reddit.get_subreddit_count import *
 from helpers import *
+from tasks_to_run import *
 from email_server import *
 
 import requests
@@ -229,7 +230,7 @@ def news_sentiment(request):
     return render(request, 'stock/recent_news.html', {"title": "News", "recent_news_df": news_df})
 
 
-def insider_trading(request):
+def stock_insider_trading(request):
     """
     Get a specific ticker's insider trading data from Finviz
     """
@@ -244,7 +245,7 @@ def insider_trading(request):
 
 def latest_insider(request):
     """
-    Get latest insider trading data from Finviz and perform analysis
+    Get the latest insider trading data from Finviz and perform analysis
     """
     data = requests.get(f"{BASE_URL}/discover/latest_insider/?limit=2000", headers=HEADERS).json()
     recent_activity = pd.DataFrame(data)
@@ -337,7 +338,7 @@ def google_trends(request):
     """
     ticker_selected = default_ticker(request)
 
-    # Remove -USD in crpyto
+    # Remove -USD in crypto
     if "-USD" in ticker_selected:
         ticker_selected = ticker_selected.split("-USD")[0]
 
@@ -385,11 +386,6 @@ def financial(request):
 
     information, related_tickers = check_market_hours(ticker_selected)
 
-    # quarterly_cashflow = ticker.quarterly_cashflow
-    # print(quarterly_cashflow)
-    # for i in quarterly_cashflow.index.to_list():
-    #     print(i)
-
     if "longName" in information and information["regularMarketPrice"] != "N/A":
         current_datetime = str(datetime.utcnow().date())
         with open(r"database/financials.json", "r+") as r:
@@ -417,7 +413,7 @@ def financial(request):
 
 def options(request):
     """
-    Get options chain from TD Ameritrade
+    Get options chain from TDA
     """
     ticker_selected = default_ticker(request)
     information, related_tickers = check_market_hours(ticker_selected)
@@ -572,6 +568,7 @@ def earnings_calendar(request):
     """
     Get earnings for the upcoming weeks
     """
+    cnx, cur, engine = connect_mysql_database()
     df = pd.read_sql("SELECT * FROM earnings ORDER by `date` ASC, CAST(mkt_cap AS UNSIGNED) DESC", cnx)
     df["FY"] = "Q" + df["quarter"] + "/" + df["year"]
     del df["quarter"]
@@ -620,7 +617,6 @@ def reddit_ticker_analysis(request):
     """
     Get analysis of ranking of tickers in popular subreddits and compare it with its price
     """
-    cnx, cur, engine = connect_mysql_database()
     if request.GET.get("quote"):
         ticker_selected = request.GET.get("quote").upper()
     else:
@@ -664,9 +660,7 @@ def subreddit_count(request):
         stats = pd.DataFrame(data)
         information, related_tickers = check_market_hours(ticker_selected)
         try:
-            print(stats)
             subreddit = stats.iloc[0][1]
-            print(subreddit, "#############")
             del stats["subreddit"]
         except (TypeError, IndexError):
             subreddit = "N/A"
@@ -1051,7 +1045,7 @@ def daily_treasury(request):
                    "next_date": data})
 
 
-def inflation(request):
+def us_inflation(request):
     """
     Get inflation. Data is from https://www.usinflationcalculator.com/inflation/current-inflation-rates/
     """
@@ -1090,7 +1084,7 @@ def retail_sales(request):
                    "next_date": data})
 
 
-def interest_rate(request):
+def fed_interest_rate(request):
     """
     Get interest rate. Data is from https://fred.stlouisfed.org
     """
@@ -1099,7 +1093,7 @@ def interest_rate(request):
     return render(request, 'economy/interest_rate.html', {"df": df.to_html(index=False)})
 
 
-def initial_jobless_claims(request):
+def initial_jobless(request):
     data = requests.get(f"{BASE_URL}/economy/initial_jobless_claims/?days=1000", headers=HEADERS).json()
     jobless_claims = pd.DataFrame(data)
 
@@ -1139,25 +1133,6 @@ def ark_trades(request):
     return render(request, 'discover/ark_trade.html')
 
 
-def amd_xlnx_ratio(request):
-    """
-    Get latest ratio of AMD-XLNX (1.7234 if merger is successful)
-    """
-    pd.options.display.float_format = '{:.4f}'.format
-    combined_df = pd.DataFrame()
-    amd_df = yf.Ticker("AMD").history(interval="1d", period="1y")
-    xlnx_df = yf.Ticker("XLNX").history(interval="1d", period="1y")
-
-    combined_df["AMD $"] = amd_df["Close"].round(2)
-    combined_df["XLNX $"] = xlnx_df["Close"].round(2)
-    combined_df["XLNX % Upside"] = 100 * ((1.7234 * combined_df["AMD $"]) / combined_df["XLNX $"] - 1)
-    combined_df["Ratio"] = combined_df["XLNX $"] / combined_df["AMD $"]
-    combined_df["Ratio"] = combined_df["Ratio"].round(4)
-    combined_df.reset_index(inplace=True)
-    combined_df.rename(columns={"index": "Date"}, inplace=True)
-    return render(request, 'discover/amd_xlnx_ratio.html', {"combined_df": combined_df[::-1].to_html(index=False)})
-
-
 def ipo_calendar(request):
     data = requests.get(f"{BASE_URL}/discover/ipo_calendar", headers=HEADERS).json()
     df = pd.DataFrame(data)
@@ -1170,7 +1145,6 @@ def correlation(request):
         symbols_list = request.GET['quotes'].upper().replace(" ", "")
     else:
         symbols_list = "AAPL, TSLA, SPY, AMC, GME, NVDA, XOM"
-    # start = datetime(2017, 1, 1)
     try:
         df = yf.Tickers(symbols_list).history(period="1y")
     except KeyError:
@@ -1181,7 +1155,7 @@ def correlation(request):
                                                          "symbols_list": symbols_list})
 
 
-def stock_split(request):
+def stock_split_history(request):
     pd.options.display.float_format = '{:.3f}'.format
     data = requests.get(f"{BASE_URL}/discover/stock_split", headers=HEADERS).json()
     df = pd.DataFrame(data)
@@ -1348,14 +1322,6 @@ def beta(request):
                                                                                                          "Daily")})
 
 
-def covid_beta(request):
-    """
-    Compare performance of ticker with covid cases
-    """
-    pd.options.display.float_format = '{:.3f}'.format
-    return render(request, 'discover/beta_covid.html')
-
-
 def about(request):
     """
     About section of the website and contact me if there's any issues/suggestions
@@ -1369,6 +1335,136 @@ def about(request):
 
 
 def tasks(request):
+    current_timing = str(datetime.utcnow()).split(".")[0]
+    if not os.path.exists("database/locally_run_timings.json"):
+        with open(r"database/locally_run_timings.json", "w") as r:
+            json.dump(
+                {"create_db": current_timing,
+                 "wsb_trending": current_timing,
+                 "crypto_trending": current_timing,
+                 "reddit_trending": current_timing,
+                 "subreddit_trending": current_timing,
+                 "twitter_followers": current_timing,
+                 "twitter_stock_trending": current_timing,
+                 "stocktwits_trending": current_timing,
+                 "short_vol": current_timing,
+                 "dividends": current_timing,
+                 "stock_split": current_timing,
+                 "earning_calendar": current_timing,
+                 "latest_news": current_timing,
+                 "trading_halt": current_timing,
+                 "ftd": current_timing,
+                 "ctb": current_timing,
+                 "threshold_sec": current_timing,
+                 "insider_trading": current_timing,
+                 "heatmap": current_timing,
+                 "govt_trading": current_timing,
+                 "ipo": current_timing,
+                 "rrp": current_timing,
+                 "inflation": current_timing,
+                 "treasury": current_timing,
+                 "retail": current_timing,
+                 "interest_rate": current_timing,
+                 "initial_jobless_claims": current_timing,
+                 "upcoming_economic_dates": current_timing
+                 }, r, indent=4)
+
+    with open(r"database/locally_run_timings.json", "r") as r:
+        data = json.load(r)
+
+    if request.POST:
+        if request.POST.get("create_db"):
+            create_db()
+            data["create_db"] = current_timing
+        elif request.POST.get("wsb_trending"):
+            wsb_trending()
+            data["wsb_trending"] = current_timing
+        elif request.POST.get("crypto_trending"):
+            crypto_trending()
+            data["crypto_trending"] = current_timing
+        elif request.POST.get("reddit_trending"):
+            reddit_trending()
+            data["reddit_trending"] = current_timing
+        elif request.POST.get("subreddit_trending"):
+            subreddit_trending()
+            data["subreddit_trending"] = current_timing
+        elif request.POST.get("twitter_followers"):
+            twitter_followers()
+            data["twitter_followers"] = current_timing
+        elif request.POST.get("twitter_stock_trending"):
+            twitter_stock_trending()
+            data["twitter_stock_trending"] = current_timing
+        elif request.POST.get("stocktwits_trending"):
+            stocktwits_trending()
+            data["stocktwits_trending"] = current_timing
+        elif request.POST.get("short_vol"):
+            short_vol()
+            data["short_vol"] = current_timing
+        elif request.POST.get("dividends"):
+            dividends()
+            data["dividends"] = current_timing
+        elif request.POST.get("stock_split"):
+            stock_split()
+            data["stock_split"] = current_timing
+        elif request.POST.get("earning_calendar"):
+            earning_calendar()
+            data["earning_calendar"] = current_timing
+        elif request.POST.get("latest_news"):
+            latest_news()
+            data["latest_news"] = current_timing
+        elif request.POST.get("trading_halt"):
+            trading_halt()
+            data["trading_halt"] = current_timing
+        elif request.POST.get("ftd"):
+            ftd()
+            data["ftd"] = current_timing
+        elif request.POST.get("ctb"):
+            ctb()
+            data["ctb"] = current_timing
+        elif request.POST.get("threshold_sec"):
+            threshold_sec()
+            data["threshold_sec"] = current_timing
+        elif request.POST.get("insider_trading"):
+            insider_trading()
+            data["insider_trading"] = current_timing
+        elif request.POST.get("heatmap"):
+            heatmap()
+            data["heatmap"] = current_timing
+        elif request.POST.get("govt_trading"):
+            govt_trading()
+            data["govt_trading"] = current_timing
+        elif request.POST.get("ipo"):
+            ipo()
+            data["ipo"] = current_timing
+        elif request.POST.get("rrp"):
+            rrp()
+            data["rrp"] = current_timing
+        elif request.POST.get("inflation"):
+            inflation()
+            data["inflation"] = current_timing
+        elif request.POST.get("treasury"):
+            treasury()
+            data["treasury"] = current_timing
+        elif request.POST.get("retail"):
+            retail()
+            data["retail"] = current_timing
+        elif request.POST.get("interest_rate"):
+            interest_rate()
+            data["interest_rate"] = current_timing
+        elif request.POST.get("initial_jobless_claims"):
+            initial_jobless_claims()
+            data["initial_jobless_claims"] = current_timing
+        elif request.POST.get("upcoming_economic_dates"):
+            upcoming_economic_dates()
+            data["upcoming_economic_dates"] = current_timing
+
+        with open(r"database/locally_run_timings.json", "w") as r:
+            json.dump(data, r, indent=4)
+
+    return render(request, 'tasks.html', {"data": data})
+
+
+def setup(request):
     if request.POST:
         if request.POST.get("locally_hosted_value") == "True":
             config_keys[request.POST.get("locally_hosted")] = True
@@ -1395,7 +1491,7 @@ def tasks(request):
 
         with open('config.yaml', 'w') as outfile:
             yaml.dump(config_keys, outfile, default_flow_style=False)
-    return render(request, 'run_tasks.html', {"config": config_keys})
+    return render(request, 'setup.html', {"config": config_keys})
 
 
 def loading_spinner(request):

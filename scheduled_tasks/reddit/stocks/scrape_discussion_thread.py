@@ -103,7 +103,6 @@ def wsb_live():
         try:
             # Ensure that post is stickied and the post is not an image
             if post.stickied and ".jpg" not in post.url and ".png" not in post.url and "comments" in post.url:
-                print(post.url)
                 submission = reddit.submission(url=post.url)
 
                 submission.comment_sort = "new"
@@ -194,7 +193,6 @@ def wsb_live():
 
     for ticker_post_list in post_list:
         for i in ticker_post_list:
-            print(i["ticker"], i["text_body"], i["sentiment"], i["date_posted"])
             cur.execute("INSERT INTO wsb_discussions VALUES (%s, %s, %s, %s)", (i["ticker"], i["text_body"],
                                                                                 i["sentiment"], i["date_posted"]))
             cnx.commit()
@@ -205,7 +203,6 @@ def wsb_live():
     quick_stats_df["sentiment"] = quick_stats_df["sentiment"].round(2)
     quick_stats_df["calls"] = calls_list
     quick_stats_df["puts"] = puts_list
-    print(quick_stats_df)
 
     for index, row in quick_stats_df.iterrows():
         cur.execute("INSERT INTO wsb_trending_24H VALUES (%s, %s, %s, %s, %s, %s)",
@@ -302,12 +299,17 @@ def get_mkt_cap():
     quick_stats_df["mentions"] = mentions_list
     quick_stats_df.reset_index(inplace=True)
     quick_stats_df.rename(columns={"Symbol": "ticker"}, inplace=True)
-    print(quick_stats_df)
     quick_stats_df.to_sql("wsb_yf", engine, if_exists="replace", index=False)
 
 
-if __name__ == '__main__':
+def main():
+    print("Getting Stock Live Thread Trending...")
     wsb_live()
     update_hourly()
     wsb_change()
     get_mkt_cap()
+    print("Stock Live Thread Successfully Completed...\n")
+
+
+if __name__ == '__main__':
+    main()

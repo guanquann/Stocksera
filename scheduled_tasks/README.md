@@ -1,15 +1,16 @@
 # Stocksera Developers Guide
 
-<b>You should run all commands from the main parent directory</b>
-```
-# Example of how you should run all the scheduled tasks
-example: (venv) C:\Users\Acer\Stocksera>py tasks_to_run.py
-example: (venv) C:\Users\Acer\Stocksera>py scheduled_tasks/economy/get_inflation.py
-```
-
-Ensure that you run scheduled_tasks/create_database.py first.
+There are 2 ways to run the tasks:
+- Go to http://localhost:8000/tasks and click on the buttons
+- Through command prompt
+  - <b>You should run all commands from the main parent directory</b>
+  - Ensure that you run scheduled_tasks/create_database.py first.
+      ```
+      # Example of how you should run all the scheduled tasks
+      example: (venv) C:\Users\Acer\Stocksera>py scheduled_tasks/economy/get_inflation.py
+      ```
  
-Before continuing, register for an API in the links shown below and add them in http://localhost:8000/tasks.
+Before continuing, register for an API in the links shown below and add them in http://localhost:8000/tasks or in config.yaml.
 
 | API Source       | URL                                                |
 |------------------|----------------------------------------------------|

@@ -31,7 +31,6 @@ def download_ftd():
     ftd_url_links = text_soup_high_short_interested_stocks.findAll("table")[1].findAll("a")
     for url_link in ftd_url_links[:24]:
         df = pd.read_csv(base_url + url_link["href"], delimiter="|", error_bad_lines=False, encoding="cp1252")
-        print(df)
         df.to_csv("database/failure_to_deliver/csv/" + url_link["href"].split("/")[-1].replace(".zip", ".csv"),
                   index=None)
 
@@ -42,7 +41,6 @@ def upload_to_df(files_available, limit=24):
     """
     combined_df = pd.DataFrame(columns=["SETTLEMENT DATE", "SYMBOL", "QUANTITY (FAILS)", "PRICE"])
     for file in files_available[:limit]:
-        print("Processing: ", file)
         df = pd.read_csv(file)
         del df["CUSIP"]
         del df["DESCRIPTION"]
@@ -73,7 +71,6 @@ def get_top_ftd(filename):
     Get top stocks with high/consistent FTD.
     Criteria: more than 3 days of >500000 FTD in 2 weeks
     """
-    print("Getting top FTD for: ", filename)
     df = pd.read_csv(filename)
     df.sort_values(by=["SYMBOL", "SETTLEMENT DATE"], ascending=False, inplace=True)
     df["PRICE"] = df["PRICE"].apply(lambda x: pd.to_numeric(x, errors='coerce')).fillna(0)
@@ -113,11 +110,13 @@ def get_top_ftd(filename):
 
 
 def main():
+    print("Getting FTD...")
     download_ftd()
     FOLDER_PATH = r"database/failure_to_deliver/csv"
     files_available = sorted(Path(FOLDER_PATH).iterdir(), key=os.path.getmtime)
-    upload_to_df(files_available, limit=1)
+    upload_to_df(files_available, limit=6)
     get_top_ftd(files_available[0])
+    print("FTD Successfully Completed...\n")
 
 
 if __name__ == '__main__':

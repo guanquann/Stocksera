@@ -14,6 +14,7 @@ with open("config.yaml") as config_file:
 
 
 def main():
+    print("Getting Stock Split...")
     final_df = pd.DataFrame()
     url = f"https://api.polygon.io/v3/reference/splits?limit=999&s" \
           f"ort=execution_date&apiKey={config_keys['POLYGON_KEY']}&reverse_split="
@@ -28,10 +29,10 @@ def main():
     final_df['split_from'] = np.where(final_df['split_from'] > 100, 1, final_df['split_from'])
     del final_df["ratio"]
     final_df = final_df.round(3)
-    print(final_df)
 
     cur.executemany("INSERT IGNORE INTO stock_splits VALUES (%s ,%s ,%s ,%s, %s)", final_df.values.tolist())
     cnx.commit()
+    print("Stock Split Successfully Completed...\n")
 
 
 if __name__ == '__main__':

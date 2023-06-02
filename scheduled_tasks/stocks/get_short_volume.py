@@ -12,7 +12,6 @@ from scheduled_tasks.reddit.stocks.fast_yahoo import download_advanced_stats_mul
 
 cnx, cur, engine = connect_mysql_database()
 
-
 current_date = datetime.utcnow().date()
 
 
@@ -21,9 +20,9 @@ def get_30d_data_finra():
     Get short volume data from https://cdn.finra.org/ in the last 30 days
     """
     last_date = datetime.utcnow().date() - timedelta(days=30)
-    combined_df = pd.DataFrame(columns=["Date", "Symbol", "ShortVolume", "ShortExemptVolume", "TotalVolume", "%Shorted"])
+    combined_df = pd.DataFrame(
+        columns=["Date", "Symbol", "ShortVolume", "ShortExemptVolume", "TotalVolume", "%Shorted"])
     while current_date >= last_date:
-        print("Looking at " + str(last_date))
         url = r"https://cdn.finra.org/equity/regsho/daily/CNMSshvol{}.txt".format(str(last_date).replace("-", ""))
         s = requests.get(url).content
         df = pd.read_csv(io.StringIO(s.decode('utf-8')), delimiter="|")
@@ -42,7 +41,6 @@ def get_30d_data_finra():
     combined_df.columns = ["Date", "Ticker", "Short Vol", "Short Exempt Vol", "Total Vol", "% Shorted"]
     combined_df = combined_df[~combined_df["% Shorted"].isna()]
     combined_df = combined_df.dropna()
-    print(combined_df)
 
     start = 0
     while start < len(combined_df):
@@ -53,12 +51,11 @@ def get_30d_data_finra():
         start += 50000
 
 
-def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date()-timedelta(days=1)):
+def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date() - timedelta(days=1)):
     """
     Get short volume data from https://cdn.finra.org/
     """
     url = r"https://cdn.finra.org/equity/regsho/daily/CNMSshvol{}.txt".format(str(date_to_process).replace("-", ""))
-    print(url)
     s = requests.get(url).content
     df = pd.read_csv(io.StringIO(s.decode('utf-8')), delimiter="|")
     if len(df) == 1:
@@ -98,8 +95,10 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date
 
 
 def main():
+    print("Getting Short Volume...")
     get_30d_data_finra()
     get_daily_data_finra()
+    print("Short Volume Successfully Completed...\n")
 
 
 if __name__ == '__main__':

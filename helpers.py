@@ -22,7 +22,6 @@ analyzer.lexicon.update(new_words)
 
 # https://finnhub.io/
 finnhub_client = finnhub.Client(api_key=config_keys["FINNHUB_KEY1"])
-finnhub_client2 = finnhub.Client(api_key=config_keys["FINNHUB_KEY2"])
 
 header = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/"
                         "50.0.2661.75 Safari/537.36", "X-Requested-With": "XMLHttpRequest"}
@@ -42,7 +41,6 @@ def connect_mysql_database():
     global cnx
     global cur
     if not cnx.is_connected():
-        print("ERROR CONNECTING TO MYSQL... TRYING TO RECONNECT")
         engine = create_engine(f'mysql://{config_keys["MYSQL_USER"]}:{config_keys["MYSQL_PASSWORD"]}@'
                                f'{config_keys["MYSQL_HOST"]}/{config_keys["MYSQL_DATABASE"]}')
         cnx = mysql.connector.connect(user=config_keys["MYSQL_USER"],
@@ -143,7 +141,6 @@ def check_financial_data(ticker_selected, ticker, data, r):
     """
     Get financial data of ticker selected and save to json file
     """
-    print("Getting financial data for {}".format(ticker_selected))
     balance_sheet = ticker.quarterly_balance_sheet
     balance_sheet = balance_sheet.replace(np.nan, 0)[balance_sheet.columns[::-1]]
     date_list = balance_sheet.columns.astype("str").to_list()
@@ -188,8 +185,8 @@ def get_options_data(ticker):
 
 def get_sec_fillings(ticker_selected):
     current_date = datetime.utcnow().date()
-    sec_list = finnhub_client2.filings(symbol=ticker_selected, _from=str(current_date - timedelta(days=365*3)),
-                                       to=str(current_date))[:100]
+    sec_list = finnhub_client.filings(symbol=ticker_selected, _from=str(current_date - timedelta(days=365*3)),
+                                      to=str(current_date))[:100]
     for filling in sec_list:
         ticker = filling["symbol"]
         fillings = filling["form"]
@@ -251,7 +248,6 @@ def get_insider_trading(ticker_selected):
     try:
         ticker_fin = finvizfinance(ticker_selected)
         inside_trader_df = ticker_fin.ticker_inside_trader()
-        # print(inside_trader_df)
         inside_trader_df["Insider Trading"] = inside_trader_df["Insider Trading"].str.title()
         inside_trader_df.rename(columns={"Insider Trading": "Name", "SEC Form 4 Link": ""}, inplace=True)
         inside_trader_df["Date"] = inside_trader_df["Date"] + " {}".format(str(date.today().year))

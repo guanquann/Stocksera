@@ -14,7 +14,7 @@ def retail_sales():
     """
     Get retail sales and compare it with avg monthly covid cases
     """
-
+    print("Getting Retail Sales...")
     url = "https://ycharts.com/indicators/us_retail_and_food_services_sales"
     df = ychart_data(url)
 
@@ -43,8 +43,8 @@ def retail_sales():
     usa_df.rename(columns={"date": "Date"}, inplace=True)
     combined_df = pd.merge(combined_df, usa_df, how='left', on='Date')
     combined_df.fillna(0, inplace=True)
-    print(combined_df)
     cur.executemany("INSERT IGNORE INTO retail_sales VALUES (%s, %s, %s, %s)", combined_df.values.tolist())
+    print("Retail Sales Successfully Completed...\n")
 
 
 if __name__ == '__main__':

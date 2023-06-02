@@ -11,11 +11,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
 from helpers import connect_mysql_database
 
 try:
-    print("Trying to connect to database...")
     cnx, cur, engine = connect_mysql_database()
-    print("Connection successful!")
 except mysql.connector.ProgrammingError:
-    print("No database detected... Creating one now.")
     with open("config.yaml") as config_file:
         config_keys = yaml.load(config_file, Loader=yaml.Loader)
     cnx = mysql.connector.connect(user=config_keys["MYSQL_USER"],
@@ -27,6 +24,7 @@ except mysql.connector.ProgrammingError:
 
 
 def database():
+    print("Creating/Updating DB...")
 
     if not os.path.exists("database"):
         os.mkdir("database")
@@ -472,7 +470,7 @@ def database():
                 "UNIQUE(`Ticker`, `Declaration Date`), "
                 "INDEX(`Declaration Date`) )")
 
-    print("Successfully created/updated database")
+    print("Creating/Updating DB Successfully Completed...\n")
 
 
 if __name__ == '__main__':

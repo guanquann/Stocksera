@@ -218,7 +218,7 @@ function load_holdings(elem) {
     if (holdings_clicks == 0) {
         holdings_clicks = 1, trades_clicks = 0, news_clicks = 0;
         var ticker_list = [], weight_list = [], top_10_weight = 0, top_20_weight = 0
-        var holdings_url = `https://arkfunds.io/api/v2/etf/holdings?symbol=${document.getElementById("fund_selected").value}`;  <!--    &date=2021-05-13-->
+        var holdings_url = `https://arkfunds.io/api/v2/etf/holdings?symbol=${document.getElementById("fund_selected").value}`;
         table_code = `
             <table>
                 <tr>

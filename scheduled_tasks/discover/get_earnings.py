@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from helpers import connect_mysql_database, finnhub_client
-import scheduled_tasks.reddit.stocks.fast_yahoo as fast_yahoo
+from scheduled_tasks.reddit.stocks.fast_yahoo import download_advanced_stats_multi_thread
 
 
 cnx, cur, engine = connect_mysql_database()
@@ -25,16 +25,7 @@ def main():
         current_index += 7
         main_df = main_df.append(df)
 
-    # mkt_cap_df = fast_yahoo.download_quick_stats(main_df["symbol"].tolist(), {'marketCap': 'mkt_cap'})
-
-    mkt_cap_df = pd.DataFrame()
-    current_index = 0
-    while current_index < len(main_df["symbol"].tolist()):
-        quick_stats_df = fast_yahoo.download_advanced_stats(main_df["symbol"].tolist()
-                                                            [current_index:current_index + 100],
-                                                            {'price': {"marketCap": "mkt_cap"}}, threads=True)
-        mkt_cap_df = pd.concat([mkt_cap_df, quick_stats_df])
-        current_index += 100
+    mkt_cap_df = download_advanced_stats_multi_thread(main_df["symbol"].tolist(), {'price': {"marketCap": "mkt_cap"}})
 
     mkt_cap_df.reset_index(inplace=True)
     mkt_cap_df.replace("N/A", 0, inplace=True)

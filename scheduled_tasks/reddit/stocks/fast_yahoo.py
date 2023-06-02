@@ -74,6 +74,17 @@ def download_advanced_stats(symbol_list, module_name_map, threads=True):
     return financial_data_df
 
 
+def download_advanced_stats_multi_thread(symbol_list, params, num_threads=100):
+    df = pd.DataFrame()
+    current_index = 0
+    while current_index < len(symbol_list):
+        quick_stats_df = download_advanced_stats(symbol_list[current_index:current_index + num_threads],
+                                                 params, threads=True)
+        df = pd.concat([df, quick_stats_df])
+        current_index += num_threads
+    return df
+
+
 def download_quick_stats(symbol_list, quick_stats_dict, threads=True):
     """
     Downloads select ("quick") stats for many tickers using minimal number of http requests. Splits the ticker list

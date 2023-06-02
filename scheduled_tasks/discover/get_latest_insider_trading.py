@@ -74,9 +74,6 @@ def latest_insider_trading_analysis():
     insider_df.reset_index(inplace=True)
     insider_df.rename(columns={"Value": "Amount"}, inplace=True)
 
-    # quick_stats = {'marketCap': 'MktCap'}
-    # quick_stats_df = download_quick_stats(insider_df["Ticker"].to_list(), quick_stats, threads=True).reset_index()
-
     quick_stats_df = pd.DataFrame()
     current_index = 0
     while current_index < len(insider_df["Ticker"].to_list()):

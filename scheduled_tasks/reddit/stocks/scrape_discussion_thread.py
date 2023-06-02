@@ -4,7 +4,7 @@ import pandas as pd
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 from scheduled_tasks.reddit.reddit_utils import *
-from scheduled_tasks.reddit.stocks.fast_yahoo import download_advanced_stats, download_quick_stats
+from scheduled_tasks.reddit.stocks.fast_yahoo import download_advanced_stats_multi_thread
 
 current_datetime = datetime.utcnow()
 mapping_stocks = get_mapping_stocks()
@@ -163,24 +163,11 @@ def wsb_live():
     df["date_updated"] = current_datetime_str
     df.to_sql("wsb_word_cloud", engine, if_exists="append", index=False)
 
-    # quick_stats = {'regularMarketPreviousClose': 'prvCls',
-    #                'regularMarketVolume': 'volume',
-    #                'regularMarketPrice': 'price',
-    #                'marketCap': 'mkt_cap'}
-    # quick_stats_df = download_quick_stats(list(tickers_dict.keys()), quick_stats, threads=True)
-
     quick_stats = {'price': {"marketCap": "mkt_cap",
                              "regularMarketPreviousClose": "prvCls",
                              "regularMarketVolume": "volume",
                              "regularMarketPrice": "price"}}
-    quick_stats_df = pd.DataFrame()
-    current_index = 0
-    while current_index < len(list(tickers_dict.keys())):
-        quick_stats_df = pd.concat([download_advanced_stats(list(tickers_dict.keys())
-                                                            [current_index:current_index + 100],
-                                                            quick_stats, threads=True), quick_stats_df])
-        current_index += 100
-    # quick_stats_df = download_advanced_stats(list(tickers_dict.keys()), quick_stats, threads=True)
+    quick_stats_df = download_advanced_stats_multi_thread(list(tickers_dict.keys()), quick_stats)
 
     # Ticker must be active in order to be valid
     quick_stats_df["volume"] = pd.to_numeric(quick_stats_df["volume"], errors='coerce')
@@ -292,7 +279,7 @@ def get_mkt_cap():
                         'summaryProfile': {"industry": "industry",
                                            "sector": "sector"}}
 
-    quick_stats_df = download_advanced_stats(ticker_list, quick_stats_dict, threads=True)
+    quick_stats_df = download_advanced_stats_multi_thread(ticker_list, quick_stats_dict)
     quick_stats_df = quick_stats_df[quick_stats_df["avg_price"] != "N/A"]
     quick_stats_df = quick_stats_df[quick_stats_df["52w_high"] != "N/A"]
     quick_stats_df = quick_stats_df[quick_stats_df["52w_low"] != "N/A"]

@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from helpers import connect_mysql_database
-import scheduled_tasks.reddit.stocks.fast_yahoo as fast_yahoo
+from scheduled_tasks.reddit.stocks.fast_yahoo import download_advanced_stats_multi_thread
 
 cnx, cur, engine = connect_mysql_database()
 
@@ -89,7 +89,7 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date
                                  "regularMarketChangePercent": "1 Day Change %",
                                  "regularMarketPreviousClose": "Previous Close",
                                  "regularMarketVolume": "volume"}}
-        stats_df = fast_yahoo.download_advanced_stats(highest_shorted["Symbol"].to_list(), quick_stats, threads=True)
+        stats_df = download_advanced_stats_multi_thread(highest_shorted["Symbol"].to_list(), quick_stats)
 
         highest_shorted = pd.merge(highest_shorted, stats_df, on="Symbol")
         highest_shorted.replace(np.nan, "N/A", inplace=True)
@@ -98,7 +98,7 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date
 
 
 def main():
-    # get_30d_data_finra()
+    get_30d_data_finra()
     get_daily_data_finra()
 
 

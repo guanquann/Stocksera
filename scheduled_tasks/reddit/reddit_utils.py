@@ -178,9 +178,7 @@ def get_mapping_stocks():
 
 def coinbase_coins():
     # List of crypto symbols interest in
-    # We use symbols from coinbase instead as it is more concise than CoinGeckoAPI, which list ALL symbols (>1000)
     r = requests.get('https://api.pro.coinbase.com/currencies')
-    # https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false
     crypto_dict = {}
     for coin in r.json():
         if coin['details']['type'] == 'crypto':

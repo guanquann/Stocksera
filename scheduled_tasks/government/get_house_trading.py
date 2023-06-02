@@ -38,9 +38,7 @@ def house_trades():
              "Representative", "Link", "Disclosure Date", "District", "Cap Gains Over 200USD"]]
 
     df["Representative"] = df["Representative"].str.replace("^Hon. |^Mr. |^Mrs. |^None ", "")
-
     print(df)
-
     df.to_csv(os.path.join(OUT_PATH, "house.csv"), index=False)
 
 

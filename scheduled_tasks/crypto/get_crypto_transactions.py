@@ -20,9 +20,7 @@ def main():
     for index, i in enumerate(x.json()["transactions"]):
         print(index, i["symbol"], i["amount_usd"], datetime.fromtimestamp(i["timestamp"]))
 
-    # x = requests.get(f"https://api.whale-alert.io/v1/status?api_key={api_key}")
-    # for i in x.json()["blockchains"]:
-    #     print(i)
+    # requests.get(f"https://api.whale-alert.io/v1/status?api_key={api_key}")
 
 
 if __name__ == '__main__':

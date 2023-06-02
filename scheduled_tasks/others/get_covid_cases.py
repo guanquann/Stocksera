@@ -8,7 +8,6 @@ def usa_covid_cases():
     output_df = pd.DataFrame()
     covid_df = pd.read_csv(r'https://covid.ourworldindata.org/data/owid-covid-data.csv')
     usa_df = covid_df[covid_df["iso_code"] == "USA"]
-    # print(usa_df.columns)
     output_df["Date"] = usa_df["date"]
     output_df["New Cases"] = usa_df["new_cases"]
     output_df["Fully Vaccinated / 100"] = usa_df["people_fully_vaccinated_per_hundred"]

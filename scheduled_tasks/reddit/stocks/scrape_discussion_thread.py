@@ -10,8 +10,8 @@ current_datetime = datetime.utcnow()
 mapping_stocks = get_mapping_stocks()
 
 
-def extract_ticker(text, date_posted, tickers_dict, tickers_post_dict, sentiment_dict, calls_dict, calls_mentions, puts_dict,
-                   puts_mentions):
+def extract_ticker(text, date_posted, tickers_dict, tickers_post_dict, sentiment_dict, calls_dict, calls_mentions,
+                   puts_dict, puts_mentions):
     """
     Extract tickers with correct pattern from comment and add sentiment, calls, put to previous dict
     Parameters
@@ -48,9 +48,11 @@ def extract_ticker(text, date_posted, tickers_dict, tickers_post_dict, sentiment
         sentiment_dict[ticker] = sentiment_dict.get(ticker, 0) + sentiment_score
 
         if ticker in tickers_post_dict:
-            tickers_post_dict[ticker].append({"ticker": ticker, "text_body": text[:500], "sentiment": sentiment_score, "date_posted": date_posted})
+            tickers_post_dict[ticker].append({"ticker": ticker, "text_body": text[:500], "sentiment": sentiment_score,
+                                              "date_posted": date_posted})
         else:
-            tickers_post_dict[ticker] = [{"ticker": ticker, "text_body": text[:500], "sentiment": sentiment_score, "date_posted": date_posted}]
+            tickers_post_dict[ticker] = [{"ticker": ticker, "text_body": text[:500], "sentiment": sentiment_score,
+                                          "date_posted": date_posted}]
 
         if calls_mentions:
             calls_dict[ticker] = calls_dict.get(ticker, 0) + 1
@@ -98,47 +100,46 @@ def wsb_live():
     calls_dict = dict()
     puts_dict = dict()
     for post in subreddit.hot(limit=10):
-        # try:
-        # Ensure that post is stickied and the post is not an image
-        if post.stickied and ".jpg" not in post.url and ".png" not in post.url and "comments" in post.url:
-            print(post.url)
-            submission = reddit.submission(url=post.url)
+        try:
+            # Ensure that post is stickied and the post is not an image
+            if post.stickied and ".jpg" not in post.url and ".png" not in post.url and "comments" in post.url:
+                print(post.url)
+                submission = reddit.submission(url=post.url)
 
-            submission.comment_sort = "new"
-            submission.comments.replace_more(limit=0)
+                submission.comment_sort = "new"
+                submission.comments.replace_more(limit=0)
 
-            for comment in submission.comments:
-                if threshold_datetime < comment.created_utc:
-                    comment_body = comment.body
+                for comment in submission.comments:
+                    if threshold_datetime < comment.created_utc:
+                        comment_body = comment.body
 
-                    date_posted = datetime.fromtimestamp(comment.created_utc)
+                        date_posted = datetime.fromtimestamp(comment.created_utc)
 
-                    # Remove number/special characters (clean up word cloud)
-                    all_words_dict = insert_into_word_cloud_dict(comment_body.upper(), all_words_dict)
-
-                    # Check if calls and puts is mentioned in comment
-                    calls_mentions, puts_mentions = check_for_options(comment_body.upper())
-
-                    # Get ticker based on pattern
-                    extract_ticker(comment_body, date_posted, tickers_dict, tickers_post_dict, sentiment_dict, calls_dict,
-                                   calls_mentions, puts_dict, puts_mentions)
-
-                    # Read sub-comment
-                    for second_level_comment in comment.replies:
-                        second_level_comment = second_level_comment.body
-
-                        # Insert into word cloud
-                        all_words_dict = insert_into_word_cloud_dict(second_level_comment.upper(), all_words_dict)
+                        # Remove number/special characters (clean up word cloud)
+                        all_words_dict = insert_into_word_cloud_dict(comment_body.upper(), all_words_dict)
 
                         # Check if calls and puts is mentioned in comment
-                        calls_mentions, puts_mentions = check_for_options(second_level_comment.upper())
+                        calls_mentions, puts_mentions = check_for_options(comment_body.upper())
 
                         # Get ticker based on pattern
-                        extract_ticker(second_level_comment, date_posted, tickers_dict, tickers_post_dict, sentiment_dict,
+                        extract_ticker(comment_body, date_posted, tickers_dict, tickers_post_dict, sentiment_dict,
                                        calls_dict, calls_mentions, puts_dict, puts_mentions)
-        # except:
-        #     print("ERROR")
-        #     pass
+
+                        # Read sub-comment
+                        for second_level_comment in comment.replies:
+                            second_level_comment = second_level_comment.body
+
+                            # Insert into word cloud
+                            all_words_dict = insert_into_word_cloud_dict(second_level_comment.upper(), all_words_dict)
+
+                            # Check if calls and puts is mentioned in comment
+                            calls_mentions, puts_mentions = check_for_options(second_level_comment.upper())
+
+                            # Get ticker based on pattern
+                            extract_ticker(second_level_comment, date_posted, tickers_dict, tickers_post_dict,
+                                           sentiment_dict, calls_dict, calls_mentions, puts_dict, puts_mentions)
+        except:
+            print("Error getting pinned thread")
 
     # Remove ticker if it is found in stopwords_list
     tickers_dict = dict(sorted(tickers_dict.items(), key=lambda item: item[1]))
@@ -194,7 +195,8 @@ def wsb_live():
     for ticker_post_list in post_list:
         for i in ticker_post_list:
             print(i["ticker"], i["text_body"], i["sentiment"], i["date_posted"])
-            cur.execute("INSERT INTO wsb_discussions VALUES (%s, %s, %s, %s)", (i["ticker"], i["text_body"], i["sentiment"], i["date_posted"]))
+            cur.execute("INSERT INTO wsb_discussions VALUES (%s, %s, %s, %s)", (i["ticker"], i["text_body"],
+                                                                                i["sentiment"], i["date_posted"]))
             cnx.commit()
 
     quick_stats_df["mentions"] = mentions_list
@@ -219,10 +221,10 @@ def update_hourly():
     threshold_hour = threshold_datetime.rsplit(":", 2)[0] + ":00"
 
     cur.execute("SELECT ticker, SUM(mentions), AVG(sentiment), SUM(calls), SUM(puts) FROM wsb_trending_24H WHERE "
-                "date_updated > %s GROUP BY ticker", (threshold_datetime, ))
+                "date_updated > %s GROUP BY ticker", (threshold_datetime,))
     x = cur.fetchall()
     for row in x:
-        cur.execute("INSERT INTO wsb_trending_hourly VALUES (%s, %s, %s, %s, %s, %s)", (row + (threshold_hour, )))
+        cur.execute("INSERT INTO wsb_trending_hourly VALUES (%s, %s, %s, %s, %s, %s)", (row + (threshold_hour,)))
         cnx.commit()
 
 
@@ -295,7 +297,7 @@ def get_mkt_cap():
     del quick_stats_df["52w_high"]
     del quick_stats_df["52w_low"]
 
-    quick_stats_df["price_change"] = quick_stats_df["price_change"].apply(lambda k: round(k*100, 2))
+    quick_stats_df["price_change"] = quick_stats_df["price_change"].apply(lambda k: round(k * 100, 2))
     quick_stats_df = quick_stats_df.reindex(ticker_list)
     quick_stats_df["mentions"] = mentions_list
     quick_stats_df.reset_index(inplace=True)

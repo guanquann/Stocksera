@@ -13,8 +13,6 @@ HEADERS = {f'Authorization': f"Api-Key {config_keys['STOCKSERA_API']}"}
 
 
 def signup(request):
-    # token = Token.objects.create(user=request.user)
-    # print(token.key)
     if request.user.is_authenticated:
         return redirect('/accounts/watchlist')
 
@@ -117,7 +115,6 @@ def watchlist(request):
                 wlist.save()
                 messages.success(request, f"{ticker_selected} successfully added to watchlist.")
 
-        # BASE_URL = "http://stocksera.pythonanywhere.com/api"
         borrowed_shares = requests.get(f"{BASE_URL}/stocks/borrowed_shares/{ticker_selected}", headers=HEADERS).json()
 
         ftd = requests.get(f"{BASE_URL}/stocks/failure_to_deliver/{ticker_selected}", headers=HEADERS).json()

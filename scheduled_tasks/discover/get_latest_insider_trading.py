@@ -5,7 +5,7 @@ from datetime import date, datetime, timedelta
 from finvizfinance.insider import Insider
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
-from scheduled_tasks.reddit.stocks.fast_yahoo import download_quick_stats, download_advanced_stats
+from scheduled_tasks.reddit.stocks.fast_yahoo import download_advanced_stats
 from helpers import connect_mysql_database
 
 cnx, cur, engine = connect_mysql_database()
@@ -31,17 +31,14 @@ def latest_insider_trading():
 
         insider_trader["Date"] = insider_trader["Date"] + " {}".format(str(date.today().year))
         insider_trader["Date"] = pd.to_datetime(insider_trader["Date"], format="%b %d %Y", errors='coerce')
-        # insider_trader["Date"] = insider_trader["Date"].astype(str)
 
         insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"].apply(lambda x: x.rsplit(' ', 2)[0])
         insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"] + " {}".format(str(date.today().year))
         insider_trader["SEC Form 4"] = pd.to_datetime(insider_trader["SEC Form 4"], format="%b %d %Y", errors='coerce')
-        # insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"].astype(str)
 
         if type_trading == "sales":
             insider_trader["Value ($)"] = -insider_trader["Value ($)"]
 
-        # print(insider_trader)
         last_date = datetime.utcnow().date()
 
         insider_trader["Date"] = insider_trader["Date"].apply(lambda x: check_date(x, last_date))
@@ -93,7 +90,7 @@ def latest_insider_trading_analysis():
 
 
 def main():
-    # latest_insider_trading()
+    latest_insider_trading()
     latest_insider_trading_analysis()
 
 

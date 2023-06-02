@@ -167,7 +167,6 @@ def update_last_price():
                     "% Price Change"]
                 price_df["Date"] = price_df["Date"].astype(str)
                 price_df = price_df.round(2)
-                # print(price_df)
                 change_price = price_df[price_df['Date'] == last_date]["% Price Change"].values
                 if len(change_price == 1):
                     change_price = change_price[0]

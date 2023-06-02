@@ -20,7 +20,7 @@ def main():
     df.index += 1
     df.reset_index(inplace=True)
     df.rename(columns={"index": "rank", "symbol": "ticker", "watchlist_count": "watchlist"}, inplace=True)
-    print(df.head(5))
+    print(df)
     df.to_sql("stocktwits_trending", engine, if_exists="append", index=False)
 
 

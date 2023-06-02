@@ -128,35 +128,6 @@ def crypto_live():
     upload_to_database(tickers_dict, sentiment_dict, current_datetime_str)
 
 
-def crypto_live_stream():
-    """
-    Get mentions from r/cryptocurrency discussion thread realtime. Data is streamed continuously.
-    """
-    while True:
-        count = 0
-        sentiment_dict = {}
-        tickers_dict = {}
-        try:
-            subreddit = reddit.subreddit("cryptocurrency")
-            for comment in subreddit.stream.comments(skip_existing=True):
-                current_datetime_str = str(datetime.utcnow()).rsplit(":", 1)[0]
-                body = str(comment.body)
-                vs = analyzer.polarity_scores(body)
-                sentiment = vs['compound']
-                tickers_dict, sentiment_dict = extract_ticker(body.upper(), tickers_dict, sentiment_dict, sentiment)
-                count += 1
-
-                if count > 20:
-                    upload_to_database(tickers_dict, sentiment_dict, current_datetime_str)
-                    count = 0
-                    sentiment_dict = {}
-                    tickers_dict = {}
-
-        except Exception as e:
-            print(e)
-            time.sleep(10)
-
-
 def update_hourly():
     """
     Group all mentions in the last hour together
@@ -207,8 +178,7 @@ def crypto_change():
 
 
 if __name__ == '__main__':
-    # crypto_live()
-    crypto_live_stream()
+    crypto_live()
     update_hourly()
     crypto_change()
 

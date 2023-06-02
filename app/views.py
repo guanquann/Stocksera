@@ -72,7 +72,8 @@ def ticker_recommendations(request):
     Show upgrades/downgrades of ticker. Data from yahoo finance
     """
     ticker_selected = default_ticker(request)
-    df = pd.DataFrame(client.recommendation_trends(symbol=ticker_selected))
+
+    df = pd.DataFrame(finnhub_client.recommendation_trends(symbol=ticker_selected))
     df = df[["strongBuy", "buy", "hold", "sell", "strongSell", "period"]]
     df.columns = ["Strong Buy", "Buy", "Hold", "Sell", "Strong Sell", "Period"]
     return render(request, 'stock/recommendations.html', {"table": df.to_html(index=False)})

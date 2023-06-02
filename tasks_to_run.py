@@ -17,7 +17,6 @@ import scheduled_tasks.twitter.get_twitter_followers as get_twitter_followers
 import scheduled_tasks.twitter.scrape_trending_posts as scrape_twitter_posts
 
 import scheduled_tasks.stocks.get_short_volume as get_short_volume
-import scheduled_tasks.stocks.get_financial as get_financial
 import scheduled_tasks.stocks.get_failure_to_deliver as get_failure_to_deliver
 import scheduled_tasks.stocks.get_borrowed_shares as get_borrowed_shares
 
@@ -41,8 +40,6 @@ import scheduled_tasks.economy.get_interest_rate as get_interest_rate
 import scheduled_tasks.economy.get_initial_jobless_claims as get_initial_jobless_claims
 import scheduled_tasks.economy.get_upcoming_events_date as get_upcoming_events_date
 
-import scheduled_tasks.others.get_ticker_info as get_ticker_info
-
 # Get real time trending tickers from WSB
 SCRAPE_LIVE_WSB = True
 
@@ -50,8 +47,7 @@ SCRAPE_LIVE_WSB = True
 SCRAPE_LIVE_CRYPTO = True
 
 # Get trending tickers/crypto POSTS in popular subreddits
-SCRAPE_REDDIT_STOCKS_POSTS = True
-SCRAPE_REDDIT_CRYPTO_POSTS = True
+SCRAPE_REDDIT_POSTS = True
 
 # Get subreddit count
 SCRAPE_SUBREDDIT_COUNT = True
@@ -64,9 +60,6 @@ SCRAPE_TWEET_COUNTS = True
 
 # Get trending tickers in Stocktwits
 SCRAPE_STOCKTWITS_TRENDING = True
-
-# Update the cached ticker financial data for faster processing time
-TICKER_FINANCIAL = True
 
 # Get short volume of individual tickers
 SHORT_VOL = True
@@ -95,11 +88,8 @@ LATEST_INSIDER_TRADING = True
 # Get stocks summary (heat map)
 STOCKS_HEATMAP = True
 
-# Get senate trading
-SENATE_TRADING = True
-
-# Get house trading
-HOUSE_TRADING = True
+# Get senate and house trading
+GOVT_TRADING = True
 
 # Get IPO calendar
 IPO_calendar = True
@@ -123,103 +113,194 @@ INTEREST_RATE = True
 INITIAL_JOBLESS_CLAIMS = True
 
 
+def wsb_trending():
+    scrape_stocks_discussion_thread.wsb_live()
+    scrape_stocks_discussion_thread.wsb_change()
+    scrape_stocks_discussion_thread.get_mkt_cap()
+    scrape_stocks_discussion_thread.update_hourly()
+
+
+def crypto_trending():
+    scrape_crypto_discussion_thread.crypto_live()
+    scrape_crypto_discussion_thread.crypto_change()
+    scrape_crypto_discussion_thread.update_hourly()
+
+
+def reddit_trending():
+    scrape_reddit_stocks.main()
+    scrape_reddit_crypto.main()
+
+
+def subreddit_trending():
+    get_subreddit_count.subreddit_count()
+
+
+def twitter_followers():
+    get_twitter_followers.main()
+
+
+def twitter_stock_trending():
+    scrape_twitter_posts.main()
+
+
+def stocktwits_trending():
+    get_stocktwits_trending.main()
+
+
+def short_vol():
+    get_short_volume.main()
+
+
+def low_float():
+    miscellaneous.get_low_float()
+
+
+def short_int():
+    miscellaneous.get_high_short_interest()
+
+
+def earning_calendar():
+    get_earnings.main()
+
+
+def latest_news():
+    get_news.main()
+    get_news.main("crypto")
+    get_news.main("forex")
+    get_news.main("merger")
+
+
+def ftd():
+    get_failure_to_deliver.download_ftd()
+    FOLDER_PATH = r"/database/failure_to_deliver/csv"
+    files_available = sorted(Path(FOLDER_PATH).iterdir(), key=os.path.getmtime)
+    get_failure_to_deliver.upload_to_df(files_available)
+    get_failure_to_deliver.get_top_ftd(files_available[0])
+
+
+def ctb():
+    get_borrowed_shares.main()
+
+
+def insider_trading():
+    get_latest_insider_trading.main()
+
+
+def heatmap():
+    get_stocks_summary.main()
+
+
+def govt_trading():
+    get_senate_trading.senate_trades()
+    get_house_trading.house_trades()
+
+
+def ipo():
+    get_ipo_calendar.main()
+
+
+def rrp():
+    get_reverse_repo.reverse_repo()
+
+
+def inflation():
+    get_inflation.usa_inflation()
+    get_inflation.world_inflation()
+
+
+def treasury():
+    get_daily_treasury.download_json()
+
+
+def retail():
+    get_retail_sales.retail_sales()
+
+
+def interest_rate():
+    get_interest_rate.interest_rate()
+
+
+def initial_jobless_claims():
+    get_initial_jobless_claims.jobless_claims()
+
+
+def upcoming_economic_dates():
+    get_upcoming_events_date.main()
+
+
 if __name__ == '__main__':
-    # Create/update database. It is okay to run this even though you have an existing database.
     create_database.database()
 
     if SCRAPE_LIVE_WSB:
-        scrape_stocks_discussion_thread.wsb_live()
-        scrape_stocks_discussion_thread.wsb_change()
-        scrape_stocks_discussion_thread.get_mkt_cap()
-        scrape_stocks_discussion_thread.update_hourly()
+        wsb_trending()
 
     if SCRAPE_LIVE_CRYPTO:
-        scrape_crypto_discussion_thread.crypto_live()
-        scrape_crypto_discussion_thread.crypto_change()
-        scrape_crypto_discussion_thread.update_hourly()
+        crypto_trending()
 
-    if SCRAPE_REDDIT_STOCKS_POSTS:
-        scrape_reddit_stocks.main()
-
-    if SCRAPE_REDDIT_CRYPTO_POSTS:
-        scrape_reddit_crypto.main()
+    if SCRAPE_REDDIT_POSTS:
+        reddit_trending()
 
     if SCRAPE_SUBREDDIT_COUNT:
-        get_subreddit_count.subreddit_count()
+        subreddit_trending()
 
     if UPDATE_TWITTER_FOLLOWERS:
-        get_twitter_followers.main()
+        twitter_followers()
 
     if SCRAPE_TWEET_COUNTS:
-        scrape_twitter_posts.main()
+        twitter_stock_trending()
 
     if SCRAPE_STOCKTWITS_TRENDING:
-        get_stocktwits_trending.main()
-
-    # if TICKER_FINANCIAL:
-    #     for i in get_ticker_info.full_ticker_list():
-    #         get_financial.financial(i)
+        stocktwits_trending()
 
     if SHORT_VOL:
-        get_short_volume.main()
+        short_vol()
 
     if LOW_FLOAT:
-        miscellaneous.get_low_float()
+        low_float()
 
     if SHORT_INT:
-        miscellaneous.get_high_short_interest()
+        short_int()
 
     if EARNINGS_CALENDAR:
-        get_earnings.main()
+        earning_calendar()
 
     if LATEST_NEWS:
-        get_news.main()
-        get_news.main("crypto")
-        get_news.main("forex")
-        get_news.main("merger")
+        latest_news()
 
     if FTD:
-        get_failure_to_deliver.download_ftd()
-        FOLDER_PATH = r"/database/failure_to_deliver/csv"
-        files_available = sorted(Path(FOLDER_PATH).iterdir(), key=os.path.getmtime)
-        get_failure_to_deliver.upload_to_df(files_available)
-        get_failure_to_deliver.get_top_ftd(files_available[0])
+        ftd()
 
     if BORROWED_SHARES:
-        get_borrowed_shares.main()
+        ctb()
 
     if RRP:
-        get_reverse_repo.reverse_repo()
+        rrp()
 
     if LATEST_INSIDER_TRADING:
-        get_latest_insider_trading.main()
+        insider_trading()
 
     if STOCKS_HEATMAP:
-        get_stocks_summary.main()
+        heatmap()
 
-    if SENATE_TRADING:
-        get_senate_trading.senate_trades()
-
-    if HOUSE_TRADING:
-        get_house_trading.house_trades()
+    if GOVT_TRADING:
+        govt_trading()
 
     if IPO_calendar:
-        get_ipo_calendar.main()
+        ipo()
 
     if INFLATION:
-        get_inflation.usa_inflation()
-        get_inflation.world_inflation()
+        inflation()
 
     if TREASURY:
-        get_daily_treasury.download_json()
+        treasury()
 
     if RETAIL_SALES:
-        get_retail_sales.retail_sales()
+        retail()
 
     if INTEREST_RATE:
-        get_interest_rate.interest_rate()
+        interest_rate()
 
     if INITIAL_JOBLESS_CLAIMS:
-        get_initial_jobless_claims.jobless_claims()
+        initial_jobless_claims()
 
-    get_upcoming_events_date.main()
+    upcoming_economic_dates()

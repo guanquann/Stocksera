@@ -25,7 +25,7 @@ urlpatterns = [
     path('discussion/', views.discussion, name='discussion'),
     path('ticker_earnings/', views.ticker_earnings, name='ticker_earnings'),
     path('sec_fillings/', views.sec_fillings, name='sec_fillings'),
-    path('insider_trading/', views.insider_trading, name='insider_trading'),
+    path('insider_trading/', views.stock_insider_trading, name='insider_trading'),
 
     # Reddit
     path('reddit_analysis/', views.reddit_analysis, name='reddit_analysis'),
@@ -49,11 +49,11 @@ urlpatterns = [
     # Economy
     path('reverse_repo/', views.reverse_repo, name='reverse_repo'),
     path('daily_treasury/', views.daily_treasury, name='daily_treasury'),
-    path('inflation/', views.inflation, name='inflation'),
+    path('inflation/', views.us_inflation, name='inflation'),
     path('world_inflation/', views.world_inflation, name='world_inflation'),
     path('retail_sales/', views.retail_sales, name='retail_sales'),
-    path('interest_rate/', views.interest_rate, name='interest_rate'),
-    path('initial_jobless_claims/', views.initial_jobless_claims, name='initial_jobless_claims'),
+    path('interest_rate/', views.fed_interest_rate, name='interest_rate'),
+    path('initial_jobless_claims/', views.initial_jobless, name='initial_jobless_claims'),
 
     # Discover
     path('ark_trades/', views.ark_trades, name='ark_trades'),
@@ -65,7 +65,7 @@ urlpatterns = [
     path('short_interest/', views.short_interest, name='short_interest'),
     path('low_float/', views.low_float, name='low_float'),
     path('earnings_calendar/', views.earnings_calendar, name='earnings_calendar'),
-    path('stock_split/', views.stock_split, name='stock_split'),
+    path('stock_split/', views.stock_split_history, name='stock_split'),
     path('dividend_history/', views.dividend_history, name='dividend_history'),
     path('correlation/', views.correlation, name='correlation'),
 

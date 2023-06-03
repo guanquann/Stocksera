@@ -41,123 +41,123 @@ import scheduled_tasks.economy.get_initial_jobless_claims as get_initial_jobless
 import scheduled_tasks.economy.get_upcoming_events_date as get_upcoming_events_date
 
 
-def create_db():
+def task_create_db():
     create_database.database()
 
 
-def wsb_trending():
+def task_wsb_trending():
     scrape_stocks_discussion_thread.main()
 
 
-def crypto_trending():
+def task_crypto_trending():
     scrape_crypto_discussion_thread.main()
 
 
-def reddit_trending():
+def task_reddit_trending():
     scrape_reddit_stocks.main()
     scrape_reddit_crypto.main()
 
 
-def subreddit_trending():
+def task_subreddit_trending():
     get_subreddit_count.main()
 
 
-def twitter_followers():
+def task_twitter_followers():
     get_twitter_followers.main()
 
 
-def twitter_stock_trending():
+def task_twitter_stock_trending():
     scrape_twitter_posts.main()
 
 
-def stocktwits_trending():
+def task_stocktwits_trending():
     get_stocktwits_trending.main()
 
 
-def short_vol():
+def task_short_vol():
     get_short_volume.main()
 
 
-def low_float():
+def task_low_float():
     miscellaneous.get_low_float()
 
 
-def short_int():
+def task_short_int():
     miscellaneous.get_high_short_interest()
 
 
-def dividends():
+def task_dividends():
     get_dividends.main()
 
 
-def earning_calendar():
+def task_earning_calendar():
     get_earnings.main()
 
 
-def stock_split():
+def task_stock_split():
     get_stock_splits.main()
 
 
-def latest_news():
+def task_latest_news():
     get_news.main()
 
 
-def trading_halt():
+def task_trading_halt():
     get_trading_halts.main()
 
 
-def ftd():
+def task_ftd():
     get_failure_to_deliver.main()
 
 
-def ctb():
+def task_ctb():
     get_borrowed_shares.main()
 
 
-def threshold_sec():
+def task_threshold_sec():
     get_threshold_securities.main()
 
 
-def insider_trading():
+def task_insider_trading():
     get_latest_insider_trading.main()
 
 
-def heatmap():
+def task_heatmap():
     get_stocks_summary.main()
 
 
-def govt_trading():
+def task_govt_trading():
     get_senate_trading.senate_trades()
     get_house_trading.house_trades()
 
 
-def ipo():
+def task_ipo():
     get_ipo_calendar.main()
 
 
-def rrp():
+def task_rrp():
     get_reverse_repo.reverse_repo()
 
 
-def inflation():
+def task_inflation():
     get_inflation.main()
 
 
-def treasury():
+def task_treasury():
     get_daily_treasury.download_json()
 
 
-def retail():
+def task_retail():
     get_retail_sales.retail_sales()
 
 
-def interest_rate():
+def task_interest_rate():
     get_interest_rate.interest_rate()
 
 
-def initial_jobless_claims():
+def task_initial_jobless_claims():
     get_initial_jobless_claims.jobless_claims()
 
 
-def upcoming_economic_dates():
+def task_upcoming_economic_dates():
     get_upcoming_events_date.main()

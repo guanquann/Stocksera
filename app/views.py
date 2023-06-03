@@ -1373,93 +1373,96 @@ def tasks(request):
         data = json.load(r)
 
     if request.POST:
-        if request.POST.get("create_db"):
-            create_db()
-            data["create_db"] = current_timing
-        elif request.POST.get("wsb_trending"):
-            wsb_trending()
-            data["wsb_trending"] = current_timing
-        elif request.POST.get("crypto_trending"):
-            crypto_trending()
-            data["crypto_trending"] = current_timing
-        elif request.POST.get("reddit_trending"):
-            reddit_trending()
-            data["reddit_trending"] = current_timing
-        elif request.POST.get("subreddit_trending"):
-            subreddit_trending()
-            data["subreddit_trending"] = current_timing
-        elif request.POST.get("twitter_followers"):
-            twitter_followers()
-            data["twitter_followers"] = current_timing
-        elif request.POST.get("twitter_stock_trending"):
-            twitter_stock_trending()
-            data["twitter_stock_trending"] = current_timing
-        elif request.POST.get("stocktwits_trending"):
-            stocktwits_trending()
-            data["stocktwits_trending"] = current_timing
-        elif request.POST.get("short_vol"):
-            short_vol()
-            data["short_vol"] = current_timing
-        elif request.POST.get("dividends"):
-            dividends()
-            data["dividends"] = current_timing
-        elif request.POST.get("stock_split"):
-            stock_split()
-            data["stock_split"] = current_timing
-        elif request.POST.get("earning_calendar"):
-            earning_calendar()
-            data["earning_calendar"] = current_timing
-        elif request.POST.get("latest_news"):
-            latest_news()
-            data["latest_news"] = current_timing
-        elif request.POST.get("trading_halt"):
-            trading_halt()
-            data["trading_halt"] = current_timing
-        elif request.POST.get("ftd"):
-            ftd()
-            data["ftd"] = current_timing
-        elif request.POST.get("ctb"):
-            ctb()
-            data["ctb"] = current_timing
-        elif request.POST.get("threshold_sec"):
-            threshold_sec()
-            data["threshold_sec"] = current_timing
-        elif request.POST.get("insider_trading"):
-            insider_trading()
-            data["insider_trading"] = current_timing
-        elif request.POST.get("heatmap"):
-            heatmap()
-            data["heatmap"] = current_timing
-        elif request.POST.get("govt_trading"):
-            govt_trading()
-            data["govt_trading"] = current_timing
-        elif request.POST.get("ipo"):
-            ipo()
-            data["ipo"] = current_timing
-        elif request.POST.get("rrp"):
-            rrp()
-            data["rrp"] = current_timing
-        elif request.POST.get("inflation"):
-            inflation()
-            data["inflation"] = current_timing
-        elif request.POST.get("treasury"):
-            treasury()
-            data["treasury"] = current_timing
-        elif request.POST.get("retail"):
-            retail()
-            data["retail"] = current_timing
-        elif request.POST.get("interest_rate"):
-            interest_rate()
-            data["interest_rate"] = current_timing
-        elif request.POST.get("initial_jobless_claims"):
-            initial_jobless_claims()
-            data["initial_jobless_claims"] = current_timing
-        elif request.POST.get("upcoming_economic_dates"):
-            upcoming_economic_dates()
-            data["upcoming_economic_dates"] = current_timing
+        try:
+            if request.POST.get("create_db"):
+                task_create_db()
+                data["create_db"] = current_timing
+            elif request.POST.get("wsb_trending"):
+                task_wsb_trending()
+                data["wsb_trending"] = current_timing
+            elif request.POST.get("crypto_trending"):
+                task_crypto_trending()
+                data["crypto_trending"] = current_timing
+            elif request.POST.get("reddit_trending"):
+                task_reddit_trending()
+                data["reddit_trending"] = current_timing
+            elif request.POST.get("subreddit_trending"):
+                task_subreddit_trending()
+                data["subreddit_trending"] = current_timing
+            elif request.POST.get("twitter_followers"):
+                task_twitter_followers()
+                data["twitter_followers"] = current_timing
+            elif request.POST.get("twitter_stock_trending"):
+                task_twitter_stock_trending()
+                data["twitter_stock_trending"] = current_timing
+            elif request.POST.get("stocktwits_trending"):
+                task_stocktwits_trending()
+                data["stocktwits_trending"] = current_timing
+            elif request.POST.get("short_vol"):
+                task_short_vol()
+                data["short_vol"] = current_timing
+            elif request.POST.get("dividends"):
+                task_dividends()
+                data["dividends"] = current_timing
+            elif request.POST.get("stock_split"):
+                task_stock_split()
+                data["stock_split"] = current_timing
+            elif request.POST.get("earning_calendar"):
+                task_earning_calendar()
+                data["earning_calendar"] = current_timing
+            elif request.POST.get("latest_news"):
+                task_latest_news()
+                data["latest_news"] = current_timing
+            elif request.POST.get("trading_halt"):
+                task_trading_halt()
+                data["trading_halt"] = current_timing
+            elif request.POST.get("ftd"):
+                task_ftd()
+                data["ftd"] = current_timing
+            elif request.POST.get("ctb"):
+                task_ctb()
+                data["ctb"] = current_timing
+            elif request.POST.get("threshold_sec"):
+                task_threshold_sec()
+                data["threshold_sec"] = current_timing
+            elif request.POST.get("insider_trading"):
+                task_insider_trading()
+                data["insider_trading"] = current_timing
+            elif request.POST.get("heatmap"):
+                task_heatmap()
+                data["heatmap"] = current_timing
+            elif request.POST.get("govt_trading"):
+                task_govt_trading()
+                data["govt_trading"] = current_timing
+            elif request.POST.get("ipo"):
+                task_ipo()
+                data["ipo"] = current_timing
+            elif request.POST.get("rrp"):
+                task_rrp()
+                data["rrp"] = current_timing
+            elif request.POST.get("inflation"):
+                task_inflation()
+                data["inflation"] = current_timing
+            elif request.POST.get("treasury"):
+                task_treasury()
+                data["treasury"] = current_timing
+            elif request.POST.get("retail"):
+                task_retail()
+                data["retail"] = current_timing
+            elif request.POST.get("interest_rate"):
+                task_interest_rate()
+                data["interest_rate"] = current_timing
+            elif request.POST.get("initial_jobless_claims"):
+                task_initial_jobless_claims()
+                data["initial_jobless_claims"] = current_timing
+            elif request.POST.get("upcoming_economic_dates"):
+                task_upcoming_economic_dates()
+                data["upcoming_economic_dates"] = current_timing
 
-        with open(r"database/locally_run_timings.json", "w") as r:
-            json.dump(data, r, indent=4)
+            with open(r"database/locally_run_timings.json", "w") as r:
+                json.dump(data, r, indent=4)
+        except:
+            pass
 
     return render(request, 'tasks.html', {"data": data})
 

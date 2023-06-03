@@ -26,7 +26,7 @@ urlpatterns = [
 
     path('stocks/news_sentiment/<str:ticker_selected>/', views.news_sentiment, name='api_news_sentiment'),
 
-    path('stocks/insider_trading/<str:ticker_selected>/', views.insider_trading, name='api_insider_trading'),
+    path('stocks/insider_trading/<str:ticker_selected>/', views.stock_insider_trading, name='api_insider_trading'),
 
     path('discover/latest_insider_summary/', views.latest_insider_summary, name='api_latest_insider_summary'),
 
@@ -61,7 +61,7 @@ urlpatterns = [
     path('economy/reverse_repo/', views.reverse_repo, name='api_reverse_repo'),
     path('economy/daily_treasury/', views.daily_treasury, name='api_daily_treasury'),
 
-    path('economy/inflation/<str:area>/', views.inflation, name='api_inflation'),
+    path('economy/inflation/<str:area>/', views.us_world_inflation, name='api_inflation'),
 
     path('economy/retail_sales/', views.retail_sales, name='api_retail_sales'),
     path('economy/interest_rate/', views.interest_rate, name='api_interest_rate'),

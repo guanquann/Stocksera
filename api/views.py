@@ -188,7 +188,7 @@ def news_sentiment(request, ticker_selected="AAPL"):
 @csrf_exempt
 @api_view(['GET'])
 @schema(AutoDocstringSchema())
-def insider_trading(request, ticker_selected="AAPL"):
+def stock_insider_trading(request, ticker_selected="AAPL"):
     """
     Get ticker's insider trading data.
     """
@@ -623,7 +623,7 @@ def daily_treasury(request):
 @csrf_exempt
 @api_view(['GET'])
 @schema(AutoDocstringSchema())
-def inflation(request, area="usa"):
+def us_world_inflation(request, area="usa"):
     """
     Get inflation data.
     """

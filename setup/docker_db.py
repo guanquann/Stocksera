@@ -1,7 +1,5 @@
 import subprocess
 
-subprocess.run("py --version")
-
 print("Dockerizing...")
 subprocess.run("docker-compose run --rm web python scheduled_tasks/create_database.py")
 subprocess.run("docker-compose run --rm web python manage.py makemigrations users")

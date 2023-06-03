@@ -2,6 +2,7 @@
 
 There are 2 ways to run the tasks:
 - Go to http://localhost:8000/tasks and click on the buttons
+  - ![Tasks](../static/images/github/tasks.png)
 - Through command prompt
   - <b>You should run all commands from the main parent directory</b>
   - Ensure that you run scheduled_tasks/create_database.py first.

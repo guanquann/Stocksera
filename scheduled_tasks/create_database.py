@@ -8,9 +8,8 @@ import mysql.connector
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
 
-from helpers import connect_mysql_database
-
 try:
+    from helpers import connect_mysql_database
     cnx, cur, engine = connect_mysql_database()
 except mysql.connector.ProgrammingError:
     with open("config.yaml") as config_file:
@@ -20,6 +19,7 @@ except mysql.connector.ProgrammingError:
                                   host=config_keys["MYSQL_HOST"])
     cur = cnx.cursor()
     cur.execute(f"CREATE DATABASE IF NOT EXISTS {config_keys['MYSQL_DATABASE']}")
+    from helpers import connect_mysql_database
     cnx, cur, engine = connect_mysql_database()
 
 

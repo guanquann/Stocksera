@@ -1,7 +1,5 @@
 import subprocess
 
-subprocess.run("py --version")
-
 print("Creating Database...")
 subprocess.run("py scheduled_tasks/create_database.py")
 

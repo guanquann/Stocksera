@@ -12,7 +12,6 @@ from json.decoder import JSONDecodeError
 from fast_yahoo import *
 from custom_extensions.custom_words import *
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from scheduled_tasks.others.get_tdameritrade_access_token import get_access_token
 
 with open("config.yaml") as config_file:
     config_keys = yaml.load(config_file, Loader=yaml.Loader)
@@ -164,23 +163,6 @@ def check_financial_data(ticker_selected, ticker, data, r):
 
 def convert_date(date):
     return date[0].split()[0]
-
-
-def get_options_data(ticker):
-    """
-    Get options chain from TD Ameritrade
-    """
-    with open("config.yaml") as td_config_file:
-        td_config_keys = yaml.load(td_config_file, Loader=yaml.Loader)
-    url = f"https://api.tdameritrade.com/v1/marketdata/chains?apikey={td_config_keys['TDA_CLIENT_ID']}" \
-          f"&symbol={ticker}&includeQuotes=FALSE"
-    response = requests.get(url, headers={'Authorization': f'Bearer {td_config_keys["TDA_ACCESS_TOKEN"]}'})
-    if not response.ok:
-        print("Error loading TD Ameritrade Access Token...")
-        get_access_token()
-        return get_options_data(ticker)
-    data = response.json()
-    return data
 
 
 def get_sec_fillings(ticker_selected):

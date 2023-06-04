@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="{% static 'style/stock/options.css' %}">
 {% endblock %}
 
-{% block onload_properties%}restore_dark_mode();display_data();init_table({{options_data}});show_table({{options_data}}, null);show_max_pain();{% endblock %}
+{% block onload_properties%}restore_dark_mode();display_data();show_table({{ options_data | safe }}, {{ expiry_date | safe }}, {{ historical_options_data | safe }}, {{ current_price }}, null);{% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -54,7 +54,11 @@
     <div class="contents_div">
         <div class="navigation_menu">
             <div id="date_dropdown">
-                <select name="date" onchange="show_table({{options_data}}, this.value);show_max_pain()" id="expiry_date"></select>
+                <select name="date" id="expiry_date" onchange="reload_graph(this.value)">
+                    {% for i in expiry_date %}
+                        <option value={{i}}>{{i|split:"T"|index:0}}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
 
@@ -66,19 +70,16 @@
                 <canvas id="max_pain_chart"></canvas>
             </div>
 
-            <h2>Volume</h2>
-            <div class="chart-container">
-                <canvas id="volume_chart"></canvas>
-            </div>
-
             <h2>Open Interest</h2>
             <div class="chart-container">
                 <canvas id="oi_chart"></canvas>
             </div>
-        </div>
 
-        <h2>Options Table</h2>
-        <div class="scrollable_div" style="max-height: 500px" id="table_div"></div>
+            <h2>Historical Max Pain</h2>
+            <div class="chart-container">
+                <canvas id="historical_chart"></canvas>
+            </div>
+        </div>
 
         <div style="margin-top: 30px">
             <p><b>Related tickers that you might be interested:</b></p>
@@ -92,10 +93,10 @@
 
 {% block bottom_script %}
 <script type="text/javascript">
-<!--Hack to convert python variables to javascript-->
-var None = "N/A", False = false; True = true;
-var information = {{information|safe}};
-show_ticker_price(information)
-get_ssr(information)
+    <!--Hack to convert python variables to javascript-->
+    var None = "N/A", False = false; True = true;
+    var information = {{information|safe}};
+    show_ticker_price(information)
+    get_ssr(information)
 </script>
 {% endblock %}

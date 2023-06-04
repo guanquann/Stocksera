@@ -21,13 +21,6 @@ Before continuing, register for an API in the links shown below and add them in 
 | Polygon          | https://polygon.io/                                |
 | Gmail -optional  | https://realpython.com/python-send-email/          |
 
-To access stock options data, sign up for TD Ameritrade Developer Account and follow the instructions in: 
-- https://www.reddit.com/r/algotrading/comments/c81vzq/td_ameritrade_api_access_2019_guide/
-- https://developer.tdameritrade.com/content/simple-auth-local-apps
-- Add your Client ID and Access Token in http://localhost:8000/tasks
-- Ignore the refresh token for now as it will be generated automatically if your Client ID and Access Token are correct.
-- NOTE: The Access Token expires every 90 days. So, remember to update it from time to time.
-
 ## Frequency to run tasks
 - Do note that the frequency to run the files are for guidance only. You do not need to follow them strictly. Change according to your preference.
 
@@ -64,4 +57,3 @@ To access stock options data, sign up for TD Ameritrade Developer Account and fo
 | scheduled_tasks/government/get_house_trading.py           | main()                                  | Daily (AH)  |
 | scheduled_tasks/news/get_news.py                          | main()                                  | 10 Mins     |
 | scheduled_tasks/reset/reset_stocksera_trending.py         | reset_trending_db()                     | 30 Mins     |
-| scheduled_tasks/others/get_tdameritrade_access_token.py   | get_access_token()                      | 30 Mins     |

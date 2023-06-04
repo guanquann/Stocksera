@@ -16,3 +16,9 @@ def to_replace(value):
 @register.filter
 def get_range(value):
     return range(value)
+
+
+@register.filter(name='split')
+def split(value, key):
+    value.split("key")
+    return value.split(key)

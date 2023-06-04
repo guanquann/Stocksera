@@ -47,10 +47,10 @@ This website is free for use. If you wish to support this project, please star i
 #### /ticker/options/
 
 - View options chain of your favourite ticker.
-- Find out the max-pain price, OTM & ITM options and Call/Put ratio of the next few weeks.
-- Data is from <a href="https://developer.tdameritrade.com/apis/">TD Ameritrade</a>.
+- Find out the current max-pain price, OTM & ITM options, Call/Put ratio, historical max-pain.
+- Data is from <a href="https://swaggystocks.com/dashboard/options-max-pain">Swaggy Stocks</a>.
   ![Options](./static/images/github/options.png)
-  ![Option Chain](./static/images/github/options_chain.png)
+  ![Option Chain](./static/images/github/options1.png)
 
 #### /ticker/short_volume/
 

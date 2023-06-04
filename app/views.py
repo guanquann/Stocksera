@@ -413,20 +413,45 @@ def financial(request):
 
 def options(request):
     """
-    Get options chain from TDA
+    Get options chain from Swaggystock
     """
     ticker_selected = default_ticker(request)
     information, related_tickers = check_market_hours(ticker_selected)
     if "longName" in information and information["regularMarketPrice"] != "N/A":
-        options_data = get_options_data(ticker_selected)
+        options_data = requests.get(f"https://api.swaggystocks.com/stocks/options/maxPain/"
+                                    f"{ticker_selected}").json()["maxPain"]
+
+        if not options_data:
+            return render(request, 'stock/options.html', {"ticker_selected": ticker_selected,
+                                                          "information": information,
+                                                          "options_data": [],
+                                                          "historical_options_data": [],
+                                                          "current_price": information["regularMarketPrice"],
+                                                          "expiry_date": [],
+                                                          "error": "error_true",
+                                                          "error_msg": f"{ticker_selected} has no option data."})
+
+        historical_options_data = requests.get(f"https://api.swaggystocks.com/stocks/options/maxPain/"
+                                               f"{ticker_selected}/historical"
+                                               f"?timeframe=6-months").json()["historicalMaxPainData"]
+
+        expiry_date = sorted(list(set(map(lambda x: x["expiration_date"], options_data))))
+
         return render(request, 'stock/options.html', {"ticker_selected": ticker_selected,
                                                       "information": information,
                                                       "related_tickers": related_tickers,
-                                                      "options_data": options_data
+                                                      "options_data": options_data,
+                                                      "historical_options_data": historical_options_data,
+                                                      "current_price": information["regularMarketPrice"],
+                                                      "expiry_date": expiry_date
                                                       })
     else:
         return render(request, 'stock/options.html', {"ticker_selected": ticker_selected,
-                                                      "options_data": {},
+                                                      "information": {},
+                                                      "options_data": [],
+                                                      "historical_options_data": [],
+                                                      "current_price": 0,
+                                                      "expiry_date": [],
                                                       "error": "error_true",
                                                       "error_msg": "There is no ticker named {} found! Please enter "
                                                                    "a ticker symbol (TSLA) instead of the name "
@@ -1482,9 +1507,6 @@ def setup(request):
         config_keys[request.POST.get("reddit_id_api")] = request.POST.get("reddit_id_api_value")
         config_keys[request.POST.get("reddit_sec_api")] = request.POST.get("reddit_sec_api_value")
         config_keys[request.POST.get("whalealert_api")] = request.POST.get("whalealert_api_value")
-        config_keys[request.POST.get("tda_access_api")] = request.POST.get("tda_access_api_value")
-        config_keys[request.POST.get("tda_client_api")] = request.POST.get("tda_client_api_value")
-        config_keys[request.POST.get("tda_refresh_api")] = request.POST.get("tda_refresh_api_value")
 
         config_keys[request.POST.get("mysql_db")] = request.POST.get("mysql_db_value")
         config_keys[request.POST.get("mysql_host")] = request.POST.get("mysql_host_value")

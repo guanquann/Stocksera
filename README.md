@@ -146,6 +146,11 @@ This website is free for use. If you wish to support this project, please star i
 - View stocktwits trending tickers over time
   ![Stocktwits Trending](./static/images/github/stocktwits_trending.png)
 
+#### /twitter_trending/
+
+- View number of mentions of tickers on Twitter over time
+  ![Twitter Trending](./static/images/github/twitter_trending.png)
+
 #### /senate/
 
 - View recent senate trading

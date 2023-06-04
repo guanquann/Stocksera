@@ -6,6 +6,7 @@ from scheduled_tasks.others.get_popular_tickers import *
 from scheduled_tasks.twitter.twitter_connection import *
 from scheduled_tasks.reddit.reddit_utils import *
 
+
 def connect_to_endpoint_delete(url):
     response = requests.request("DELETE", url, auth=bearer_oauth,)
     if response.status_code != 200:

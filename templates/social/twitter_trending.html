@@ -20,8 +20,18 @@
     <script>highlight_selected_nav('social')</script>
 
     <div class="more_info_div_parent">
+        <div class="more_info_div"><a href="{% url 'latest_insider' %}">Insider</a></div>
+        <div class="more_info_div"><a href="{% url 'ark_trades' %}">ARK</a></div>
+        <div class="more_info_div"><a href="{% url 'jim_cramer' %}">Jim Cramer</a></div>
+        <div class="more_info_div"><a href="{% url 'ipo_calendar' %}">IPOs</a></div>
         <div class="more_info_div"><a href="{% url 'stocktwits' %}">Stocktwits</a></div>
-        <div class="more_info_div current_link"><a href="{% url 'twitter_trending' %}">Twitter</a></div>
+        <div class="more_info_div current_link"><a href="{% url 'twitter_trending' %}">Twitter Trending</a></div>
+        <div class="more_info_div"><a href="{% url 'beta' %}">Beta</a></div>
+        <div class="more_info_div"><a href="{% url 'correlation' %}">Correlation</a></div>
+        <div class="more_info_div"><a href="{% url 'dividend_history' %}">Dividend</a></div>
+        <div class="more_info_div"><a href="{% url 'stock_split' %}">Split</a></div>
+        <div class="more_info_div"><a href="{% url 'short_interest' %}">Short Interest</a></div>
+        <div class="more_info_div"><a href="{% url 'low_float' %}">Low Float</a></div>
     </div>
 
     <div class="instructions">

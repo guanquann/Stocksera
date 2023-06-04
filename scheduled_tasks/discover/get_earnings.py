@@ -21,12 +21,13 @@ def main():
                                                            to=str(current_date+timedelta(days=current_index+7)),
                                                            symbol="",
                                                            international=False)["earningsCalendar"])
-        df = df[["date", "hour", "symbol", "epsEstimate", "epsActual", "revenueEstimate", "revenueActual", "year", "quarter"]]
+        df = df[["date", "hour", "symbol", "epsEstimate", "epsActual", "revenueEstimate", "revenueActual",
+                 "year", "quarter"]]
         current_index += 7
         main_df = main_df.append(df)
-
-    mkt_cap_df = download_advanced_stats_multi_thread(main_df["symbol"].tolist(), {'price': {"marketCap": "mkt_cap"}})
-
+    main_df = main_df[main_df["symbol"].str.len() <= 4]
+    mkt_cap_df = download_advanced_stats_multi_thread(main_df["symbol"].tolist(),
+                                                      {'price': {"marketCap": "mkt_cap"}}, 1)
     mkt_cap_df.reset_index(inplace=True)
     mkt_cap_df.replace("N/A", 0, inplace=True)
     mkt_cap_df.rename(columns={"Symbol": "symbol"}, inplace=True)

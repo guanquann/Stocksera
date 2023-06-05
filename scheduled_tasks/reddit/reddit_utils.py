@@ -1,24 +1,13 @@
 import os
 import re
 import sys
+import json
 import yaml
 import praw
-import math
-import requests
-import pandas as pd
-import mysql.connector
-from sqlalchemy import create_engine
-import numpy as np
-import matplotlib.pyplot as plt
-from collections import Counter
 from nltk.corpus import stopwords
-from datetime import datetime, timedelta
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
-from helpers import long_number_format
 from scheduled_tasks.reddit.stocks.fast_yahoo import *
-from custom_extensions.custom_words import new_words
-from custom_extensions.stopwords import stopwords_list
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 from helpers import connect_mysql_database
@@ -30,7 +19,7 @@ with open("config.yaml") as config_file:
     config_keys = yaml.load(config_file, Loader=yaml.Loader)
 
 analyzer = SentimentIntensityAnalyzer()
-analyzer.lexicon.update(new_words)
+analyzer.lexicon.update(json.load(open("custom_extensions/custom_words.json")))
 
 reddit = praw.Reddit(client_id=config_keys["REDDIT_CLIENT_ID"],
                      client_secret=config_keys["REDDIT_CLIENT_SECRET"],

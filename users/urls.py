@@ -6,15 +6,14 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     # Account Credentials
     path('login/', auth_views.LoginView.as_view(template_name="registration/login.html",
-                                                         redirect_authenticated_user=True),
-                                                         name="login"),
+                                                redirect_authenticated_user=True), name="login"),
     path('signup/', views.signup, name='signup'),
     path('logout/', auth_views.LogoutView.as_view(), name="logout"),
 
     path('password_change/',
          auth_views.PasswordChangeView.as_view(template_name="registration/password_change.html",
                                                success_url=reverse_lazy("password_change_done")),
-                                               name="password_change"),
+         name="password_change"),
     path('password_change_done/', auth_views.PasswordChangeDoneView.as_view(), name="password_change_done"),
 
     path('password_reset/', auth_views.PasswordResetView.as_view(
@@ -36,5 +35,4 @@ urlpatterns = [
     path('developers/', views.developers, name='developers'),
     path('settings/', views.settings, name='settings'),
     path('delete_account/', views.delete_account, name='delete_account'),
-    # path('', include('django.contrib.auth.urls')),
 ]

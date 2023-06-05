@@ -1,13 +1,12 @@
 import locale
 import yfinance.ticker as yf
-import matplotlib.pyplot as plt
-from collections import Counter
-from datetime import datetime, timedelta
 
 from scheduled_tasks.reddit.reddit_utils import *
+from custom_extensions.stopwords import stopwords_list
+from custom_extensions.custom_words import new_words
 
 analyzer = SentimentIntensityAnalyzer()
-analyzer.lexicon.update(json.load(open("custom_extensions/custom_words.json")))
+analyzer.lexicon.update(new_words)
 
 # x base point of for a ticker that appears on a subreddit title or text body that fits the search criteria
 base_points = 2
@@ -214,7 +213,7 @@ def filter_df(df, min_val):
     :param int min_val: the minimum total score
     :returns: the filtered dataframe
     """
-    filtered_words = json.load(open("custom_extensions/stopwords.json"))["stopwords_list"]
+    filtered_words = stopwords_list
 
     # compares the first column, which is the total score to the min val
     df = df[df.iloc[:, 0] >= min_val]

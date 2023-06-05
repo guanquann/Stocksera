@@ -1,4 +1,3 @@
-import yfinance as yf
 from helpers import *
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt

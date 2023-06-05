@@ -2,6 +2,7 @@ import os
 import yaml
 import numpy as np
 import finnhub
+import yfinance as yf
 import mysql.connector
 from datetime import date
 from sqlalchemy import create_engine
@@ -9,13 +10,14 @@ from django.http import HttpResponse
 from finvizfinance.quote import finvizfinance
 from json.decoder import JSONDecodeError
 from fast_yahoo import *
+from custom_extensions.custom_words import *
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 with open("config.yaml") as config_file:
     config_keys = yaml.load(config_file, Loader=yaml.Loader)
 
 analyzer = SentimentIntensityAnalyzer()
-analyzer.lexicon.update(json.load(open("custom_extensions/custom_words.json")))
+analyzer.lexicon.update(new_words)
 
 # https://finnhub.io/
 finnhub_client = finnhub.Client(api_key=config_keys["FINNHUB_KEY1"])

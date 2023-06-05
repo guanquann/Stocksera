@@ -1,6 +1,6 @@
 import os
 import sys
-from datetime import datetime, timedelta
+import pandas as pd
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 from scheduled_tasks.reddit.reddit_utils import *
@@ -143,7 +143,7 @@ def wsb_live():
     # Remove ticker if it is found in stopwords_list
     tickers_dict = dict(sorted(tickers_dict.items(), key=lambda item: item[1]))
     for key in list(tickers_dict.keys()):
-        if key in json.load(open("custom_extensions/stopwords.json"))["stopwords_list"]:
+        if key in stopwords_list:
             del tickers_dict[key]
 
     # Remove word from word cloud if it is found in all_words_dict

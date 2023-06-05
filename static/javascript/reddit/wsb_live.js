@@ -238,13 +238,13 @@ function load_yf_chart(table_index) {
 function load_options_chart(table_index) {
     call_list = [], put_list = [], ticker_list = []
     tr = document.getElementsByTagName("table")[table_index].querySelectorAll("tr")
+
     th = tr[0].querySelectorAll("th")
     th[1].style.display = "none"
     th[2].style.display = "none"
 
     for (i=1; i<tr.length; i++) {
         td = tr[i].querySelectorAll("td")
-        console.log(td)
         ticker_list.push(td[0].innerHTML)
         call_list.push(td[1].innerHTML)
         put_list.push(td[2].innerHTML)

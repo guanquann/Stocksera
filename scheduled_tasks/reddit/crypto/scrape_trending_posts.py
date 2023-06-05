@@ -1,14 +1,9 @@
 import os
 import sys
-import numpy as np
-import matplotlib.pyplot as plt
-from collections import Counter
-from datetime import datetime, timedelta
 from pycoingecko import CoinGeckoAPI
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 from scheduled_tasks.reddit.reddit_utils import *
-from helpers import long_number_format
 
 client = CoinGeckoAPI()
 

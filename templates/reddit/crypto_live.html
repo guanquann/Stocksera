@@ -13,6 +13,7 @@
 {% block onload_properties%}
     load_trending_chart(0, 'trending_24H', 'lightgreen');
     load_trending_chart(2, 'trending_7days', 'lightblue');
+    load_word_cloud({{crypto_word_cloud}});
     load_sentiment_chart(0, 'crypto');
     load_change_chart(1);
 {% endblock %}
@@ -69,6 +70,9 @@
     
             <h2 class="header">Sentiment Last 24H</h2>
             <div id="sentiment_chart" class="chart"></div>
+    
+            <h2 class="header">Most Mentioned Words Last 24H</h2>
+            <div id="word_cloud"></div>
     
             <h2 class="header">No. of Mentions Last 24H</h2>
             <div class="search_bar">

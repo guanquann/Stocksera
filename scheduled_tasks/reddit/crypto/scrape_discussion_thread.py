@@ -1,6 +1,5 @@
 import os
 import sys
-from datetime import datetime, timedelta
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 from scheduled_tasks.reddit.reddit_utils import *

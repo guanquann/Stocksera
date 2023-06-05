@@ -17,6 +17,7 @@
     load_sentiment_chart(1, 'wsb');
     load_yf_chart(3);
     load_options_chart(0);
+    load_word_cloud({{wsb_word_cloud}});
 {% endblock %}
 
 {% block main_nav %}
@@ -88,6 +89,9 @@
 
         <h2 class="header">Current Price vs Diff. 50SMA | 52W High-Low</h2>
         <div id="50SMA_chart" class="sma_chart"></div>
+
+        <h2 class="header">Most Mentioned Words Last 24H</h2>
+        <div id="word_cloud"></div>
 
         <h2 class="header">No. of Mentions Last 24H</h2>
         <div class="search_bar">

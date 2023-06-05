@@ -1,7 +1,7 @@
+from scheduled_tasks.reddit.get_subreddit_count import *
 from helpers import *
 from tasks_to_run import *
 from email_server import *
-from scheduled_tasks.reddit.get_subreddit_count import *
 
 import requests
 import requests_cache
@@ -33,8 +33,6 @@ session.headers['User-agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKi
 
 BASE_URL = config_keys['STOCKSERA_BASE_URL']
 HEADERS = {f'Authorization': f"Api-Key {config_keys['STOCKSERA_API']}"}
-
-stopwords_list = json.load(open("custom_extensions/stopwords.json"))["stopwords_list"]
 
 
 def main(request):
@@ -713,8 +711,17 @@ def wsb_live(request):
     pd.options.display.float_format = '{:.2f}'.format
     cnx, cur, engine = connect_mysql_database()
 
+    # Get trending tickers in the past 24H
+    date_threshold = str(datetime.utcnow() - timedelta(hours=24))
+
     data = requests.get(f"{BASE_URL}/reddit/wsb/?days=1", headers=HEADERS).json()
     mentions_df = pd.DataFrame(data)
+
+    # Get word cloud
+    cur.execute("SELECT word, SUM(mentions) FROM wsb_word_cloud WHERE date_updated >= %s GROUP BY word ORDER BY "
+                "SUM(mentions) DESC LIMIT 50", (date_threshold,))
+    wsb_word_cloud = cur.fetchall()
+    wsb_word_cloud = list(map(list, wsb_word_cloud))
 
     # Get trending tickers in the past 7 days
     data = requests.get(f"{BASE_URL}/reddit/wsb/?days=7", headers=HEADERS).json()
@@ -731,6 +738,7 @@ def wsb_live(request):
     wsb_yf = pd.read_sql_query("SELECT * FROM wsb_yf", cnx)
 
     return render(request, 'reddit/wsb_live.html', {
+        "wsb_word_cloud": wsb_word_cloud,
         "mentions_df": mentions_df.to_html(index=False),
         "mentions_7d_df": mentions_7d_df.to_html(index=False),
         "change_df": change_df.to_html(index=False),

@@ -7,10 +7,22 @@ from scheduled_tasks.twitter.twitter_connection import *
 from scheduled_tasks.reddit.reddit_utils import *
 
 
+def connect_to_endpoint_delete(url):
+    response = requests.request("DELETE", url, auth=bearer_oauth,)
+    if response.status_code != 200:
+        raise Exception(
+            "Request returned an errors: {} {}".format(
+                response.status_code, response.text
+            )
+        )
+    return response.json()
+
+
 def main():
     print("Getting Twitter Stock Trending...")
     all_symbols = list(get_mapping_coins().keys())
     all_symbols.extend(full_ticker_list())
+
     for symbol in all_symbols:
         try:
             if len(symbol) > 1:

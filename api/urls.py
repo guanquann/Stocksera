@@ -1,3 +1,4 @@
+from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from django.urls import path
@@ -50,10 +51,10 @@ urlpatterns = [
 
     path('reddit/subreddit_count/<str:ticker_selected>/', views.subreddit_count, name='api_subreddit_count'),
 
-    path('reddit/wsb_options/', views.wsb_options, name='api_wsb_options'),
-
     path('reddit/<str:subreddit>/', views.reddit_mentions, name='api_reddit_mentions'),
     path('reddit/<str:subreddit>/<str:ticker_selected>/', views.reddit_mentions, name='api_reddit_mentions'),
+
+    path('reddit/wsb_options/', views.wsb_options, name='api_wsb_options'),
 
     path('government/<str:gov_type>/', views.government, name='api_government'),
 

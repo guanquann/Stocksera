@@ -1,4 +1,3 @@
-import json
 import requests_cache
 import yfinance.ticker as yf
 

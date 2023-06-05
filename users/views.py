@@ -6,7 +6,6 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from rest_framework_api_key.models import APIKey
-# from rest_framework.authtoken.models import Token
 
 BASE_URL = config_keys['STOCKSERA_BASE_URL']
 HEADERS = {f'Authorization': f"Api-Key {config_keys['STOCKSERA_API']}"}

@@ -68,6 +68,7 @@ urlpatterns = [
     path('stock_split/', views.stock_split_history, name='stock_split'),
     path('dividend_history/', views.dividend_history, name='dividend_history'),
     path('correlation/', views.correlation, name='correlation'),
+    path('fear_and_greed/', views.fear_and_greed, name='fear_and_greed'),
 
     # News
     path('news/', views.news, name='news'),

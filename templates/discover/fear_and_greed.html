@@ -2,19 +2,19 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}Stocksera | Stock Split{% endblock %}
+{% block title %}Stocksera | Fear and Greed{% endblock %}
 
 {% block additional_script %}
-<link rel="stylesheet" href="{% static 'style/government/trading.css' %}">
-<script src="{% static 'javascript/discover/stock_split.js' %}"></script>
+<link rel="stylesheet" href="{% static 'style/economy/economy.css' %}">
+<script src="{% static 'javascript/discover/fear_and_greed.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}load_table(){% endblock %}
+{% block onload_properties%}fear_and_greed(1000){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
     <a href="/discover">Discover</a> /
-    <a href="/stock_split">Stock Split</a>
+    <a href="/fear_and_greed">Fear and Greed</a>
 {% endblock %}
 
 {% block main_content %}
@@ -30,42 +30,36 @@
         <div class="more_info_div"><a href="{% url 'beta' %}">Beta</a></div>
         <div class="more_info_div"><a href="{% url 'correlation' %}">Correlation</a></div>
         <div class="more_info_div"><a href="{% url 'dividend_history' %}">Dividend</a></div>
-        <div class="more_info_div current_link"><a href="{% url 'stock_split' %}">Split</a></div>
-        <div class="more_info_div"><a href="{% url 'fear_and_greed' %}">Fear and Greed</a></div>
+        <div class="more_info_div"><a href="{% url 'stock_split' %}">Split</a></div>
+        <div class="more_info_div current_link"><a href="{% url 'fear_and_greed' %}">Fear and Greed</a></div>
         <div class="more_info_div"><a href="{% url 'short_interest' %}">Short Interest</a></div>
         <div class="more_info_div"><a href="{% url 'low_float' %}">Low Float</a></div>
     </div>
 
     <div class="instructions">
-        <h2>Stock Split</h2>
-        <p>View upcoming and past stock splits.</p>
+        <h2>Fear and Greed Index</h2>
+        <p>
+            The Fear & Greed Index is a way to gauge stock market movements and whether stocks are fairly priced. 
+            The theory is based on the logic that excessive fear tends to drive down share prices, 
+            and too much greed tends to have the opposite effect.
+            <br><br>
+            The value 100 represents maximum greediness, while 0 signals maximum fear.
+        </p>
     </div>
 
     <div class="contents_div">
-        <div class="search_bar">
-            <input type="text" class="ticker_input" placeholder="Ticker:" onkeyup="searchTicker(this)" autocomplete="off">
-            <button class="submit_btn" type="button">
-                <span class="fa fa-search"></span>
-            </button>
+        <div class="date_selector">
+            <button name="date_range" onclick="btn_selected(this); fear_and_greed(1)">1 Month</button>
+            <button name="date_range" onclick="btn_selected(this); fear_and_greed(6)">6 Months</button>
+            <button name="date_range" onclick="btn_selected(this); fear_and_greed(12)" class="selected">1 Year</button>
         </div>
-        <div class="select_div">
-            Type:
-             <select name="order" onchange="filter_table(this)">
-                <option value="All">All</option>
-                <option value="False">Non-Reverse</option>
-                <option value="True">Reverse</option>
-            </select>
+
+        <div class="chart-container">
+            <canvas id="fng_chart"></canvas>
         </div>
+
         <div class="scrollable_div">
             {{df|safe}}
         </div>
     </div>
-{% endblock %}
-
-{% block bottom_script %}
-<style>
-    .filter {
-        display: none;
-    }
-</style>
 {% endblock %}

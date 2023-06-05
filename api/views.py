@@ -576,6 +576,26 @@ def government(request, gov_type="senate"):
 @csrf_exempt
 @api_view(['GET'])
 @schema(AutoDocstringSchema())
+def fear_and_greed(request):
+    """
+    Get fear and greed data.
+    """
+    key = get_user_api(request)
+    if check_validity(key):
+        pd.options.display.float_format = '{:.2f}'.format
+        cnx, cur, engine = connect_mysql_database()
+        date_threshold = get_days_params(request, 100, 10000)
+        df = pd.read_sql_query("SELECT * FROM fear_and_greed WHERE date >= '{}' ORDER BY date".format(date_threshold), cnx)
+        df.rename(columns={"date": "Date", "value": "Value", "rating": "Rating"}, inplace=True)
+        df.fillna(0, inplace=True)
+        df = df.to_dict(orient="records")
+        return JSONResponse(df)
+    return ERROR_MSG
+
+
+@csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def reverse_repo(request):
     """
     Get reverse repo data.

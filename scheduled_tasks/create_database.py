@@ -239,6 +239,12 @@ def database():
                 "market_cap VARCHAR(20), "
                 "industry VARCHAR(50) )")
 
+    cur.execute("CREATE table IF NOT EXISTS fear_and_greed ("
+                "date VARCHAR(20), "
+                "value FLOAT, "
+                "rating VARCHAR(20), "
+                "UNIQUE (date) )")
+    
     cur.execute("CREATE table IF NOT EXISTS reverse_repo ("
                 "record_date VARCHAR(20), "
                 "amount FLOAT, "

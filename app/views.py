@@ -1032,6 +1032,16 @@ def crypto_transactions(request):
     return render(request, 'crypto_transaction.html')
 
 
+def fear_and_greed(request):
+    """
+    Get fear and green data. Data is from https://edition.cnn.com/markets/fear-and-greed
+    """
+    data = requests.get(f"{BASE_URL}/discover/fear_and_greed/?days=1000", headers=HEADERS).json()
+    df = pd.DataFrame(data)
+
+    return render(request, 'discover/fear_and_greed.html', {"df": df[::-1].to_html(index=False)})
+
+
 def reverse_repo(request):
     """
     Get reverse repo. Data is from https://apps.newyorkfed.org/

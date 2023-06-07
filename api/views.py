@@ -872,13 +872,20 @@ def borrowed_shares(request, ticker_selected=""):
     key = get_user_api(request)
     if check_validity(key):
         cnx, cur, engine = connect_mysql_database()
+        try:
+            n_rows = int(request.GET.get("limit", 500))
+            if n_rows <= 0 or n_rows > 15000:
+                n_rows = 500
+        except ValueError:
+            n_rows = 500
+            
         if ticker_selected:
             df = pd.read_sql_query(f"SELECT * FROM shares_available WHERE ticker='{ticker_selected.upper()}' "
-                                   f"ORDER BY date_updated DESC", cnx)
+                                   f"ORDER BY date_updated DESC LIMIT {n_rows}", cnx)
         else:
             cur.execute("SELECT date_updated FROM shares_available ORDER BY date_updated DESC LIMIT 1")
             latest_date = cur.fetchone()[0]
-            df = pd.read_sql_query(f"SELECT * FROM shares_available WHERE date_updated='{latest_date}' LIMIT 15000",
+            df = pd.read_sql_query(f"SELECT * FROM shares_available WHERE date_updated='{latest_date}' LIMIT {n_rows}",
                                    cnx)
         df = df.replace(np.nan, "")
         df = df.to_dict(orient="records")

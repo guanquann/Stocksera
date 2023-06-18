@@ -13,13 +13,14 @@ There are 2 ways to run the tasks:
  
 Before continuing, register for an API in the links shown below and add them in http://localhost:8000/tasks or in config.yaml.
 
-| API Source       | URL                                                |
-|------------------|----------------------------------------------------|
-| Reddit           | https://www.reddit.com/prefs/apps                  |
-| Twitter          | https://developer.twitter.com/en/portal/dashboard  |
-| Finnhub          | https://finnhub.io/                                |
-| Polygon          | https://polygon.io/                                |
-| Gmail -optional  | https://realpython.com/python-send-email/          |
+| API Source      | URL                                                |
+|-----------------|----------------------------------------------------|
+| Reddit          | https://www.reddit.com/prefs/apps                  |
+| Twitter         | https://developer.twitter.com/en/portal/dashboard  |
+| Finnhub         | https://finnhub.io/                                |
+| Polygon         | https://polygon.io/                                |
+| FMP             | https://site.financialmodelingprep.com/            |
+| Gmail -optional | https://realpython.com/python-send-email/          |
 
 ## Frequency to run tasks
 - Do note that the frequency to run the files are for guidance only. You do not need to follow them strictly. Change according to your preference.

@@ -1504,6 +1504,7 @@ def setup(request):
         config_keys[request.POST.get("stocksera_api")] = request.POST.get("stocksera_api_value")
 
         config_keys[request.POST.get("finnhub_api")] = request.POST.get("finnhub_api_value")
+        config_keys[request.POST.get("fmp_api")] = request.POST.get("fmp_api_value")
         config_keys[request.POST.get("polygon_api")] = request.POST.get("polygon_api_value")
         config_keys[request.POST.get("twitter_api")] = request.POST.get("twitter_api_value")
         config_keys[request.POST.get("reddit_id_api")] = request.POST.get("reddit_id_api_value")

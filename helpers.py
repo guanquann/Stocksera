@@ -1,4 +1,5 @@
 import os
+import json
 import yaml
 import numpy as np
 import finnhub
@@ -47,6 +48,13 @@ def connect_mysql_database():
         cnx.autocommit = True
         cur = cnx.cursor()
     return cnx, cur, engine
+
+
+def get_ticker_list_stats(ticker_list):
+    r = requests.get(f"https://financialmodelingprep.com/api/v3/quote/{','.join(ticker_list)}?"
+                     f"apikey={config_keys['FMP_KEY']}").json()
+    df = pd.DataFrame(r)
+    return df
 
 
 def default_ticker(request, ticker="AAPL"):

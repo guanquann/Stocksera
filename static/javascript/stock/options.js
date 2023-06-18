@@ -17,7 +17,7 @@ var options_dict = {
             },
             scaleLabel: {
                 display: true,
-                labelString: 'Volume',
+                labelString: 'Open Interest',
                 beginAtZero: false,
             },
         }],
@@ -83,9 +83,9 @@ function generate_chart(new_date) {
             calls_loss_list.push(premium)
 
             if (strike >= current_price_global) {
-                calls_itm += oi
-            } else {
                 calls_otm += oi
+            } else {
+                calls_itm += oi
             }
 
         } else {
@@ -93,9 +93,9 @@ function generate_chart(new_date) {
             puts_loss_list.push(premium)
 
             if (strike <= current_price_global) {
-                puts_itm += oi
-            } else {
                 puts_otm += oi
+            } else {
+                puts_itm += oi
             }
         }
     }

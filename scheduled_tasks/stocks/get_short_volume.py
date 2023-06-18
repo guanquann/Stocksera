@@ -7,8 +7,7 @@ import numpy as np
 from datetime import datetime, timedelta
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
-from helpers import connect_mysql_database
-from scheduled_tasks.reddit.stocks.fast_yahoo import download_advanced_stats_multi_thread
+from helpers import connect_mysql_database, get_ticker_list_stats
 
 cnx, cur, engine = connect_mysql_database()
 
@@ -82,12 +81,10 @@ def get_daily_data_finra(date_to_process: datetime.date = datetime.utcnow().date
                                         "TotalVolume": "Total Volume",
                                         "%Shorted": "% Shorted"}, inplace=True)
 
-        quick_stats = {'price': {"marketCap": "Market Cap",
-                                 "regularMarketChangePercent": "1 Day Change %",
-                                 "regularMarketPreviousClose": "Previous Close",
-                                 "regularMarketVolume": "volume"}}
-        stats_df = download_advanced_stats_multi_thread(highest_shorted["Symbol"].to_list(), quick_stats)
-
+        stats_df = get_ticker_list_stats(highest_shorted["Symbol"].to_list())
+        stats_df = stats_df[["symbol", "marketCap", "changesPercentage", "previousClose", "volume"]]
+        stats_df = stats_df.rename(columns={"marketCap": "Market Cap", "changesPercentage": "1 Day Change %",
+                                            "previousClose": "Previous Close", "volume": "Volume", "symbol": "Symbol"})
         highest_shorted = pd.merge(highest_shorted, stats_df, on="Symbol")
         highest_shorted.replace(np.nan, "N/A", inplace=True)
         highest_shorted.rename(columns={"Symbol": "Ticker"}, inplace=True)

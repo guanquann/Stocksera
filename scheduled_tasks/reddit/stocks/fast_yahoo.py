@@ -78,10 +78,13 @@ def download_advanced_stats_multi_thread(symbol_list, params, num_threads=100):
     df = pd.DataFrame()
     current_index = 0
     while current_index < len(symbol_list):
-        quick_stats_df = download_advanced_stats(symbol_list[current_index:current_index + num_threads],
-                                                 params, threads=True)
-        df = pd.concat([df, quick_stats_df])
-        current_index += num_threads
+        try:
+            quick_stats_df = download_advanced_stats(symbol_list[current_index:current_index + num_threads],
+                                                     params, threads=True)
+            df = pd.concat([df, quick_stats_df])
+            current_index += num_threads
+        except:
+            time.sleep(1)
     return df
 
 

@@ -3,6 +3,7 @@ import sys
 from datetime import datetime, timedelta
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
+from helpers import get_ticker_list_stats
 from scheduled_tasks.reddit.reddit_utils import *
 from scheduled_tasks.reddit.stocks.fast_yahoo import download_advanced_stats_multi_thread
 
@@ -163,11 +164,7 @@ def wsb_live():
     df["date_updated"] = current_datetime_str
     df.to_sql("wsb_word_cloud", engine, if_exists="append", index=False)
 
-    quick_stats = {'price': {"marketCap": "mkt_cap",
-                             "regularMarketPreviousClose": "prvCls",
-                             "regularMarketVolume": "volume",
-                             "regularMarketPrice": "price"}}
-    quick_stats_df = download_advanced_stats_multi_thread(list(tickers_dict.keys()), quick_stats)
+    quick_stats_df = get_ticker_list_stats(list(tickers_dict.keys()))
 
     # Ticker must be active in order to be valid
     quick_stats_df["volume"] = pd.to_numeric(quick_stats_df["volume"], errors='coerce')
@@ -175,7 +172,7 @@ def wsb_live():
     quick_stats_df.dropna(inplace=True)
     quick_stats_df = quick_stats_df[quick_stats_df["price"] >= 0.5]
     quick_stats_df = quick_stats_df[quick_stats_df["volume"] >= 50000]
-    valid_ticker_list = list(quick_stats_df.index.values)
+    valid_ticker_list = quick_stats_df["symbol"].to_list()
 
     # Combine into 1 df
     mentions_list = list()
@@ -204,9 +201,12 @@ def wsb_live():
     quick_stats_df["calls"] = calls_list
     quick_stats_df["puts"] = puts_list
 
+    quick_stats_df = quick_stats_df[["symbol", "mentions", "sentiment", "calls", "puts"]]
+    print(quick_stats_df.columns)
+
     for index, row in quick_stats_df.iterrows():
         cur.execute("INSERT INTO wsb_trending_24H VALUES (%s, %s, %s, %s, %s, %s)",
-                    (index, row[4], row[5], row[6], row[7], current_datetime_str))
+                    (row[0], row[1], row[2], row[3], row[4], current_datetime_str))
         cnx.commit()
 
 

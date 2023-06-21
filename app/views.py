@@ -28,8 +28,7 @@ except:
 pd.options.display.float_format = '{:.1f}'.format
 
 session = requests_cache.CachedSession('yfinance.cache')
-session.headers['User-agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) ' \
-                                'Chrome/91.0.4472.124 Safari/537.36'
+session.headers['User-agent'] = header
 
 BASE_URL = config_keys['STOCKSERA_BASE_URL']
 HEADERS = {f'Authorization': f"Api-Key {config_keys['STOCKSERA_API']}"}
@@ -1166,6 +1165,12 @@ def ipo_calendar(request):
     return render(request, 'discover/ipo_calendar.html', {"ipo_df": df.to_html(index=False)})
 
 
+def largest_companies(request):
+    data = requests.get(f"{BASE_URL}/discover/largest_companies", headers=HEADERS).json()
+    df = pd.DataFrame(data)
+    return render(request, 'discover/largest_companies.html', {"df": df.to_html(index=False)})
+
+
 def correlation(request):
     pd.options.display.float_format = '{:.3f}'.format
     if request.GET.get("quotes"):
@@ -1464,6 +1469,18 @@ def tasks(request):
             elif request.POST.get("ipo"):
                 task_ipo()
                 data["ipo"] = current_timing
+            elif request.POST.get("short_int"):
+                task_short_int()
+                data["short_int"] = current_timing
+            elif request.POST.get("low_float"):
+                task_low_float()
+                data["low_float"] = current_timing
+            elif request.POST.get("largest_companies"):
+                task_largest_companies()
+                data["largest_companies"] = current_timing
+            elif request.POST.get("fear_and_greed"):
+                task_fear_and_greed()
+                data["fear_and_greed"] = current_timing
             elif request.POST.get("rrp"):
                 task_rrp()
                 data["rrp"] = current_timing

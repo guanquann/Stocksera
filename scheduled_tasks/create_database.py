@@ -242,6 +242,7 @@ def database():
     cur.execute("CREATE table IF NOT EXISTS fear_and_greed ("
                 "date VARCHAR(20), "
                 "value FLOAT, "
+                "close_price FLOAT, "
                 "rating VARCHAR(20), "
                 "UNIQUE (date) )")
     
@@ -475,6 +476,15 @@ def database():
                 "`Frequency` VARCHAR(10), "
                 "UNIQUE(`Ticker`, `Declaration Date`), "
                 "INDEX(`Declaration Date`) )")
+
+    cur.execute("CREATE TABLE IF NOT EXISTS largest_companies ("
+                "`Ticker` VARCHAR(10), "
+                "`Price` FLOAT, "
+                "`Change`  FLOAT, "
+                "`% Change` FLOAT, "
+                "`Market Cap` VARCHAR(20), "
+                "UNIQUE(`Ticker`), "
+                "INDEX(`Ticker`) )")
 
     print("Creating/Updating DB Successfully Completed...\n")
 

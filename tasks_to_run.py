@@ -25,6 +25,8 @@ import scheduled_tasks.discover.get_stocktwits_trending as get_stocktwits_trendi
 import scheduled_tasks.discover.get_dividends as get_dividends
 import scheduled_tasks.discover.get_earnings as get_earnings
 import scheduled_tasks.discover.get_stock_splits as get_stock_splits
+import scheduled_tasks.discover.get_largest_companies as get_largest_companies
+import scheduled_tasks.discover.get_fear_and_greed as get_fear_and_greed
 
 import scheduled_tasks.news.get_news as get_news
 import scheduled_tasks.news.get_trading_halts as get_trading_halts
@@ -96,6 +98,14 @@ def task_earning_calendar():
 
 def task_stock_split():
     get_stock_splits.main()
+
+
+def task_largest_companies():
+    get_largest_companies.main()
+
+
+def task_fear_and_greed():
+    get_fear_and_greed.main()
 
 
 def task_latest_news():

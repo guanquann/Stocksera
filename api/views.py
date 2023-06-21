@@ -586,7 +586,8 @@ def fear_and_greed(request):
         cnx, cur, engine = connect_mysql_database()
         date_threshold = get_days_params(request, 100, 10000)
         df = pd.read_sql_query("SELECT * FROM fear_and_greed WHERE date >= '{}' ORDER BY date".format(date_threshold), cnx)
-        df.rename(columns={"date": "Date", "value": "Value", "rating": "Rating"}, inplace=True)
+        df.rename(columns={"date": "Date", "value": "Value", "close_price": "Close",
+                           "rating": "Rating"}, inplace=True)
         df.fillna(0, inplace=True)
         df = df.to_dict(orient="records")
         return JSONResponse(df)
@@ -778,6 +779,23 @@ def ipo_calendar(request):
     if check_validity(key):
         cnx, cur, engine = connect_mysql_database()
         df = pd.read_sql_query("SELECT * FROM ipo_calendar", con=cnx)
+        df = df.to_dict(orient="records")
+        return JSONResponse(df)
+    return ERROR_MSG
+
+
+@csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
+def largest_companies(request):
+    """
+    Get upcoming and past IPOs.
+    """
+    key = get_user_api(request)
+    if check_validity(key):
+        pd.options.display.float_format = '{:.2f}'.format
+        cnx, cur, engine = connect_mysql_database()
+        df = pd.read_sql_query("SELECT * FROM largest_companies", con=cnx)
         df = df.to_dict(orient="records")
         return JSONResponse(df)
     return ERROR_MSG

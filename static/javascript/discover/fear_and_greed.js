@@ -12,7 +12,7 @@ function fear_and_greed(duration) {
 
     var tr = document.getElementsByTagName("table")[0].querySelectorAll("tr");
 
-    var date_list = [], value_list = [];
+    var date_list = [], value_list = [], close_list = [];
 
     for (i=tr.length-1; i>0; i--) {
         var td = tr[i].querySelectorAll("td");
@@ -20,6 +20,7 @@ function fear_and_greed(duration) {
         if (date_string >= date_threshold) {
             date_list.push(date_string)
             value_list.push(td[1].innerHTML)
+            close_list.push(td[2].innerHTML)
         }
     }
 
@@ -40,6 +41,17 @@ function fear_and_greed(duration) {
                     borderWidth: 2,
                     borderColor: 'red',
                     backgroundColor: 'transparent',
+                    yAxisID: 'A',
+                },
+                {
+                    label: 'Close',
+                    type: 'line',
+                    data: close_list,
+                    pointRadius: 0,
+                    borderWidth: 2,
+                    borderColor: 'blue',
+                    backgroundColor: 'transparent',
+                    yAxisID: 'B',
                 },
             ]
         },
@@ -53,19 +65,43 @@ function fear_and_greed(duration) {
             scales: {
                 yAxes: [
                     {
+                        position: 'left',
                         gridLines: {
                             drawOnChartArea: false,
                             color: "grey",
                         },
                         type: "linear",
+                        id: "A",
                         scaleLabel: {
                             display: true,
                             labelString: 'Fear and Greed Value',
                             beginAtZero: true,
                         },
-                    }
-                    ],
-
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return value;
+                            },
+                        }
+                    },
+                    {
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'SPY Close Price',
+                            beginAtZero: false,
+                        },
+                        type: "linear",
+                        id: "B",
+                        position:"right",
+                        gridLines: {
+                            drawOnChartArea: false,
+                            color: "grey",
+                        },
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return value;
+                            }
+                        },
+                    }],
                 xAxes: [{
                     type: "time",
                     distribution: 'series',
@@ -96,21 +132,7 @@ function fear_and_greed(duration) {
             hover: {
                 mode: 'index',
                 intersect: false
-            },
-            plugins: {
-                annotation: {
-                    annotations: [
-                        {
-                            type: 'line',
-                            mode: 'vertical',
-                            scaleID: 'x-axis-0',
-                            value: 20,
-                            borderColor: 'red',
-                            borderWidth: 2,
-                        }
-                    ]
-                }
-            },    
+            }
         },
     });
 }

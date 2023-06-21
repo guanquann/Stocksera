@@ -2,19 +2,19 @@
 {% load static %}
 {% load filter %}
 
-{% block title %}Stocksera | Short Interest{% endblock %}
+{% block title %}Stocksera | Largest Companies{% endblock %}
 
 {% block additional_script %}
 <link rel="stylesheet" href="{% static 'style/discover/short_interest.css' %}">
-<script src="{% static 'javascript/discover/short_interest.js' %}"></script>
+<script src="{% static 'javascript/discover/largest_companies.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}update_table(){% endblock %}
+{% block onload_properties%}load_companies(){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
     <a href="/discover">Discover</a> /
-    <a href="/short_interest">Short Interest</a>
+    <a href="/ipo_calendar">IPO Calendar</a>
 {% endblock %}
 
 {% block main_content %}
@@ -29,19 +29,17 @@
         <div class="more_info_div"><a href="{% url 'twitter_trending' %}">Twitter Trending</a></div>
         <div class="more_info_div"><a href="{% url 'beta' %}">Beta</a></div>
         <div class="more_info_div"><a href="{% url 'correlation' %}">Correlation</a></div>
-        <div class="more_info_div "><a href="{% url 'dividend_history' %}">Dividend</a></div>
+        <div class="more_info_div"><a href="{% url 'dividend_history' %}">Dividend</a></div>
         <div class="more_info_div"><a href="{% url 'stock_split' %}">Split</a></div>
         <div class="more_info_div"><a href="{% url 'fear_and_greed' %}">Fear and Greed</a></div>
-        <div class="more_info_div"><a href="{% url 'largest_companies' %}">Largest Companies</a></div>
-        <div class="more_info_div current_link"><a href="{% url 'short_interest' %}">Short Interest</a></div>
+        <div class="more_info_div current_link"><a href="{% url 'largest_companies' %}">Largest Companies</a></div>
+        <div class="more_info_div"><a href="{% url 'short_interest' %}">Short Interest</a></div>
         <div class="more_info_div"><a href="{% url 'low_float' %}">Low Float</a></div>
     </div>
 
     <div class="instructions">
-        <h2>High Short Interest</h2>
-        <p>Short interest (SI) is the number of shares that have been sold short but have not yet been covered.
-            The higher the SI, the higher probability of short squeezing as shortable shares reduce in number.
-            Stocks with high SI are highly volatile. Data is updated 2 times a month.</p>
+        <h2>Largest Companies by Market Cap</h2>
+        <p>Get the top 500 largest listed companies in US stock market.</p>
     </div>
 
     <div class="contents_div">
@@ -51,9 +49,12 @@
                 <span class="fa fa-search"></span>
             </button>
         </div>
-        <span class="click_table_info"><b>Click on ticker for more info</b></span>
-        <div class="table_div" style="display: none">
-            {{ df_high_short_interest|safe }}
+        <div class="click_table_info"><b>Click on ticker for more info</b></div>
+        <div class="table_div">
+            {{ df|safe }}
         </div>
     </div>
+{% endblock %}
+
+{% block bottom_script %}
 {% endblock %}

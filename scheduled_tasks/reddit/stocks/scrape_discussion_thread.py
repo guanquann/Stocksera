@@ -202,7 +202,6 @@ def wsb_live():
     quick_stats_df["puts"] = puts_list
 
     quick_stats_df = quick_stats_df[["symbol", "mentions", "sentiment", "calls", "puts"]]
-    print(quick_stats_df.columns)
 
     for index, row in quick_stats_df.iterrows():
         cur.execute("INSERT INTO wsb_trending_24H VALUES (%s, %s, %s, %s, %s, %s)",

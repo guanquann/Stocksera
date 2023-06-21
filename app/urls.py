@@ -7,7 +7,6 @@ urlpatterns = [
 
     # Stock
     path('ticker/', views.stock_price, name='ticker'),
-    path('ticker/financial/', views.financial, name='financial'),
     path('ticker/options/', views.options, name='options'),
     path('ticker/short_volume/', views.short_volume, name='short_volume'),
     path('ticker/borrowed_shares/', views.borrowed_shares, name='borrowed_shares'),
@@ -23,7 +22,6 @@ urlpatterns = [
     path('dividend_and_split/', views.dividend_and_split, name='dividend_and_split'),
     path('tradingview/', views.tradingview, name='tradingview'),
     path('discussion/', views.discussion, name='discussion'),
-    path('ticker_earnings/', views.ticker_earnings, name='ticker_earnings'),
     path('sec_fillings/', views.sec_fillings, name='sec_fillings'),
     path('insider_trading/', views.stock_insider_trading, name='insider_trading'),
 
@@ -78,12 +76,6 @@ urlpatterns = [
 
     # Spinner
     path('loading/', views.loading_spinner, name='loading'),
-
-    # Subscription
-    path('subscribe/', views.subscribe_to_wsb_notifications, name='subscribe'),
-    path('mailing_preference/', views.mailing_preference, name='mailing_preference'),
-    path('unsubscribe/', views.unsubscribe, name='unsubscribe'),
-    path('sample_email/', views.sample_email, name='sample_email'),
 
     # About
     path('about/', views.about, name='about'),

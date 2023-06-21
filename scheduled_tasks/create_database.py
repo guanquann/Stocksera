@@ -9,11 +9,9 @@ import mysql.connector
 sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
 
 try:
-    from helpers import connect_mysql_database
+    from helpers import connect_mysql_database, config_keys
     cnx, cur, engine = connect_mysql_database()
 except mysql.connector.ProgrammingError:
-    with open("config.yaml") as config_file:
-        config_keys = yaml.load(config_file, Loader=yaml.Loader)
     cnx = mysql.connector.connect(user=config_keys["MYSQL_USER"],
                                   password=config_keys["MYSQL_PASSWORD"],
                                   host=config_keys["MYSQL_HOST"])

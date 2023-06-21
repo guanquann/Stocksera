@@ -10,13 +10,9 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from scheduled_tasks.reddit.stocks.fast_yahoo import *
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
-from helpers import connect_mysql_database
+from helpers import connect_mysql_database, config_keys
 
 cnx, cur, engine = connect_mysql_database()
-
-
-with open("config.yaml") as config_file:
-    config_keys = yaml.load(config_file, Loader=yaml.Loader)
 
 analyzer = SentimentIntensityAnalyzer()
 analyzer.lexicon.update(json.load(open("custom_extensions/custom_words.json")))

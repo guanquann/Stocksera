@@ -15,6 +15,9 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 with open("config.yaml") as config_file:
     config_keys = yaml.load(config_file, Loader=yaml.Loader)
 
+BASE_URL = config_keys['STOCKSERA_BASE_URL']
+HEADERS = {f'Authorization': f"Api-Key {config_keys['STOCKSERA_API']}"}
+
 analyzer = SentimentIntensityAnalyzer()
 analyzer.lexicon.update(json.load(open("custom_extensions/custom_words.json")))
 
@@ -48,6 +51,12 @@ def connect_mysql_database():
         cnx.autocommit = True
         cur = cnx.cursor()
     return cnx, cur, engine
+
+
+def get_stocksera_request(endpoint):
+    data = requests.get(f"{BASE_URL}/{endpoint}", headers=HEADERS).json()
+    df = pd.DataFrame(data)
+    return df
 
 
 def get_ticker_list_stats(ticker_list):

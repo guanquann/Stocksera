@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 from scheduled_tasks.economy.ychart_connection import ychart_data
-from helpers import connect_mysql_database
+from helpers import connect_mysql_database, header
 
 cnx, cur, engine = connect_mysql_database()
 
@@ -41,10 +41,6 @@ def get_next_cpi_date():
     """
     Get next CPI release date
     """
-    header = {
-        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.75 Safari/537.36",
-        "X-Requested-With": "XMLHttpRequest"
-    }
     df = pd.read_html(requests.get(r"https://www.bls.gov/schedule/news_release/cpi.htm", headers=header).text)[0][:-1]
     df["Release Date"] = pd.to_datetime(df["Release Date"], errors='coerce')
     df = df[df["Release Date"] >= current_date].iloc[0]

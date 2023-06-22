@@ -7,6 +7,16 @@ function display_table() {
     }
 }
 
+function display_top_borrowed_shares() {
+    var tr = document.getElementsByTagName("table")[0].querySelectorAll("tr");
+    for (i=1; i<tr.length; i++) {
+        var total_td = tr[i].querySelectorAll("td");
+        total_td[0].innerHTML = `<a href="/ticker/borrowed_shares/?quote=${total_td[0].innerHTML}" target="_blank"><b>${total_td[0].innerHTML}</b></a>`
+        total_td[1].innerHTML += "%"
+        total_td[2].innerHTML = Number(total_td[2].innerHTML).toLocaleString()
+    }
+}
+
 var borrowed_shares_chart = null;
 
 function borrowed_shares_graph(duration) {
@@ -24,10 +34,10 @@ function borrowed_shares_graph(duration) {
     for (tr=trs.length-1; tr>0; tr--) {
         var total_td = trs[tr].querySelectorAll("td");
         date_string = total_td[2].innerHTML;
-        if (total_td[1].innerHTML != 0 || tr==1) {
+        if ((total_td[1].innerHTML != 0 || tr==1) && (date_string >= date_threshold)) {
             date_list.push(date_string)
-            fee_list.push(total_td[0].innerHTML)
-            available_list.push(total_td[1].innerHTML)
+            fee_list.push(total_td[0].innerHTML.replace("%", ""))
+            available_list.push(Number(total_td[1].innerHTML.replace(/[^0-9-.]/g, "")))
         }
     }
 
@@ -99,8 +109,6 @@ function borrowed_shares_graph(duration) {
                             color: "grey",
                         },
                         ticks: {
-//                            max: 100,
-//                            min: 0,
                             callback: function(value, index, values) {
                                 return value;
                             },
@@ -112,7 +120,7 @@ function borrowed_shares_graph(duration) {
                     type: "time",
                     distribution: 'series',
                     time: {
-                        unit: "day"// date_unit
+                        unit: date_unit
                     },
                     offset: true,
                     gridLines: {

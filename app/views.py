@@ -411,13 +411,21 @@ def borrowed_shares(request):
     ticker_selected = default_ticker(request)
     information, related_tickers = check_market_hours(ticker_selected)
 
+    if ticker_selected == "TOP_BORROWED_SHARES":
+        highest_borrowed_shares = get_stocksera_request(f"stocks/top_borrowed_shares")
+        highest_borrowed_shares.columns = ["Ticker", "Fee", "Available"]
+        return render(request, 'stock/top_borrowed_shares.html',
+                      {"highest_borrowed_shares": highest_borrowed_shares.to_html(index=False)})
+
     if "longName" in information and information["regularMarketPrice"] != "N/A":
         df = get_stocksera_request(f"stocks/borrowed_shares/{ticker_selected}")
         del df["ticker"]
         df.columns = ["Fee", "Available", "Updated"]
+        highest_borrowed_shares = get_stocksera_request(f"stocks/top_borrowed_shares")["ticker"].tolist()[:20]
         return render(request, 'stock/borrowed_shares.html', {"ticker_selected": ticker_selected,
                                                               "information": information,
                                                               "related_tickers": related_tickers,
+                                                              "highest_borrowed_shares": highest_borrowed_shares,
                                                               "df": df.to_html(index=False)})
     else:
         return render(request, 'stock/borrowed_shares.html', {"ticker_selected": ticker_selected,

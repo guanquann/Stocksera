@@ -1,5 +1,6 @@
 import os
 import json
+import pandas as pd
 import yaml
 import numpy as np
 import finnhub
@@ -53,9 +54,12 @@ def connect_mysql_database():
     return cnx, cur, engine
 
 
-def get_stocksera_request(endpoint):
+def get_stocksera_request(endpoint, optional=None):
     data = requests.get(f"{BASE_URL}/{endpoint}", headers=HEADERS).json()
-    df = pd.DataFrame(data)
+    if optional:
+        df = pd.DataFrame(data[optional])
+    else:
+        df = pd.DataFrame(data)
     return df
 
 

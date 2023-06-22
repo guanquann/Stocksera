@@ -883,6 +883,22 @@ def jim_cramer(request, ticker_selected=None):
 @csrf_exempt
 @api_view(['GET'])
 @schema(AutoDocstringSchema())
+def top_borrowed_shares(request):
+    """
+    Get top borrow fees and shares available.
+    """
+    key = get_user_api(request)
+    if check_validity(key):
+        cnx, cur, engine = connect_mysql_database()
+        df = pd.read_sql_query("SELECT * FROM highest_shares_available ORDER BY fee DESC", cnx)
+        df = df.to_dict(orient="records")
+        return JSONResponse(df)
+    return ERROR_MSG
+
+
+@csrf_exempt
+@api_view(['GET'])
+@schema(AutoDocstringSchema())
 def borrowed_shares(request, ticker_selected=""):
     """
     Get borrow fees and shares available.

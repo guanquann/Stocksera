@@ -9,7 +9,7 @@
 <script src="{% static 'javascript/stock/borrowed_shares.js' %}"></script>
 {% endblock %}
 
-{% block onload_properties%}display_data();borrowed_shares_graph(12);display_table(){% endblock %}
+{% block onload_properties%}display_data();borrowed_shares_graph(100);display_table(){% endblock %}
 
 {% block main_nav %}
     <a href="/">Stocksera</a> /
@@ -25,6 +25,12 @@
         <p>
             A stock loan fee is the fee charged by a brokerage for borrowing shares. Fee rate is expressed as an annualized percentage charged by Interactive Brokers.
             Updates every 10 minutes.
+            <br><br>
+            Highest Cost to Borrow:
+            {% for i in highest_borrowed_shares %}
+                <a href="/ticker/borrowed_shares/?quote={{i}}" class="highest_short_vol" target="_blank">{{i}}</a>
+            {% endfor %}
+            <a href="/ticker/borrowed_shares/?quote=top_borrowed_shares" class="highest_short_vol" target="_blank">View More</a>
         </p>
         <form action="" method="GET" autocomplete="off">
             <div class="search_bar">
@@ -54,6 +60,12 @@
         </div>
 
     <div class="contents_div">
+        <div class="date_selector">
+            <button name="date_range" id="3 Months" onclick="btn_selected(this); borrowed_shares_graph(3)">3 Months</button>
+            <button name="date_range" id="6 Months" onclick="btn_selected(this); borrowed_shares_graph(6)">6 Months</button>
+            <button name="date_range" id="12 Months" onclick="btn_selected(this); borrowed_shares_graph(12)" class="selected">1 Year</button>
+        </div>
+
         <div class="chart-container">
             <canvas id="borrowed_shares_chart"></canvas>
         </div>

@@ -348,6 +348,13 @@ def database():
                 "UNIQUE(ticker, fee, available, date_updated),"
                 "INDEX (ticker) )")
 
+    cur.execute("CREATE TABLE IF NOT EXISTS highest_shares_available ("
+                "ticker VARCHAR(10), "
+                "fee  FLOAT, "
+                "available INTEGER, "
+                "UNIQUE(ticker, fee, available),"
+                "INDEX (ticker) )")
+
     cur.execute("CREATE TABLE IF NOT EXISTS threshold_securities ("
                 "ticker VARCHAR(10), "
                 "date_updated VARCHAR(20), "

@@ -1,0 +1,55 @@
+{% extends "format.html" %}
+{% load static %}
+{% load filter %}
+
+{% block title %}Stocksera | Borrowed Shares{% endblock %}
+
+{% block additional_script %}
+<link rel="stylesheet" href="{% static 'style/stock/short_volume.css' %}">
+<script src="{% static 'javascript/stock/borrowed_shares.js' %}"></script>
+{% endblock %}
+
+{% block onload_properties%}display_top_borrowed_shares(){% endblock %}
+
+{% block main_nav %}
+    <a href="/">Stocksera</a> /
+    <a href="/ticker/">Analysis</a> /
+    <a href="/ticker/options/?borrowed_shares={{ticker_selected}}">Top Borrowed Shares</a>
+{% endblock %}
+
+{% block main_content %}
+<script>highlight_selected_nav('stocks_analysis')</script>
+<div>
+    <div class="instructions">
+        <h2>Top Borrowed Shares</h2>
+        <p>
+            A stock loan fee is the fee charged by a brokerage for borrowing shares. Fee rate is expressed as an annualized percentage charged by Interactive Brokers.
+            Updates every 10 minutes.
+        </p>
+        <form action="" method="GET" autocomplete="off">
+            <div class="search_bar">
+                <input type="text" class="ticker_input" name="quote" id="quote" value="{{ticker_selected}}" placeholder="Ticker:" autocomplete="off">
+                <button class="submit_btn" type="button" onclick="this.form.submit();this.disabled=true;">
+                    <span class="fa fa-search"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="more_info_div_parent">
+        <div class="more_info_div"><a href="{% url 'ticker' %}?quote={{ticker_selected}}">Analysis</a></div>
+        <div class="more_info_div"><a href="{% url 'options' %}?quote={{ticker_selected}}">Options</a></div>
+        <div class="more_info_div"><a href="{% url 'short_volume' %}?quote={{ticker_selected}}">Short Vol</a></div>
+        <div class="more_info_div current_link"><a href="{% url 'borrowed_shares' %}?quote={{ticker_selected}}">Borrowed Shares</a></div>
+        <div class="more_info_div"><a href="{% url 'failure_to_deliver' %}?quote={{ticker_selected}}">FTD</a></div>
+        <div class="more_info_div"><a href="{% url 'regsho' %}?quote={{ticker_selected}}">RegSHO</a></div>
+        <div class="more_info_div"><a href="{% url 'wsb_live_ticker' %}?quote={{ticker_selected}}">WSB Live</a></div>
+    </div>
+
+    <div class="contents_div">
+        <div class="scrollable_div">
+            {{ highest_borrowed_shares|safe }}
+        </div>
+    </div>
+</div>
+{% endblock %}

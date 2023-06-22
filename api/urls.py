@@ -1,18 +1,20 @@
+from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from django.urls import path
 from . import views
 
 schema_view = get_schema_view(
-   openapi.Info(
-      title="Stocksera API",
-      default_version='v1',
-      description="Official API for Stocksera",
-      terms_of_service="https://stocksera.pythonanywhere.com",
-      contact=openapi.Contact(email="stocksera@gmail.com"),
-      license=openapi.License(name="MIT License"),
-   ),
-   public=True,
+    openapi.Info(
+        title="Stocksera API",
+        default_version='v1',
+        description="Official API for Stocksera",
+        terms_of_service="https://stocksera.pythonanywhere.com",
+        contact=openapi.Contact(email="stocksera@gmail.com"),
+        license=openapi.License(name="MIT License"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
 )
 
 urlpatterns = [
@@ -30,6 +32,7 @@ urlpatterns = [
     path('stocks/failure_to_deliver/<str:ticker_selected>/', views.failure_to_deliver, name='api_failure_to_deliver'),
     path('stocks/regsho/', views.regsho, name='api_regsho'),
     path('stocks/regsho/<str:ticker_selected>/', views.regsho, name='api_regsho'),
+    path('stocks/top_borrowed_shares/', views.top_borrowed_shares, name='api_top_borrowed_shares'),
     path('stocks/borrowed_shares/<str:ticker_selected>/', views.borrowed_shares, name='api_borrowed_shares'),
 
     path('news/earnings_calendar/', views.earnings_calendar, name='api_earnings_calendar'),

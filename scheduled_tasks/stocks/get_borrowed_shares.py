@@ -37,6 +37,12 @@ def main():
     cur.executemany("INSERT IGNORE INTO shares_available VALUES (%s, %s, %s, %s)", df.values.tolist())
     cnx.commit()
 
+    tmp_df = df[["ticker", "fee", "available"]]
+    tmp_df = tmp_df.sort_values(by="fee", ascending=False)
+    cur.execute("DELETE FROM highest_shares_available")
+    cur.executemany("INSERT INTO highest_shares_available VALUES (%s, %s, %s)", tmp_df.head(50).values.tolist())
+    cnx.commit()
+
     ftp.quit()
     print("CTB Successfully Completed...\n")
 

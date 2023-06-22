@@ -68,8 +68,6 @@ def database():
                 "ticker VARCHAR(10), "
                 "mkt_cap VARCHAR(30), "
                 "price_change FLOAT, "
-                "industry VARCHAR(200), "
-                "sector VARCHAR(200), "
                 "difference_sma FLOAT, "
                 "difference_52w_high FLOAT, "
                 "difference_52w_low FLOAT, "

@@ -7,10 +7,10 @@ function load_yf_chart(table_index) {
         ticker_list.push(td[0].innerHTML)
         mkt_cap_list.push(td[1].innerHTML)
         price_change_list.push(td[2].innerHTML)
-        difference_list.push(td[5].innerHTML)
-        difference_52w_high_list.push(td[6].innerHTML)
-        difference_52w_low_list.push(td[7].innerHTML)
-        mentions_list.push(td[8].innerHTML)
+        difference_list.push(td[3].innerHTML)
+        difference_52w_high_list.push(td[4].innerHTML)
+        difference_52w_low_list.push(td[5].innerHTML)
+        mentions_list.push(td[6].innerHTML)
         parent_list.push("")
     }
 

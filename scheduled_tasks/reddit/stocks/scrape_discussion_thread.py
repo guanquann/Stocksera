@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 from helpers import get_ticker_list_stats
 from scheduled_tasks.reddit.reddit_utils import *
-from scheduled_tasks.reddit.stocks.fast_yahoo import download_advanced_stats_multi_thread
 
 current_datetime = datetime.utcnow()
 mapping_stocks = get_mapping_stocks()
@@ -269,37 +268,21 @@ def get_mkt_cap():
         ticker_list.append(row[0])
         mentions_list.append(row[1])
 
-    quick_stats_dict = {'summaryDetail': {"fiftyDayAverage": "avg_price",
-                                          "fiftyTwoWeekHigh": "52w_high",
-                                          "fiftyTwoWeekLow": "52w_low"},
-                        'price': {"marketCap": "mkt_cap",
-                                  "regularMarketChangePercent": "price_change",
-                                  'regularMarketPrice': 'current_price'},
-                        'summaryProfile': {"industry": "industry",
-                                           "sector": "sector"}}
+    df = get_ticker_list_stats(ticker_list)
+    df = df[["symbol", "marketCap", "changesPercentage", "price", "priceAvg50", "yearHigh", "yearLow"]]
 
-    quick_stats_df = download_advanced_stats_multi_thread(ticker_list, quick_stats_dict)
-    quick_stats_df = quick_stats_df[quick_stats_df["avg_price"] != "N/A"]
-    quick_stats_df = quick_stats_df[quick_stats_df["52w_high"] != "N/A"]
-    quick_stats_df = quick_stats_df[quick_stats_df["52w_low"] != "N/A"]
-    quick_stats_df["difference_sma"] = 100 * (quick_stats_df["avg_price"] - quick_stats_df["current_price"]) / \
-                                       quick_stats_df["avg_price"]
-    quick_stats_df["difference_52w_high"] = 100 * (quick_stats_df["52w_high"] - quick_stats_df["current_price"]) / \
-                                            quick_stats_df["52w_high"]
-    quick_stats_df["difference_52w_low"] = 100 * (quick_stats_df["52w_low"] - quick_stats_df["current_price"]) / \
-                                           quick_stats_df["52w_low"]
+    df["difference_sma"] = 100 * (df["priceAvg50"] - df["price"]) / df["priceAvg50"]
+    df["difference_52w_high"] = 100 * (df["yearHigh"] - df["price"]) / df["yearHigh"]
+    df["difference_52w_low"] = 100 * (df["yearLow"] - df["price"]) / df["yearLow"]
 
-    del quick_stats_df["current_price"]
-    del quick_stats_df["avg_price"]
-    del quick_stats_df["52w_high"]
-    del quick_stats_df["52w_low"]
+    del df["price"]
+    del df["priceAvg50"]
+    del df["yearHigh"]
+    del df["yearLow"]
 
-    quick_stats_df["price_change"] = quick_stats_df["price_change"].apply(lambda k: round(k * 100, 2))
-    quick_stats_df = quick_stats_df.reindex(ticker_list)
-    quick_stats_df["mentions"] = mentions_list
-    quick_stats_df.reset_index(inplace=True)
-    quick_stats_df.rename(columns={"Symbol": "ticker"}, inplace=True)
-    quick_stats_df.to_sql("wsb_yf", engine, if_exists="replace", index=False)
+    df.rename(columns={"symbol": "ticker", "changesPercentage": "price_change", "marketCap": "mkt_cap"}, inplace=True)
+    df["mentions"] = mentions_list
+    df.to_sql("wsb_yf", engine, if_exists="replace", index=False)
 
 
 def main():

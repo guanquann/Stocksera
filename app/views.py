@@ -507,71 +507,6 @@ def earnings_calendar(request):
     return render(request, 'market_summary/earnings.html', {"df": df.to_html(index=False)})
 
 
-def reddit_analysis(request):
-    """
-    Get trending tickers on Reddit
-    """
-    cnx, cur, engine = connect_mysql_database()
-    if request.GET.get("subreddit"):
-        subreddit = request.GET.get("subreddit").lower().replace(" ", "")
-        if ":" in subreddit:
-            subreddit = subreddit.split(":")[1]
-    else:
-        subreddit = "wallstreetbets"
-
-    cur.execute("SELECT DISTINCT(date_updated) FROM {} ORDER BY ID DESC".format(subreddit, ))
-    latest_date = cur.fetchone()[0]
-
-    cur.execute("SELECT * FROM {} WHERE date_updated=%s ORDER BY `rank` ASC "
-                "LIMIT 35".format(subreddit), (latest_date,))
-    trending_tickers = cur.fetchall()
-    trending_tickers = list(map(list, trending_tickers))
-
-    if subreddit == "cryptocurrency":
-        return render(request, 'reddit/cryptocurrency.html', {"trending_tickers": trending_tickers})
-
-    database_mapping = {"wallstreetbets": "Wall Street Bets",
-                        "stocks": "Stocks",
-                        "shortsqueeze": "Shortsqueeze",
-                        "options": "Options",
-                        "spacs": "SPACs",
-                        "pennystocks": "Pennystocks"}
-    subreddit = database_mapping[subreddit]
-
-    return render(request, 'reddit/reddit_sentiment.html', {"trending_tickers": trending_tickers,
-                                                            "subreddit_selected": subreddit,
-                                                            "banned_words": sorted(stopwords_list)})
-
-
-def reddit_ticker_analysis(request):
-    """
-    Get analysis of ranking of tickers in popular subreddits and compare it with its price
-    """
-    if request.GET.get("quote"):
-        ticker_selected = request.GET.get("quote").upper()
-    else:
-        ticker_selected = "GME"
-    if request.GET.get("subreddit"):
-        subreddit = request.GET.get("subreddit").replace("Subreddit: ", "").replace(" ", "").lower()
-    else:
-        subreddit = "wallstreetbets"
-
-    cur.execute("SELECT `rank`, total, price, date_updated from {} WHERE ticker=%s".format(subreddit),
-                (ticker_selected,))
-    ranking = cur.fetchall()
-
-    if subreddit != "cryptocurrency":
-        information, related_tickers = check_market_hours(ticker_selected)
-        return render(request, 'reddit/reddit_stocks_analysis.html', {"ticker_selected": ticker_selected,
-                                                                      "information": information,
-                                                                      "related_tickers": related_tickers,
-                                                                      "ranking": ranking,
-                                                                      "subreddit": subreddit})
-    else:
-        return render(request, 'reddit/reddit_crypto_analysis.html', {"ticker_selected": ticker_selected,
-                                                                      "ranking": ranking})
-
-
 def subreddit_count(request):
     """
     Get subreddit user count, growth, active users over time.
@@ -1216,7 +1151,6 @@ def tasks(request):
                 {"create_db": current_timing,
                  "wsb_trending": current_timing,
                  "crypto_trending": current_timing,
-                 "reddit_trending": current_timing,
                  "subreddit_trending": current_timing,
                  "twitter_followers": current_timing,
                  "twitter_stock_trending": current_timing,
@@ -1257,9 +1191,6 @@ def tasks(request):
             elif request.POST.get("crypto_trending"):
                 task_crypto_trending()
                 data["crypto_trending"] = current_timing
-            elif request.POST.get("reddit_trending"):
-                task_reddit_trending()
-                data["reddit_trending"] = current_timing
             elif request.POST.get("subreddit_trending"):
                 task_subreddit_trending()
                 data["subreddit_trending"] = current_timing

@@ -3,9 +3,7 @@ Compilation of scheduled tasks to run
 """
 import scheduled_tasks.create_database as create_database
 
-import scheduled_tasks.reddit.stocks.scrape_trending_posts as scrape_reddit_stocks
 import scheduled_tasks.reddit.stocks.scrape_discussion_thread as scrape_stocks_discussion_thread
-import scheduled_tasks.reddit.crypto.scrape_trending_posts as scrape_reddit_crypto
 import scheduled_tasks.reddit.crypto.scrape_discussion_thread as scrape_crypto_discussion_thread
 import scheduled_tasks.reddit.get_subreddit_count as get_subreddit_count
 
@@ -53,11 +51,6 @@ def task_wsb_trending():
 
 def task_crypto_trending():
     scrape_crypto_discussion_thread.main()
-
-
-def task_reddit_trending():
-    scrape_reddit_stocks.main()
-    scrape_reddit_crypto.main()
 
 
 def task_subreddit_trending():

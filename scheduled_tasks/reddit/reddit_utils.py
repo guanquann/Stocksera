@@ -2,12 +2,10 @@ import os
 import re
 import sys
 import json
-import yaml
 import praw
+import requests
 from nltk.corpus import stopwords
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-
-from scheduled_tasks.reddit.stocks.fast_yahoo import *
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 from helpers import connect_mysql_database, config_keys

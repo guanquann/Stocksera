@@ -26,13 +26,11 @@ urlpatterns = [
     path('insider_trading/', views.stock_insider_trading, name='insider_trading'),
 
     # Reddit
-    path('reddit_analysis/', views.reddit_analysis, name='reddit_analysis'),
     path('wsb_live/', views.wsb_live, name='wsb_live'),
     path('wsb_live_ticker/', views.wsb_live_ticker, name="wsb_live_ticker"),
     path('crypto_live/', views.crypto_live, name='crypto_live'),
     path('crypto_live_ticker/', views.crypto_live_ticker, name="crypto_live_ticker"),
     path('wsb_documentation/', views.wsb_documentation, name="wsb_documentation"),
-    path('reddit_ticker_analysis/', views.reddit_ticker_analysis, name='reddit_ticker_analysis'),
     path('subreddit_count/', views.subreddit_count, name='subreddit_count'),
 
     # Market Summary

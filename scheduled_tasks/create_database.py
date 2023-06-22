@@ -3,7 +3,6 @@ Script to create database inside scheduled_tasks folder
 """
 import os
 import sys
-import yaml
 import mysql.connector
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
@@ -37,62 +36,6 @@ def database():
                 "name VARCHAR(300), "
                 "count INTEGER, "
                 "UNIQUE(ticker))")
-
-    subreddits = ["wallstreetbets", "stocks", "options", "pennystocks", "investing", "shortsqueeze",
-                  "spacs"]
-    for subreddit in subreddits:
-        cur.execute("CREATE TABLE IF NOT EXISTS {} ("
-                    "ID INTEGER PRIMARY KEY AUTO_INCREMENT, "
-                    "`rank` INTEGER NOT NULL, "
-                    "ticker VARCHAR(10), "
-                    "total INTEGER NOT NULL DEFAULT 0, "
-                    "recent INTEGER NOT NULL DEFAULT 0, "
-                    "previous INTEGER NOT NULL DEFAULT 0, "
-                    "`change` VARCHAR(10), "
-                    "rockets INTEGER NOT NULL DEFAULT 0, "
-                    "posts INTEGER NOT NULL DEFAULT 0, "
-                    "upvotes INTEGER NOT NULL DEFAULT 0, "
-                    "comments INTEGER NOT NULL DEFAULT 0, "
-                    "price VARCHAR(10), "
-                    "one_day_change_percent VARCHAR(10), "
-                    "fifty_day_change_percent VARCHAR(10), "
-                    "volume VARCHAR(10), "
-                    "mkt_cap VARCHAR(25), "
-                    "floating_shares VARCHAR(10), "
-                    "beta VARCHAR(10), "
-                    "short_per_float VARCHAR(10), "
-                    "industry VARCHAR(100), "
-                    "prev_close VARCHAR(10), "
-                    "open VARCHAR(10), "
-                    "day_low VARCHAR(10), "
-                    "day_high VARCHAR(10), "
-                    "target VARCHAR(10), "
-                    "recommend VARCHAR(20), "
-                    "date_updated VARCHAR(20), "
-                    "subreddit VARCHAR(25), "
-                    "UNIQUE(ticker, date_updated) )".format(subreddit))
-
-    cur.execute("CREATE table IF NOT EXISTS cryptocurrency ("
-                "ID INTEGER PRIMARY KEY AUTO_INCREMENT, "
-                "`rank` INTEGER NOT NULL, "
-                "ticker VARCHAR (10), "
-                "total INTEGER NOT NULL DEFAULT 0, "
-                "recent INTEGER NOT NULL DEFAULT 0, "
-                "previous INTEGER NOT NULL DEFAULT 0, "
-                "`change` VARCHAR(10), "
-                "rockets INTEGER NOT NULL DEFAULT 0, "
-                "posts INTEGER NOT NULL DEFAULT 0, "
-                "upvotes INTEGER NOT NULL DEFAULT 0, "
-                "comments INTEGER NOT NULL DEFAULT 0, "
-                "price VARCHAR(10), "
-                "one_day_change_percent VARCHAR(10), "
-                "thirty_day_change_percent VARCHAR(10), "
-                "volume VARCHAR(10), "
-                "mkt_cap VARCHAR(25), "
-                "circulating_supply VARCHAR(20),"
-                "max_supply VARCHAR (20),"
-                "date_updated VARCHAR(20),"
-                "UNIQUE(ticker, date_updated) )")
 
     cur.execute("CREATE table IF NOT EXISTS wsb_trending_24H ("
                 "ticker VARCHAR(10), "
@@ -158,17 +101,6 @@ def database():
                     "word VARCHAR(100), "
                     "mentions INTEGER, "
                     "date_updated VARCHAR(20) )".format(i))
-
-    cur.execute("CREATE table IF NOT EXISTS reddit_etf ("
-                "ticker VARCHAR(10), "
-                "open_date VARCHAR(20), "
-                "open_price FLOAT, "
-                "num_shares INTEGER, "
-                "close_date VARCHAR(20), "
-                "close_price FLOAT, "
-                "PnL FLOAT, "
-                "percentage FLOAT, "
-                "status VARCHAR(20))")
 
     cur.execute("CREATE table IF NOT EXISTS wsb_etf ("
                 "ticker VARCHAR(10), "

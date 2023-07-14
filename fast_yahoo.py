@@ -38,9 +38,9 @@ def download_advanced_stats(symbol_list, threads=True):
     # get raw responses
     for request_idx, symbol in enumerate(symbol_list):
         if threads:
-            get_ticker_stats_threaded(symbol, symbol, config)
+            get_ticker_stats_threaded(symbol, symbol)
         else:
-            shared.response_dict[symbol] = get_ticker_stats(symbol, config)
+            shared.response_dict[symbol] = get_ticker_stats(symbol)
 
     if threads:
         while len(shared.response_dict) < num_requests:
@@ -89,21 +89,22 @@ def download_advanced_stats(symbol_list, threads=True):
 
 
 @multitasking.task
-def get_ticker_stats_threaded(request_idx, symbol, module_name_map):
-    shared.response_dict[request_idx] = get_ticker_stats(symbol, module_name_map)
+def get_ticker_stats_threaded(request_idx, symbol):
+    shared.response_dict[request_idx] = get_ticker_stats(symbol)
 
 
-def get_ticker_stats(symbol, module_name_map):
+def get_ticker_stats(symbol):
     """
     Returns advanced stats for one ticker
     """
 
-    url = 'https://query2.finance.yahoo.com/v10/finance/quoteSummary/' + symbol
-    module_list = list(module_name_map.keys())
-    params = {
-        'modules': ','.join(module_list),
-    }
-    result = requests.get(url, params=params, headers=headers)
+    url = f'https://query2.finance.yahoo.com/v6/finance/quoteSummary/{symbol}?' \
+          f'modules=summaryDetail&' \
+          f'modules=defaultKeyStatistics&' \
+          f'modules=summaryProfile&' \
+          f'modules=price&' \
+          f'modules=topHoldings'
+    result = requests.get(url, headers=headers)
     json_dict = result.json()
     if "quoteSummary" not in json_dict:
         return None

@@ -14,6 +14,10 @@ You can view the application in <a href="https://stocksera.pythonanywhere.com" t
 
 This website is free for use. If you wish to support this project, please star it on Github or PayPal to <a href="https://www.paypal.me/stocksera">paypal.me/stocksera</a>. Patreon is also available <a href="https://www.patreon.com/stocksera" target="_blank">here</a>.
 
+### Data Source:
+
+- Yahoo Finance, Finviz, Finnhub, FinancialModellingPrep, IBKR, Reddit, Finra, SEC, CompaniesMarketCap, SenateStockWatcher, HouseStockWatcher, Polygon, ARKFunds.io, Stocktwits, Twitter, Federal Reserve and much more...
+
 ### User Guide:
 
 #### /ticker/

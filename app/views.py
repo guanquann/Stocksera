@@ -36,7 +36,7 @@ def main(request):
     if request.GET.get("quote"):
         ticker_selected = request.GET['quote'].upper().replace(" ", "")
         information, related_tickers = check_market_hours(ticker_selected)
-        if "longName" in information and information["regularMarketPrice"] != "N/A":
+        if "longName" in information and information["currentPrice"] != "N/A":
             return render(request, 'stock/ticker_price.html', {"ticker_selected": ticker_selected,
                                                                "information": information,
                                                                "related_tickers": related_tickers,
@@ -50,7 +50,7 @@ def stock_price(request):
     """
     ticker_selected = default_ticker(request)
     information, related_tickers = check_market_hours(ticker_selected)
-    if "longName" in information and information["regularMarketPrice"] != "N/A":
+    if "longName" in information and information["regularMarketOpen"] != "N/A":
         return render(request, 'stock/ticker_price.html', {"ticker_selected": ticker_selected,
                                                            "information": information,
                                                            "related_tickers": related_tickers,
@@ -80,6 +80,12 @@ def ticker_major_holders(request):
     ticker = yf.Ticker(ticker_selected, session=session)
     try:
         major_holders = ticker.major_holders
+        major_holders = major_holders.rename(index={"insidersPercentHeld": "Insiders % Held", 
+                                                    "institutionsPercentHeld": "Institutions % Held", 
+                                                    "institutionsFloatPercentHeld": "Institutions Float % Held", 
+                                                    "institutionsCount": "Institutions Count"})
+        major_holders.reset_index(inplace=True)
+        major_holders.loc[:2, "Value"] *= 100
         major_holders = major_holders.to_html(index=False, header=False)
     except (TypeError, AttributeError):
         major_holders = "N/A"
@@ -93,9 +99,10 @@ def ticker_institutional_holders(request):
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected, session=session)
     institutional_holders = ticker.institutional_holders
+    print(institutional_holders)
     if institutional_holders is not None:
         try:
-            institutional_holders.columns = (institutional_holders.columns.str.replace("% Out", "Stake"))
+            institutional_holders.columns = (institutional_holders.columns.str.replace("pctHeld", "Stake"))
             institutional_holders["Stake"] = institutional_holders["Stake"].apply(lambda x: str(f"{100 * x:.2f}") + "%")
         except AttributeError:
             institutional_holders = pd.DataFrame()
@@ -123,7 +130,7 @@ def ticker_mutual_fund_holders(request):
     ticker = yf.Ticker(ticker_selected, session=session)
     mutual_fund_holders = ticker.mutualfund_holders
     if mutual_fund_holders is not None:
-        mutual_fund_holders.columns = (mutual_fund_holders.columns.str.replace("% Out", "Stake"))
+        mutual_fund_holders.columns = (mutual_fund_holders.columns.str.replace("pctHeld", "Stake"))
         mutual_fund_holders["Stake"] = mutual_fund_holders["Stake"].apply(lambda x: str(f"{100 * x:.2f}") + "%")
     else:
         mutual_fund_holders = pd.DataFrame()
@@ -239,6 +246,9 @@ def historical_data(request):
     price_df["Volume / % Price Ratio"] = round(price_df["Volume"] / price_df["% Price Change"].abs())
     price_df.insert(0, 'Day', price_df["Date"].dt.day_name())
 
+    # price_df["Date"] = pd.to_datetime(price_df["Date"])
+    # price_df["Date"] = price_df["Date"].dt.strftime('%Y-%m-%d')
+
     if request.GET.get("order"):
         order = request.GET['order'].replace("Order: ", "")
     else:
@@ -256,8 +266,11 @@ def historical_data(request):
 
     summary_df = price_df.head(50).groupby(["Day"]).mean()
     summary_df.reset_index(inplace=True)
-    summary_df = summary_df.groupby(['Day']).sum().reindex(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])
-    summary_df.reset_index(inplace=True)
+
+    summary_df['Day'] = pd.Categorical(summary_df['Day'], 
+                                       categories=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                                       ordered=True)
+    summary_df = summary_df.sort_values('Day')
     summary_df = pd.DataFrame(summary_df[["Day", "% Price Change"]]).to_html(index=False)
 
     if order == "Descending":
@@ -311,6 +324,14 @@ def google_trends(request):
         interval = "1d"
 
     history_df = yf.Ticker(ticker_selected).history(period="1y", interval=interval)
+    history_df.reset_index(inplace=True)
+
+    interest_over_time["date"] = pd.to_datetime(interest_over_time["date"])
+    history_df["Date"] = pd.to_datetime(history_df["Date"])
+
+    interest_over_time["date"] = interest_over_time["date"].dt.strftime('%Y-%m-%d')
+    history_df["Date"] = history_df["Date"].dt.strftime('%Y-%m-%d')
+
     interest_over_time = pd.merge(interest_over_time, history_df, right_on=["Date"],
                                   left_on=["date"])[["date", "score", "Close"]]
 
@@ -319,6 +340,7 @@ def google_trends(request):
                     "today 3-m": "Past 90 days",
                     "today 12-m": "Past 12 months"}
     timeframe = mapping_dict[timeframe]
+
     return render(request, "stock/google_trend.html", {"interest_over_time": interest_over_time.to_html(index=False),
                                                        "ticker_selected": ticker_selected,
                                                        "timing_selected": timeframe,
@@ -331,7 +353,7 @@ def options(request):
     """
     ticker_selected = default_ticker(request)
     information, related_tickers = check_market_hours(ticker_selected)
-    if "longName" in information and information["regularMarketPrice"] != "N/A":
+    if "longName" in information and information["currentPrice"] != "N/A":
         options_data = requests.get(f"https://api.swaggystocks.com/stocks/options/maxPain/"
                                     f"{ticker_selected}").json()["maxPain"]
 
@@ -340,7 +362,7 @@ def options(request):
                                                           "information": information,
                                                           "options_data": [],
                                                           "historical_options_data": [],
-                                                          "current_price": information["regularMarketPrice"],
+                                                          "current_price": information["currentPrice"],
                                                           "expiry_date": [],
                                                           "error": "error_true",
                                                           "error_msg": f"{ticker_selected} has no option data."})
@@ -356,7 +378,7 @@ def options(request):
                                                       "related_tickers": related_tickers,
                                                       "options_data": options_data,
                                                       "historical_options_data": historical_options_data,
-                                                      "current_price": information["regularMarketPrice"],
+                                                      "current_price": information["currentPrice"],
                                                       "expiry_date": expiry_date
                                                       })
     else:
@@ -385,7 +407,7 @@ def short_volume(request):
 
     information, related_tickers = check_market_hours(ticker_selected)
 
-    if "longName" in information and information["regularMarketPrice"] != "N/A":
+    if "longName" in information and information["currentPrice"] != "N/A":
         short_volume_data = get_stocksera_request(f"stocks/short_volume/{ticker_selected}")
 
         if "download_csv" in request.GET:
@@ -417,7 +439,7 @@ def borrowed_shares(request):
         return render(request, 'stock/top_borrowed_shares.html',
                       {"highest_borrowed_shares": highest_borrowed_shares.to_html(index=False)})
 
-    if "longName" in information and information["regularMarketPrice"] != "N/A":
+    if "longName" in information and information["currentPrice"] != "N/A":
         df = get_stocksera_request(f"stocks/borrowed_shares/{ticker_selected}")
         del df["ticker"]
         df.columns = ["Fee", "Available", "Updated"]
@@ -443,7 +465,7 @@ def failure_to_deliver(request):
         return render(request, 'stock/top_ftd.html', {"top_ftd": top_ftd.to_html(index=False)})
 
     information, related_tickers = check_market_hours(ticker_selected)
-    if "longName" in information and information["regularMarketPrice"] != "N/A":
+    if "longName" in information and information["currentPrice"] != "N/A":
         ftd = get_stocksera_request(f"stocks/failure_to_deliver/{ticker_selected}")
         if ftd.empty:
             top_range = 0
@@ -1045,43 +1067,6 @@ def twitter_trending(request):
     return render(request, 'social/twitter_trending.html', {"ticker_selected": ticker_selected,
                                                             "ticker_df": ticker_df.to_html(index=False),
                                                             })
-
-
-def jim_cramer(request):
-    pd.options.display.float_format = '{:.2f}'.format
-    ticker_selected = request.GET.get("quote")
-    if ticker_selected:
-        ticker_selected = ticker_selected.upper()
-        information, related_tickers = check_market_hours(ticker_selected)
-
-        ticker_df = get_stocksera_request(f"discover/jim_cramer/{ticker_selected}")
-        history_df = yf.Ticker(ticker_selected).history(period="1y", interval="1d")
-        history_df.reset_index(inplace=True)
-        history_df = history_df[["Date", "Close"]]
-        history_df["Date"] = history_df["Date"].astype(str)
-
-        if ticker_df.empty:
-            ticker_df = pd.DataFrame([{"Date": "N/A", "Segment": "N/A", "Call": "N/A", "Close": "N/A",
-                                       "Pro Cramer": "N/A", "Inverse Cramer": "N/A"}])
-        else:
-            del ticker_df["Ticker"]
-            del ticker_df["Price"]
-            latest_price = history_df.iloc[-1]["Close"]
-            ticker_df = ticker_df.merge(history_df, on="Date")
-            ticker_df["Pro Cramer"] = latest_price
-            ticker_df["Pro Cramer"] = 100 * (ticker_df["Pro Cramer"] - ticker_df["Close"]) / ticker_df["Close"]
-            ticker_df.loc[ticker_df["Call"].isin(["Negative", "Sell"]), 'Pro Cramer'] *= -1
-            ticker_df["Inverse Cramer"] = ticker_df["Pro Cramer"] * -1
-
-        return render(request, 'discover/jim_cramer_ticker_analysis.html', {"ticker_selected": ticker_selected.upper(),
-                                                                            "information": information,
-                                                                            "related_tickers": related_tickers,
-                                                                            "ticker_df": ticker_df.to_html(index=False),
-                                                                            "history_df": history_df.to_html(
-                                                                                index=False)})
-    else:
-        df = get_stocksera_request(f"discover/jim_cramer")[:500]
-        return render(request, 'discover/jim_cramer.html', {"df": df.to_html(index=False)})
 
 
 def news(request):

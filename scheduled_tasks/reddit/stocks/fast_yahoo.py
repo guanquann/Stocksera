@@ -178,8 +178,10 @@ def get_ticker_stats(symbol, module_name_map):
     module_list = list(module_name_map.keys())
     params = {
         'modules': ','.join(module_list),
+        'crumb': 'yGYzJBMCRDH'
     }
     result = requests.get(url, params=params, headers=headers)
+    print(result, "result")
     if result.status_code != 200 and result.status_code != 404:
         result.raise_for_status()
 

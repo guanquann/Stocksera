@@ -4,6 +4,7 @@ import pandas as pd
 import yaml
 import numpy as np
 import finnhub
+import yfinance as yf
 import mysql.connector
 from datetime import date
 from sqlalchemy import create_engine
@@ -118,8 +119,8 @@ def check_market_hours(ticker_selected):
         if ticker_selected in data and str(current_datetime) < data[ticker_selected]["next_update"]:
             information = data[ticker_selected]
         else:
-            information = download_advanced_stats([ticker_selected])
-            data.update(information)
+            information = yf.Ticker(ticker_selected).info
+            data.update({ticker_selected: information})
             information = data[ticker_selected]
 
             information["next_update"] = next_update_time
@@ -127,12 +128,7 @@ def check_market_hours(ticker_selected):
             r.truncate()
             json.dump(data, r, indent=4)
 
-    if "longName" in information and information["regularMarketPrice"] != "N/A":
-        if "." not in ticker_selected:
-            cur.execute("INSERT INTO stocksera_trending (ticker, name, count) VALUES (%s, %s, 1) ON DUPLICATE "
-                        "KEY UPDATE count=count+1", (ticker_selected, information["longName"]))
-            cnx.commit()
-
+    if "longName" in information and information["currentPrice"] != "N/A":
         cur.execute("SELECT * FROM related_tickers WHERE ticker=%s", (ticker_selected, ))
         related_tickers = cur.fetchall()
         if not related_tickers:

@@ -40,7 +40,6 @@ def preferences(request):
                 "crypto_trending": False,
                 "government": False,
                 "insider": False,
-                "jim_cramer": False,
                 "earnings": False,
                 "short_vol": False,
                 "ctb": False,
@@ -51,7 +50,6 @@ def preferences(request):
                                                                                crypto_trending=query["crypto_trending"],
                                                                                government=query["government"],
                                                                                insider=query["insider"],
-                                                                               jim_cramer=query["jim_cramer"],
                                                                                earnings=query["earnings"],
                                                                                short_vol=query["short_vol"],
                                                                                ctb=query["ctb"])
@@ -64,7 +62,6 @@ def preferences(request):
                     "crypto_trending": filtered_pref.crypto_trending,
                     "government": filtered_pref.government,
                     "insider": filtered_pref.insider,
-                    "jim_cramer": filtered_pref.jim_cramer,
                     "earnings": filtered_pref.earnings,
                     "short_vol": filtered_pref.short_vol,
                     "ctb": filtered_pref.ctb,

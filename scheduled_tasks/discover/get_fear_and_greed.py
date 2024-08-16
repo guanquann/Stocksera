@@ -17,12 +17,13 @@ def main():
     data = requests.get("https://production.dataviz.cnn.io/index/fearandgreed/graphdata", headers=header).json()
 
     df = pd.DataFrame(data["fear_and_greed_historical"]["data"])
+
     df["x"] = df["x"].apply(lambda x: str(datetime.fromtimestamp(int(str(x)[:-5]))).split()[0])
     df["rating"] = df["rating"].str.title()
 
     historical_df = yf.Ticker("SPY").history(period="5y", interval="1d")
     historical_df.reset_index(inplace=True)
-    historical_df["Date"] = historical_df["Date"].astype(str)
+    historical_df["Date"] = pd.to_datetime(historical_df["Date"]).dt.strftime("%Y-%m-%d")
 
     df = df.merge(historical_df, left_on="x", right_on="Date")
     df = df[["x", "y", "Close", "rating"]]

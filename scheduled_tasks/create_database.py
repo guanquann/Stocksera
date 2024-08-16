@@ -333,13 +333,6 @@ def database():
                 "date_updated VARCHAR(20),"
                 "INDEX (ticker) )")
 
-    cur.execute("CREATE table IF NOT EXISTS jim_cramer_trades ("
-                "Ticker VARCHAR(10), "
-                "`Date` VARCHAR(20), "
-                "Segment VARCHAR(50), "
-                "`Call` VARCHAR(50),"
-                "Price FLOAT )")
-
     cur.execute("CREATE TABLE IF NOT EXISTS shares_available ("
                 "ticker VARCHAR(10), "
                 "fee  FLOAT, "

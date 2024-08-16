@@ -34,7 +34,14 @@ def usa_inflation():
     df["Year"] = df["Year"].astype(str)
     df.replace(np.nan, "N/A", inplace=True)
 
-    most_recent_yr_avg = round(float(df.iloc[[0]].mean(axis=1)), 1)
+    count = 0
+    most_recent_yr_avg = 0
+    for _, value in df.iloc[0, 1:].items():
+        if value != "N/A":
+            count += 1
+            most_recent_yr_avg += float(value)
+    most_recent_yr_avg = round(most_recent_yr_avg / count, 1)
+
     df.at[df[df["Year"] == df.iloc[0]["Year"]].index[0], 'Ave'] = most_recent_yr_avg
 
     df.to_sql("usa_inflation", engine, if_exists="replace", index=False)

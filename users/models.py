@@ -8,7 +8,6 @@ class Preferences(models.Model):
     crypto_trending = models.BooleanField(default=False)
     government = models.BooleanField(default=False)
     insider = models.BooleanField(default=False)
-    jim_cramer = models.BooleanField(default=False)
     earnings = models.BooleanField(default=False)
     short_vol = models.BooleanField(default=False)
     ctb = models.BooleanField(default=False)

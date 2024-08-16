@@ -19,7 +19,7 @@ def main():
 
     full_ticker_df = pd.read_sql("SELECT DISTINCT(ticker) FROM shares_available", cnx)
 
-    ftp = ftplib.FTP('ftp3.interactivebrokers.com', 'shortstock')
+    ftp = ftplib.FTP('ftp2.interactivebrokers.com', 'shortstock')
 
     flo = BytesIO()
     ftp.retrbinary('RETR usa.txt', flo.write)
@@ -29,7 +29,7 @@ def main():
     df = df[["#SYM", "FEERATE", "AVAILABLE"]]
     df.columns = ["ticker", "fee", "available"]
     df["available"] = df["available"].replace(">10000000", 10000000)
-    df = df.append(full_ticker_df)
+    df = pd.concat([df, full_ticker_df])
     df = df.drop_duplicates(subset="ticker", keep="first")
     df["date_updated"] = str(datetime.utcnow() - timedelta(hours=5)).rsplit(":", 1)[0]
     df.fillna(0, inplace=True)

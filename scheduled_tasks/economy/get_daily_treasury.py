@@ -19,7 +19,7 @@ def download_json(date_to_start: str = str(datetime.utcnow().date() - timedelta(
         format: YYYY-MM-DD
     """
     print("Getting Daily Treasury...")
-    url = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/dts/dts_table_1" \
+    url = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/dts/operating_cash_balance" \
           "?fields=record_date,account_type,close_today_bal,open_today_bal,open_month_bal&" \
           "filter=record_date:gte:{}".format(date_to_start)
     data = requests.get(url).json()['data']

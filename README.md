@@ -2,17 +2,13 @@
 
 ![Stocksera](./static/images/github/logo.png)
 
-[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/stocksera_bot.svg?style=social&label=Follow%20%40stocksera)](https://twitter.com/stockseraapp)
-
-[![Downloads](https://static.pepy.tech/badge/stocksera)](https://pepy.tech/project/stocksera) [![Downloads](https://static.pepy.tech/badge/stocksera/month)](https://pepy.tech/project/stocksera)
-
-You can view the application in <a href="https://stocksera.pythonanywhere.com" target="_blank">stocksera.pythonanywhere.com</a>.
+[![Downloads](https://static.pepy.tech/badge/stocksera)](https://pepy.tech/project/stocksera)
 
 <b>Stocksera API available at https://pypi.org/project/stocksera or via `pip install stocksera`. View documentation at https://github.com/guanquann/Stocksera-API. </b>
 
 ### Support:
 
-This website is free for use. If you wish to support this project, please star it on Github or PayPal to <a href="https://www.paypal.me/stocksera">paypal.me/stocksera</a>. Patreon is also available <a href="https://www.patreon.com/stocksera" target="_blank">here</a>.
+If you wish to support this project, please star it on Github or PayPal to <a href="https://www.paypal.me/stocksera">paypal.me/stocksera</a>. Patreon is also available <a href="https://www.patreon.com/stocksera" target="_blank">here</a>.
 
 ### Data Source:
 

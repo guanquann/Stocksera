@@ -26,6 +26,45 @@ config = {'summaryDetail': ['regularMarketOpen', 'previousClose', 'dayHigh', 'fi
           'topHoldings': ['holdings', 'sectorWeightings']}
 
 
+def get_yahoo_cookie():
+    user_agent_key = "User-Agent"
+    user_agent_value = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " \
+                       "Chrome/58.0.3029.110 Safari/537.36"
+
+    headers = {user_agent_key: user_agent_value}
+    response = requests.get(
+        "https://fc.yahoo.com", headers=headers, allow_redirects=True
+    )
+
+    if not response.cookies:
+        raise Exception("Failed to obtain Yahoo auth cookie.")
+
+    cookie = list(response.cookies)[0]
+
+    return cookie
+
+
+def get_yahoo_crumb(cookie):
+    user_agent_key = "User-Agent"
+    user_agent_value = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " \
+                       "Chrome/58.0.3029.110 Safari/537.36"
+
+    headers = {user_agent_key: user_agent_value}
+
+    crumb_response = requests.get(
+        "https://query1.finance.yahoo.com/v1/test/getcrumb",
+        headers=headers,
+        cookies={cookie.name: cookie.value},
+        allow_redirects=True,
+    )
+    crumb = crumb_response.text
+
+    if crumb is None:
+        raise Exception("Failed to retrieve Yahoo crumb.")
+
+    return crumb
+
+
 def download_advanced_stats(symbol_list, threads=True):
     """
     Downloads advanced yahoo stats for many tickers by doing one request per ticker.
@@ -98,12 +137,13 @@ def get_ticker_stats(symbol):
     Returns advanced stats for one ticker
     """
 
-    url = f'https://query2.finance.yahoo.com/v6/finance/quoteSummary/{symbol}?' \
+    url = f'https://query2.finance.yahoo.com/v10/finance/quoteSummary/{symbol}?' \
           f'modules=summaryDetail&' \
           f'modules=defaultKeyStatistics&' \
           f'modules=summaryProfile&' \
           f'modules=price&' \
           f'modules=topHoldings'
+
     result = requests.get(url, headers=headers)
     json_dict = result.json()
     if "quoteSummary" not in json_dict:

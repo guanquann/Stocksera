@@ -56,7 +56,6 @@ urlpatterns = [
     path('ipo_calendar/', views.ipo_calendar, name='ipo_calendar'),
     path('largest_companies/', views.largest_companies, name='largest_companies'),
     path('stocktwits/', views.stocktwits, name='stocktwits'),
-    path('jim_cramer/', views.jim_cramer, name='jim_cramer'),
     path('twitter_trending/', views.twitter_trending, name='twitter_trending'),
     path('beta/', views.beta, name='beta'),
     path('short_interest/', views.short_interest, name='short_interest'),

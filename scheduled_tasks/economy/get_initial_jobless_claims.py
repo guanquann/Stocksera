@@ -1,5 +1,6 @@
 import os
 import sys
+import pandas as pd
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
@@ -16,7 +17,7 @@ def jobless_claims():
     print("Getting Initial Jobless Claims...")
     url = "https://ycharts.com/indicators/us_initial_claims_for_unemployment_insurance"
     df = ychart_data(url)
-    df = df[6][::-1].append(df[5][::-1])
+    df = pd.concat([df[6][::-1], df[5][::-1]], axis=0)
 
     df["Value"] = df["Value"].astype(int)
     df["Percent Change"] = df["Value"].shift(1)

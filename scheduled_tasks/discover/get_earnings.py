@@ -23,11 +23,10 @@ def main():
         df = df[["date", "hour", "symbol", "epsEstimate", "epsActual", "revenueEstimate", "revenueActual",
                  "year", "quarter"]]
         current_index += 7
-        main_df = main_df.append(df)
+        main_df = pd.concat([main_df, df])
     main_df = main_df[main_df["symbol"].str.len() <= 4]
 
     mkt_cap_df = get_ticker_list_stats(main_df["symbol"].tolist())[["symbol", "marketCap"]]
-
     main_df = pd.merge(main_df, mkt_cap_df, on="symbol", how="left")
     main_df.fillna("N/A", inplace=True)
     main_df["hour"] = main_df["hour"].str.upper()

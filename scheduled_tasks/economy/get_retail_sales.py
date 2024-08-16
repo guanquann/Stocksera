@@ -17,22 +17,23 @@ def retail_sales():
     print("Getting Retail Sales...")
     url = "https://ycharts.com/indicators/us_retail_and_food_services_sales"
     df = ychart_data(url)
-
-    combined_df = df[6][::-1].append(df[5][::-1])
-
+    
+    combined_df = pd.concat([df[6][::-1], df[5][::-1]], axis=0)
+    
     combined_df["Value"] = combined_df["Value"].str.replace("B", "")
     combined_df["Value"] = combined_df["Value"].astype(float)
-
+    
     combined_df["Percent Change"] = combined_df["Value"].shift(1)
     combined_df["Percent Change"] = combined_df["Percent Change"].astype(float)
     combined_df["Percent Change"] = 100 * (combined_df["Value"] - combined_df["Percent Change"]) / \
                                     combined_df["Percent Change"]
     combined_df["Percent Change"] = combined_df["Percent Change"].round(2)
-
+    
     combined_df["Date"] = combined_df["Date"].astype('datetime64[ns]').astype(str)
 
     covid_df = pd.read_csv(r'https://covid.ourworldindata.org/data/owid-covid-data.csv')
     usa_df = covid_df[covid_df["iso_code"] == "USA"]
+    print(usa_df)
     usa_df.index = pd.to_datetime(usa_df["date"], errors='coerce')
     usa_df = usa_df.groupby(pd.Grouper(freq="M"))
     usa_df = usa_df.mean()["new_cases"]

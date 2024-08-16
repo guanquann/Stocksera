@@ -5,7 +5,7 @@ import pandas as pd
 from datetime import datetime
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
-from helpers import connect_mysql_database
+from helpers import connect_mysql_database, header
 
 cnx, cur, engine = connect_mysql_database()
 
@@ -15,7 +15,7 @@ def main():
     Get stocktwits trending tickers
     """
     print("Getting Stocktwits...")
-    trending = requests.get("https://api.stocktwits.com/api/2/trending/symbols.json").json()["symbols"]
+    trending = requests.get("https://api.stocktwits.com/api/2/trending/symbols.json", headers=header).json()["symbols"]
     df = pd.DataFrame.from_dict(trending)[["symbol", "watchlist_count"]]
     df["date_updated"] = str(datetime.utcnow()).split(":")[0] + ":00"
     df.index += 1

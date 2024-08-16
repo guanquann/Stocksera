@@ -25,8 +25,11 @@ def download_ftd():
     os.mkdir("database/failure_to_deliver/csv")
 
     base_url = "https://www.sec.gov"
+
     text_soup_high_short_interested_stocks = BeautifulSoup(
         requests.get("https://www.sec.gov/data/foiadocsfailsdatahtm").text, "lxml")
+
+    print(text_soup_high_short_interested_stocks, "!!!!!")
 
     ftd_url_links = text_soup_high_short_interested_stocks.findAll("table")[1].findAll("a")
     for url_link in ftd_url_links[:24]:
@@ -114,7 +117,7 @@ def main():
     download_ftd()
     FOLDER_PATH = r"database/failure_to_deliver/csv"
     files_available = sorted(Path(FOLDER_PATH).iterdir(), key=os.path.getmtime)
-    upload_to_df(files_available, limit=6)
+    upload_to_df(files_available, limit=2)
     get_top_ftd(files_available[0])
     print("FTD Successfully Completed...\n")
 

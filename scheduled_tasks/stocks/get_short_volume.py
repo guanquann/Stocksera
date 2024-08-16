@@ -32,7 +32,7 @@ def get_30d_data_finra():
             del df["Market"]
             df["%Shorted"] = 100 * (df["ShortVolume"] / df["TotalVolume"])
             df["%Shorted"] = df["%Shorted"].round(2)
-            combined_df = combined_df.append(df)
+            combined_df = pd.concat([combined_df, df], ignore_index=True)
         last_date = last_date + timedelta(days=1)
 
     combined_df["Date"] = combined_df["Date"].astype(str)
@@ -43,7 +43,6 @@ def get_30d_data_finra():
 
     start = 0
     while start < len(combined_df):
-        print(start)
         cur.executemany("INSERT IGNORE INTO short_volume VALUES (%s, %s, %s, %s, %s, %s)",
                         combined_df[start:start + 50000].values.tolist())
         cnx.commit()

@@ -20,29 +20,25 @@ def latest_insider_trading():
     """
     Get recent insider trading data from Finviz
     """
-    for type_trading in ["buys", "sales"]:
+    for type_trading in ["buys"]:
         finsider = Insider(option="latest {}".format(type_trading))
         insider_trader = finsider.get_insider()
+
         insider_trader["Owner"] = insider_trader["Owner"].str.title()
         insider_trader = insider_trader[insider_trader["Value ($)"] >= 50000]
 
-        insider_trader["Date"] = insider_trader["Date"] + " {}".format(str(date.today().year))
-        insider_trader["Date"] = pd.to_datetime(insider_trader["Date"], format="%b %d %Y", errors='coerce')
-
+        insider_trader["Date"] = pd.to_datetime(insider_trader["Date"], format="%b %d '%y").dt.strftime("%b %d %Y")
+        insider_trader["Date"] = insider_trader["Date"].astype(str)
+        
         insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"].apply(lambda x: x.rsplit(' ', 2)[0])
         insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"] + " {}".format(str(date.today().year))
         insider_trader["SEC Form 4"] = pd.to_datetime(insider_trader["SEC Form 4"], format="%b %d %Y", errors='coerce')
+        insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"].apply(lambda x: check_date(x.date(), datetime.utcnow().date()))
+        insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"].astype(str)
 
         if type_trading == "sales":
             insider_trader["Value ($)"] = -insider_trader["Value ($)"]
-
-        last_date = datetime.utcnow().date()
-
-        insider_trader["Date"] = insider_trader["Date"].apply(lambda x: check_date(x, last_date))
-        insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"].apply(lambda x: check_date(x, last_date))
-        insider_trader["Date"] = insider_trader["Date"].astype(str)
-        insider_trader["SEC Form 4"] = insider_trader["SEC Form 4"].astype(str)
-
+    
         for index, row in insider_trader.iterrows():
             cur.execute("INSERT IGNORE INTO latest_insider_trading VALUES "
                         "(%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s, %s)", (row["Ticker"], row["Owner"],

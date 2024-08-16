@@ -2,6 +2,8 @@
 
 ![Stocksera](./static/images/github/logo.png)
 
+### NOTE: I'm still in the midst of fixing bugs...
+
 [![Downloads](https://static.pepy.tech/badge/stocksera)](https://pepy.tech/project/stocksera)
 
 <b>Stocksera API available at https://pypi.org/project/stocksera or via `pip install stocksera`. View documentation at https://github.com/guanquann/Stocksera-API. </b>

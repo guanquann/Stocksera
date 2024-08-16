@@ -17,8 +17,8 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 with open("config.yaml") as config_file:
     config_keys = yaml.load(config_file, Loader=yaml.Loader)
 
-BASE_URL = config_keys['STOCKSERA_BASE_URL']
-HEADERS = {f'Authorization': f"Api-Key {config_keys['STOCKSERA_API']}"}
+BASE_URL = config_keys["STOCKSERA_BASE_URL"]
+HEADERS = {f"Authorization": f"Api-Key {config_keys['STOCKSERA_API']}"}
 
 analyzer = SentimentIntensityAnalyzer()
 analyzer.lexicon.update(json.load(open("custom_extensions/custom_words.json")))
@@ -26,15 +26,22 @@ analyzer.lexicon.update(json.load(open("custom_extensions/custom_words.json")))
 # https://finnhub.io/
 finnhub_client = finnhub.Client(api_key=config_keys["FINNHUB_KEY1"])
 
-header = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/"
-                        "50.0.2661.75 Safari/537.36", "X-Requested-With": "XMLHttpRequest"}
+header = {
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/"
+    "50.0.2661.75 Safari/537.36",
+    "X-Requested-With": "XMLHttpRequest",
+}
 
-engine = create_engine(f'mysql://{config_keys["MYSQL_USER"]}:{config_keys["MYSQL_PASSWORD"]}@'
-                       f'{config_keys["MYSQL_HOST"]}/{config_keys["MYSQL_DATABASE"]}')
-cnx = mysql.connector.connect(user=config_keys["MYSQL_USER"],
-                              password=config_keys["MYSQL_PASSWORD"],
-                              host=config_keys["MYSQL_HOST"],
-                              database=config_keys["MYSQL_DATABASE"])
+engine = create_engine(
+    f'mysql://{config_keys["MYSQL_USER"]}:{config_keys["MYSQL_PASSWORD"]}@'
+    f'{config_keys["MYSQL_HOST"]}/{config_keys["MYSQL_DATABASE"]}'
+)
+cnx = mysql.connector.connect(
+    user=config_keys["MYSQL_USER"],
+    password=config_keys["MYSQL_PASSWORD"],
+    host=config_keys["MYSQL_HOST"],
+    database=config_keys["MYSQL_DATABASE"],
+)
 cnx.autocommit = True
 cur = cnx.cursor()
 
@@ -44,12 +51,16 @@ def connect_mysql_database():
     global cnx
     global cur
     if not cnx.is_connected():
-        engine = create_engine(f'mysql://{config_keys["MYSQL_USER"]}:{config_keys["MYSQL_PASSWORD"]}@'
-                               f'{config_keys["MYSQL_HOST"]}/{config_keys["MYSQL_DATABASE"]}')
-        cnx = mysql.connector.connect(user=config_keys["MYSQL_USER"],
-                                      password=config_keys["MYSQL_PASSWORD"],
-                                      host=config_keys["MYSQL_HOST"],
-                                      database=config_keys["MYSQL_DATABASE"])
+        engine = create_engine(
+            f'mysql://{config_keys["MYSQL_USER"]}:{config_keys["MYSQL_PASSWORD"]}@'
+            f'{config_keys["MYSQL_HOST"]}/{config_keys["MYSQL_DATABASE"]}'
+        )
+        cnx = mysql.connector.connect(
+            user=config_keys["MYSQL_USER"],
+            password=config_keys["MYSQL_PASSWORD"],
+            host=config_keys["MYSQL_HOST"],
+            database=config_keys["MYSQL_DATABASE"],
+        )
         cnx.autocommit = True
         cur = cnx.cursor()
     return cnx, cur, engine
@@ -65,15 +76,17 @@ def get_stocksera_request(endpoint, optional=None):
 
 
 def get_ticker_list_stats(ticker_list):
-    r = requests.get(f"https://financialmodelingprep.com/api/v3/quote/{','.join(ticker_list)}?"
-                     f"apikey={config_keys['FMP_KEY']}").json()
+    r = requests.get(
+        f"https://financialmodelingprep.com/api/v3/quote/{','.join(ticker_list)}?"
+        f"apikey={config_keys['FMP_KEY']}"
+    ).json()
     df = pd.DataFrame(r)
     return df
 
 
 def default_ticker(request, ticker="AAPL"):
     if request.GET.get("quote"):
-        ticker_selected = request.GET['quote'].upper().replace(" ", "")
+        ticker_selected = request.GET["quote"].upper().replace(" ", "")
     else:
         ticker_selected = ticker
     return ticker_selected
@@ -116,7 +129,10 @@ def check_market_hours(ticker_selected):
     next_update_time = str(current_datetime + timedelta(seconds=600))
     with open(r"database/yf_cached_api.json", "r+") as r:
         data = check_json(r)
-        if ticker_selected in data and str(current_datetime) < data[ticker_selected]["next_update"]:
+        if (
+            ticker_selected in data
+            and str(current_datetime) < data[ticker_selected]["next_update"]
+        ):
             information = data[ticker_selected]
         else:
             information = yf.Ticker(ticker_selected).info
@@ -129,7 +145,7 @@ def check_market_hours(ticker_selected):
             json.dump(data, r, indent=4)
 
     if "longName" in information and information["currentPrice"] != "N/A":
-        cur.execute("SELECT * FROM related_tickers WHERE ticker=%s", (ticker_selected, ))
+        cur.execute("SELECT * FROM related_tickers WHERE ticker=%s", (ticker_selected,))
         related_tickers = cur.fetchall()
         if not related_tickers:
             related_tickers = finnhub_client.company_peers(ticker_selected)
@@ -138,8 +154,10 @@ def check_market_hours(ticker_selected):
             upload_to_db = related_tickers.copy()
             while len(upload_to_db) <= 6:
                 upload_to_db += [""]
-            cur.execute("INSERT INTO related_tickers VALUES (%s, %s, %s, %s, %s, %s, %s)",
-                        tuple([ticker_selected] + upload_to_db[:6]))
+            cur.execute(
+                "INSERT INTO related_tickers VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                tuple([ticker_selected] + upload_to_db[:6]),
+            )
             cnx.commit()
         else:
             related_tickers = list(related_tickers[0])[1:]
@@ -168,7 +186,7 @@ def check_financial_data(ticker_selected, ticker, data, r):
         "date_list": date_list,
         "balance_list": balance_list,
         "balance_col_list": balance_col_list,
-        "next_update": str(datetime.now().date() + timedelta(days=7))
+        "next_update": str(datetime.now().date() + timedelta(days=7)),
     }
     r.seek(0)
     r.truncate()
@@ -182,8 +200,11 @@ def convert_date(date):
 
 def get_sec_fillings(ticker_selected):
     current_date = datetime.utcnow().date()
-    sec_list = finnhub_client.filings(symbol=ticker_selected, _from=str(current_date - timedelta(days=365*3)),
-                                      to=str(current_date))[:100]
+    sec_list = finnhub_client.filings(
+        symbol=ticker_selected,
+        _from=str(current_date - timedelta(days=365 * 3)),
+        to=str(current_date),
+    )[:100]
     for filling in sec_list:
         ticker = filling["symbol"]
         fillings = filling["form"]
@@ -191,12 +212,13 @@ def get_sec_fillings(ticker_selected):
         filling_date = filling["filedDate"].split()[0]
         report_url = filling["reportUrl"]
         filing_url = filling["filingUrl"]
-        cur.execute("INSERT INTO sec_fillings VALUES (%s, %s, %s, %s, %s, %s)",
-                    (ticker, fillings, description, filling_date, report_url, filing_url))
+        cur.execute(
+            "INSERT INTO sec_fillings VALUES (%s, %s, %s, %s, %s, %s)",
+            (ticker, fillings, description, filling_date, report_url, filing_url),
+        )
         cnx.commit()
     df = pd.DataFrame(sec_list)
-    df.rename(columns={"form": "Filling", "filedDate": "Filling Date"},
-              inplace=True)
+    df.rename(columns={"form": "Filling", "filedDate": "Filling Date"}, inplace=True)
     df["Description"] = ""
     df = df[["Filling", "Description", "Filling Date", "reportUrl", "filingUrl"]]
     return df
@@ -209,7 +231,7 @@ def get_ticker_news(ticker_selected):
     try:
         ticker_fin = finvizfinance(ticker_selected)
         news_df = ticker_fin.ticker_news()
-        news_df = news_df.drop_duplicates(subset=['Title'])
+        news_df = news_df.drop_duplicates(subset=["Title"])
         news_df["Date"] = news_df["Date"].dt.date
         news_df["Date"] = news_df["Date"].astype(str)
 
@@ -217,7 +239,7 @@ def get_ticker_news(ticker_selected):
         sentiment_list = list()
         for index, row in news_df.iterrows():
             vs = analyzer.polarity_scores(row["Title"])
-            sentiment_score = vs['compound']
+            sentiment_score = vs["compound"]
             if sentiment_score > 0.2:
                 sentiment = "Bullish"
             elif sentiment_score < -0.2:
@@ -225,15 +247,19 @@ def get_ticker_news(ticker_selected):
             else:
                 sentiment = "Neutral"
             sentiment_list.append(sentiment)
-            cur.execute("INSERT INTO daily_ticker_news VALUES (%s, %s, %s, %s, %s)",
-                        (ticker_selected, row[0], row[1], row[2], sentiment))
+            cur.execute(
+                "INSERT INTO daily_ticker_news VALUES (%s, %s, %s, %s, %s)",
+                (ticker_selected, row[0], row[1], row[2], sentiment),
+            )
             cnx.commit()
         news_df["Sentiment"] = sentiment_list
     except:
         news_df = pd.DataFrame(columns=["Date", "Title", "Link", "Sentiment"])
         news_df.loc[0] = ["N/A", "N/A", "https://finance.yahoo.com/news/", "N/A"]
-        cur.execute("INSERT INTO daily_ticker_news VALUES (%s, %s, %s, %s, %s)",
-                    (ticker_selected, "N/A", "N/A", "https://finance.yahoo.com/news/", "N/A"))
+        cur.execute(
+            "INSERT INTO daily_ticker_news VALUES (%s, %s, %s, %s, %s)",
+            (ticker_selected, "N/A", "N/A", "https://finance.yahoo.com/news/", "N/A"),
+        )
         cnx.commit()
     return news_df
 
@@ -245,10 +271,18 @@ def get_insider_trading(ticker_selected):
     try:
         ticker_fin = finvizfinance(ticker_selected)
         inside_trader_df = ticker_fin.ticker_inside_trader()
-        inside_trader_df["Insider Trading"] = inside_trader_df["Insider Trading"].str.title()
-        inside_trader_df.rename(columns={"Insider Trading": "Name", "SEC Form 4 Link": ""}, inplace=True)
-        inside_trader_df["Date"] = inside_trader_df["Date"] + " {}".format(str(date.today().year))
-        inside_trader_df["Date"] = pd.to_datetime(inside_trader_df["Date"], format="%b %d %Y")
+        inside_trader_df["Insider Trading"] = inside_trader_df[
+            "Insider Trading"
+        ].str.title()
+        inside_trader_df.rename(
+            columns={"Insider Trading": "Name", "SEC Form 4 Link": ""}, inplace=True
+        )
+        inside_trader_df["Date"] = inside_trader_df["Date"] + " {}".format(
+            str(date.today().year)
+        )
+        inside_trader_df["Date"] = pd.to_datetime(
+            inside_trader_df["Date"], format="%b %d %Y"
+        )
         del inside_trader_df["Insider_id"]
         del inside_trader_df["SEC Form 4"]
         last_date = datetime.utcnow().date()
@@ -259,14 +293,47 @@ def get_insider_trading(ticker_selected):
                 x = row[2]
             date_to_insert = str(x).split()[0]
             last_date = x
-            cur.execute("INSERT INTO insider_trading VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                        (ticker_selected, row[0], row[1], date_to_insert, row[3], row[4],
-                         row[5], row[6], row[7], row[8]))
+            cur.execute(
+                "INSERT INTO insider_trading VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                (
+                    ticker_selected,
+                    row[0],
+                    row[1],
+                    date_to_insert,
+                    row[3],
+                    row[4],
+                    row[5],
+                    row[6],
+                    row[7],
+                    row[8],
+                ),
+            )
             cnx.commit()
     except:
-        inside_trader_df = pd.DataFrame(columns=["Name", "Relationship", "Date", "Transaction", "Cost", "Shares",
-                                                 "Value ($)", "#Shares Total", ""])
-        inside_trader_df.loc[0] = ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
+        inside_trader_df = pd.DataFrame(
+            columns=[
+                "Name",
+                "Relationship",
+                "Date",
+                "Transaction",
+                "Cost",
+                "Shares",
+                "Value ($)",
+                "#Shares Total",
+                "",
+            ]
+        )
+        inside_trader_df.loc[0] = [
+            "N/A",
+            "N/A",
+            "N/A",
+            "N/A",
+            "N/A",
+            "N/A",
+            "N/A",
+            "N/A",
+            "N/A",
+        ]
     return inside_trader_df
 
 
@@ -274,11 +341,18 @@ def government_daily_trades(df, date_selected, col_name):
     if not date_selected:
         date_selected = df["Disclosure Date"].iloc[0]
     latest_df = df[df["Disclosure Date"] == date_selected]
-    group_by_govt_official = pd.DataFrame(df.groupby([col_name]).agg({"Transaction Date": "count",
-                                                                      "Disclosure Date": lambda x: x.iloc[0]}))
-    group_by_govt_official.sort_values(by=["Disclosure Date"], ascending=False, inplace=True)
-    group_by_govt_official.rename(columns={"Transaction Date": "Total",
-                                           "Disclosure Date": "Last Disclosure"}, inplace=True)
+    group_by_govt_official = pd.DataFrame(
+        df.groupby([col_name]).agg(
+            {"Transaction Date": "count", "Disclosure Date": lambda x: x.iloc[0]}
+        )
+    )
+    group_by_govt_official.sort_values(
+        by=["Disclosure Date"], ascending=False, inplace=True
+    )
+    group_by_govt_official.rename(
+        columns={"Transaction Date": "Total", "Disclosure Date": "Last Disclosure"},
+        inplace=True,
+    )
     group_by_govt_official.reset_index(inplace=True)
 
     group_by_ticker = pd.DataFrame(df["Ticker"].value_counts())
@@ -319,8 +393,8 @@ def download_file(df, file_name):
     """
     df.to_csv(file_name, index=False)
     with open(file_name) as to_download:
-        response = HttpResponse(to_download, content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename={}'.format(file_name)
+        response = HttpResponse(to_download, content_type="text/csv")
+        response["Content-Disposition"] = "attachment; filename={}".format(file_name)
         if os.path.isfile(file_name):
             os.remove(file_name)
         return response

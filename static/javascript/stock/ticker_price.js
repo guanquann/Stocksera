@@ -87,7 +87,7 @@ function show_ticker_table(information) {
     var enterpriseToRevenue = information["enterpriseToRevenue"];
     var income = information["netIncomeToCommon"].toLocaleString();
     var mkt_cap = information["marketCap"].toLocaleString();
-    var short_percent = information["shortPercentOfFloat"];
+    var short_percent = Math.round(information["shortPercentOfFloat"] * 10000) / 100 + "%";
     var dividend_yield = information["trailingAnnualDividendYield"]
       ? Math.round(information["trailingAnnualDividendYield"] * 10000) / 100 + "%"
       : "N/A";

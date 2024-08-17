@@ -127,7 +127,6 @@ def ticker_institutional_holders(request):
     ticker_selected = default_ticker(request)
     ticker = yf.Ticker(ticker_selected, session=session)
     institutional_holders = ticker.institutional_holders
-    print(institutional_holders)
     if institutional_holders is not None:
         try:
             institutional_holders.columns = institutional_holders.columns.str.replace(

@@ -28,7 +28,7 @@ def extract_ticker(text, tickers_dict, sentiment_dict, sentiment_score):
     extracted_tickers_set = set()
     for word in text.upper().split():
         for key, value in crypto_dict.items():
-            word = re.sub(r'\d|\W+', '', word)
+            word = re.sub(r"\d|\W+", "", word)
             if word in value:
                 extracted_tickers_set.add(key)
     for ticker in extracted_tickers_set:
@@ -72,8 +72,13 @@ def crypto_live():
 
     for post in subreddit.hot(limit=10):
         # Ensure that post is stickied and the post is not an image
-        if post.stickied and ".jpg" not in post.url and ".png" not in post.url and "https" in post.url and \
-                "comments" in post.url:
+        if (
+            post.stickied
+            and ".jpg" not in post.url
+            and ".png" not in post.url
+            and "https" in post.url
+            and "comments" in post.url
+        ):
             submission = reddit.submission(url=post.url)
 
             submission.comment_sort = "new"
@@ -85,13 +90,17 @@ def crypto_live():
 
                     # Get sentiment of comment
                     vs = analyzer.polarity_scores(comment_body)
-                    sentiment_score = float(vs['compound'])
+                    sentiment_score = float(vs["compound"])
 
                     # Remove number/special characters (clean up word cloud)
-                    all_words_dict = insert_into_word_cloud_dict(comment_body, all_words_dict)
+                    all_words_dict = insert_into_word_cloud_dict(
+                        comment_body, all_words_dict
+                    )
 
                     # Get ticker based on pattern
-                    tickers_dict, sentiment_dict = extract_ticker(comment_body, tickers_dict, sentiment_dict, sentiment_score)
+                    tickers_dict, sentiment_dict = extract_ticker(
+                        comment_body, tickers_dict, sentiment_dict, sentiment_score
+                    )
 
                     # Read sub-comment
                     for second_level_comment in comment.replies:
@@ -99,14 +108,20 @@ def crypto_live():
 
                         # Get sentiment of comment
                         vs = analyzer.polarity_scores(second_level_comment)
-                        sentiment_score = float(vs['compound'])
+                        sentiment_score = float(vs["compound"])
 
                         # Insert into word cloud
-                        all_words_dict = insert_into_word_cloud_dict(second_level_comment, all_words_dict)
+                        all_words_dict = insert_into_word_cloud_dict(
+                            second_level_comment, all_words_dict
+                        )
 
                         # Get ticker based on pattern
-                        tickers_dict, sentiment_dict = extract_ticker(second_level_comment, tickers_dict,
-                                                                      sentiment_dict, sentiment_score)
+                        tickers_dict, sentiment_dict = extract_ticker(
+                            second_level_comment,
+                            tickers_dict,
+                            sentiment_dict,
+                            sentiment_score,
+                        )
 
     # Remove word from word cloud if it is found in stopwords_list
     all_words_dict = dict(sorted(all_words_dict.items(), key=lambda item: item[1]))
@@ -135,11 +150,17 @@ def update_hourly():
     threshold_datetime = str(current_datetime - timedelta(hours=1))
     threshold_hour = threshold_datetime.rsplit(":", 2)[0] + ":00"
 
-    cur.execute("SELECT ticker, SUM(mentions), AVG(sentiment) FROM crypto_trending_24H WHERE "
-                "date_updated > %s GROUP BY ticker", (threshold_datetime, ))
+    cur.execute(
+        "SELECT ticker, SUM(mentions), AVG(sentiment) FROM crypto_trending_24H WHERE "
+        "date_updated > %s GROUP BY ticker",
+        (threshold_datetime,),
+    )
     x = cur.fetchall()
     for row in x:
-        cur.execute("INSERT INTO crypto_trending_hourly VALUES (%s, %s, %s, %s)", (row + (threshold_hour, )))
+        cur.execute(
+            "INSERT INTO crypto_trending_hourly VALUES (%s, %s, %s, %s)",
+            (row + (threshold_hour,)),
+        )
         cnx.commit()
 
 
@@ -153,26 +174,38 @@ def crypto_change():
     threshold_datetime2 = str(current_datetime - timedelta(hours=48))
     threshold_hour2 = threshold_datetime2.rsplit(":", 2)[0] + ":00"
 
-    cur.execute("SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment "
-                "FROM crypto_trending_24H WHERE date_updated >= %s GROUP BY ticker ORDER BY SUM(mentions) "
-                "DESC LIMIT 50", (threshold_hour, ))
+    cur.execute(
+        "SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment "
+        "FROM crypto_trending_24H WHERE date_updated >= %s GROUP BY ticker ORDER BY SUM(mentions) "
+        "DESC LIMIT 50",
+        (threshold_hour,),
+    )
     current = cur.fetchall()
     cur.execute("DELETE FROM crypto_change")
     for row in current:
         ticker = row[0]
         current_mentions = row[1]
-        cur.execute("SELECT SUM(mentions) FROM crypto_trending_hourly WHERE date_updated < %s AND date_updated >= %s "
-                    "AND ticker=%s", (threshold_hour, threshold_hour2, ticker))
+        cur.execute(
+            "SELECT SUM(mentions) FROM crypto_trending_hourly WHERE date_updated < %s AND date_updated >= %s "
+            "AND ticker=%s",
+            (threshold_hour, threshold_hour2, ticker),
+        )
         previous_mentions = cur.fetchone()[0]
 
         if previous_mentions is not None:
-            percent_change = round((current_mentions - previous_mentions) / previous_mentions, 2) * 100
+            percent_change = (
+                round((current_mentions - previous_mentions) / previous_mentions, 2)
+                * 100
+            )
             if percent_change > 1000:
                 percent_change = 1000
         else:
             percent_change = 1000
 
-        cur.execute("INSERT INTO crypto_change VALUES (%s, %s, %s)", (ticker, current_mentions, percent_change))
+        cur.execute(
+            "INSERT INTO crypto_change VALUES (%s, %s, %s)",
+            (ticker, current_mentions, percent_change),
+        )
         cnx.commit()
 
 
@@ -184,6 +217,5 @@ def main():
     print("Crypto Live Thread Successfully Completed...\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
-

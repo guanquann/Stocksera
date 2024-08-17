@@ -6,8 +6,10 @@ import time
 import math
 import pandas as pd
 
-headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) '
-                         'Chrome/50.0.2661.102 Safari/537.36'}
+headers = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/50.0.2661.102 Safari/537.36"
+}
 
 
 def download_advanced_stats(symbol_list, module_name_map, threads=True):
@@ -37,39 +39,42 @@ def download_advanced_stats(symbol_list, module_name_map, threads=True):
 
         for module_name, stat_name_dict in module_name_map.items():
             retrieved_module_dict = None
-            if retrieved_modules_dict is not None and module_name in retrieved_modules_dict:
+            if (
+                retrieved_modules_dict is not None
+                and module_name in retrieved_modules_dict
+            ):
                 retrieved_module_dict = retrieved_modules_dict[module_name]
 
             if retrieved_module_dict is not None:
                 for stat_name in stat_name_dict.keys():
-                    stat_val = 'N/A'
+                    stat_val = "N/A"
                     if stat_name in retrieved_module_dict:
                         stat = retrieved_module_dict[stat_name]
                         if isinstance(stat, dict):
                             if stat:  # only if non-empty otherwise N/A
                                 if stat_name == "shortPercentOfFloat":
-                                    stat_val = stat['fmt']
+                                    stat_val = stat["fmt"]
                                 else:
-                                    stat_val = stat['raw']
+                                    stat_val = stat["raw"]
                         elif isinstance(stat, str) or isinstance(stat, numbers.Number):
                             stat_val = stat
                         else:
-                            raise TypeError('Expected dictionary, string or number.')
+                            raise TypeError("Expected dictionary, string or number.")
                     stats_list.append(stat_val)
             else:
-                stats_list.extend(['N/A'] * len(stat_name_dict))
+                stats_list.extend(["N/A"] * len(stat_name_dict))
 
         stats_table.append(stats_list)
 
     # reset for future reuse
     shared.response_dict = {}
 
-    columns = ['Symbol']
+    columns = ["Symbol"]
     for stat_name_dict in module_name_map.values():
         columns.extend(list(stat_name_dict.values()))
 
     financial_data_df = pd.DataFrame(stats_table, columns=columns)
-    financial_data_df.set_index('Symbol', inplace=True)
+    financial_data_df.set_index("Symbol", inplace=True)
 
     return financial_data_df
 
@@ -79,8 +84,11 @@ def download_advanced_stats_multi_thread(symbol_list, params, num_threads=100):
     current_index = 0
     while current_index < len(symbol_list):
         try:
-            quick_stats_df = download_advanced_stats(symbol_list[current_index:current_index + num_threads],
-                                                     params, threads=True)
+            quick_stats_df = download_advanced_stats(
+                symbol_list[current_index : current_index + num_threads],
+                params,
+                threads=True,
+            )
             df = pd.concat([df, quick_stats_df])
             current_index += num_threads
         except:
@@ -97,7 +105,7 @@ def download_quick_stats(symbol_list, quick_stats_dict, threads=True):
     """
     # through trial and errors, 1179 was the max without returning an errors, but that number feels too arbitrary
     max_params = 1000
-    num_requests = math.ceil(len(symbol_list)/max_params)
+    num_requests = math.ceil(len(symbol_list) / max_params)
     last_request_size = len(symbol_list) % max_params
     if last_request_size == 0:
         last_request_size = max_params
@@ -114,12 +122,18 @@ def download_quick_stats(symbol_list, quick_stats_dict, threads=True):
         else:
             num_symbols = max_params
 
-        request_symbol_list = symbol_list[request_idx * max_params:request_idx * max_params + num_symbols]
+        request_symbol_list = symbol_list[
+            request_idx * max_params : request_idx * max_params + num_symbols
+        ]
 
         if threads:
-            quick_stats_request_threaded(request_idx, request_symbol_list, list(quick_stats_dict.keys()))
+            quick_stats_request_threaded(
+                request_idx, request_symbol_list, list(quick_stats_dict.keys())
+            )
         else:
-            shared.response_dict[request_idx] = quick_stats_request(request_symbol_list, list(quick_stats_dict.keys()))
+            shared.response_dict[request_idx] = quick_stats_request(
+                request_symbol_list, list(quick_stats_dict.keys())
+            )
 
     if threads:
         while len(shared.response_dict) < num_requests:
@@ -130,26 +144,26 @@ def download_quick_stats(symbol_list, quick_stats_dict, threads=True):
     for response_list in shared.response_dict.values():
         # each iteration is one symbol; (eg SIGL, AAPL)
         for retrieved_stats_dict in response_list:
-            symbol = retrieved_stats_dict['symbol']
+            symbol = retrieved_stats_dict["symbol"]
             stats_list = [symbol]
             if retrieved_stats_dict is not None:
                 for quick_stat_name in quick_stats_dict.keys():
-                    stat_val = 'N/A'
+                    stat_val = "N/A"
                     if quick_stat_name in retrieved_stats_dict:
                         stat = retrieved_stats_dict[quick_stat_name]
                         if isinstance(stat, dict):
                             if stat:  # only if non-empty otherwise N/A
                                 if quick_stat_name == "floatShares":
-                                    stat_val = stat['fmt']
+                                    stat_val = stat["fmt"]
                                 else:
-                                    stat_val = stat['raw']
+                                    stat_val = stat["raw"]
                         elif isinstance(stat, str) or isinstance(stat, numbers.Number):
                             stat_val = stat
                         else:
-                            raise TypeError('Expected dictionary, string or number.')
+                            raise TypeError("Expected dictionary, string or number.")
                     stats_list.append(stat_val)
             else:
-                stats_list.extend(['N/A'] * len(quick_stats_dict.keys()))
+                stats_list.extend(["N/A"] * len(quick_stats_dict.keys()))
 
             stats_table.append(stats_list)
 
@@ -157,9 +171,9 @@ def download_quick_stats(symbol_list, quick_stats_dict, threads=True):
     shared.response_dict = {}
 
     # construct dataframe
-    columns = ['Symbol'] + list(quick_stats_dict.values())
+    columns = ["Symbol"] + list(quick_stats_dict.values())
     stats_df = pd.DataFrame(stats_table, columns=columns)
-    stats_df.set_index('Symbol', inplace=True)
+    stats_df.set_index("Symbol", inplace=True)
 
     return stats_df
 
@@ -174,12 +188,9 @@ def get_ticker_stats(symbol, module_name_map):
     Returns advanced stats for one ticker
     """
 
-    url = 'https://query2.finance.yahoo.com/v10/finance/quoteSummary/' + symbol
+    url = "https://query2.finance.yahoo.com/v10/finance/quoteSummary/" + symbol
     module_list = list(module_name_map.keys())
-    params = {
-        'modules': ','.join(module_list),
-        'crumb': 'yGYzJBMCRDH'
-    }
+    params = {"modules": ",".join(module_list), "crumb": "yGYzJBMCRDH"}
     result = requests.get(url, params=params, headers=headers)
     print(result, "result")
     if result.status_code != 200 and result.status_code != 404:
@@ -188,16 +199,18 @@ def get_ticker_stats(symbol, module_name_map):
     json_dict = result.json()
     if not "quoteSummary" in json_dict:
         return None
-    if json_dict['quoteSummary']['result'] is None:
+    if json_dict["quoteSummary"]["result"] is None:
         return None
-    module_dict = json_dict['quoteSummary']['result'][0]
+    module_dict = json_dict["quoteSummary"]["result"][0]
 
     return module_dict
 
 
 @multitasking.task
 def quick_stats_request_threaded(request_idx, request_symbol_list, field_list):
-    shared.response_dict[request_idx] = quick_stats_request(request_symbol_list, field_list)
+    shared.response_dict[request_idx] = quick_stats_request(
+        request_symbol_list, field_list
+    )
 
 
 def quick_stats_request(request_symbol_list, field_list):
@@ -206,16 +219,20 @@ def quick_stats_request(request_symbol_list, field_list):
     used to validate tickers efficiently.
     """
     params = {
-        'formatted': 'True',
-        'symbols': ','.join(request_symbol_list),
-        'fields': ','.join(field_list),
+        "formatted": "True",
+        "symbols": ",".join(request_symbol_list),
+        "fields": ",".join(field_list),
     }
-    result = requests.get("https://query1.finance.yahoo.com/v6/finance/quote", params=params, headers=headers)
+    result = requests.get(
+        "https://query1.finance.yahoo.com/v6/finance/quote",
+        params=params,
+        headers=headers,
+    )
     if result.status_code != 200 and result.status_code != 404:
         result.raise_for_status()
 
     json_dict = result.json()
     if not "quoteResponse" in json_dict:
         return None
-    data_list = json_dict['quoteResponse']['result']
+    data_list = json_dict["quoteResponse"]["result"]
     return data_list

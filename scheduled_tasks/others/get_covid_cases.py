@@ -7,14 +7,18 @@ def usa_covid_cases():
     """
     print("Getting Covid Cases...")
     output_df = pd.DataFrame()
-    covid_df = pd.read_csv(r'https://covid.ourworldindata.org/data/owid-covid-data.csv')
+
+    covid_df = pd.read_csv(r"https://covid.ourworldindata.org/data/owid-covid-data.csv")
     usa_df = covid_df[covid_df["iso_code"] == "USA"]
+
     output_df["Date"] = usa_df["date"]
     output_df["New Cases"] = usa_df["new_cases"]
     output_df["Fully Vaccinated / 100"] = usa_df["people_fully_vaccinated_per_hundred"]
+
     output_df.to_csv("database/usa_covid.csv", index=False)
+
     print("Covid Cases Successfully Completed...\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     usa_covid_cases()

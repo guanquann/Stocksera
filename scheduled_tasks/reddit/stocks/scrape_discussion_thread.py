@@ -11,8 +11,17 @@ current_datetime = datetime.utcnow()
 mapping_stocks = get_mapping_stocks()
 
 
-def extract_ticker(text, date_posted, tickers_dict, tickers_post_dict, sentiment_dict, calls_dict, calls_mentions,
-                   puts_dict, puts_mentions):
+def extract_ticker(
+    text,
+    date_posted,
+    tickers_dict,
+    tickers_post_dict,
+    sentiment_dict,
+    calls_dict,
+    calls_mentions,
+    puts_dict,
+    puts_mentions,
+):
     """
     Extract tickers with correct pattern from comment and add sentiment, calls, put to previous dict
     Parameters
@@ -42,18 +51,30 @@ def extract_ticker(text, date_posted, tickers_dict, tickers_post_dict, sentiment
 
     # Get sentiment of comment
     vs = analyzer.polarity_scores(text)
-    sentiment_score = float(vs['compound'])
+    sentiment_score = float(vs["compound"])
 
     for ticker in extracted_tickers:
         tickers_dict[ticker] = tickers_dict.get(ticker, 0) + 1
         sentiment_dict[ticker] = sentiment_dict.get(ticker, 0) + sentiment_score
 
         if ticker in tickers_post_dict:
-            tickers_post_dict[ticker].append({"ticker": ticker, "text_body": text[:500], "sentiment": sentiment_score,
-                                              "date_posted": date_posted})
+            tickers_post_dict[ticker].append(
+                {
+                    "ticker": ticker,
+                    "text_body": text[:500],
+                    "sentiment": sentiment_score,
+                    "date_posted": date_posted,
+                }
+            )
         else:
-            tickers_post_dict[ticker] = [{"ticker": ticker, "text_body": text[:500], "sentiment": sentiment_score,
-                                          "date_posted": date_posted}]
+            tickers_post_dict[ticker] = [
+                {
+                    "ticker": ticker,
+                    "text_body": text[:500],
+                    "sentiment": sentiment_score,
+                    "date_posted": date_posted,
+                }
+            ]
 
         if calls_mentions:
             calls_dict[ticker] = calls_dict.get(ticker, 0) + 1
@@ -103,7 +124,12 @@ def wsb_live():
     for post in subreddit.hot(limit=10):
         try:
             # Ensure that post is stickied and the post is not an image
-            if post.stickied and ".jpg" not in post.url and ".png" not in post.url and "comments" in post.url:
+            if (
+                post.stickied
+                and ".jpg" not in post.url
+                and ".png" not in post.url
+                and "comments" in post.url
+            ):
                 submission = reddit.submission(url=post.url)
 
                 submission.comment_sort = "new"
@@ -116,28 +142,54 @@ def wsb_live():
                         date_posted = datetime.fromtimestamp(comment.created_utc)
 
                         # Remove number/special characters (clean up word cloud)
-                        all_words_dict = insert_into_word_cloud_dict(comment_body.upper(), all_words_dict)
+                        all_words_dict = insert_into_word_cloud_dict(
+                            comment_body.upper(), all_words_dict
+                        )
 
                         # Check if calls and puts is mentioned in comment
-                        calls_mentions, puts_mentions = check_for_options(comment_body.upper())
+                        calls_mentions, puts_mentions = check_for_options(
+                            comment_body.upper()
+                        )
 
                         # Get ticker based on pattern
-                        extract_ticker(comment_body, date_posted, tickers_dict, tickers_post_dict, sentiment_dict,
-                                       calls_dict, calls_mentions, puts_dict, puts_mentions)
+                        extract_ticker(
+                            comment_body,
+                            date_posted,
+                            tickers_dict,
+                            tickers_post_dict,
+                            sentiment_dict,
+                            calls_dict,
+                            calls_mentions,
+                            puts_dict,
+                            puts_mentions,
+                        )
 
                         # Read sub-comment
                         for second_level_comment in comment.replies:
                             second_level_comment = second_level_comment.body
 
                             # Insert into word cloud
-                            all_words_dict = insert_into_word_cloud_dict(second_level_comment.upper(), all_words_dict)
+                            all_words_dict = insert_into_word_cloud_dict(
+                                second_level_comment.upper(), all_words_dict
+                            )
 
                             # Check if calls and puts is mentioned in comment
-                            calls_mentions, puts_mentions = check_for_options(second_level_comment.upper())
+                            calls_mentions, puts_mentions = check_for_options(
+                                second_level_comment.upper()
+                            )
 
                             # Get ticker based on pattern
-                            extract_ticker(second_level_comment, date_posted, tickers_dict, tickers_post_dict,
-                                           sentiment_dict, calls_dict, calls_mentions, puts_dict, puts_mentions)
+                            extract_ticker(
+                                second_level_comment,
+                                date_posted,
+                                tickers_dict,
+                                tickers_post_dict,
+                                sentiment_dict,
+                                calls_dict,
+                                calls_mentions,
+                                puts_dict,
+                                puts_mentions,
+                            )
         except:
             print("Error getting pinned thread")
 
@@ -167,8 +219,8 @@ def wsb_live():
     quick_stats_df = get_ticker_list_stats(list(tickers_dict.keys()))
 
     # Ticker must be active in order to be valid
-    quick_stats_df["volume"] = pd.to_numeric(quick_stats_df["volume"], errors='coerce')
-    quick_stats_df["price"] = pd.to_numeric(quick_stats_df["price"], errors='coerce')
+    quick_stats_df["volume"] = pd.to_numeric(quick_stats_df["volume"], errors="coerce")
+    quick_stats_df["price"] = pd.to_numeric(quick_stats_df["price"], errors="coerce")
     quick_stats_df.dropna(inplace=True)
     quick_stats_df = quick_stats_df[quick_stats_df["price"] >= 0.5]
     quick_stats_df = quick_stats_df[quick_stats_df["volume"] >= 50000]
@@ -190,22 +242,30 @@ def wsb_live():
 
     for ticker_post_list in post_list:
         for i in ticker_post_list:
-            cur.execute("INSERT INTO wsb_discussions VALUES (%s, %s, %s, %s)", (i["ticker"], i["text_body"],
-                                                                                i["sentiment"], i["date_posted"]))
+            cur.execute(
+                "INSERT INTO wsb_discussions VALUES (%s, %s, %s, %s)",
+                (i["ticker"], i["text_body"], i["sentiment"], i["date_posted"]),
+            )
             cnx.commit()
 
     quick_stats_df["mentions"] = mentions_list
     quick_stats_df["sentiment"] = sentiment_list
-    quick_stats_df["sentiment"] = quick_stats_df["sentiment"] / quick_stats_df["mentions"]
+    quick_stats_df["sentiment"] = (
+        quick_stats_df["sentiment"] / quick_stats_df["mentions"]
+    )
     quick_stats_df["sentiment"] = quick_stats_df["sentiment"].round(2)
     quick_stats_df["calls"] = calls_list
     quick_stats_df["puts"] = puts_list
 
-    quick_stats_df = quick_stats_df[["symbol", "mentions", "sentiment", "calls", "puts"]]
+    quick_stats_df = quick_stats_df[
+        ["symbol", "mentions", "sentiment", "calls", "puts"]
+    ]
 
     for index, row in quick_stats_df.iterrows():
-        cur.execute("INSERT INTO wsb_trending_24H VALUES (%s, %s, %s, %s, %s, %s)",
-                    (row[0], row[1], row[2], row[3], row[4], current_datetime_str))
+        cur.execute(
+            "INSERT INTO wsb_trending_24H VALUES (%s, %s, %s, %s, %s, %s)",
+            (row[0], row[1], row[2], row[3], row[4], current_datetime_str),
+        )
         cnx.commit()
 
 
@@ -216,11 +276,17 @@ def update_hourly():
     threshold_datetime = str(current_datetime - timedelta(hours=1))
     threshold_hour = threshold_datetime.rsplit(":", 2)[0] + ":00"
 
-    cur.execute("SELECT ticker, SUM(mentions), AVG(sentiment), SUM(calls), SUM(puts) FROM wsb_trending_24H WHERE "
-                "date_updated > %s GROUP BY ticker", (threshold_datetime,))
+    cur.execute(
+        "SELECT ticker, SUM(mentions), AVG(sentiment), SUM(calls), SUM(puts) FROM wsb_trending_24H WHERE "
+        "date_updated > %s GROUP BY ticker",
+        (threshold_datetime,),
+    )
     x = cur.fetchall()
     for row in x:
-        cur.execute("INSERT INTO wsb_trending_hourly VALUES (%s, %s, %s, %s, %s, %s)", (row + (threshold_hour,)))
+        cur.execute(
+            "INSERT INTO wsb_trending_hourly VALUES (%s, %s, %s, %s, %s, %s)",
+            (row + (threshold_hour,)),
+        )
         cnx.commit()
 
 
@@ -234,26 +300,37 @@ def wsb_change():
     threshold_datetime2 = str(current_datetime - timedelta(hours=48))
     threshold_hour2 = threshold_datetime2.rsplit(":", 2)[0] + ":00"
 
-    cur.execute("SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment FROM wsb_trending_24H "
-                "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) "
-                "DESC LIMIT 50".format(threshold_hour))
+    cur.execute(
+        "SELECT ticker AS Ticker, SUM(mentions) AS Mentions, AVG(sentiment) AS Sentiment FROM wsb_trending_24H "
+        "WHERE date_updated >= '{}' GROUP BY ticker ORDER BY SUM(mentions) "
+        "DESC LIMIT 50".format(threshold_hour)
+    )
     current = cur.fetchall()
     cur.execute("DELETE FROM wsb_change")
     for row in current:
         ticker = row[0]
         current_mentions = row[1]
-        cur.execute("SELECT SUM(mentions) FROM wsb_trending_hourly WHERE date_updated < %s AND date_updated >= %s "
-                    "AND ticker=%s", (threshold_hour, threshold_hour2, ticker))
+        cur.execute(
+            "SELECT SUM(mentions) FROM wsb_trending_hourly WHERE date_updated < %s AND date_updated >= %s "
+            "AND ticker=%s",
+            (threshold_hour, threshold_hour2, ticker),
+        )
         previous_mentions = cur.fetchone()[0]
 
         if previous_mentions is not None:
-            percent_change = round((current_mentions - previous_mentions) / previous_mentions, 2) * 100
+            percent_change = (
+                round((current_mentions - previous_mentions) / previous_mentions, 2)
+                * 100
+            )
             if percent_change > 1000:
                 percent_change = 1000
         else:
             percent_change = 1000
 
-        cur.execute("INSERT INTO wsb_change VALUES (%s, %s, %s)", (ticker, current_mentions, percent_change))
+        cur.execute(
+            "INSERT INTO wsb_change VALUES (%s, %s, %s)",
+            (ticker, current_mentions, percent_change),
+        )
         cnx.commit()
 
 
@@ -261,15 +338,28 @@ def get_mkt_cap():
     threshold_datetime = str(current_datetime - timedelta(hours=24))
 
     ticker_list, mentions_list = list(), list()
-    cur.execute("SELECT ticker, SUM(mentions) FROM wsb_trending_24H WHERE date_updated > %s GROUP BY "
-                "ticker ORDER BY SUM(mentions) DESC LIMIT 50", (threshold_datetime,))
+    cur.execute(
+        "SELECT ticker, SUM(mentions) FROM wsb_trending_24H WHERE date_updated > %s GROUP BY "
+        "ticker ORDER BY SUM(mentions) DESC LIMIT 50",
+        (threshold_datetime,),
+    )
     x = cur.fetchall()
     for row in x:
         ticker_list.append(row[0])
         mentions_list.append(row[1])
 
     df = get_ticker_list_stats(ticker_list)
-    df = df[["symbol", "marketCap", "changesPercentage", "price", "priceAvg50", "yearHigh", "yearLow"]]
+    df = df[
+        [
+            "symbol",
+            "marketCap",
+            "changesPercentage",
+            "price",
+            "priceAvg50",
+            "yearHigh",
+            "yearLow",
+        ]
+    ]
 
     df["difference_sma"] = 100 * (df["priceAvg50"] - df["price"]) / df["priceAvg50"]
     df["difference_52w_high"] = 100 * (df["yearHigh"] - df["price"]) / df["yearHigh"]
@@ -280,7 +370,14 @@ def get_mkt_cap():
     del df["yearHigh"]
     del df["yearLow"]
 
-    df.rename(columns={"symbol": "ticker", "changesPercentage": "price_change", "marketCap": "mkt_cap"}, inplace=True)
+    df.rename(
+        columns={
+            "symbol": "ticker",
+            "changesPercentage": "price_change",
+            "marketCap": "mkt_cap",
+        },
+        inplace=True,
+    )
     df["mentions"] = mentions_list
     df.to_sql("wsb_yf", engine, if_exists="replace", index=False)
 
@@ -294,5 +391,5 @@ def main():
     print("Stock Live Thread Successfully Completed...\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

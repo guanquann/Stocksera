@@ -12,7 +12,9 @@ cnx, cur, engine = connect_mysql_database()
 
 def main():
     print("Getting Stock Split...")
+
     final_df = pd.DataFrame()
+
     url = (
         f"https://api.polygon.io/v3/reference/splits?limit=999&s"
         f"ort=execution_date&apiKey={config_keys['POLYGON_KEY']}&reverse_split="
@@ -40,6 +42,7 @@ def main():
         final_df.values.tolist(),
     )
     cnx.commit()
+
     print("Stock Split Successfully Completed...\n")
 
 

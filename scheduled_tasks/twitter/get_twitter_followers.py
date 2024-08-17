@@ -3,7 +3,7 @@ import sys
 import time
 from datetime import datetime
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 from scheduled_tasks.twitter.twitter_connection import *
 from helpers import connect_mysql_database
 
@@ -166,10 +166,14 @@ date_updated = str(datetime.now()).split()[0]
 def main():
     print("Getting Twitter Followers...")
     for symbol, account in interested_accounts.items():
-        url = "https://api.twitter.com/1.1/users/show.json?screen_name={}".format(account)
+        url = "https://api.twitter.com/1.1/users/show.json?screen_name={}".format(
+            account
+        )
         json_response = connect_to_endpoint(url)
-        cur.execute("INSERT IGNORE INTO twitter_followers VALUES (%s, %s, %s)",
-                    (symbol, json_response["followers_count"], date_updated))
+        cur.execute(
+            "INSERT IGNORE INTO twitter_followers VALUES (%s, %s, %s)",
+            (symbol, json_response["followers_count"], date_updated),
+        )
         cnx.commit()
         time.sleep(1)
     print("Twitter Followers Successfully Completed...\n")

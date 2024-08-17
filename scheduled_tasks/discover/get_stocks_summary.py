@@ -13,8 +13,10 @@ def main():
     Get performance of stocks in DIA, S&P500 and Nasdaq
     """
     print("Getting Stocks Summary...")
+
     if not os.path.exists(INDICES_PATH):
         os.mkdir(INDICES_PATH)
+
         snp500_df = pd.read_html(
             "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
         )[0]

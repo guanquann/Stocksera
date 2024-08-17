@@ -11,7 +11,7 @@ cnx, cur, engine = connect_mysql_database()
 
 def main():
     """
-    Get recent and past IPOs
+    Get Jim Cramer Stock Picks
     """
     print("Getting Jim Cramer Stock Picks...")
 

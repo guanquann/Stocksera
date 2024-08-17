@@ -1,7 +1,7 @@
 import os
 import sys
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 from scheduled_tasks.others.get_popular_tickers import *
 from scheduled_tasks.twitter.twitter_connection import *
 from scheduled_tasks.reddit.reddit_utils import *
@@ -22,8 +22,10 @@ def main():
                 end_date = i["end"]
                 if end_date.endswith("00:00:00.000Z"):
                     tweet_count = i["tweet_count"]
-                    cur.execute("INSERT IGNORE INTO twitter_trending VALUES (%s, %s, %s)",
-                                (symbol, tweet_count, start_date.split("T")[0]))
+                    cur.execute(
+                        "INSERT IGNORE INTO twitter_trending VALUES (%s, %s, %s)",
+                        (symbol, tweet_count, start_date.split("T")[0]),
+                    )
                     cnx.commit()
         time.sleep(1)
         # except:

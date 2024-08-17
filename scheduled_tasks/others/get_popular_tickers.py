@@ -1,7 +1,8 @@
 import os
 import sys
 import json
-sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+
+sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 
 
 def full_ticker_list():
@@ -11,5 +12,5 @@ def full_ticker_list():
     return json.load(open("custom_extensions/ticker_list.json"))["list_of_tickers"]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     full_ticker_list()

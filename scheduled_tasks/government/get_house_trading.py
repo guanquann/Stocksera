@@ -11,16 +11,31 @@ def house_trades():
     Get house trades of US Government
     """
     print("Getting House Trades...")
-    df = pd.read_json("https://house-stock-watcher-data.s3-us-west-2.amazonaws.com/data/all_transactions.json")
+
+    df = pd.read_json(
+        "https://house-stock-watcher-data.s3-us-west-2.amazonaws.com/data/all_transactions.json"
+    )
     for i in ["transaction_date", "disclosure_date"]:
-        df[i] = pd.to_datetime(df[i], errors='coerce')
-        df[i] = df[i].dt.strftime('%Y-%m-%d')
+        df[i] = pd.to_datetime(df[i], errors="coerce")
+        df[i] = df[i].dt.strftime("%Y-%m-%d")
     del df["state"]
     del df["industry"]
     del df["sector"]
     del df["party"]
-    df.columns = ["Disclosure Year", "Disclosure Date", "Transaction Date", "Owner", "Ticker", "Asset Description",
-                  "Type", "Amount", "Representative", "District", "Link", "Cap Gains Over 200USD"]
+    df.columns = [
+        "Disclosure Year",
+        "Disclosure Date",
+        "Transaction Date",
+        "Owner",
+        "Ticker",
+        "Asset Description",
+        "Type",
+        "Amount",
+        "Representative",
+        "District",
+        "Link",
+        "Cap Gains Over 200USD",
+    ]
 
     df.fillna("Unknown", inplace=True)
     df.replace("--", "Unknown", inplace=True)
@@ -35,13 +50,30 @@ def house_trades():
     df["Type"].replace("Sale_Full", "Sale (Full)", inplace=True)
     df["Type"].replace("Sale_Partial", "Sale (Partial)", inplace=True)
 
-    df = df[["Transaction Date", "Owner", "Ticker", "Asset Description", "Asset Type", "Type", "Amount",
-             "Representative", "Link", "Disclosure Date", "District", "Cap Gains Over 200USD"]]
+    df = df[
+        [
+            "Transaction Date",
+            "Owner",
+            "Ticker",
+            "Asset Description",
+            "Asset Type",
+            "Type",
+            "Amount",
+            "Representative",
+            "Link",
+            "Disclosure Date",
+            "District",
+            "Cap Gains Over 200USD",
+        ]
+    ]
 
-    df["Representative"] = df["Representative"].str.replace("^Hon. |^Mr. |^Mrs. |^None ", "")
+    df["Representative"] = df["Representative"].str.replace(
+        "^Hon. |^Mr. |^Mrs. |^None ", ""
+    )
     df.to_csv(os.path.join(OUT_PATH, "house.csv"), index=False)
+
     print("House Trades Successfully Completed...\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     house_trades()

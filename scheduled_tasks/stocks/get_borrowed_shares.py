@@ -19,10 +19,10 @@ def main():
 
     full_ticker_df = pd.read_sql("SELECT DISTINCT(ticker) FROM shares_available", cnx)
 
-    ftp = ftplib.FTP('ftp2.interactivebrokers.com', 'shortstock')
+    ftp = ftplib.FTP("ftp2.interactivebrokers.com", "shortstock")
 
     flo = BytesIO()
-    ftp.retrbinary('RETR usa.txt', flo.write)
+    ftp.retrbinary("RETR usa.txt", flo.write)
     flo.seek(0)
 
     df = pd.read_csv(flo, sep="|", skiprows=1)
@@ -34,18 +34,24 @@ def main():
     df["date_updated"] = str(datetime.utcnow() - timedelta(hours=5)).rsplit(":", 1)[0]
     df.fillna(0, inplace=True)
 
-    cur.executemany("INSERT IGNORE INTO shares_available VALUES (%s, %s, %s, %s)", df.values.tolist())
+    cur.executemany(
+        "INSERT IGNORE INTO shares_available VALUES (%s, %s, %s, %s)",
+        df.values.tolist(),
+    )
     cnx.commit()
 
     tmp_df = df[["ticker", "fee", "available"]]
     tmp_df = tmp_df.sort_values(by="fee", ascending=False)
     cur.execute("DELETE FROM highest_shares_available")
-    cur.executemany("INSERT INTO highest_shares_available VALUES (%s, %s, %s)", tmp_df.head(50).values.tolist())
+    cur.executemany(
+        "INSERT INTO highest_shares_available VALUES (%s, %s, %s)",
+        tmp_df.head(50).values.tolist(),
+    )
     cnx.commit()
 
     ftp.quit()
     print("CTB Successfully Completed...\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

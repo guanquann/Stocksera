@@ -18,7 +18,11 @@ def bearer_oauth(r):
 
 
 def connect_to_endpoint(url):
-    response = requests.request("GET", url, auth=bearer_oauth,)
+    response = requests.request(
+        "GET",
+        url,
+        auth=bearer_oauth,
+    )
     if response.status_code != 200:
         raise Exception(
             "Request returned an errors: {} {}".format(

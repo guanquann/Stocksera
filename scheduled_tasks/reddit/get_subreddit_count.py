@@ -3,7 +3,7 @@ import sys
 import yfinance as yf
 from datetime import datetime
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..//..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), "..//.."))
 from scheduled_tasks.reddit.reddit_utils import *
 from helpers import connect_mysql_database
 
@@ -11,7 +11,14 @@ cnx, cur, engine = connect_mysql_database()
 
 # key of the dict is the symbol of the stock (if applicable), value is the subreddit
 interested_stocks_subreddits = {
-    "SUMMARY": ["wallstreetbets", "stocks", "options", "pennystocks", "SPACs", "Shortsqueeze"],
+    "SUMMARY": [
+        "wallstreetbets",
+        "stocks",
+        "options",
+        "pennystocks",
+        "SPACs",
+        "Shortsqueeze",
+    ],
     "GME": ["Superstonk"],
     "AMC": ["amcstock"],
     "CLOV": ["CLOV"],
@@ -73,7 +80,7 @@ interested_stocks_subreddits = {
     "BBIG": ["BBIG"],
     "SAVA": ["SAVA_stock"],
     "GREE": ["gree"],
-    "CEI": ["CEI_stock"]
+    "CEI": ["CEI_stock"],
 }
 
 interested_crypto_subreddits = {
@@ -104,7 +111,7 @@ interested_crypto_subreddits = {
     "NEO": ["NEO"],
     "BCH": ["Bitcoincash"],
     "LRC": ["loopringorg"],
-    "IMX": ["ImmutableX"]
+    "IMX": ["ImmutableX"],
 }
 date_updated = str(datetime.now()).split()[0]
 
@@ -113,16 +120,21 @@ def subreddit_count():
     """
     Get number of redditors, percentage of active redditors and growth in new redditors
     """
-    for key, subreddit_names in {**interested_stocks_subreddits, **interested_crypto_subreddits}.items():
+    for key, subreddit_names in {
+        **interested_stocks_subreddits,
+        **interested_crypto_subreddits,
+    }.items():
         for subreddit_name in subreddit_names:
             try:
                 subreddit = reddit.subreddit(subreddit_name)
                 subscribers = subreddit.subscribers
                 active = subreddit.accounts_active
-                percentage_active = round((active / subscribers)*100, 2)
+                percentage_active = round((active / subscribers) * 100, 2)
 
-                cur.execute("SELECT subscribers FROM subreddit_count WHERE subreddit=%s ORDER BY subscribers DESC LIMIT 1",
-                            (subreddit_name, ))
+                cur.execute(
+                    "SELECT subscribers FROM subreddit_count WHERE subreddit=%s ORDER BY subscribers DESC LIMIT 1",
+                    (subreddit_name,),
+                )
                 try:
                     prev_subscribers = cur.fetchone()[0]
                     growth = round((subscribers / prev_subscribers) * 100 - 100, 2)
@@ -130,13 +142,23 @@ def subreddit_count():
                     growth = 0
 
                 if key in interested_stocks_subreddits.keys() and key != "SUMMARY":
-                    price_df = yf.Ticker(key).history(period="1y", interval="1d").reset_index().iloc[::-1]
+                    price_df = (
+                        yf.Ticker(key)
+                        .history(period="1y", interval="1d")
+                        .reset_index()
+                        .iloc[::-1]
+                    )
                     price_df["% Price Change"] = price_df["Close"].shift(-1)
-                    price_df["% Price Change"] = 100 * (price_df["Close"] - price_df["% Price Change"]) / price_df[
-                        "% Price Change"]
+                    price_df["% Price Change"] = (
+                        100
+                        * (price_df["Close"] - price_df["% Price Change"])
+                        / price_df["% Price Change"]
+                    )
                     price_df["Date"] = price_df["Date"].astype(str)
                     price_df = price_df.round(2)
-                    change_price = price_df[price_df['Date'] == date_updated]["% Price Change"].values
+                    change_price = price_df[price_df["Date"] == date_updated][
+                        "% Price Change"
+                    ].values
                     if len(change_price == 1):
                         change_price = change_price[0]
                     else:
@@ -144,35 +166,60 @@ def subreddit_count():
                 else:
                     change_price = 0
 
-                cur.execute("INSERT IGNORE INTO subreddit_count VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-                            (date_updated, key, subreddit_name, subscribers, active, percentage_active,
-                             growth, change_price))
+                cur.execute(
+                    "INSERT IGNORE INTO subreddit_count VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                    (
+                        date_updated,
+                        key,
+                        subreddit_name,
+                        subscribers,
+                        active,
+                        percentage_active,
+                        growth,
+                        change_price,
+                    ),
+                )
                 cnx.commit()
             except:
                 print("Error")
+
 
 def update_last_price():
     """
     Update last close price of ticker after market close
     """
-    cur.execute("SELECT updated_date FROM subreddit_count WHERE ticker='AMC' ORDER BY updated_date DESC")
+    cur.execute(
+        "SELECT updated_date FROM subreddit_count WHERE ticker='AMC' ORDER BY updated_date DESC"
+    )
     last_date = cur.fetchone()[0]
     for key, subreddit_names in interested_stocks_subreddits.items():
         for subreddit_name in subreddit_names:
             if key != "SUMMARY":
-                price_df = yf.Ticker(key).history(period="1y", interval="1d").reset_index().iloc[::-1]
+                price_df = (
+                    yf.Ticker(key)
+                    .history(period="1y", interval="1d")
+                    .reset_index()
+                    .iloc[::-1]
+                )
                 price_df["% Price Change"] = price_df["Close"].shift(-1)
-                price_df["% Price Change"] = 100 * (price_df["Close"] - price_df["% Price Change"]) / price_df[
-                    "% Price Change"]
+                price_df["% Price Change"] = (
+                    100
+                    * (price_df["Close"] - price_df["% Price Change"])
+                    / price_df["% Price Change"]
+                )
                 price_df["Date"] = price_df["Date"].astype(str)
                 price_df = price_df.round(2)
-                change_price = price_df[price_df['Date'] == last_date]["% Price Change"].values
+                change_price = price_df[price_df["Date"] == last_date][
+                    "% Price Change"
+                ].values
                 if len(change_price == 1):
                     change_price = change_price[0]
                 else:
                     change_price = 0
-                cur.execute("UPDATE subreddit_count SET percentage_price_change=%s WHERE ticker=%s AND updated_date=%s",
-                            (change_price, key, last_date))
+                cur.execute(
+                    "UPDATE subreddit_count SET percentage_price_change=%s WHERE ticker=%s AND updated_date=%s",
+                    (change_price, key, last_date),
+                )
                 cnx.commit()
 
 
@@ -183,5 +230,5 @@ def main():
     print("Subreddit Subscriber Count Successfully Completed...\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

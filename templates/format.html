@@ -1,306 +1,386 @@
 <!DOCTYPE html>
-{% load static %}
-{% load filter %}
+{% load static %} {% load filter %}
 
 <html lang="en">
-<head>
-    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-    <meta name="format-detection" content="telephone=no">
+  <head>
+    <meta
+      charset="UTF-8"
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1"
+    />
+    <meta name="format-detection" content="telephone=no" />
     <meta property="og:image" content="{% static 'images/social_media.png' %}" />
-    <meta name="description" content="Empowering investors to take advantage of alternative data">
-    <meta name="keywords" content="stocksera, stocks, FTD, GME, AMC, investing, cost to borrow, meme, inflation, wallstreetbets">
+    <meta name="description" content="Empowering investors to take advantage of alternative data" />
+    <meta
+      name="keywords"
+      content="stocksera, stocks, FTD, GME, AMC, investing, cost to borrow, meme, inflation, wallstreetbets"
+    />
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'style/format.css' %}">
-    <link rel="stylesheet" href="{% static 'style/nav_bar.css' %}">
-    <link rel="stylesheet" href="{% static 'style/footer.css' %}">
-    <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
-    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'style/format.css' %}" />
+    <link rel="stylesheet" href="{% static 'style/nav_bar.css' %}" />
+    <link rel="stylesheet" href="{% static 'style/footer.css' %}" />
+    <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}" />
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="{% static 'javascript/format.js' %}"></script>
-    <script src='https://cdn.plot.ly/plotly-2.3.1.min.js'></script>
+    <script src="https://cdn.plot.ly/plotly-2.3.1.min.js"></script>
     {% block additional_script %}{% endblock %}
-</head>
-<style>
-
-</style>
-<body onload="update_price_color();restore_dark_mode();{% block onload_properties%}{% endblock %}">
-<script>restore_nav_bar();restore_dark_mode();</script>
-<div>
-    <div id="top_nav_bar">
+  </head>
+  <style></style>
+  <body
+    onload="update_price_color();restore_dark_mode();{% block onload_properties%}{% endblock %}"
+  >
+    <script>
+      restore_nav_bar();
+      restore_dark_mode();
+    </script>
+    <div>
+      <div id="top_nav_bar">
         <div id="nav_bar_div_logo">
-            <ul>
-                <a href="/"><li><img class="main_logo" src="{% static 'images/logo.svg' %}"></li></a>
-            </ul>
+          <ul>
+            <a href="/"
+              ><li><img class="main_logo" src="{% static 'images/logo.svg' %}" /></li
+            ></a>
+          </ul>
         </div>
         <div>
-            <div class="top_nav_right">
-                <div class="top_nav_right_link">
-                    <div class="top_nav_directory">
-                        {% block main_nav %} {% endblock %}
-                    </div>
-                    <div class="hamburger_div">
-                    <i id="hamburger_icon" class="hamburger" onclick="top_right_nav(this)">
-                        <span class="top"></span>
-                        <span class="middle"></span>
-                        <span class="bottom"></span>
-                    </i></div>
-                </div>
+          <div class="top_nav_right">
+            <div class="top_nav_right_link">
+              <div class="top_nav_directory">{% block main_nav %} {% endblock %}</div>
+              <div class="hamburger_div">
+                <i id="hamburger_icon" class="hamburger" onclick="top_right_nav(this)">
+                  <span class="top"></span>
+                  <span class="middle"></span>
+                  <span class="bottom"></span>
+                </i>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-    <div id="nav_bar_div">
+      </div>
+      <div id="nav_bar_div">
         <div>
-            <ul>
-                <a href="{% url 'main' %}">
-                    <li id="home" class="nav_bar">
-                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/home.svg' %}" style="display:none">
-                        <span>Home</span>
-                    </li>
-                </a>
+          <ul>
+            <a href="{% url 'main' %}">
+              <li id="home" class="nav_bar">
+                <img
+                  class="nav_bar_logo"
+                  src="{% static 'images/nav_bar/home.svg' %}"
+                  style="display: none"
+                />
+                <span>Home</span>
+              </li>
+            </a>
 
-                <button class="dropdown-btn">
-                    <li id="stocks_analysis" class="nav_bar" onclick="expand_nav()">
-                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/ticker_analysis.svg' %}" style="display:none">
-                        <span>Stock<i class="fa fa-caret-down"></i></span>
-                    </li>
-                </button>
-                <div class="dropdown-container">
-                    <a href="/ticker?quote={{ticker_selected}}">Analysis</a>
-                    <a href="/ticker/options?quote={{ticker_selected}}">Options</a>
-                    <a href="/ticker/short_volume?quote={{ticker_selected}}">Short Volume</a>
-                    <a href="/ticker/borrowed_shares?quote={{ticker_selected}}">Cost to Borrow</a>
-                    <a href="/ticker/failure_to_deliver?quote={{ticker_selected}}">FTD</a>
-                    <a href="/ticker/regsho?quote={{ticker_selected}}">RegSHO</a>
-                    <a href="/wsb_live_ticker?quote={{ticker_selected}}">WSB Live</a>
-                </div>
-
-                <button class="dropdown-btn">
-                    <li id="reddit" class="nav_bar" onclick="expand_nav()">
-                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/reddit.svg' %}" style="display:none">
-                        <span>Reddit<i class="fa fa-caret-down"></i></span>
-                    </li>
-                </button>
-                <div class="dropdown-container">
-                    <a href="/wsb_live">WSB Live</a>
-                    <a href="/crypto_live">Crypto Live</a>
-                    <a href="/subreddit_count">Subreddit</a>
-                </div>
-
-                <button class="dropdown-btn">
-                    <li id="economy" class="nav_bar" onclick="expand_nav()">
-                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/economy.svg' %}" style="display:none">
-                        <span>Economy<i class="fa fa-caret-down"></i></span>
-                    </li>
-                </button>
-                <div class="dropdown-container">
-                    <a href="/reverse_repo">RRP</a>
-                    <a href="/daily_treasury">Treasury</a>
-                    <a href="/inflation">CPI</a>
-                    <a href="/retail_sales">Retail Sales</a>
-                    <a href="/initial_jobless_claims">Jobless Claims</a>
-                    <a href="/interest_rate">Interest Rate</a>
-                </div>
-
-                <button class="dropdown-btn">
-                    <li id="government" class="nav_bar" onclick="expand_nav()">
-                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/government.png' %}" style="display:none">
-                        <span>Government<i class="fa fa-caret-down"></i></span>
-                    </li>
-                </button>
-                <div class="dropdown-container">
-                    <a href="/senate">Senate</a>
-                    <a href="/house">House</a>
-                </div>
-
-                <button class="dropdown-btn">
-                    <li id="market_summary" class="nav_bar" onclick="expand_nav()">
-                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/treemap.png' %}" style="display:none">
-                        <span>Market Summary<i class="fa fa-caret-down"></i></span>
-                    </li>
-                </button>
-                <div class="dropdown-container">
-                    <a href="/market_summary/?type=snp500">S&P 500</a>
-                    <a href="/market_summary/?type=nasdaq100">Nasdaq 100</a>
-                    <a href="/market_summary/?type=dia">Dow Jones</a>
-                    <a href="/market_summary/?type=crypto">Cryptocurrency</a>
-                    <a href="/market_summary/?type=wsb">Wallstreetbets</a>
-                    <a href="/futures">Futures</a>
-                    <a href="/earnings_calendar">Earnings</a>
-                </div>
-
-                <button class="dropdown-btn">
-                    <li id="discover" class="nav_bar" onclick="expand_nav()">
-                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/discover.svg' %}" style="display:none">
-                        <span>Discover<i class="fa fa-caret-down"></i></span>
-                    </li>
-                </button>
-                <div class="dropdown-container">
-                    <a href="/latest_insider">Latest Insider</a>
-                    <a href="/ark_trades">ARK Invest</a>
-                    <a href="/ipo_calendar">IPO Calendar</a>
-                    <a href="/stocktwits">Stocktwits</a>
-                    <a href="/twitter_trending">Twitter Trending</a>
-                    <a href="/beta">Beta</a>
-                    <a href="/correlation">Correlation</a>
-                    <a href="/dividend_history">Dividend</a>
-                    <a href="/stock_split">Stock Split</a>
-                    <a href="/fear_and_greed">Fear and Greed</a>
-                    <a href="/largest_companies">Largest Companies</a>
-                    <a href="/short_interest">Short Interest</a>
-                    <a href="/low_float">Low Float</a>
-                </div>
-
-                <button class="dropdown-btn">
-                    <li id="news" class="nav_bar" onclick="expand_nav()">
-                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/news.png' %}" style="display:none">
-                        <span>Market News<i class="fa fa-caret-down"></i></span>
-                    </li>
-                </button>
-                <div class="dropdown-container">
-                    <a href="/news">Latest News</a>
-                    <a href="/twitter_feed">Twitter Feed</a>
-                    <a href="/trading_halts">Trading Halts</a>
-                </div>
-
-                <button class="dropdown-btn">
-                    <li id="tasks" class="nav_bar" onclick="expand_nav()">
-                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/settings.png' %}" style="display:none">
-                        <span>Setup & Tasks<i class="fa fa-caret-down"></i></span>
-                    </li>
-                </button>
-                <div class="dropdown-container">
-                    <a href="/setup">Setup</a>
-                    <a href="/tasks">Tasks</a>
-                </div>
-
-                <a href="{% url 'login' %}">
-                    <li class="nav_bar">
-                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/login.png' %}" style="display:none">
-                        <span>{% if user.is_authenticated %}Profile{% else %}Login{% endif%}</span>
-                    </li>
-                </a>
-
-                <a href="{% url 'about' %}">
-                    <li id="about" class="nav_bar">
-                        <img class="nav_bar_logo" src="{% static 'images/nav_bar/about.svg' %}" style="display:none">
-                        <span>About</span>
-                    </li>
-                </a>
-            </ul>
-
-            <div id="dark_mode_btn">
-                <div><img src="{% static 'images/nav_bar/day_icon.svg' %}" class="sun_icon"></div>
-                <div><img src="{% static 'images/nav_bar/night_icon.svg' %}" class="night_icon"></div>
-                <label class="switch">
-                    <input id="dark_mode" type="checkbox" onchange="activate_dark_mode();load_td_graph()">
-                    <span class="slider round"></span>
-                </label>
-                <button id="resize_main_div_btn" onclick="activate_nav_bar()">
-                    <img src="{% static 'images/left_right_arrow.svg' %}" style="vertical-align: bottom; width: 20px;">
-                </button>
+            <button class="dropdown-btn">
+              <li id="stocks_analysis" class="nav_bar" onclick="expand_nav()">
+                <img
+                  class="nav_bar_logo"
+                  src="{% static 'images/nav_bar/ticker_analysis.svg' %}"
+                  style="display: none"
+                />
+                <span>Stock<i class="fa fa-caret-down"></i></span>
+              </li>
+            </button>
+            <div class="dropdown-container">
+              <a href="/ticker?quote={{ticker_selected}}">Analysis</a>
+              <a href="/ticker/options?quote={{ticker_selected}}">Options</a>
+              <a href="/ticker/short_volume?quote={{ticker_selected}}">Short Volume</a>
+              <a href="/ticker/borrowed_shares?quote={{ticker_selected}}">Cost to Borrow</a>
+              <a href="/ticker/failure_to_deliver?quote={{ticker_selected}}">FTD</a>
+              <a href="/ticker/regsho?quote={{ticker_selected}}">RegSHO</a>
+              <a href="/wsb_live_ticker?quote={{ticker_selected}}">WSB Live</a>
             </div>
-        </div>
-    </div>
 
-    <div id="main_div">
+            <button class="dropdown-btn">
+              <li id="reddit" class="nav_bar" onclick="expand_nav()">
+                <img
+                  class="nav_bar_logo"
+                  src="{% static 'images/nav_bar/reddit.svg' %}"
+                  style="display: none"
+                />
+                <span>Reddit<i class="fa fa-caret-down"></i></span>
+              </li>
+            </button>
+            <div class="dropdown-container">
+              <a href="/wsb_live">WSB Live</a>
+              <a href="/crypto_live">Crypto Live</a>
+              <a href="/subreddit_count">Subreddit</a>
+            </div>
+
+            <button class="dropdown-btn">
+              <li id="economy" class="nav_bar" onclick="expand_nav()">
+                <img
+                  class="nav_bar_logo"
+                  src="{% static 'images/nav_bar/economy.svg' %}"
+                  style="display: none"
+                />
+                <span>Economy<i class="fa fa-caret-down"></i></span>
+              </li>
+            </button>
+            <div class="dropdown-container">
+              <a href="/reverse_repo">RRP</a>
+              <a href="/daily_treasury">Treasury</a>
+              <a href="/inflation">CPI</a>
+              <a href="/retail_sales">Retail Sales</a>
+              <a href="/initial_jobless_claims">Jobless Claims</a>
+              <a href="/interest_rate">Interest Rate</a>
+            </div>
+
+            <button class="dropdown-btn">
+              <li id="government" class="nav_bar" onclick="expand_nav()">
+                <img
+                  class="nav_bar_logo"
+                  src="{% static 'images/nav_bar/government.png' %}"
+                  style="display: none"
+                />
+                <span>Government<i class="fa fa-caret-down"></i></span>
+              </li>
+            </button>
+            <div class="dropdown-container">
+              <a href="/senate">Senate</a>
+              <a href="/house">House</a>
+            </div>
+
+            <button class="dropdown-btn">
+              <li id="market_summary" class="nav_bar" onclick="expand_nav()">
+                <img
+                  class="nav_bar_logo"
+                  src="{% static 'images/nav_bar/treemap.png' %}"
+                  style="display: none"
+                />
+                <span>Market Summary<i class="fa fa-caret-down"></i></span>
+              </li>
+            </button>
+            <div class="dropdown-container">
+              <a href="/market_summary/?type=snp500">S&P 500</a>
+              <a href="/market_summary/?type=nasdaq100">Nasdaq 100</a>
+              <a href="/market_summary/?type=dia">Dow Jones</a>
+              <a href="/market_summary/?type=crypto">Cryptocurrency</a>
+              <a href="/market_summary/?type=wsb">Wallstreetbets</a>
+              <a href="/futures">Futures</a>
+              <a href="/earnings_calendar">Earnings</a>
+            </div>
+
+            <button class="dropdown-btn">
+              <li id="discover" class="nav_bar" onclick="expand_nav()">
+                <img
+                  class="nav_bar_logo"
+                  src="{% static 'images/nav_bar/discover.svg' %}"
+                  style="display: none"
+                />
+                <span>Discover<i class="fa fa-caret-down"></i></span>
+              </li>
+            </button>
+            <div class="dropdown-container">
+              <a href="/latest_insider">Latest Insider</a>
+              <a href="/ark_trades">ARK Invest</a>
+              <a href="/ipo_calendar">IPO Calendar</a>
+              <a href="/stocktwits">Stocktwits</a>
+              <a href="/twitter_trending">Twitter Trending</a>
+              <a href="/beta">Beta</a>
+              <a href="/correlation">Correlation</a>
+              <a href="/dividend_history">Dividend</a>
+              <a href="/stock_split">Stock Split</a>
+              <a href="/fear_and_greed">Fear and Greed</a>
+              <a href="/largest_companies">Largest Companies</a>
+              <a href="/short_interest">Short Interest</a>
+              <a href="/low_float">Low Float</a>
+            </div>
+
+            <button class="dropdown-btn">
+              <li id="news" class="nav_bar" onclick="expand_nav()">
+                <img
+                  class="nav_bar_logo"
+                  src="{% static 'images/nav_bar/news.png' %}"
+                  style="display: none"
+                />
+                <span>Market News<i class="fa fa-caret-down"></i></span>
+              </li>
+            </button>
+            <div class="dropdown-container">
+              <a href="/news">Latest News</a>
+              <a href="/twitter_feed">Twitter Feed</a>
+              <a href="/trading_halts">Trading Halts</a>
+            </div>
+
+            <button class="dropdown-btn">
+              <li id="tasks" class="nav_bar" onclick="expand_nav()">
+                <img
+                  class="nav_bar_logo"
+                  src="{% static 'images/nav_bar/settings.png' %}"
+                  style="display: none"
+                />
+                <span>Setup & Tasks<i class="fa fa-caret-down"></i></span>
+              </li>
+            </button>
+            <div class="dropdown-container">
+              <a href="/setup">Setup</a>
+              <a href="/tasks">Tasks</a>
+            </div>
+
+            <a href="{% url 'about' %}">
+              <li id="about" class="nav_bar">
+                <img
+                  class="nav_bar_logo"
+                  src="{% static 'images/nav_bar/about.svg' %}"
+                  style="display: none"
+                />
+                <span>About</span>
+              </li>
+            </a>
+          </ul>
+
+          <div id="dark_mode_btn">
+            <div><img src="{% static 'images/nav_bar/day_icon.svg' %}" class="sun_icon" /></div>
+            <div><img src="{% static 'images/nav_bar/night_icon.svg' %}" class="night_icon" /></div>
+            <label class="switch">
+              <input
+                id="dark_mode"
+                type="checkbox"
+                onchange="activate_dark_mode();load_td_graph()"
+              />
+              <span class="slider round"></span>
+            </label>
+            <button id="resize_main_div_btn" onclick="activate_nav_bar()">
+              <img
+                src="{% static 'images/left_right_arrow.svg' %}"
+                style="vertical-align: bottom; width: 20px"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="main_div">
         <div id="main_content">
-            {% block main_content %}
-            {% endblock %}
-            <div class="donate_sticky" id="donate_sticky">Support</div>
+          {% block main_content %} {% endblock %}
+          <div class="donate_sticky" id="donate_sticky">Support</div>
         </div>
 
         <div class="footer">
-            <ul>
-                <li id="disclaimer">Disclaimer</li>
-                <li id="privacy">Privacy</li>
-                <li id="support">Support</li>
-                <li id="advertisement" style="display: none">Advertise</li>
-            </ul>
-            <div class="footer_share">
-                <a href="https://twitter.com/stocksera_" target="_blank"><img src="{% static 'images/footer/twitter.png' %}"></a>
-                <a href="https://reddit.com/r/stocksera" target="_blank"><img src="{% static 'images/footer/reddit.png' %}"></a>
-                <a href="https://github.com/guanquann/Stocksera" target="_blank"><img src="{% static 'images/footer/github.png' %}" style="background: white"></a>
-                <a href="mailto:stocksera@gmail.com" target="_blank"><img src="{% static 'images/footer/email.png' %}"></a>
-            </div>
-            <div>&copy; 2024 Stocksera</div>
+          <ul>
+            <li id="disclaimer">Disclaimer</li>
+            <li id="privacy">Privacy</li>
+            <li id="support">Support</li>
+            <li id="advertisement" style="display: none">Advertise</li>
+          </ul>
+          <div class="footer_share">
+            <a href="https://twitter.com/stocksera_" target="_blank"
+              ><img src="{% static 'images/footer/twitter.png' %}"
+            /></a>
+            <a href="https://reddit.com/r/stocksera" target="_blank"
+              ><img src="{% static 'images/footer/reddit.png' %}"
+            /></a>
+            <a href="https://github.com/guanquann/Stocksera" target="_blank"
+              ><img src="{% static 'images/footer/github.png' %}" style="background: white"
+            /></a>
+            <a href="mailto:stocksera@gmail.com" target="_blank"
+              ><img src="{% static 'images/footer/email.png' %}"
+            /></a>
+          </div>
+          <div>&copy; 2024 Stocksera</div>
         </div>
 
-            <div id="disclaimer_model" class="modal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <span class="close">&times;</span>
-                        <h4>Disclaimer</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p> Before deciding to trade, you should be fully informed of the risks and costs associated
-                            with trading. You are encouraged to conduct your own Due-Diligence (DD) and seek professional
-                            advice when necessary. Stocksera will not be responsible for any losses or damages
-                            incurred as a result of your trading.
-                            <br><br>
-                            Do note that the price of tickers are delayed. You should depend on your broker for latest
-                            price changes instead.
-                        </p>
-                    </div>
-                </div>
+        <div id="disclaimer_model" class="modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <span class="close">&times;</span>
+              <h4>Disclaimer</h4>
             </div>
+            <div class="modal-body">
+              <p>
+                Before deciding to trade, you should be fully informed of the risks and costs
+                associated with trading. You are encouraged to conduct your own Due-Diligence (DD)
+                and seek professional advice when necessary. Stocksera will not be responsible for
+                any losses or damages incurred as a result of your trading. <br /><br />
+                Do note that the price of tickers are delayed. You should depend on your broker for
+                latest price changes instead.
+              </p>
+            </div>
+          </div>
+        </div>
 
-            <div id="privacy_model" class="modal">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <span class="close">&times;</span>
-                    <h4>Privacy</h4>
-                </div>
-                <div class="modal-body">
-                    <p>We value your privacy. No personal information, Internet Protocol (IP) address, location, device name would be collected without permission. To enable better user experience, do note that Cookies are used. Cookies are stored in your device's internal memory and Stockera would not use these Cookies for other purposes.</p>
-                </div>
-                </div>
+        <div id="privacy_model" class="modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <span class="close">&times;</span>
+              <h4>Privacy</h4>
             </div>
+            <div class="modal-body">
+              <p>
+                We value your privacy. No personal information, Internet Protocol (IP) address,
+                location, device name would be collected without permission. To enable better user
+                experience, do note that Cookies are used. Cookies are stored in your device's
+                internal memory and Stockera would not use these Cookies for other purposes.
+              </p>
+            </div>
+          </div>
+        </div>
 
-            <div id="support_model" class="modal">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <span class="close">&times;</span>
-                    <h4>Support</h4>
-                </div>
-                <div class="modal-body github_div">
-                    <p>
-                        <a href="https://www.paypal.me/stocksera" target="_blank"><img src="{% static 'images/paypal.svg' %}" style="width: 30px"></a>
-                        <a href="https://github.com/guanquann/Stocksera" target="_blank"><img src="{% static 'images/github.svg' %}" style="width: 30px"></a>
-                        <a href="https://www.patreon.com/stocksera" target="_blank"><img src="{% static 'images/patreon.png' %}" style="width: 30px"></a>
-                        <a href="https://www.buymeacoffee.com/stocksera" target="_blank"><img src="{% static 'images/buy_me_a_coffee.png' %}" style="width: 30px"></a>
-                    </p>
-                    <p>Stocksera is an open-source, free for all application.
-                       I spent months just to create this application, with new updates & bug fixes almost every week, without monetary benefits.
-                       If you like this project, you can support me via <a href="https://www.paypal.me/stocksera" target="_blank">Paypal</a>, <a href="https://www.patreon.com/stocksera" target="_blank">Patreon</a> or <a href="https://www.buymeacoffee.com/stocksera" target="_blank">Buy Me a Coffee</a>.
-                       Alternatively, you can give me a star ⭐ on <a href="https://github.com/guanquann/Stocksera" target="_blank">Github</a> and share it with everyone.</p>
-                </div>
-                </div>
+        <div id="support_model" class="modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <span class="close">&times;</span>
+              <h4>Support</h4>
             </div>
+            <div class="modal-body github_div">
+              <p>
+                <a href="https://www.paypal.me/stocksera" target="_blank"
+                  ><img src="{% static 'images/paypal.svg' %}" style="width: 30px"
+                /></a>
+                <a href="https://github.com/guanquann/Stocksera" target="_blank"
+                  ><img src="{% static 'images/github.svg' %}" style="width: 30px"
+                /></a>
+                <a href="https://www.patreon.com/stocksera" target="_blank"
+                  ><img src="{% static 'images/patreon.png' %}" style="width: 30px"
+                /></a>
+                <a href="https://www.buymeacoffee.com/stocksera" target="_blank"
+                  ><img src="{% static 'images/buy_me_a_coffee.png' %}" style="width: 30px"
+                /></a>
+              </p>
+              <p>
+                Stocksera is an open-source, free for all application. I spent months just to create
+                this application, with new updates & bug fixes almost every week, without monetary
+                benefits. If you like this project, you can support me via
+                <a href="https://www.paypal.me/stocksera" target="_blank">Paypal</a>,
+                <a href="https://www.patreon.com/stocksera" target="_blank">Patreon</a> or
+                <a href="https://www.buymeacoffee.com/stocksera" target="_blank">Buy Me a Coffee</a
+                >. Alternatively, you can give me a star ⭐ on
+                <a href="https://github.com/guanquann/Stocksera" target="_blank">Github</a> and
+                share it with everyone.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</div>
-</body>
-<script src="{% static 'javascript/load_footer.js' %}"></script>
-{% block bottom_script %} {% endblock %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-<script src='https://cdn.plot.ly/plotly-2.3.1.min.js'></script>
-<script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
-<script src="https://cdn.anychart.com/releases/v8/js/anychart-tag-cloud.min.js"></script>
-<script src="{% static 'javascript/format.js' %}"></script>
-<script>
-var dropdown = document.getElementsByClassName("dropdown-btn");
-var i;
-for (i = 0; i < dropdown.length; i++) {
-    dropdown[i].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var dropdownContent = this.nextElementSibling;
-    if (dropdownContent.classList.contains("show_nav_dropdown")) {
-        dropdownContent.classList.remove("show_nav_dropdown")
-    } else {
-        dropdownContent.classList.add("show_nav_dropdown")
+  </body>
+  <script src="{% static 'javascript/load_footer.js' %}"></script>
+  {% block bottom_script %} {% endblock %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.3.1.min.js"></script>
+  <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+  <script src="https://cdn.anychart.com/releases/v8/js/anychart-tag-cloud.min.js"></script>
+  <script src="{% static 'javascript/format.js' %}"></script>
+  <script>
+    var dropdown = document.getElementsByClassName("dropdown-btn");
+    var i;
+    for (i = 0; i < dropdown.length; i++) {
+      dropdown[i].addEventListener("click", function () {
+        this.classList.toggle("active");
+        var dropdownContent = this.nextElementSibling;
+        if (dropdownContent.classList.contains("show_nav_dropdown")) {
+          dropdownContent.classList.remove("show_nav_dropdown");
+        } else {
+          dropdownContent.classList.add("show_nav_dropdown");
+        }
+      });
     }
-    });
-}
-</script>
+  </script>
 </html>

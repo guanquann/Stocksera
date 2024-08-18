@@ -729,11 +729,9 @@ def retail_sales(request):
             "record_date": "Date",
             "value": "Amount",
             "percent_change": "Percent Change",
-            "covid_monthly_avg": "Monthly Avg Cases",
         },
         inplace=True,
     )
-    retail_stats.fillna(0, inplace=True)
     df = retail_stats.to_dict(orient="records")
     return JSONResponse(df)
 

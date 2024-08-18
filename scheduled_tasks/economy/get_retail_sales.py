@@ -34,23 +34,10 @@ def retail_sales():
 
     combined_df["Date"] = combined_df["Date"].astype("datetime64[ns]").astype(str)
 
-    covid_df = pd.read_csv(r"https://covid.ourworldindata.org/data/owid-covid-data.csv")
-
-    usa_df = covid_df[covid_df["iso_code"] == "USA"]
-    usa_df.index = pd.to_datetime(usa_df["date"], errors="coerce")
-    usa_df = usa_df.groupby(pd.Grouper(freq="M"))
-    usa_df = usa_df.mean()["new_cases"]
-    usa_df = pd.DataFrame(usa_df)
-    usa_df["new_cases"] = usa_df["new_cases"].round(2)
-    usa_df.reset_index(inplace=True)
-    usa_df["date"] = usa_df["date"].astype(str)
-    usa_df.rename(columns={"date": "Date"}, inplace=True)
-
-    combined_df = pd.merge(combined_df, usa_df, how="left", on="Date")
     combined_df.fillna(0, inplace=True)
 
     cur.executemany(
-        "INSERT IGNORE INTO retail_sales VALUES (%s, %s, %s, %s)",
+        "INSERT IGNORE INTO retail_sales VALUES (%s, %s, %s)",
         combined_df.values.tolist(),
     )
 

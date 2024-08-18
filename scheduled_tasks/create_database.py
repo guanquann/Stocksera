@@ -183,11 +183,15 @@ def database():
     cur.execute(
         "CREATE table IF NOT EXISTS short_interest ("
         "ticker VARCHAR(10), "
-        "date VARCHAR(20), "
-        "short_interest INTEGER, "
-        "average_vol INTEGER, "
-        "days_to_cover FLOAT, "
-        "percent_float_short FLOAT)"
+        "company_name VARCHAR(200), "
+        "exchange VARCHAR(100), "
+        "previous_close FLOAT, "
+        "one_day_change FLOAT, "
+        "floating_shares VARCHAR(20), "
+        "outstanding_shares VARCHAR(20),"
+        "short_int VARCHAR(20), "
+        "market_cap VARCHAR(20), "
+        "industry VARCHAR(50) )"
     )
 
     cur.execute(
@@ -244,7 +248,6 @@ def database():
         "record_date VARCHAR(20), "
         "value FLOAT, "
         "percent_change FLOAT, "
-        "covid_monthly_avg INTEGER, "
         "UNIQUE (record_date) )"
     )
 

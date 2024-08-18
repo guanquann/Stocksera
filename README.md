@@ -2,7 +2,7 @@
 
 ![Stocksera](./static/images/github/logo.png)
 
-### NOTE: I'm still in the midst of fixing bugs. (Govt trades, Short interest)
+### NOTE: I'm still in the midst of fixing bugs. (Govt trades)
 
 [![Downloads](https://static.pepy.tech/badge/stocksera)](https://pepy.tech/project/stocksera)
 

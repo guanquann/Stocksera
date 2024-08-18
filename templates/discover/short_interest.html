@@ -44,13 +44,6 @@
     </div>
 
     <div class="contents_div">
-        <div class="search_bar">
-            <input type="text" class="ticker_input" placeholder="Ticker:" onkeyup="searchTicker(this)" autocomplete="off">
-            <button class="submit_btn" type="button">
-                <span class="fa fa-search"></span>
-            </button>
-        </div>
-        <span class="click_table_info"><b>Click on ticker for more info</b></span>
         <div class="table_div" style="display: none">
             {{ df_high_short_interest|safe }}
         </div>

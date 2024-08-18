@@ -13,7 +13,7 @@ var retail_sales_chart = null
 function retail_sales(duration) {
     var date_threshold = get_date_difference(duration, "-")
 
-    var date_list = [], amount_list = [], covid_list = [];
+    var date_list = [], amount_list = [];
     var month_list = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     var table = document.getElementsByTagName("table")[0];
     var tr = table.querySelectorAll("tr");
@@ -25,7 +25,6 @@ function retail_sales(duration) {
             month = month_list[Number(date_string.slice(5,7)) - 1]
             date_list.push(month + " " + year)
             amount_list.push(td[1].innerHTML.replace("$", "").replace("B", ""))
-            covid_list.push(td[3].innerHTML / 1000)
             tr[i].style.removeProperty("display")
         }
         else {
@@ -50,15 +49,6 @@ function retail_sales(duration) {
                     backgroundColor: 'transparent',
                     borderWidth: 2,
                     yAxisID: 'A',
-                },
-                {
-                    label: 'Monthly Avg Cases',
-                    type: 'line',
-                    data: covid_list,
-                    borderColor: 'red',
-                    backgroundColor: 'transparent',
-                    borderWidth: 2,
-                    yAxisID: 'B',
                 }
                 ]
         },

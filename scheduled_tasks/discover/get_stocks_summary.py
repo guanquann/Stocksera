@@ -3,7 +3,7 @@ import sys
 import pandas as pd
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
-from scheduled_tasks.reddit.stocks.fast_yahoo import download_advanced_stats
+from helpers import get_ticker_list_stats
 
 INDICES_PATH = "database/indices"
 
@@ -17,80 +17,62 @@ def main():
     if not os.path.exists(INDICES_PATH):
         os.mkdir(INDICES_PATH)
 
-        snp500_df = pd.read_html(
-            "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
-        )[0]
-        snp500_df["Symbol"].to_csv(
-            os.path.join(INDICES_PATH, "snp500.csv"), index=False
-        )
+    snp500_df = pd.read_html(
+        "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
+    )[0]
+    snp500_df.rename(columns={"Symbol": "symbol"}, inplace=True)
+    snp500_df = snp500_df[["symbol", "GICS Sector", "GICS Sub-Industry"]]
 
-        nasdaq_df = pd.read_html("https://en.wikipedia.org/wiki/Nasdaq-100")[4]
-        nasdaq_df.rename(columns={"Ticker": "Symbol"}, inplace=True)
-        nasdaq_df["Symbol"].to_csv(
-            os.path.join(INDICES_PATH, "nasdaq100.csv"), index=False
-        )
+    nasdaq_df = pd.read_html("https://en.wikipedia.org/wiki/Nasdaq-100")[4]
+    nasdaq_df.rename(columns={"Ticker": "symbol"}, inplace=True)
+    nasdaq_df = nasdaq_df[["symbol", "GICS Sector", "GICS Sub-Industry"]]
 
-        dia_df = pd.read_html(
-            "https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average"
-        )[1]
-        dia_df["Symbol"].to_csv(os.path.join(INDICES_PATH, "dia.csv"), index=False)
-
-    snp = pd.read_csv(os.path.join(INDICES_PATH, "snp500.csv"))
-    nasdaq = pd.read_csv(os.path.join(INDICES_PATH, "nasdaq100.csv"))
-    dia = pd.read_csv(os.path.join(INDICES_PATH, "dia.csv"))
-    merge_df = pd.concat([snp, nasdaq])
-    merge_df.drop_duplicates(inplace=True)
-
-    quick_stats_dict = {
-        "price": {
-            "marketCap": "Market Cap",
-            "regularMarketPreviousClose": "Prev Close",
-            "regularMarketPrice": "Current Price",
-        },
-        "summaryProfile": {"sector": "Sector", "industry": "Industry"},
-    }
-
-    symbol_list = merge_df["Symbol"].to_list()
-    symbol_list.remove("GOOG")
-    original_df = pd.DataFrame()
-
-    current_index = 0
-    while current_index < len(symbol_list):
-        quick_stats_df = download_advanced_stats(
-            symbol_list[current_index : current_index + 100],
-            quick_stats_dict,
-            threads=True,
-        )
-        original_df = pd.concat([original_df, quick_stats_df])
-        current_index += 100
-
-    original_df["Current Price"] = pd.to_numeric(
-        original_df["Current Price"], errors="coerce"
+    dia_df = pd.read_html(
+        "https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average"
+    )[1]
+    dia_df.rename(columns={"Symbol": "symbol"}, inplace=True)
+    dia_df = dia_df[["symbol"]]
+    dia_df = dia_df.merge(
+        snp500_df,
+        how="left",
+        on="symbol",
     )
-    original_df["Prev Close"] = pd.to_numeric(
-        original_df["Prev Close"], errors="coerce"
-    )
-    original_df["% Change"] = (
-        (original_df["Current Price"] - original_df["Prev Close"])
-        * 100
-        / original_df["Prev Close"]
-    )
-    original_df = original_df.reindex(symbol_list)
-    original_df.reset_index(inplace=True)
 
-    original_df = original_df[original_df["Market Cap"] != "N/A"]
-    original_df = original_df[
-        ["Symbol", "Market Cap", "% Change", "Sector", "Industry"]
+    merged_df = (
+        pd.concat([snp500_df, nasdaq_df], ignore_index=True)
+        .drop_duplicates()
+        .reset_index(drop=True)
+    )
+    ticker_stats_df = get_ticker_list_stats(merged_df["symbol"].to_list())[
+        ["symbol", "marketCap", "changesPercentage"]
     ]
 
-    snp_out = pd.merge(snp, original_df, on="Symbol", how="left")
-    snp_out.to_csv(f"database/indices/snp500_heatmap.csv", index=False)
+    snp500_df = snp500_df.merge(
+        ticker_stats_df,
+        how="left",
+        on="symbol",
+    )[["symbol", "marketCap", "changesPercentage", "GICS Sector", "GICS Sub-Industry"]]
+    snp500_df.columns = ["Symbol", "Market Cap", "% Change", "Sector", "Industry"]
 
-    nasdaq_out = pd.merge(nasdaq, original_df, on="Symbol", how="left")
-    nasdaq_out.to_csv(f"database/indices/nasdaq100_heatmap.csv", index=False)
+    snp500_df.to_csv(f"database/indices/snp500_heatmap.csv", index=False)
 
-    dia_out = pd.merge(dia, original_df, on="Symbol", how="left")
-    dia_out.to_csv(f"database/indices/dia_heatmap.csv", index=False)
+    nasdaq_df = nasdaq_df.merge(
+        ticker_stats_df,
+        how="left",
+        on="symbol",
+    )[["symbol", "marketCap", "changesPercentage", "GICS Sector", "GICS Sub-Industry"]]
+    nasdaq_df.columns = ["Symbol", "Market Cap", "% Change", "Sector", "Industry"]
+
+    nasdaq_df.to_csv(f"database/indices/nasdaq100_heatmap.csv", index=False)
+
+    dia_df = dia_df.merge(
+        ticker_stats_df,
+        how="left",
+        on="symbol",
+    )[["symbol", "marketCap", "changesPercentage", "GICS Sector", "GICS Sub-Industry"]]
+    dia_df.columns = ["Symbol", "Market Cap", "% Change", "Sector", "Industry"]
+
+    dia_df.to_csv(f"database/indices/dia_heatmap.csv", index=False)
 
     print("Stocks Summary Successfully Completed...\n")
 

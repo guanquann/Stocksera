@@ -4,14 +4,14 @@ import pandas as pd
 import yaml
 import numpy as np
 import finnhub
+import requests
 import yfinance as yf
 import mysql.connector
-from datetime import date
+from datetime import date, datetime, timedelta
 from sqlalchemy import create_engine
 from django.http import HttpResponse
 from finvizfinance.quote import finvizfinance
 from json.decoder import JSONDecodeError
-from fast_yahoo import *
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 with open("config.yaml") as config_file:

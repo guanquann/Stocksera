@@ -18,7 +18,8 @@ import scheduled_tasks.stocks.get_threshold_securities as get_threshold_securiti
 import scheduled_tasks.discover.get_latest_insider_trading as get_latest_insider_trading
 import scheduled_tasks.discover.get_stocks_summary as get_stocks_summary
 import scheduled_tasks.discover.get_ipo_calendar as get_ipo_calendar
-import scheduled_tasks.discover.miscellaneous as miscellaneous
+import scheduled_tasks.discover.get_low_float as get_low_float
+import scheduled_tasks.discover.get_high_interest as get_high_interest
 import scheduled_tasks.discover.get_stocktwits_trending as get_stocktwits_trending
 import scheduled_tasks.discover.get_dividends as get_dividends
 import scheduled_tasks.discover.get_earnings as get_earnings
@@ -74,11 +75,11 @@ def task_short_vol():
 
 
 def task_low_float():
-    miscellaneous.get_low_float()
+    get_low_float.main()
 
 
 def task_short_int():
-    miscellaneous.get_high_short_interest()
+    get_high_interest.main()
 
 
 def task_dividends():

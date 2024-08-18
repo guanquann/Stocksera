@@ -8,7 +8,7 @@ There are 2 ways to run the tasks:
   - Ensure that you run scheduled_tasks/create_database.py first.
       ```
       # Example of how you should run all the scheduled tasks
-      example: (venv) C:\Users\Acer\Stocksera>py scheduled_tasks/economy/get_inflation.py
+      example: (venv) C:\Users\Desktop\Stocksera>python scheduled_tasks/economy/get_inflation.py
       ```
  
 Before continuing, register for an API in the links shown below and add them in http://localhost:8000/tasks or in config.yaml.
@@ -20,7 +20,6 @@ Before continuing, register for an API in the links shown below and add them in 
 | Finnhub         | https://finnhub.io/                                |
 | Polygon         | https://polygon.io/                                |
 | FMP             | https://site.financialmodelingprep.com/            |
-| Gmail -optional | https://realpython.com/python-send-email/          |
 
 ## Frequency to run tasks
 - Do note that the frequency to run the files are for guidance only. You do not need to follow them strictly. Change according to your preference.
@@ -46,7 +45,8 @@ Before continuing, register for an API in the links shown below and add them in 
 | scheduled_tasks/stocks/get_failure_to_deliver.py          | main()                                  | 2 Weeks     |
 | scheduled_tasks/stocks/get_short_volume.py                | main()                                  | 6.00PM      | 
 | scheduled_tasks/stocks/get_borrowed_shares.py             | main()                                  | 10 Mins     |
-| scheduled_tasks/discover/miscellaneous.py                 | main()                                  | Daily (AH)  |
+| scheduled_tasks/discover/get_low_float.py                 | main()                                  | Daily (AH)  |
+| scheduled_tasks/discover/get_high_interest.py             | main()                                  | Daily (AH)  |
 | scheduled_tasks/discover/get_earnings.py                  | main()                                  | Daily (AH)  |
 | scheduled_tasks/discover/get_latest_insider_trading.py    | main()                                  | 2 Hours     |
 | scheduled_tasks/discover/get_stocks_summary.py            | main()                                  | 10 Mins     |
@@ -54,6 +54,7 @@ Before continuing, register for an API in the links shown below and add them in 
 | scheduled_tasks/discover/get_ipo_calendar.py              | main()                                  | Daily (AH)  |
 | scheduled_tasks/discover/get_stock_splits.py              | main()                                  | Daily (AH)  |
 | scheduled_tasks/discover/get_dividends.py                 | main()                                  | Daily (AH)  |
+| scheduled_tasks/discover/get_jim_cramer.py                | main()                                  | Daily (AH)  |
 | scheduled_tasks/government/get_senate_trading.py          | main()                                  | Daily (AH)  |
 | scheduled_tasks/government/get_house_trading.py           | main()                                  | Daily (AH)  |
 | scheduled_tasks/news/get_news.py                          | main()                                  | 10 Mins     |

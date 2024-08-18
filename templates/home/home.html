@@ -1,7 +1,7 @@
-<!DOCTYPE html>
 {% load static %}
 
-<html style="font-size: 16px">
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
@@ -10,128 +10,70 @@
     <title>Stocksera</title>
     <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}" />
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}" />
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f4f4f4;
-        color: #333;
-      }
-      header {
-        background-color: rgb(38, 166, 154);
-        color: white;
-        padding: 10px;
-        text-align: center;
-      }
-      nav {
-        background-color: #333;
-        overflow: hidden;
-      }
-      nav a {
-        float: left;
-        display: block;
-        color: white;
-        text-align: center;
-        padding: 14px 20px;
-        text-decoration: none;
-      }
-      nav a:hover {
-        background-color: #ddd;
-        color: black;
-      }
-      .container {
-        padding: 20px;
-        max-width: 1200px;
-        margin: auto;
-      }
-      .section {
-        margin: 20px 0;
-        padding: 20px;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
-      .section h2 {
-        margin-top: 0;
-      }
-      .trending-tickers {
-        list-style-type: none;
-        padding: 0;
-      }
-      .trending-tickers li {
-        padding: 10px;
-        border-bottom: 1px solid #ddd;
-      }
-      .trending-tickers li:last-child {
-        border-bottom: none;
-      }
-      .trending-tickers a {
-        text-decoration: none;
-        color: rgb(38, 166, 154);
-      }
-      .trending-tickers a:hover {
-        text-decoration: underline;
-      }
-      footer {
-        background-color: #333;
-        color: white;
-        text-align: center;
-        padding: 10px 0;
-        margin-top: 20px;
-      }
-    </style>
+    <link rel="stylesheet" href="{% static 'style/home/home.css' %}" />
   </head>
   <body>
     <header>
       <h1>Stocksera</h1>
-      <p>Empowering investors to take advantage of alternative data</p>
+      <p>Empowering Retail Investors with Alternative Data and Market Insights</p>
     </header>
 
-    <nav>
-      <a href="/ticker">Stock</a>
-      <a href="/wsb_live">Reddit</a>
-      <a href="/reverse_repo">Economy</a>
-      <a href="/senate">Government</a>
-      <a href="/latest_insider">Discover</a>
-      <a href="/news">News</a>
-      <a href="/accounts/login">Login</a>
-    </nav>
+    <div class="hero">
+      <h2>Discover Trends, Analyze Markets, Make Informed Decisions</h2>
+      <p>Your one-stop platform to view trending stocks and market data.</p>
+      <div class="buttons">
+        <a href="https://github.com/guanquann/Stocksera" target="_blank">View on GitHub</a>
+        <a href="/explore" target="_blank">Explore</a>
+        <!-- Added Explore button -->
+      </div>
 
-    <div class="container">
-      <section class="section">
-        <h2>Trending Tickers</h2>
-        <ul class="trending-tickers">
-          {% for i in trending %}
-          <li><a href="/ticker/?quote={{i.0}}">{{i.0}} - {{i.1}}</a></li>
-          {% endfor %}
-        </ul>
-        <p><i>Data is updated in real-time.</i></p>
-      </section>
+      <div class="open-source">
+        <p><strong>We're Proudly Open Source!</strong></p>
+        <p>Contribute, review our code, and be part of the Stocksera community.</p>
+      </div>
+    </div>
 
-      <section class="section">
-        <h2>Featured Sections</h2>
-        <div class="feature">
-          <h3>Failure to Deliver (FTD)</h3>
-          <p>Track the failure to deliver data for various stocks.</p>
-          <a href="/ticker/failure_to_deliver">Learn more</a>
-        </div>
-        <div class="feature">
-          <h3>Consumer Price Index (CPI)</h3>
-          <p>View CPI data in an easy-to-understand heatmap.</p>
-          <a href="/inflation">Learn more</a>
-        </div>
-        <div class="feature">
-          <h3>Options Chain</h3>
-          <p>Analyze options chains and max pain for any ticker.</p>
-          <a href="/ticker/options">Learn more</a>
-        </div>
-        <div class="feature">
-          <h3>Reddit Live</h3>
-          <p>See what stocks are trending on Reddit in real-time.</p>
-          <a href="/wsb_live">Learn more</a>
-        </div>
-      </section>
+    <section id="features" class="features">
+      <div class="feature">
+        <h3>Trending Tickers</h3>
+        <p>Track the hottest stocks being discussed across social media platforms like Reddit.</p>
+      </div>
+      <div class="feature">
+        <h3>Insider Trading</h3>
+        <p>Monitor insider trading activities to understand the moves of key stakeholders.</p>
+      </div>
+      <div class="feature">
+        <h3>Options Chain Analysis</h3>
+        <p>Analyze options chains and max pain points to make strategic trading decisions.</p>
+      </div>
+      <div class="feature">
+        <h3>Government Trading</h3>
+        <p>
+          Stay informed about the stock trades of U.S. Congress members and their potential impact
+          on markets.
+        </p>
+      </div>
+      <div class="feature">
+        <h3>Market Sentiment</h3>
+        <p>Gauge the mood of the market by analyzing sentiment data from social media and news.</p>
+      </div>
+      <div class="feature">
+        <h3>Economic Indicators</h3>
+        <p>Keep an eye on key economic indicators that could impact market trends.</p>
+      </div>
+    </section>
+
+    <div class="github">
+      <h2>Install Stocksera</h2>
+      <p>
+        Stocksera is an open-source project. Get the source code and contribute to the project on
+        GitHub.
+      </p>
+      <div class="buttons">
+        <a href="https://github.com/guanquann/Stocksera" target="_blank">View on GitHub</a>
+        <a href="/explore" target="_blank">Explore</a>
+        <!-- Added Explore button -->
+      </div>
     </div>
 
     <footer>

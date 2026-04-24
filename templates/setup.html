@@ -115,6 +115,21 @@
                     <input placeholder="Value" value="WHALE_ALERT" name="whalealert_api" style="display: none">
                     <td><input placeholder="Value" value="{{config.WHALE_ALERT}}" name="whalealert_api_value"></td>
                 </tr>
+                <tr>
+                    <td>Adanos API Key</td>
+                    <input placeholder="Value" value="ADANOS_API_KEY" name="adanos_api" style="display: none">
+                    <td><input placeholder="Value" value="{{config.ADANOS_API_KEY}}" name="adanos_api_value"></td>
+                </tr>
+                <tr>
+                    <td>Adanos Base URL</td>
+                    <input placeholder="Value" value="ADANOS_BASE_URL" name="adanos_base_url" style="display: none">
+                    <td><input placeholder="Value" value="{{config.ADANOS_BASE_URL|default:'https://api.adanos.org'}}" name="adanos_base_url_value"></td>
+                </tr>
+                <tr>
+                    <td>Adanos Timeout (s)</td>
+                    <input placeholder="Value" value="ADANOS_TIMEOUT_SECONDS" name="adanos_timeout" style="display: none">
+                    <td><input placeholder="Value" value="{{config.ADANOS_TIMEOUT_SECONDS|default:'8'}}" name="adanos_timeout_value"></td>
+                </tr>
                 <tr></tr>
             </table>
 

@@ -22,6 +22,7 @@ urlpatterns = [
     path('dividend_and_split/', views.dividend_and_split, name='dividend_and_split'),
     path('tradingview/', views.tradingview, name='tradingview'),
     path('discussion/', views.discussion, name='discussion'),
+    path('adanos_market_sentiment/', views.adanos_market_sentiment, name='adanos_market_sentiment'),
     path('sec_fillings/', views.sec_fillings, name='sec_fillings'),
     path('insider_trading/', views.stock_insider_trading, name='insider_trading'),
 

@@ -126,6 +126,15 @@
                             </form>
                         </div>
 
+                        {% if adanos_enabled %}
+                        <div class="btn_div">
+                            <form action="/adanos_market_sentiment" method="GET" autocomplete="off" target="Adanos Market Sentiment">
+                                <input style="display: none" name="quote" value="{{ticker_selected}}">
+                                <button type="button" class="show_more_btn" onclick="submit();to_remove(this, 'Adanos Market Sentiment')">Adanos Sentiment</button>
+                            </form>
+                        </div>
+                        {% endif %}
+
                         <div class="btn_div">
                             <form action="/google_trends" method="GET" autocomplete="off" target="Google Trends">
                                 <input style="display: none" name="quote" value="{{ticker_selected}}">
@@ -211,6 +220,9 @@
                 <iframe src="/loading/" style="display: none" class="more_details" name="SEC Fillings" scrolling="no" onload="expand_iframe(this)"></iframe>
                 <iframe src="/loading/" style="display: none" class="more_details" name="Google Trends" scrolling="no" onload="expand_iframe(this)"></iframe>
                 <iframe src="/loading/" style="display: none" class="more_details" name="News Sentiment" scrolling="no" onload="expand_iframe(this)"></iframe>
+                {% if adanos_enabled %}
+                <iframe src="/loading/" style="display: none" class="more_details" name="Adanos Market Sentiment" scrolling="no" onload="expand_iframe(this)"></iframe>
+                {% endif %}
                 <iframe src="/loading/" style="display: none" class="more_details" name="Insider Trading" id="insider_trading" scrolling="no" onload="expand_iframe(this)"></iframe>
                 <iframe src="/loading/" style="display: none" class="more_details" name="Trading View" scrolling="no" onload="expand_iframe(this)"></iframe>
                 <iframe src="/loading/" style="display: none" class="more_details" name="Discussion" scrolling="no" onload="expand_iframe(this)"></iframe>

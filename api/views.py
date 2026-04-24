@@ -11,6 +11,7 @@ from rest_framework.decorators import schema
 from rest_framework.schemas.openapi import AutoSchema
 from rest_framework_api_key.models import APIKey
 from rest_framework.decorators import api_view, permission_classes
+from app.adanos_market_sentiment import fetch_adanos_market_sentiment
 
 cnx, cur, engine = connect_mysql_database()
 
@@ -191,6 +192,19 @@ def news_sentiment(request, ticker_selected="AAPL"):
     df = get_ticker_news(ticker_selected)
     df = df.to_dict(orient="records")
     return JSONResponse(df)
+
+
+@csrf_exempt
+@check_api_key
+@api_view(["GET"])
+@schema(AutoDocstringSchema())
+def adanos_market_sentiment(request, ticker_selected="AAPL"):
+    """
+    Optional Adanos Market Sentiment data for a ticker.
+    """
+    ticker_selected = default_ticker(ticker_selected)
+    data = fetch_adanos_market_sentiment(ticker_selected, config_keys)
+    return JSONResponse(data)
 
 
 @csrf_exempt

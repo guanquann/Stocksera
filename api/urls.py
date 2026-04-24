@@ -38,6 +38,11 @@ urlpatterns = [
         name="api_news_sentiment",
     ),
     path(
+        "stocks/adanos_market_sentiment/<str:ticker_selected>/",
+        views.adanos_market_sentiment,
+        name="api_adanos_market_sentiment",
+    ),
+    path(
         "stocks/insider_trading/<str:ticker_selected>/",
         views.stock_insider_trading,
         name="api_insider_trading",

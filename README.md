@@ -37,6 +37,8 @@ If you wish to support this project, please star it on Github or PayPal to <a hr
 - Google trend of a stock and compare it with it's closing price.
   ![Google Trend](./static/images/github/ticker_main4.png)
 
+- Optional Adanos Market Sentiment iframe for cross-source Reddit, X, News and Polymarket sentiment on a ticker.
+
 - Recommendations of a stock.
   ![Recommendations](./static/images/github/ticker_main5.png)
 
@@ -284,6 +286,7 @@ cd ../..
 pip install -r requirements.txt
 
 # Set your MYSQL credentials in config.yaml first before proceeding
+# Optional: add ADANOS_API_KEY in config.yaml to enable the Adanos sentiment iframe/API.
 py setup/local.py
 
 # Run application
@@ -298,6 +301,7 @@ py manage.py runserver
 ```
 # Dockerise
 # Set your MYSQL credentials in config.yaml first before proceeding
+# Optional: add ADANOS_API_KEY in config.yaml to enable the Adanos sentiment iframe/API.
 # Do note that MYSQL_HOST for docker container may not be localhost (mine is `db`)
 py setup/docker.py
 ```

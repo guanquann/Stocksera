@@ -1,0 +1,127 @@
+.adanos_sentiment_wrapper {
+    padding: 16px;
+}
+
+.adanos_sentiment_header {
+    align-items: flex-start;
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.adanos_sentiment_header h2 {
+    margin: 0 0 6px;
+}
+
+.adanos_sentiment_header p {
+    color: #666;
+    margin: 0;
+}
+
+.adanos_sentiment_header a {
+    color: rgb(38, 166, 154);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.adanos_cards {
+    display: grid;
+    gap: 16px;
+}
+
+.adanos_card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.adanos_card_header {
+    align-items: flex-start;
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.adanos_card_header h3 {
+    margin: 0 0 6px;
+}
+
+.adanos_card_header p {
+    color: #666;
+    margin: 0;
+}
+
+.adanos_trend {
+    background: #f3f4f6;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 6px 10px;
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
+.adanos_trend_rising {
+    background: rgba(22, 163, 74, 0.12);
+    color: #15803d;
+}
+
+.adanos_trend_falling {
+    background: rgba(220, 38, 38, 0.12);
+    color: #b91c1c;
+}
+
+.adanos_trend_stable {
+    background: rgba(59, 130, 246, 0.12);
+    color: #1d4ed8;
+}
+
+.adanos_metric_grid {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+.adanos_metric {
+    background: #f8f8f8;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.adanos_metric span {
+    color: #666;
+    display: block;
+    font-size: 12px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+.adanos_metric strong {
+    font-size: 22px;
+}
+
+.adanos_empty_state {
+    background: #fff;
+    border: 1px dashed #ccc;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+body.dark .adanos_card,
+body.dark .adanos_empty_state {
+    background: #1e1e1e;
+    border-color: #333;
+}
+
+body.dark .adanos_metric {
+    background: #262626;
+}
+
+body.dark .adanos_card_header p,
+body.dark .adanos_metric span,
+body.dark .adanos_sentiment_header p {
+    color: #bbb;
+}

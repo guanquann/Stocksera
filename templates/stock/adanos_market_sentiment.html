@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stocksera | Adanos Market Sentiment</title>
+    <link rel="stylesheet" href="{% static 'style/format.css' %}">
+    <link rel="stylesheet" href="{% static 'style/stock/adanos_market_sentiment.css' %}">
+    <script src="{% static 'javascript/format.js' %}"></script>
+</head>
+<body onload="restore_dark_mode()">
+    <script>restore_dark_mode()</script>
+    <div class="adanos_sentiment_wrapper">
+        <div class="adanos_sentiment_header">
+            <div>
+                <h2>Adanos Market Sentiment</h2>
+                <p>Optional cross-source sentiment context for {{ sentiment.ticker }}.</p>
+            </div>
+            <a href="https://api.adanos.org/docs/" target="_blank" rel="noopener noreferrer">API docs</a>
+        </div>
+
+        {% if not sentiment.enabled %}
+            <div class="adanos_empty_state">
+                <p>{{ sentiment.message }}</p>
+            </div>
+        {% elif sentiment.sources %}
+            <div class="adanos_cards">
+                {% for source in sentiment.sources %}
+                    <div class="adanos_card">
+                        <div class="adanos_card_header">
+                            <div>
+                                <h3>{{ source.label }}</h3>
+                                <p>{{ source.description }}</p>
+                            </div>
+                            <span class="adanos_trend adanos_trend_{{ source.trend|lower }}">{{ source.trend }}</span>
+                        </div>
+                        <div class="adanos_metric_grid">
+                            {% for metric in source.metrics %}
+                                <div class="adanos_metric">
+                                    <span>{{ metric.label }}</span>
+                                    <strong>{{ metric.value }}</strong>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="adanos_empty_state">
+                <p>{{ sentiment.message }}</p>
+                {% if sentiment.unavailable_sources %}
+                    <p>Unavailable: {{ sentiment.unavailable_sources|join:", " }}</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

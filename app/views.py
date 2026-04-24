@@ -9,6 +9,10 @@ import yfinance as yf
 from pytrends.request import TrendReq
 
 from django.shortcuts import render
+from .adanos_market_sentiment import (
+    fetch_adanos_market_sentiment,
+    is_adanos_configured,
+)
 
 try:
     session = requests.Session()
@@ -49,6 +53,7 @@ def main(request):
                     "ticker_selected": ticker_selected,
                     "information": information,
                     "related_tickers": related_tickers,
+                    "adanos_enabled": is_adanos_configured(config_keys),
                 },
             )
     return render(request, "home/home.html", {"trending": trending})
@@ -68,14 +73,29 @@ def stock_price(request):
                 "ticker_selected": ticker_selected,
                 "information": information,
                 "related_tickers": related_tickers,
+                "adanos_enabled": is_adanos_configured(config_keys),
             },
         )
     else:
         return render(
             request,
             "stock/ticker_price.html",
-            {"ticker_selected": ticker_selected, "error": "error_true"},
+            {
+                "ticker_selected": ticker_selected,
+                "error": "error_true",
+                "adanos_enabled": is_adanos_configured(config_keys),
+            },
         )
+
+
+def adanos_market_sentiment(request):
+    ticker_selected = default_ticker(request)
+    sentiment = fetch_adanos_market_sentiment(ticker_selected, config_keys)
+    return render(
+        request,
+        "stock/adanos_market_sentiment.html",
+        {"sentiment": sentiment},
+    )
 
 
 def ticker_recommendations(request):
@@ -1716,6 +1736,15 @@ def setup(request):
         )
         config_keys[request.POST.get("whalealert_api")] = request.POST.get(
             "whalealert_api_value"
+        )
+        config_keys[request.POST.get("adanos_api")] = request.POST.get(
+            "adanos_api_value"
+        )
+        config_keys[request.POST.get("adanos_base_url")] = request.POST.get(
+            "adanos_base_url_value"
+        )
+        config_keys[request.POST.get("adanos_timeout")] = request.POST.get(
+            "adanos_timeout_value"
         )
 
         config_keys[request.POST.get("mysql_db")] = request.POST.get("mysql_db_value")

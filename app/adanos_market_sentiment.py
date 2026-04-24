@@ -31,6 +31,7 @@ ADANOS_SOURCE_SPECS = (
     },
 )
 
+DEFAULT_ADANOS_BASE_URL = "https://api.adanos.org"
 DEFAULT_ADANOS_TIMEOUT_SECONDS = 8
 
 
@@ -61,8 +62,12 @@ def _coerce_timeout(config: Optional[Mapping[str, Any]]) -> int:
 def _base_url(config: Optional[Mapping[str, Any]]) -> str:
     value = str((config or {}).get("ADANOS_BASE_URL", "")).strip()
     if not value:
-        value = "https://api.adanos.org"
+        value = DEFAULT_ADANOS_BASE_URL
     return value.rstrip("/")
+
+
+def _unavailable_source_labels() -> List[str]:
+    return [spec["label"] for spec in ADANOS_SOURCE_SPECS]
 
 
 def _metric_entry(label: str, value: Any, decimals: int = 1, suffix: str = "") -> Optional[Dict[str, Any]]:
@@ -139,7 +144,7 @@ def fetch_adanos_market_sentiment(
             "ticker": ticker,
             "message": "Add an Adanos API key in Setup to enable cross-source market sentiment.",
             "sources": [],
-            "unavailable_sources": [spec["label"] for spec in ADANOS_SOURCE_SPECS],
+            "unavailable_sources": _unavailable_source_labels(),
         }
 
     headers = {"X-API-Key": str(config.get("ADANOS_API_KEY")).strip()}

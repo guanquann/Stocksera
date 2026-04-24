@@ -1706,58 +1706,35 @@ def tasks(request):
 
 
 def setup(request):
+    def update_config_value(key_name, value_name):
+        key = request.POST.get(key_name)
+        if key:
+            config_keys[key] = request.POST.get(value_name, "")
+
     if request.POST:
         if request.POST.get("locally_hosted_value") == "True":
             config_keys[request.POST.get("locally_hosted")] = True
         else:
             config_keys[request.POST.get("locally_hosted")] = False
-        config_keys[request.POST.get("stocksera_base_url")] = request.POST.get(
-            "stocksera_base_url_value"
-        )
-        config_keys[request.POST.get("stocksera_api")] = request.POST.get(
-            "stocksera_api_value"
-        )
+        update_config_value("stocksera_base_url", "stocksera_base_url_value")
+        update_config_value("stocksera_api", "stocksera_api_value")
 
-        config_keys[request.POST.get("finnhub_api")] = request.POST.get(
-            "finnhub_api_value"
-        )
-        config_keys[request.POST.get("fmp_api")] = request.POST.get("fmp_api_value")
-        config_keys[request.POST.get("polygon_api")] = request.POST.get(
-            "polygon_api_value"
-        )
-        config_keys[request.POST.get("twitter_api")] = request.POST.get(
-            "twitter_api_value"
-        )
-        config_keys[request.POST.get("reddit_id_api")] = request.POST.get(
-            "reddit_id_api_value"
-        )
-        config_keys[request.POST.get("reddit_sec_api")] = request.POST.get(
-            "reddit_sec_api_value"
-        )
-        config_keys[request.POST.get("whalealert_api")] = request.POST.get(
-            "whalealert_api_value"
-        )
-        config_keys[request.POST.get("adanos_api")] = request.POST.get(
-            "adanos_api_value"
-        )
-        config_keys[request.POST.get("adanos_base_url")] = request.POST.get(
-            "adanos_base_url_value"
-        )
-        config_keys[request.POST.get("adanos_timeout")] = request.POST.get(
-            "adanos_timeout_value"
-        )
+        update_config_value("finnhub_api", "finnhub_api_value")
+        update_config_value("fmp_api", "fmp_api_value")
+        update_config_value("polygon_api", "polygon_api_value")
+        update_config_value("twitter_api", "twitter_api_value")
+        update_config_value("reddit_id_api", "reddit_id_api_value")
+        update_config_value("reddit_sec_api", "reddit_sec_api_value")
+        update_config_value("whalealert_api", "whalealert_api_value")
+        update_config_value("adanos_api", "adanos_api_value")
+        update_config_value("adanos_base_url", "adanos_base_url_value")
+        update_config_value("adanos_timeout", "adanos_timeout_value")
 
-        config_keys[request.POST.get("mysql_db")] = request.POST.get("mysql_db_value")
-        config_keys[request.POST.get("mysql_host")] = request.POST.get(
-            "mysql_host_value"
-        )
-        config_keys[request.POST.get("mysql_pw")] = request.POST.get("mysql_pw_value")
-        config_keys[request.POST.get("mysql_port")] = request.POST.get(
-            "mysql_port_value"
-        )
-        config_keys[request.POST.get("mysql_user")] = request.POST.get(
-            "mysql_user_value"
-        )
+        update_config_value("mysql_db", "mysql_db_value")
+        update_config_value("mysql_host", "mysql_host_value")
+        update_config_value("mysql_pw", "mysql_pw_value")
+        update_config_value("mysql_port", "mysql_port_value")
+        update_config_value("mysql_user", "mysql_user_value")
 
         with open("config.yaml", "w") as outfile:
             yaml.dump(config_keys, outfile, default_flow_style=False)

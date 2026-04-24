@@ -38,6 +38,7 @@ If you wish to support this project, please star it on Github or PayPal to <a hr
   ![Google Trend](./static/images/github/ticker_main4.png)
 
 - Optional Adanos Market Sentiment iframe for cross-source Reddit, X, News and Polymarket sentiment on a ticker.
+  Configure `ADANOS_API_KEY` to enable it and use `/api/stocks/adanos_market_sentiment/<ticker>/` for API access.
 
 - Recommendations of a stock.
   ![Recommendations](./static/images/github/ticker_main5.png)
@@ -321,6 +322,21 @@ To rerun in the future:
 #### Run scheduled tasks
 
 - Please refer to [Scheduled Tasks Guide](https://github.com/guanquann/Stocksera/tree/master/scheduled_tasks) for more information on how to run scheduled tasks.
+
+#### Optional Adanos setup
+
+Add these keys in `config.yaml` or via `/setup/` if you want Adanos sentiment on ticker pages:
+
+```
+ADANOS_API_KEY: YOUR_API_KEY
+ADANOS_BASE_URL: https://api.adanos.org
+ADANOS_TIMEOUT_SECONDS: '8'
+```
+
+This enables:
+
+- `/adanos_market_sentiment/?quote=TSLA`
+- `/api/stocks/adanos_market_sentiment/TSLA/`
 
 ### Star History
 

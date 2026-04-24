@@ -105,3 +105,51 @@ def test_fetch_adanos_market_sentiment_ignores_sources_without_metrics():
     assert data["sources"] == []
     assert len(data["unavailable_sources"]) == 4
     assert "No Adanos sentiment data" in data["message"]
+
+
+def test_fetch_adanos_market_sentiment_falls_back_to_default_base_url():
+    captured_urls = []
+
+    def fake_get(url, headers=None, timeout=None):
+        captured_urls.append(url)
+        return DummyResponse(
+            {
+                "buzz_score": 44.0,
+                "sentiment_score": 0.1,
+                "mentions": 12,
+                "trend": "stable",
+            }
+        )
+
+    data = fetch_adanos_market_sentiment(
+        "msft",
+        {"ADANOS_API_KEY": "secret", "ADANOS_BASE_URL": "   "},
+        http_get=fake_get,
+    )
+
+    assert data["enabled"] is True
+    assert captured_urls[0].startswith("https://api.adanos.org/")
+
+
+def test_fetch_adanos_market_sentiment_marks_request_failures_unavailable():
+    def fake_get(url, headers=None, timeout=None):
+        if "/reddit/" in url:
+            raise requests.Timeout("slow")
+        return DummyResponse(
+            {
+                "buzz_score": 52.5,
+                "sentiment_score": 0.05,
+                "mentions": 25,
+                "trend": "stable",
+            }
+        )
+
+    data = fetch_adanos_market_sentiment(
+        "NVDA",
+        {"ADANOS_API_KEY": "secret"},
+        http_get=fake_get,
+    )
+
+    assert data["enabled"] is True
+    assert "Reddit" in data["unavailable_sources"]
+    assert [source["slug"] for source in data["sources"]] == ["x", "news", "polymarket"]
